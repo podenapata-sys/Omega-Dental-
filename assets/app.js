@@ -114,7 +114,9 @@ const I18N = {
     calc_eyebrow:"Cost Estimator",
     calc_title:"Estimate your treatment cost",
     calc_text:"Pick a treatment to see an instant price estimate. Final cost is confirmed after your check-up.",
-    calc_service:"Select treatment", calc_qty:"Number of teeth", calc_result:"Estimated cost",
+    calc_service:"Select treatment", calc_qty:"No. of Teeth / Units", calc_result:"Estimated Cost",
+    calc_category:"Treatment Category", calc_serviceopt:"Service Option",
+    calc_head1:"Treatment", calc_head2:"Price Calculator",
     calc_note:"This is an indicative estimate in BDT. Book a check-up for an exact quote.",
     calc_book:"Book this treatment",
     pricing_eyebrow:"Transparent Pricing",
@@ -202,7 +204,9 @@ const I18N = {
     calc_eyebrow:"খরচ হিসাবকারী",
     calc_title:"আপনার চিকিৎসার খরচ হিসাব করুন",
     calc_text:"একটি চিকিৎসা বেছে নিয়ে তাৎক্ষণিক খরচের ধারণা নিন। চূড়ান্ত খরচ চেকআপের পর নিশ্চিত হয়।",
-    calc_service:"চিকিৎসা নির্বাচন করুন", calc_qty:"দাঁতের সংখ্যা", calc_result:"আনুমানিক খরচ",
+    calc_service:"চিকিৎসা নির্বাচন করুন", calc_qty:"দাঁত / ইউনিট সংখ্যা", calc_result:"আনুমানিক খরচ",
+    calc_category:"চিকিৎসার ধরন", calc_serviceopt:"সেবা নির্বাচন",
+    calc_head1:"ট্রিটমেন্ট", calc_head2:"প্রাইস ক্যালকুলেটর",
     calc_note:"এটি টাকায় একটি আনুমানিক হিসাব। সঠিক মূল্যের জন্য চেকআপ বুক করুন।",
     calc_book:"এই চিকিৎসা বুক করুন",
     pricing_eyebrow:"স্বচ্ছ মূল্য",
@@ -351,7 +355,7 @@ function applyI18n(){
   });
   // dynamic blocks
   renderServices(); renderPricing(); renderCalcOptions(); renderTestimonials(); renderBookOptions();
-  renderSteps(); renderTech(); renderFaqs(); renderTips();
+  renderSteps(); renderTech(); renderFaqs(); renderTips(); renderCalcBA();
   const tgl = document.getElementById("langText");
   if (tgl) tgl.textContent = t("lang_label");
 }
@@ -408,14 +412,31 @@ function renderPricing(){
 }
 
 /* ----- Cost calculator ----- */
-function renderCalcOptions(){
+function renderCalcOptions(){            // categories + services + qty
+  const cat = document.getElementById("calcCategory");
+  const qty = document.getElementById("calcQty");
+  if(cat){
+    const cur = cat.value;
+    cat.innerHTML = Object.keys(CATS).map(c=>`<option value="${c}">${LANG==="bn"?CATS[c].bn:CATS[c].en}</option>`).join("");
+    if(cur) cat.value = cur;
+  }
+  if(qty && !qty.options.length){
+    qty.innerHTML = Array.from({length:32},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
+  }
+  renderCalcServices();
+}
+function renderCalcServices(){
+  const catSel = document.getElementById("calcCategory");
   const sel = document.getElementById("calcService");
   if(!sel) return;
+  const cat = catSel ? catSel.value : null;
   const cur = sel.value;
-  sel.innerHTML = PRICES.map((p,i)=>`<option value="${i}">${p.n}</option>`).join("");
-  if(cur) sel.value = cur;
+  const opts = PRICES.map((p,i)=>({p,i})).filter(o=>!cat || o.p.c===cat);
+  sel.innerHTML = opts.map(o=>`<option value="${o.i}">${o.p.n}</option>`).join("");
+  if(cur && opts.some(o=>String(o.i)===cur)) sel.value = cur;
   updateCalc();
 }
+let _calcAnim;
 function updateCalc(){
   const sel = document.getElementById("calcService");
   const qtyWrap = document.getElementById("calcQtyWrap");
@@ -424,15 +445,36 @@ function updateCalc(){
   if(!sel||!out) return;
   const p = PRICES[+sel.value] || PRICES[0];
   const per = !!p.per;
-  qtyWrap.style.display = per ? "" : "none";
-  let qty = per ? Math.max(1, parseInt(qtyEl.value||"1",10)) : 1;
+  if(qtyWrap) qtyWrap.style.display = per ? "" : "none";
+  const qty = per ? Math.max(1, parseInt((qtyEl&&qtyEl.value)||"1",10)) : 1;
   const min = p.min*qty, max = p.max*qty;
-  const range = min===max ? `৳ ${fmt(min)}` : `৳ ${fmt(min)} – ৳ ${fmt(max)}`;
-  out.innerHTML = `<span class="calc-amt">${range}</span>${p.note?`<span class="calc-sub">${p.note}</span>`:""}`;
-  // pass selection to booking
-  const bsel = document.getElementById("f_service");
+  cancelAnimationFrame(_calcAnim);
+  const dur = 650, t0 = performance.now();
+  const step = (now)=>{
+    const k = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-k,3);
+    const cMin = Math.round(min*e), cMax = Math.round(max*e);
+    const amt = min===max ? `৳ ${fmt(cMax)}` : `৳ ${fmt(cMin)} – ${fmt(cMax)}`;
+    out.innerHTML = `<span class="calc-amt">${amt}</span>${p.note?`<span class="calc-sub">${p.note}</span>`:""}`;
+    if(k<1) _calcAnim = requestAnimationFrame(step);
+  };
+  out.classList.remove("pop"); void out.offsetWidth; out.classList.add("pop");
+  _calcAnim = requestAnimationFrame(step);
   const btn = document.getElementById("calcBook");
   if(btn) btn.dataset.service = p.n;
+}
+function renderCalcBA(){
+  const el = document.getElementById("calcBa");
+  if(!el) return;
+  const c = BA_CASES[0];
+  el.innerHTML = `<div class="ba">
+      <img class="ba-after" src="${baSvg(c.after, t('ba_after'))}" alt="after">
+      <div class="ba-before-wrap"><img class="ba-before" src="${baSvg(c.before, t('ba_before'))}" alt="before"></div>
+      <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="before after slider">
+      <span class="ba-tag ba-tag-l">${t('ba_before')}</span>
+      <span class="ba-tag ba-tag-r">${t('ba_after')}</span>
+      <span class="ba-handle"></span>
+    </div>`;
+  el.querySelectorAll(".ba").forEach(initBA);
 }
 
 /* ----- Testimonials ----- */
@@ -595,8 +637,9 @@ document.addEventListener("DOMContentLoaded", ()=>{
   renderBA("all");
 
   document.getElementById("langToggle")?.addEventListener("click", ()=> setLang(LANG==="en"?"bn":"en"));
+  document.getElementById("calcCategory")?.addEventListener("change", renderCalcServices);
   document.getElementById("calcService")?.addEventListener("change", updateCalc);
-  document.getElementById("calcQty")?.addEventListener("input", updateCalc);
+  document.getElementById("calcQty")?.addEventListener("change", updateCalc);
   document.getElementById("calcBook")?.addEventListener("click", function(){
     const sel = document.getElementById("f_service");
     if(sel && this.dataset.service){ sel.value = this.dataset.service; }
@@ -625,7 +668,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
   }
 
   // scroll reveal
-  const revealEls = document.querySelectorAll(".sec-head, .svc-card, .step-card, .tech-card, .test-card, .tip-card, .ci-row, .why-art, .doc-photo, .hero-photo");
+  const revealEls = document.querySelectorAll(".sec-head, .svc-card, .step-card, .tech-card, .test-card, .tip-card, .ci-row, .why-art, .doc-photo, .hero-photo, .calc-card, .calc-ba");
   revealEls.forEach(el=>el.classList.add("reveal"));
   const rob = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); rob.unobserve(e.target); }});

@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=20260618e">
+<link rel="stylesheet" href="assets/styles.css?v=20260618f">
 <!-- Structured data: Dentist / MedicalClinic -->
 <script type="application/ld+json">
 {
@@ -214,23 +214,31 @@
       <h2 data-i18n="calc_title"></h2>
       <p data-i18n="calc_text"></p>
     </div>
-    <div class="calc-wrap">
-      <div>
-        <div class="calc-field">
-          <label data-i18n="calc_service"></label>
-          <select id="calcService"></select>
+    <div class="calc-layout">
+      <div class="calc-card">
+        <div class="calc-top">
+          <h3 class="calc-heading"><span data-i18n="calc_head1"></span> <span class="grad-pink" data-i18n="calc_head2"></span></h3>
+          <div class="calc-field">
+            <label data-i18n="calc_category"></label>
+            <select id="calcCategory"></select>
+          </div>
+          <div class="calc-field">
+            <label data-i18n="calc_serviceopt"></label>
+            <select id="calcService"></select>
+          </div>
+          <div class="calc-field" id="calcQtyWrap">
+            <label data-i18n="calc_qty"></label>
+            <select id="calcQty"></select>
+          </div>
         </div>
-        <div class="calc-field" id="calcQtyWrap">
-          <label data-i18n="calc_qty"></label>
-          <input type="number" id="calcQty" min="1" max="32" value="1">
+        <div class="calc-bottom">
+          <div class="lbl" data-i18n="calc_result"></div>
+          <div id="calcResult"></div>
+          <p class="calc-note" data-i18n="calc_note"></p>
+          <button class="btn" id="calcBook" data-i18n="calc_book"></button>
         </div>
       </div>
-      <div class="calc-out">
-        <div class="lbl" data-i18n="calc_result"></div>
-        <div id="calcResult"></div>
-        <p class="calc-note" data-i18n="calc_note"></p>
-        <button class="btn btn-orange" id="calcBook" data-i18n="calc_book"></button>
-      </div>
+      <div class="calc-ba" id="calcBa"></div>
     </div>
   </div>
 </section>
@@ -424,6 +432,6 @@
 <a class="fab" href="https://wa.me/8801713241670" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
 
 <script>document.getElementById("year").textContent=new Date().getFullYear();</script>
-<script src="assets/app.js?v=20260618e"></script>
+<script src="assets/app.js?v=20260618f"></script>
 </body>
 </html>
