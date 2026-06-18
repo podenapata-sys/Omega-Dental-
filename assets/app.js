@@ -372,6 +372,10 @@ const SVC_SLUG = {
   "Dentures":"dentures",
   "Braces & Aligners":"braces-aligners",
   "Dental Implants":"dental-implants",
+  "Veneers":"veneers",
+  "Extractions & Surgery":"extractions",
+  "Kids Dentistry":"kids-dentistry",
+  "Cosmetic Dentistry":"cosmetic-dentistry",
 };
 const SVC_TONE = ["#dff3ee","#cfe0f7","#ffe7cf","#e3f7f1","#e7ecfb","#fde7d6"];
 function renderServices(){

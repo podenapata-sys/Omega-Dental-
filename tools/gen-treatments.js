@@ -14,13 +14,13 @@ const T = [
   ["Root Canal (RCT)","রুট ক্যানেল","From ৳5,000","root-canal-rct","root-canal","Gentle single & multi-visit root canal.","কোমল সিঙ্গেল ও মাল্টি-ভিজিট রুট ক্যানেল।"],
   ["Crowns & Bridges","ক্রাউন ও ব্রিজ","From ৳5,000","crowns-bridges","crowns-bridges","Zirconia, PFM & composite crowns.","জিরকোনিয়া, পিএফএম ও কম্পোজিট ক্রাউন।"],
   ["Teeth Whitening","দাঁত সাদা করা","৳12,000","teeth-whitening","teeth-whitening","Brighten your smile several shades.","হাসি কয়েক শেড উজ্জ্বল করুন।"],
-  ["Veneers","ভিনিয়ার","৳3,500–7,500","veneers",null,"Composite veneers to perfect front teeth.","সামনের দাঁত নিখুঁত করতে ভিনিয়ার।"],
+  ["Veneers","ভিনিয়ার","৳3,500–7,500","veneers","veneers","Composite veneers to perfect front teeth.","সামনের দাঁত নিখুঁত করতে ভিনিয়ার।"],
   ["Dentures","ডেনচার","৳4,000–22,000","dentures","dentures","Partial, flexible & complete dentures.","পার্শিয়াল, ফ্লেক্সিবল ও কমপ্লিট ডেনচার।"],
   ["Braces & Aligners","ব্রেসেস ও অ্যালাইনার","From ৳25,000","braces-aligners","braces-aligners","Braces & clear aligners to straighten teeth.","দাঁত সোজা করতে ব্রেসেস ও অ্যালাইনার।"],
   ["Dental Implants","ডেন্টাল ইমপ্লান্ট","৳1,20,000+","dental-implants","dental-implants","Permanent replacement for missing teeth.","হারানো দাঁতের স্থায়ী প্রতিস্থাপন।"],
-  ["Extractions & Surgery","দাঁত তোলা ও সার্জারি","৳1,000–12,000","extractions-surgery",null,"Painless simple & surgical extractions.","ব্যথাহীন সাধারণ ও সার্জিক্যাল দাঁত তোলা।"],
-  ["Kids Dentistry","শিশু দন্তচিকিৎসা","From ৳1,000","kids-dentistry",null,"Gentle paediatric care for children.","শিশুদের জন্য কোমল যত্ন।"],
-  ["Cosmetic Dentistry","কসমেটিক ডেন্টিস্ট্রি","From ৳3,500","cosmetic-dentistry",null,"Smile makeovers: whitening, veneers, reshaping.","স্মাইল মেকওভার: হোয়াইটেনিং, ভিনিয়ার, রিশেপিং।"],
+  ["Extractions & Surgery","দাঁত তোলা ও সার্জারি","৳1,000–12,000","extractions-surgery","extractions","Painless simple & surgical extractions.","ব্যথাহীন সাধারণ ও সার্জিক্যাল দাঁত তোলা।"],
+  ["Kids Dentistry","শিশু দন্তচিকিৎসা","From ৳1,000","kids-dentistry","kids-dentistry","Gentle paediatric care for children.","শিশুদের জন্য কোমল যত্ন।"],
+  ["Cosmetic Dentistry","কসমেটিক ডেন্টিস্ট্রি","From ৳3,500","cosmetic-dentistry","cosmetic-dentistry","Smile makeovers: whitening, veneers, reshaping.","স্মাইল মেকওভার: হোয়াইটেনিং, ভিনিয়ার, রিশেপিং।"],
 ];
 
 const cards = T.map(([en,bn,price,img,detail,de,db])=>{
