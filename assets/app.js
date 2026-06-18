@@ -597,4 +597,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const ob = new IntersectionObserver((ent)=>{ if(ent[0].isIntersecting){ animateCounters(); ob.disconnect(); }},{threshold:.4});
     ob.observe(stats);
   }
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll(".sec-head, .svc-card, .step-card, .tech-card, .test-card, .tip-card, .ci-row, .why-art, .doc-photo, .hero-photo");
+  revealEls.forEach(el=>el.classList.add("reveal"));
+  const rob = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); rob.unobserve(e.target); }});
+  },{threshold:.12});
+  revealEls.forEach(el=>rob.observe(el));
 });
