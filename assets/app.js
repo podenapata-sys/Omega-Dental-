@@ -1,0 +1,462 @@
+/* ============================================================
+   OMEGA DENTAL — data, i18n and interactions (no build step)
+   ============================================================ */
+
+/* ---------- Contact constants ---------- */
+const OMEGA = {
+  phone: "01706-516868",
+  phoneIntl: "+8801706516868",
+  whatsapp: "8801713241670",
+  email: "omegadental@gmail.com",
+  facebook: "https://www.facebook.com/profile.php?id=61586889212076",
+  maps: "https://maps.app.goo.gl/3RLwiXGBDZXptKE79",
+  mapEmbed: "https://www.google.com/maps?q=West+Kazipara+Begum+Rokeya+Sarani+Dhaka&output=embed",
+};
+
+/* ---------- Price list (single source of truth) ----------
+   min/max in BDT used by the cost calculator.
+   perTooth => quantity selector shown.                       */
+const CATS = {
+  general:   { en: "Preventive & General", bn: "প্রিভেন্টিভ ও জেনারেল" },
+  cosmetic:  { en: "Cosmetic Dentistry",   bn: "কসমেটিক ডেন্টিস্ট্রি" },
+  endo:      { en: "Root Canal (Endodontics)", bn: "রুট ক্যানেল (এন্ডোডন্টিক্স)" },
+  crown:     { en: "Crowns & Bridges",     bn: "ক্রাউন ও ব্রিজ" },
+  denture:   { en: "Dentures",             bn: "ডেনচার" },
+  ortho:     { en: "Orthodontics",         bn: "অর্থোডন্টিক্স" },
+  surgery:   { en: "Oral Surgery & Extractions", bn: "ওরাল সার্জারি ও দাঁত তোলা" },
+  implant:   { en: "Dental Implants",       bn: "ডেন্টাল ইমপ্লান্ট" },
+};
+
+const PRICES = [
+  { c:"general", n:"Scaling", min:1500, max:1500 },
+  { c:"general", n:"Polishing", min:1000, max:1000 },
+  { c:"general", n:"Gum Treatment", min:8500, max:8500 },
+  { c:"general", n:"Temporary Filling", per:true, min:500, max:500 },
+  { c:"general", n:"Composite Filling — Advance", per:true, min:2500, max:3000 },
+  { c:"general", n:"Composite Filling — General", per:true, min:1000, max:1000 },
+  { c:"general", n:"GI Filling", per:true, min:1500, max:2000 },
+  { c:"general", n:"Tooth Shaping", per:true, min:500, max:500 },
+  { c:"general", n:"Dressing / Abscess Drainage", min:1000, max:1500 },
+
+  { c:"cosmetic", n:"Composite Veneer — Advance", note:"Warranty 5 Yrs · 3 Times", per:true, min:5500, max:7500 },
+  { c:"cosmetic", n:"Composite Veneer — General", note:"Warranty 3 Yrs · 3 Times", per:true, min:3500, max:4000 },
+  { c:"cosmetic", n:"Teeth Whitening", min:12000, max:12000 },
+
+  { c:"endo", n:"Root Canal Treatment (RCT)", per:true, min:5000, max:5000 },
+  { c:"endo", n:"RCT — Wisdom Tooth", per:true, min:8000, max:8000 },
+  { c:"endo", n:"Re-RCT", per:true, min:6500, max:6500 },
+  { c:"endo", n:"Single Visit RCT with Filling", per:true, min:12000, max:12000 },
+  { c:"endo", n:"Pulpectomy", min:5500, max:5500 },
+  { c:"endo", n:"Fiber Post — Advance", per:true, min:4500, max:4500 },
+  { c:"endo", n:"Fiber Post — General", per:true, min:3500, max:3500 },
+  { c:"endo", n:"Apisectomy", min:20000, max:25000 },
+
+  { c:"crown", n:"Zirconia Crown", per:true, min:12000, max:15000 },
+  { c:"crown", n:"PFM Crown — Advance", per:true, min:8000, max:8000 },
+  { c:"crown", n:"PFM Crown — General", per:true, min:5000, max:5000 },
+  { c:"crown", n:"Composite Crown", per:true, min:6500, max:6500 },
+  { c:"crown", n:"Immediate Crown", per:true, min:3000, max:3000 },
+  { c:"crown", n:"Fiber Bridge — Premium", note:"Warranty 2 Yrs · 2 Times", per:true, min:22000, max:24000 },
+
+  { c:"denture", n:"Partial Denture", per:true, min:4000, max:5000 },
+  { c:"denture", n:"Flexible Denture", per:true, min:8000, max:8000 },
+  { c:"denture", n:"Complete Denture", min:22000, max:22000 },
+
+  { c:"ortho", n:"Orthodontic Treatment", note:"+ Monthly 6,000", min:25000, max:25000 },
+  { c:"ortho", n:"Aligner Treatment", min:150000, max:250000 },
+
+  { c:"surgery", n:"Deciduous (Milk) Tooth Extraction", min:1000, max:1000 },
+  { c:"surgery", n:"Permanent Tooth Extraction", min:2000, max:5000 },
+  { c:"surgery", n:"Surgical Tooth Extraction", min:8000, max:12000 },
+  { c:"surgery", n:"Frenectomy", min:3000, max:3000 },
+  { c:"surgery", n:"Operculectomy", min:3000, max:3000 },
+
+  { c:"implant", n:"Dental Implant", min:120000, max:150000 },
+];
+
+/* ---------- Services (homepage grid) ---------- */
+const SERVICES = [
+  { icon:"🦷", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"সুস্থ মাড়ির জন্য প্লাক, টার্টার ও দাগ দূর করতে পেশাদার পরিষ্কার।" },
+  { icon:"🪥", en:"Tooth Fillings", bn:"দাঁতের ফিলিং", de:"Tooth-coloured composite & GI fillings that restore decayed teeth painlessly.", db:"ব্যথাহীনভাবে ক্ষয়প্রাপ্ত দাঁত ঠিক করতে দাঁতের রঙের কম্পোজিট ও জিআই ফিলিং।" },
+  { icon:"🌱", en:"Root Canal (RCT)", bn:"রুট ক্যানেল", de:"Save infected teeth with gentle single & multi-visit root canal therapy.", db:"সংক্রমিত দাঁত বাঁচাতে কোমল সিঙ্গেল ও মাল্টি-ভিজিট রুট ক্যানেল চিকিৎসা।" },
+  { icon:"👑", en:"Crowns & Bridges", bn:"ক্রাউন ও ব্রিজ", de:"Zirconia, PFM and composite crowns to rebuild strength and beauty.", db:"শক্তি ও সৌন্দর্য ফেরাতে জিরকোনিয়া, পিএফএম ও কম্পোজিট ক্রাউন।" },
+  { icon:"✨", en:"Teeth Whitening", bn:"দাঁত সাদা করা", de:"Brighten your smile several shades with safe professional whitening.", db:"নিরাপদ পেশাদার হোয়াইটেনিং-এ আপনার হাসি কয়েক শেড উজ্জ্বল করুন।" },
+  { icon:"💎", en:"Veneers", bn:"ভিনিয়ার", de:"Composite veneers to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে কম্পোজিট ভিনিয়ার।" },
+  { icon:"🦿", en:"Dentures", bn:"ডেনচার", de:"Partial, flexible and complete dentures for comfortable chewing.", db:"আরামে চিবানোর জন্য পার্শিয়াল, ফ্লেক্সিবল ও কমপ্লিট ডেনচার।" },
+  { icon:"📏", en:"Braces & Aligners", bn:"ব্রেসেস ও অ্যালাইনার", de:"Orthodontic braces and clear aligners to straighten misaligned teeth.", db:"আঁকাবাঁকা দাঁত সোজা করতে অর্থোডন্টিক ব্রেসেস ও ক্লিয়ার অ্যালাইনার।" },
+  { icon:"🔩", en:"Dental Implants", bn:"ডেন্টাল ইমপ্লান্ট", de:"Permanent, natural-looking replacement for missing teeth.", db:"হারানো দাঁতের স্থায়ী, প্রাকৃতিক দেখতে প্রতিস্থাপন।" },
+  { icon:"🩺", en:"Extractions & Surgery", bn:"দাঁত তোলা ও সার্জারি", de:"Painless simple and surgical extractions including wisdom teeth.", db:"আক্কেল দাঁতসহ ব্যথাহীন সাধারণ ও সার্জিক্যাল দাঁত তোলা।" },
+  { icon:"🧒", en:"Kids Dentistry", bn:"শিশু দন্তচিকিৎসা", de:"Gentle paediatric care, milk-tooth treatment and check-ups for children.", db:"শিশুদের জন্য কোমল যত্ন, দুধ দাঁতের চিকিৎসা ও চেকআপ।" },
+  { icon:"💖", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", de:"Smile makeovers combining whitening, veneers and reshaping.", db:"হোয়াইটেনিং, ভিনিয়ার ও রিশেপিং মিলিয়ে স্মাইল মেকওভার।" },
+];
+
+/* ---------- i18n strings ---------- */
+const I18N = {
+  en: {
+    nav_home:"Home", nav_about:"About", nav_services:"Services", nav_pricing:"Pricing",
+    nav_calc:"Estimate", nav_ba:"Before & After", nav_contact:"Contact",
+    book:"Book Appointment", call:"Call Now",
+    topbar:"Painless & Cosmetic Dental Care · Open Sat–Thu 10am–8pm",
+    hero_eyebrow:"Trusted Dental Clinic in Dhaka",
+    hero_title:"Keep your smile <span>healthy</span> & bright",
+    hero_text:"Modern, painless and affordable dental care at Omega Dental. From routine check-ups to implants and smile makeovers — your comfort comes first.",
+    hero_b1:"Painless Treatment", hero_b2:"Modern Technology", hero_b3:"Affordable Pricing", hero_b4:"Expert Surgeon",
+    hero_badge_t:"Trusted by 5,000+ patients", hero_badge_s:"Gentle, expert care",
+    stat1:"Happy Patients", stat2:"Years Experience", stat3:"Treatments", stat4:"Satisfaction",
+    services_eyebrow:"Our Services",
+    services_title:"Complete dental care under one roof",
+    services_text:"Every treatment you need, delivered gently with modern technology and clear, honest pricing.",
+    why_eyebrow:"Why Omega Dental",
+    why_title:"Gentle care you can trust",
+    why_text:"We combine advanced equipment with a genuinely painless approach, so every visit feels easy.",
+    why1:"Painless, anxiety-free treatment", why2:"Strict sterilization & safety", why3:"Transparent, affordable pricing",
+    why4:"Experienced, friendly dental surgeon", why5:"Modern equipment & techniques", why6:"Same-day & emergency care",
+    calc_eyebrow:"Cost Estimator",
+    calc_title:"Estimate your treatment cost",
+    calc_text:"Pick a treatment to see an instant price estimate. Final cost is confirmed after your check-up.",
+    calc_service:"Select treatment", calc_qty:"Number of teeth", calc_result:"Estimated cost",
+    calc_note:"This is an indicative estimate in BDT. Book a check-up for an exact quote.",
+    calc_book:"Book this treatment",
+    pricing_eyebrow:"Transparent Pricing",
+    pricing_title:"Treatment price list",
+    pricing_text:"Clear, upfront pricing for every treatment. Prices in Bangladeshi Taka (৳).",
+    pricing_th1:"Treatment", pricing_th2:"Price (BDT)", per_tooth:"per tooth",
+    ba_eyebrow:"Real Results",
+    ba_title:"Before & after smiles",
+    ba_text:"Drag the slider to see the transformation our patients enjoy.",
+    ba_before:"Before", ba_after:"After",
+    ba_f_all:"All", ba_f_whitening:"Whitening", ba_f_braces:"Braces", ba_f_veneers:"Veneers", ba_f_implants:"Implants",
+    doc_eyebrow:"Meet the Doctor",
+    doc_name:"Dr. Afsana Haque",
+    doc_role:"Chief Dental Surgeon, Omega Dental",
+    doc_text:"Dr. Afsana Haque leads Omega Dental with a focus on painless and cosmetic dentistry, helping patients of all ages achieve healthy, confident smiles.",
+    doc_c1:"BDS (DU) · BMDC Reg. 11071",
+    doc_c2:"PGT in Oral & Maxillofacial Surgery — Dhaka Dental College",
+    doc_c3:"PGT in Paediatrics — Dhaka Dental College",
+    doc_c4:"Specially trained in Painless & Cosmetic Treatment",
+    doc_book:"Book with Dr. Afsana",
+    test_eyebrow:"Patient Stories",
+    test_title:"Loved by our patients",
+    contact_eyebrow:"Visit Us",
+    contact_title:"Find Omega Dental",
+    contact_addr_l:"Address", contact_phone_l:"Phone", contact_wa_l:"WhatsApp", contact_email_l:"Email", contact_hours_l:"Hours",
+    contact_addr:"1252/3, East Monipur, Metro Pillar-267(W), West Kazipara, Begum Rokeya Sarani, Dhaka",
+    contact_hours:"Saturday – Thursday: 10:00 AM – 8:00 PM · Friday: Closed",
+    contact_dir:"Get Directions",
+    book_eyebrow:"Appointments",
+    book_title:"Book your appointment",
+    book_text:"Fill in the form and we'll confirm your appointment on WhatsApp, or message us directly.",
+    f_name:"Full name", f_phone:"Phone number", f_service:"Treatment needed",
+    f_date:"Preferred date", f_time:"Preferred time", f_msg:"Message (optional)",
+    f_emerg:"This is an emergency / I need same-day care",
+    f_select:"Select a treatment", f_submit:"Send via WhatsApp", f_wa:"Quick WhatsApp",
+    f_success:"Opening WhatsApp with your appointment details…",
+    foot_about:"Modern, painless and affordable dental care in Dhaka. Healthy smiles for the whole family.",
+    foot_links:"Quick Links", foot_services:"Services", foot_contact:"Contact",
+    foot_rights:"All rights reserved.",
+    lang_label:"বাংলা",
+  },
+  bn: {
+    nav_home:"হোম", nav_about:"পরিচিতি", nav_services:"সেবা", nav_pricing:"মূল্য",
+    nav_calc:"খরচ হিসাব", nav_ba:"আগে ও পরে", nav_contact:"যোগাযোগ",
+    book:"অ্যাপয়েন্টমেন্ট নিন", call:"কল করুন",
+    topbar:"ব্যথাহীন ও কসমেটিক ডেন্টাল কেয়ার · শনি–বৃহঃ সকাল ১০টা–রাত ৮টা",
+    hero_eyebrow:"ঢাকার বিশ্বস্ত ডেন্টাল ক্লিনিক",
+    hero_title:"আপনার হাসি রাখুন <span>সুস্থ</span> ও উজ্জ্বল",
+    hero_text:"ওমেগা ডেন্টালে আধুনিক, ব্যথাহীন ও সাশ্রয়ী দন্তচিকিৎসা। সাধারণ চেকআপ থেকে ইমপ্লান্ট ও স্মাইল মেকওভার — সবার আগে আপনার স্বস্তি।",
+    hero_b1:"ব্যথাহীন চিকিৎসা", hero_b2:"আধুনিক প্রযুক্তি", hero_b3:"সাশ্রয়ী মূল্য", hero_b4:"অভিজ্ঞ সার্জন",
+    hero_badge_t:"৫,০০০+ রোগীর আস্থা", hero_badge_s:"কোমল, দক্ষ সেবা",
+    stat1:"সন্তুষ্ট রোগী", stat2:"বছরের অভিজ্ঞতা", stat3:"চিকিৎসা", stat4:"সন্তুষ্টি",
+    services_eyebrow:"আমাদের সেবা",
+    services_title:"এক ছাদের নিচে সম্পূর্ণ দন্তসেবা",
+    services_text:"আপনার প্রয়োজনীয় প্রতিটি চিকিৎসা — আধুনিক প্রযুক্তিতে কোমলভাবে ও স্বচ্ছ মূল্যে।",
+    why_eyebrow:"কেন ওমেগা ডেন্টাল",
+    why_title:"আস্থা রাখার মতো কোমল সেবা",
+    why_text:"আধুনিক যন্ত্রপাতির সঙ্গে সত্যিকারের ব্যথাহীন পদ্ধতি — প্রতিটি ভিজিট হয় সহজ।",
+    why1:"ব্যথাহীন, উদ্বেগমুক্ত চিকিৎসা", why2:"কঠোর স্টেরিলাইজেশন ও নিরাপত্তা", why3:"স্বচ্ছ, সাশ্রয়ী মূল্য",
+    why4:"অভিজ্ঞ, বন্ধুত্বপূর্ণ ডেন্টাল সার্জন", why5:"আধুনিক যন্ত্রপাতি ও কৌশল", why6:"একই দিনে ও জরুরি সেবা",
+    calc_eyebrow:"খরচ হিসাবকারী",
+    calc_title:"আপনার চিকিৎসার খরচ হিসাব করুন",
+    calc_text:"একটি চিকিৎসা বেছে নিয়ে তাৎক্ষণিক খরচের ধারণা নিন। চূড়ান্ত খরচ চেকআপের পর নিশ্চিত হয়।",
+    calc_service:"চিকিৎসা নির্বাচন করুন", calc_qty:"দাঁতের সংখ্যা", calc_result:"আনুমানিক খরচ",
+    calc_note:"এটি টাকায় একটি আনুমানিক হিসাব। সঠিক মূল্যের জন্য চেকআপ বুক করুন।",
+    calc_book:"এই চিকিৎসা বুক করুন",
+    pricing_eyebrow:"স্বচ্ছ মূল্য",
+    pricing_title:"চিকিৎসার মূল্য তালিকা",
+    pricing_text:"প্রতিটি চিকিৎসার স্পষ্ট, আগাম মূল্য। মূল্য বাংলাদেশি টাকায় (৳)।",
+    pricing_th1:"চিকিৎসা", pricing_th2:"মূল্য (টাকা)", per_tooth:"প্রতি দাঁত",
+    ba_eyebrow:"সত্যিকারের ফলাফল",
+    ba_title:"আগে ও পরের হাসি",
+    ba_text:"পরিবর্তন দেখতে স্লাইডারটি টেনে দেখুন।",
+    ba_before:"আগে", ba_after:"পরে",
+    ba_f_all:"সব", ba_f_whitening:"হোয়াইটেনিং", ba_f_braces:"ব্রেসেস", ba_f_veneers:"ভিনিয়ার", ba_f_implants:"ইমপ্লান্ট",
+    doc_eyebrow:"আমাদের চিকিৎসক",
+    doc_name:"ডা. আফসানা হক",
+    doc_role:"চিফ ডেন্টাল সার্জন, ওমেগা ডেন্টাল",
+    doc_text:"ডা. আফসানা হক ব্যথাহীন ও কসমেটিক দন্তচিকিৎসায় বিশেষ মনোযোগ দিয়ে ওমেগা ডেন্টাল পরিচালনা করেন, সব বয়সের রোগীকে সুস্থ ও আত্মবিশ্বাসী হাসি দিতে সাহায্য করেন।",
+    doc_c1:"বিডিএস (ঢাবি) · বিএমডিসি রেজি. ১১০৭১",
+    doc_c2:"পিজিটি ইন ওরাল ও ম্যাক্সিলোফেসিয়াল সার্জারি — ঢাকা ডেন্টাল কলেজ",
+    doc_c3:"পিজিটি ইন পেডিয়াট্রিক্স — ঢাকা ডেন্টাল কলেজ",
+    doc_c4:"ব্যথাহীন ও কসমেটিক চিকিৎসায় বিশেষ প্রশিক্ষিত",
+    doc_book:"ডা. আফসানার অ্যাপয়েন্টমেন্ট",
+    test_eyebrow:"রোগীদের কথা",
+    test_title:"রোগীদের ভালোবাসায়",
+    contact_eyebrow:"আমাদের কাছে আসুন",
+    contact_title:"ওমেগা ডেন্টাল খুঁজুন",
+    contact_addr_l:"ঠিকানা", contact_phone_l:"ফোন", contact_wa_l:"হোয়াটসঅ্যাপ", contact_email_l:"ইমেইল", contact_hours_l:"সময়",
+    contact_addr:"১২৫২/৩, পূর্ব মনিপুর, মেট্রো পিলার-২৬৭(ওয়াই), পশ্চিম কাজীপাড়া, বেগম রোকেয়া সরণি, ঢাকা",
+    contact_hours:"শনিবার – বৃহস্পতিবার: সকাল ১০টা – রাত ৮টা · শুক্রবার: বন্ধ",
+    contact_dir:"দিকনির্দেশ নিন",
+    book_eyebrow:"অ্যাপয়েন্টমেন্ট",
+    book_title:"আপনার অ্যাপয়েন্টমেন্ট বুক করুন",
+    book_text:"ফর্মটি পূরণ করুন, আমরা হোয়াটসঅ্যাপে আপনার অ্যাপয়েন্টমেন্ট নিশ্চিত করব, অথবা সরাসরি মেসেজ করুন।",
+    f_name:"পুরো নাম", f_phone:"ফোন নম্বর", f_service:"প্রয়োজনীয় চিকিৎসা",
+    f_date:"পছন্দের তারিখ", f_time:"পছন্দের সময়", f_msg:"বার্তা (ঐচ্ছিক)",
+    f_emerg:"এটি জরুরি / আমার একই দিনে সেবা দরকার",
+    f_select:"একটি চিকিৎসা নির্বাচন করুন", f_submit:"হোয়াটসঅ্যাপে পাঠান", f_wa:"দ্রুত হোয়াটসঅ্যাপ",
+    f_success:"আপনার অ্যাপয়েন্টমেন্টের তথ্যসহ হোয়াটসঅ্যাপ খোলা হচ্ছে…",
+    foot_about:"ঢাকায় আধুনিক, ব্যথাহীন ও সাশ্রয়ী দন্তচিকিৎসা। পুরো পরিবারের সুস্থ হাসি।",
+    foot_links:"দ্রুত লিংক", foot_services:"সেবা", foot_contact:"যোগাযোগ",
+    foot_rights:"সর্বস্বত্ব সংরক্ষিত।",
+    lang_label:"EN",
+  }
+};
+
+/* ---------- Testimonials ---------- */
+const TESTIMONIALS = [
+  { en:"Truly painless! I was terrified of dentists but Dr. Afsana made my root canal completely comfortable.", bn:"সত্যিই ব্যথাহীন! ডেন্টিস্টকে ভয় পেতাম, কিন্তু ডা. আফসানা আমার রুট ক্যানেল পুরোপুরি আরামদায়ক করে তুলেছেন।", name:"Nusrat J.", role:"Mirpur, Dhaka" },
+  { en:"Got my teeth whitening done and the result is amazing. Clean clinic, friendly staff and fair pricing.", bn:"দাঁত হোয়াইটেনিং করিয়েছি, ফলাফল অসাধারণ। পরিষ্কার ক্লিনিক, বন্ধুত্বপূর্ণ স্টাফ ও ন্যায্য মূল্য।", name:"Tanvir A.", role:"Kazipara" },
+  { en:"My daughter's first dental visit was so gentle. Highly recommend Omega Dental for kids.", bn:"আমার মেয়ের প্রথম ডেন্টাল ভিজিট খুবই কোমল ছিল। শিশুদের জন্য ওমেগা ডেন্টাল অত্যন্ত প্রস্তাবিত।", name:"Shirin S.", role:"Pallabi" },
+];
+
+/* ---------- Before/After cases (SVG placeholders) ---------- */
+const BA_CASES = [
+  { type:"whitening", before:"#cdbfa3", after:"#f5f3ec" },
+  { type:"veneers",   before:"#cdb196", after:"#f3f1ea" },
+  { type:"braces",    before:"#d8c7ad", after:"#f4f2ec" },
+  { type:"implants",  before:"#c9b79b", after:"#f1efe8" },
+];
+
+/* ============================================================
+   Rendering + interactions
+   ============================================================ */
+let LANG = localStorage.getItem("omega_lang") || "en";
+
+function t(key){ return (I18N[LANG] && I18N[LANG][key]) ?? (I18N.en[key] ?? key); }
+function fmt(n){ return n.toLocaleString("en-IN"); } // 1,20,000 style grouping
+
+function applyI18n(){
+  document.documentElement.lang = LANG;
+  document.documentElement.setAttribute("data-lang", LANG);
+  document.body.classList.toggle("bn", LANG === "bn");
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const k = el.getAttribute("data-i18n");
+    if (el.hasAttribute("data-i18n-html")) el.innerHTML = t(k);
+    else el.textContent = t(k);
+  });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{
+    el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph")));
+  });
+  // dynamic blocks
+  renderServices(); renderPricing(); renderCalcOptions(); renderTestimonials(); renderBookOptions();
+  const tgl = document.getElementById("langText");
+  if (tgl) tgl.textContent = t("lang_label");
+}
+
+function setLang(l){ LANG = l; localStorage.setItem("omega_lang", l); applyI18n(); }
+
+/* ----- Services grid ----- */
+function renderServices(){
+  const wrap = document.getElementById("servicesGrid");
+  if(!wrap) return;
+  wrap.innerHTML = SERVICES.map(s=>`
+    <article class="svc-card">
+      <div class="svc-icon">${s.icon}</div>
+      <h3>${LANG==="bn"?s.bn:s.en}</h3>
+      <p>${LANG==="bn"?s.db:s.de}</p>
+      <a class="svc-link" href="#book">${t("book")} →</a>
+    </article>`).join("");
+}
+
+/* ----- Pricing table (grouped by category) ----- */
+function renderPricing(){
+  const wrap = document.getElementById("pricingBody");
+  if(!wrap) return;
+  let html = "";
+  Object.keys(CATS).forEach(cat=>{
+    const items = PRICES.filter(p=>p.c===cat);
+    if(!items.length) return;
+    html += `<tr class="price-cat"><td colspan="2">${LANG==="bn"?CATS[cat].bn:CATS[cat].en}</td></tr>`;
+    items.forEach(p=>{
+      const price = p.min===p.max ? `৳ ${fmt(p.min)}` : `৳ ${fmt(p.min)} – ${fmt(p.max)}`;
+      const tags = [];
+      if(p.per) tags.push(`<span class="tag">${t("per_tooth")}</span>`);
+      if(p.note) tags.push(`<span class="tag tag-soft">${p.note}</span>`);
+      html += `<tr>
+        <td><span class="pname">${p.n}</span> ${tags.join(" ")}</td>
+        <td class="pprice">${price}</td></tr>`;
+    });
+  });
+  wrap.innerHTML = html;
+}
+
+/* ----- Cost calculator ----- */
+function renderCalcOptions(){
+  const sel = document.getElementById("calcService");
+  if(!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = PRICES.map((p,i)=>`<option value="${i}">${p.n}</option>`).join("");
+  if(cur) sel.value = cur;
+  updateCalc();
+}
+function updateCalc(){
+  const sel = document.getElementById("calcService");
+  const qtyWrap = document.getElementById("calcQtyWrap");
+  const qtyEl = document.getElementById("calcQty");
+  const out = document.getElementById("calcResult");
+  if(!sel||!out) return;
+  const p = PRICES[+sel.value] || PRICES[0];
+  const per = !!p.per;
+  qtyWrap.style.display = per ? "" : "none";
+  let qty = per ? Math.max(1, parseInt(qtyEl.value||"1",10)) : 1;
+  const min = p.min*qty, max = p.max*qty;
+  const range = min===max ? `৳ ${fmt(min)}` : `৳ ${fmt(min)} – ৳ ${fmt(max)}`;
+  out.innerHTML = `<span class="calc-amt">${range}</span>${p.note?`<span class="calc-sub">${p.note}</span>`:""}`;
+  // pass selection to booking
+  const bsel = document.getElementById("f_service");
+  const btn = document.getElementById("calcBook");
+  if(btn) btn.dataset.service = p.n;
+}
+
+/* ----- Testimonials ----- */
+function renderTestimonials(){
+  const wrap = document.getElementById("testGrid");
+  if(!wrap) return;
+  wrap.innerHTML = TESTIMONIALS.map(x=>`
+    <article class="test-card">
+      <div class="stars">★★★★★</div>
+      <p>“${LANG==="bn"?x.bn:x.en}”</p>
+      <div class="test-meta"><span class="avatar">${x.name.charAt(0)}</span>
+        <div><strong>${x.name}</strong><small>${x.role}</small></div></div>
+    </article>`).join("");
+}
+
+/* ----- Before/After ----- */
+function baSvg(color, label){
+  return `data:image/svg+xml;utf8,`+encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='600' height='420'>
+      <rect width='600' height='420' fill='${color}'/>
+      <rect x='150' y='120' width='300' height='150' rx='20' fill='#fff' opacity='0.85'/>
+      <g fill='${color}'>
+        ${[0,1,2,3,4,5].map(i=>`<rect x='${175+i*42}' y='150' width='34' height='90' rx='10'/>`).join("")}
+      </g>
+      <text x='300' y='370' font-family='sans-serif' font-size='26' fill='#fff' text-anchor='middle' opacity='0.9'>${label}</text>
+    </svg>`);
+}
+function renderBA(filter="all"){
+  const wrap = document.getElementById("baGrid");
+  if(!wrap) return;
+  const list = BA_CASES.filter(c=>filter==="all"||c.type===filter);
+  wrap.innerHTML = list.map((c,i)=>`
+    <div class="ba" data-i="${i}">
+      <img class="ba-after" src="${baSvg(c.after, t('ba_after'))}" alt="after">
+      <div class="ba-before-wrap"><img class="ba-before" src="${baSvg(c.before, t('ba_before'))}" alt="before"></div>
+      <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="before after slider">
+      <span class="ba-tag ba-tag-l">${t('ba_before')}</span>
+      <span class="ba-tag ba-tag-r">${t('ba_after')}</span>
+      <span class="ba-handle"></span>
+    </div>`).join("");
+  wrap.querySelectorAll(".ba").forEach(initBA);
+}
+function initBA(el){
+  const range = el.querySelector(".ba-range");
+  const clip = el.querySelector(".ba-before-wrap");
+  const handle = el.querySelector(".ba-handle");
+  const set = v=>{ clip.style.width = v+"%"; handle.style.left = v+"%"; };
+  range.addEventListener("input", e=>set(e.target.value));
+  set(50);
+}
+
+/* ----- Booking ----- */
+function renderBookOptions(){
+  const sel = document.getElementById("f_service");
+  if(!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = `<option value="">${t("f_select")}</option>` +
+    PRICES.map(p=>`<option value="${p.n}">${p.n}</option>`).join("");
+  if(cur) sel.value = cur;
+}
+function submitBooking(e){
+  e.preventDefault();
+  const f = e.target;
+  const data = {
+    name: f.f_name.value.trim(),
+    phone: f.f_phone.value.trim(),
+    service: f.f_service.value,
+    date: f.f_date.value,
+    time: f.f_time.value,
+    msg: f.f_msg.value.trim(),
+    emerg: f.f_emerg.checked,
+  };
+  let lines = [
+    "🦷 *Omega Dental — Appointment Request*",
+    `Name: ${data.name}`,
+    `Phone: ${data.phone}`,
+    data.service ? `Treatment: ${data.service}` : "",
+    data.date ? `Preferred date: ${data.date}` : "",
+    data.time ? `Preferred time: ${data.time}` : "",
+    data.emerg ? "⚠️ EMERGENCY / same-day requested" : "",
+    data.msg ? `Message: ${data.msg}` : "",
+  ].filter(Boolean);
+  const url = `https://wa.me/${OMEGA.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`;
+  const note = document.getElementById("bookSuccess");
+  if(note){ note.textContent = t("f_success"); note.style.display="block"; }
+  window.open(url, "_blank");
+}
+
+/* ----- Counters ----- */
+function animateCounters(){
+  document.querySelectorAll(".stat-num").forEach(el=>{
+    const target = +el.dataset.target; const suffix = el.dataset.suffix||"";
+    let n = 0; const step = Math.max(1, Math.ceil(target/60));
+    const tick = ()=>{ n=Math.min(target,n+step); el.textContent = fmt(n)+suffix;
+      if(n<target) requestAnimationFrame(tick); };
+    tick();
+  });
+}
+
+/* ----- Wire up ----- */
+document.addEventListener("DOMContentLoaded", ()=>{
+  applyI18n();
+  renderBA("all");
+
+  document.getElementById("langToggle")?.addEventListener("click", ()=> setLang(LANG==="en"?"bn":"en"));
+  document.getElementById("calcService")?.addEventListener("change", updateCalc);
+  document.getElementById("calcQty")?.addEventListener("input", updateCalc);
+  document.getElementById("calcBook")?.addEventListener("click", function(){
+    const sel = document.getElementById("f_service");
+    if(sel && this.dataset.service){ sel.value = this.dataset.service; }
+    document.getElementById("book")?.scrollIntoView({behavior:"smooth"});
+  });
+  document.getElementById("bookForm")?.addEventListener("submit", submitBooking);
+
+  document.querySelectorAll(".ba-filter").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      document.querySelectorAll(".ba-filter").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active"); renderBA(b.dataset.filter);
+    });
+  });
+
+  // mobile nav
+  const burger = document.getElementById("burger");
+  const navlist = document.getElementById("navlist");
+  burger?.addEventListener("click", ()=> navlist.classList.toggle("open"));
+  navlist?.querySelectorAll("a").forEach(a=>a.addEventListener("click", ()=>navlist.classList.remove("open")));
+
+  // counters when visible
+  const stats = document.getElementById("stats");
+  if(stats){
+    const ob = new IntersectionObserver((ent)=>{ if(ent[0].isIntersecting){ animateCounters(); ob.disconnect(); }},{threshold:.4});
+    ob.observe(stats);
+  }
+});
