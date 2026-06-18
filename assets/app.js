@@ -10,7 +10,7 @@ const OMEGA = {
   email: "omegadental@gmail.com",
   facebook: "https://www.facebook.com/profile.php?id=61586889212076",
   maps: "https://maps.app.goo.gl/3RLwiXGBDZXptKE79",
-  mapEmbed: "https://www.google.com/maps?q=West+Kazipara+Begum+Rokeya+Sarani+Dhaka&output=embed",
+  mapEmbed: "https://www.google.com/maps?q=1252/3+East+Monipur,+Metro+Pillar+267(W),+West+Kazipara,+Begum+Rokeya+Sarani,+Dhaka&output=embed",
 };
 
 /* ---------- Price list (single source of truth) ----------
