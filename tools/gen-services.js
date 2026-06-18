@@ -117,6 +117,79 @@ const SERVICES = [
       process:["ক্যাভিটি পরীক্ষা","কোমল পরিষ্কার","দাঁতের রঙের ফিলিং","আকৃতি ও পলিশ"] } },
 ];
 
+/* shared tab content */
+const DOC = {
+  en:["Dr. Afsana Haque","Chief Dental Surgeon, Omega Dental",
+    ["BDS (DU) · BMDC Reg. 11071","PGT in Oral & Maxillofacial Surgery — Dhaka Dental College","PGT in Paediatrics — Dhaka Dental College","Specially trained in Painless & Cosmetic Treatment"]],
+  bn:["ডা. আফসানা হক","চিফ ডেন্টাল সার্জন, ওমেগা ডেন্টাল",
+    ["বিডিএস (ঢাবি) · বিএমডিসি রেজি. ১১০৭১","পিজিটি ইন ওরাল ও ম্যাক্সিলোফেসিয়াল সার্জারি — ঢাকা ডেন্টাল কলেজ","পিজিটি ইন পেডিয়াট্রিক্স — ঢাকা ডেন্টাল কলেজ","ব্যথাহীন ও কসমেটিক চিকিৎসায় বিশেষ প্রশিক্ষিত"]],
+};
+const REVIEWS = [
+  ["Truly painless! I was terrified of dentists but Dr. Afsana made me completely comfortable.","সত্যিই ব্যথাহীন! ডেন্টিস্টকে ভয় পেতাম, কিন্তু ডা. আফসানা আমাকে পুরোপুরি স্বস্তি দিয়েছেন।","Nusrat J."],
+  ["Clean clinic, friendly staff and fair, honest pricing. Highly recommended.","পরিষ্কার ক্লিনিক, বন্ধুত্বপূর্ণ স্টাফ ও ন্যায্য, সৎ মূল্য। অত্যন্ত প্রস্তাবিত।","Tanvir A."],
+  ["The whole team is gentle and professional. Best dental experience in Dhaka.","পুরো টিম কোমল ও পেশাদার। ঢাকায় সেরা ডেন্টাল অভিজ্ঞতা।","Shirin S."],
+];
+const FAQG = [
+  ["Is the treatment painful?","No — Dr. Afsana is specially trained in painless dentistry, so most patients feel little to no discomfort.","চিকিৎসা কি ব্যথাদায়ক?","না — ডা. আফসানা ব্যথাহীন দন্তচিকিৎসায় বিশেষ প্রশিক্ষিত, তাই বেশিরভাগ রোগী প্রায় কোনো ব্যথা অনুভব করেন না।"],
+  ["How much does it cost?","See the price shown above; the exact cost is confirmed after a quick check-up. We keep the most competitive prices in Dhaka.","খরচ কত?","উপরে দেখানো মূল্য দেখুন; সঠিক খরচ একটি দ্রুত চেকআপের পর নিশ্চিত হয়। আমরা ঢাকায় সবচেয়ে প্রতিযোগিতামূলক মূল্য রাখি।"],
+  ["Do you offer same-day appointments?","Yes — call or WhatsApp us and we will see you as soon as possible, including urgent cases.","আপনারা কি একই দিনে অ্যাপয়েন্টমেন্ট দেন?","হ্যাঁ — কল বা হোয়াটসঅ্যাপ করুন, জরুরি ক্ষেত্রসহ যত দ্রুত সম্ভব আপনাকে দেখব।"],
+  ["Can I consult from abroad?","Yes — we offer online video consultations for non-resident Bangladeshis and overseas patients.","আমি কি বিদেশ থেকে পরামর্শ নিতে পারি?","হ্যাঁ — প্রবাসী বাংলাদেশি ও বিদেশি রোগীদের জন্য আমরা অনলাইন ভিডিও পরামর্শ দিই।"],
+];
+
+function buildTabs(s){
+  const steps = s.en.process.map((_,i)=>`<li ${bl(s.en.process[i],s.bn.process[i])}></li>`).join("");
+  const facts = s.en.facts.map((f,i)=>`<li><strong ${bl(f[0]+": ",s.bn.facts[i][0]+": ")}></strong><span ${bl(f[1],s.bn.facts[i][1])}></span></li>`).join("");
+  const creds = DOC.en[2].map((c,i)=>`<li><span class="ck">✓</span><span ${bl(c,DOC.bn[2][i])}></span></li>`).join("");
+  const reviews = REVIEWS.map(r=>`<article class="test-card"><div class="stars">★★★★★</div><p ${bl('“'+r[0]+'”','“'+r[1]+'”')}></p><div class="test-meta"><span class="avatar">${r[2].charAt(0)}</span><div><strong>${r[2]}</strong></div></div></article>`).join("");
+  const faqs = FAQG.map(f=>`<div class="faq-item"><button class="faq-q" aria-expanded="false" ${bl(f[0],f[2])}></button><div class="faq-a"><p ${bl(f[1],f[3])}></p></div></div>`).join("");
+  return `
+<section class="section"><div class="container" style="max-width:920px">
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="details" ${bl("Details","বিস্তারিত")}></button>
+    <button class="tab-btn" data-tab="doctors" ${bl("Doctors","ডাক্তার")}></button>
+    <button class="tab-btn" data-tab="branches" ${bl("Branch","শাখা")}></button>
+    <button class="tab-btn" data-tab="review" ${bl("Review","রিভিউ")}></button>
+    <button class="tab-btn" data-tab="faq" ${bl("FAQ","প্রশ্নোত্তর")}></button>
+  </div>
+
+  <div class="tab-panel active" data-tab="details">
+    <p ${bl(s.en.desc,s.bn.desc)}></p>
+    <h3 ${bl("What is "+s.en.name+"?","“"+s.bn.name+"” কী?")}></h3>
+    <p ${bl(s.en.overview,s.bn.overview)}></p>
+    <h3 ${bl("Why choose Omega Dental","কেন ওমেগা ডেন্টাল বেছে নেবেন")}></h3>
+    <ul class="tab-list">${facts}</ul>
+    <h3 ${bl("Your treatment steps","আপনার চিকিৎসার ধাপ")}></h3>
+    <ol class="tab-steps">${steps}</ol>
+  </div>
+
+  <div class="tab-panel" data-tab="doctors">
+    <div class="doc-grid">
+      <div class="doc-photo"><svg viewBox="0 0 180 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="180" height="200" rx="20" fill="#dff3ee"/><circle cx="90" cy="74" r="34" fill="#fff"/><circle cx="90" cy="70" r="20" fill="#57C3AD"/><path d="M40 180c0-30 22-50 50-50s50 20 50 50Z" fill="#fff"/><path d="M62 132c8 12 48 12 56 0l-6 30H68Z" fill="#2B6CB0"/></svg></div>
+      <div class="doc-card"><h3 ${bl(DOC.en[0],DOC.bn[0])}></h3>
+        <div class="doc-role" ${bl(DOC.en[1],DOC.bn[1])}></div>
+        <ul class="doc-creds">${creds}</ul>
+        <a class="btn btn-primary" href="../index.html#book" ${bl("Book with Dr. Afsana","ডা. আফসানার অ্যাপয়েন্টমেন্ট")}></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" data-tab="branches">
+    <div class="ci-row"><div class="ci-ic">📍</div><div><strong ${bl("Address","ঠিকানা")}></strong><span ${bl("1252/3, East Monipur, Metro Pillar-267(W), West Kazipara, Begum Rokeya Sarani, Dhaka","১২৫২/৩, পূর্ব মনিপুর, মেট্রো পিলার-২৬৭(ওয়াই), পশ্চিম কাজীপাড়া, বেগম রোকেয়া সরণি, ঢাকা")}></span></div></div>
+    <div class="ci-row"><div class="ci-ic">🕐</div><div><strong ${bl("Hours","সময়")}></strong><span ${bl("Saturday – Thursday: 10:00 AM – 8:00 PM · Friday: Closed","শনিবার – বৃহস্পতিবার: সকাল ১০টা – রাত ৮টা · শুক্রবার: বন্ধ")}></span></div></div>
+    <div class="ci-row"><div class="ci-ic">📞</div><div><strong ${bl("Phone","ফোন")}></strong><span>01706-516868 · WhatsApp 01713-241670</span></div></div>
+    <a class="btn btn-primary" style="margin-top:14px" href="https://maps.app.goo.gl/3RLwiXGBDZXptKE79" target="_blank" rel="noopener" ${bl("Get Directions","দিকনির্দেশ নিন")}></a>
+  </div>
+
+  <div class="tab-panel" data-tab="review">
+    <div class="test-grid">${reviews}</div>
+  </div>
+
+  <div class="tab-panel" data-tab="faq">
+    <div class="faq-list">${faqs}</div>
+  </div>
+</div></section>`;
+}
+
 function page(s){
   const url = `${SITE}/services/${s.slug}.html`;
   const thumbs = [s.img, ...THUMB_POOL.filter(x=>x!==s.img)].slice(0,4);
@@ -188,16 +261,7 @@ function page(s){
   </div>
 </div></section>
 
-<section class="section soft"><div class="container" style="max-width:840px">
-  <span class="eyebrow" ${bl("About this treatment","এই চিকিৎসা সম্পর্কে")}></span>
-  <p ${bl(s.en.overview,s.bn.overview)} style="font-size:1.08rem;color:var(--muted);margin-top:10px"></p>
-</div></section>
-
-<section class="section"><div class="container">
-  <div class="sec-head"><span class="eyebrow" ${bl("How It Works","যেভাবে কাজ করে")}></span>
-    <h2 ${bl("Your treatment in 4 steps","৪ ধাপে আপনার চিকিৎসা")}></h2></div>
-  <div class="steps-grid">${steps}</div>
-</div></section>
+${buildTabs(s)}
 
 <section class="emerg-band"><div class="container emerg-grid">
   <div><h2 ${bl("Ready to book your "+s.en.name+"?","আপনার "+s.bn.name+" বুক করতে প্রস্তুত?")}></h2>
@@ -226,6 +290,10 @@ document.getElementById('langToggle').onclick=function(){setLang(document.docume
 var b=document.getElementById('burger'),n=document.getElementById('navlist');if(b)b.onclick=function(){n.classList.toggle('open');};
 var sb=document.getElementById('scrollbar');addEventListener('scroll',function(){var h=document.documentElement,m=h.scrollHeight-h.clientHeight;sb.style.width=(m>0?h.scrollTop/m*100:0)+'%';},{passive:true});
 var main=document.getElementById('pmain');document.querySelectorAll('.pthumb').forEach(function(t){t.onclick=function(){main.src=t.getAttribute('data-src');document.querySelectorAll('.pthumb').forEach(function(x){x.classList.remove('active')});t.classList.add('active');};});
+document.querySelectorAll('.tab-btn').forEach(function(b){b.onclick=function(){var id=b.getAttribute('data-tab');
+  document.querySelectorAll('.tab-btn').forEach(function(x){x.classList.toggle('active',x===b);});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-tab')===id);});};});
+document.querySelectorAll('.faq-q').forEach(function(q){q.onclick=function(){var o=q.getAttribute('aria-expanded')==='true';q.setAttribute('aria-expanded',String(!o));q.parentElement.classList.toggle('open',!o);};});
 </script>
 </body>
 </html>`;
