@@ -136,11 +136,9 @@ a{color:inherit;text-decoration:none}
 .svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
 .svc-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s;overflow:hidden}
 .svc-card:hover{transform:translateY(-8px);box-shadow:var(--shadow)}
-.svc-img{display:block;height:150px;position:relative;overflow:hidden;background:
-  radial-gradient(120px 80px at 75% 25%,rgba(255,255,255,.6),transparent),
-  linear-gradient(135deg,var(--tone,#dff3ee),#ffffff)}
-.svc-img span{position:absolute;inset:0;display:grid;place-items:center;font-size:3.2rem;transition:transform .3s}
-.svc-card:hover .svc-img span{transform:scale(1.12) rotate(-4deg)}
+.svc-img{display:block;height:150px;position:relative;overflow:hidden;background:var(--bg-soft)}
+.svc-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+.svc-card:hover .svc-img img{transform:scale(1.07)}
 .svc-body{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1}
 .svc-card h3{font-size:1.08rem;margin-bottom:7px;line-height:1.25}
 .svc-card h3 a{color:var(--navy)}

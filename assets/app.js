@@ -381,10 +381,10 @@ function renderServices(){
     const slug = SVC_SLUG[s.en];
     const href = slug ? `services/${slug}.html` : "#book";
     const name = LANG==="bn"?s.bn:s.en;
-    const tone = SVC_TONE[i%SVC_TONE.length];
+    const img = s.en.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
     return `
     <article class="svc-card">
-      <a class="svc-img" href="${href}" style="--tone:${tone}" aria-label="${name}"><span>${s.icon}</span></a>
+      <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${img}.svg" alt="${name}" loading="lazy"></a>
       <div class="svc-body">
         <h3><a href="${href}">${name}</a></h3>
         <p>${LANG==="bn"?s.db:s.de}</p>

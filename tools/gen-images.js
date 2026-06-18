@@ -1,0 +1,62 @@
+/* Generates a branded SVG illustration per treatment into /assets/services.
+   Run: node tools/gen-images.js */
+const fs = require("fs");
+const path = require("path");
+
+const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+
+// [name, gradA, gradB, badge emoji, motif key]
+const ITEMS = [
+  ["Scaling & Polishing","#5bd0b8","#2b9e8a","🪥","sparkle"],
+  ["Tooth Fillings","#6fb1ee","#2b6cb0","🦷","fill"],
+  ["Root Canal (RCT)","#57c3ad","#2b8fb0","🌱","root"],
+  ["Crowns & Bridges","#f6b45a","#ef7b1e","👑","crown"],
+  ["Teeth Whitening","#7fd7c6","#3aa0d6","✨","sparkle"],
+  ["Veneers","#9aa7f5","#5566e0","💎","sparkle"],
+  ["Dentures","#67c1e8","#2b6cb0","🦷","arch"],
+  ["Braces & Aligners","#5bd0b8","#2b6cb0","📏","braces"],
+  ["Dental Implants","#7bb8f0","#3a5fb0","🔩","implant"],
+  ["Extractions & Surgery","#f59a8c","#e0594a","🩺","plus"],
+  ["Kids Dentistry","#ffd17a","#f6a93b","🧒","smile"],
+  ["Cosmetic Dentistry","#f59ec9","#d65a9c","💖","sparkle"],
+];
+
+const tooth = (cx,cy,sc,fill)=>`<path transform="translate(${cx-40*sc} ${cy-46*sc}) scale(${sc})" fill="${fill}" d="M40 2C22 2 9 16 9 35c0 14 5 38 13 49 4 5 9 4 10-3 1-9 1-19 8-19s7 10 8 19c1 7 6 8 10 3 8-11 13-35 13-49C71 16 58 2 40 2Z"/>`;
+
+function motif(key){
+  switch(key){
+    case "sparkle": return `<g fill="#fff" opacity=".95"><path d="M300 70l5 13 13 5-13 5-5 13-5-13-13-5 13-5z"/><path d="M330 120l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/></g>`;
+    case "crown": return `<path d="M278 86l10 16 14-20 14 20 10-16v34h-48z" fill="#fff" opacity=".95"/>`;
+    case "braces": return `<g stroke="#fff" stroke-width="5" opacity=".9"><line x1="270" y1="110" x2="330" y2="110"/><rect x="282" y="100" width="14" height="20" rx="3" fill="#fff"/><rect x="306" y="100" width="14" height="20" rx="3" fill="#fff"/></g>`;
+    case "implant": return `<g fill="#fff" opacity=".95"><rect x="296" y="74" width="12" height="40" rx="3"/><path d="M290 116h24l-6 26h-12z"/></g>`;
+    case "plus": return `<g fill="#fff" opacity=".95"><rect x="296" y="80" width="12" height="44" rx="6"/><rect x="280" y="96" width="44" height="12" rx="6"/></g>`;
+    case "root": return `<g fill="#fff" opacity=".9"><circle cx="302" cy="92" r="18"/><path d="M302 108c-4 10-10 14-10 22m20-22c4 10 10 14 10 22" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/></g>`;
+    case "smile": return `<g opacity=".95"><circle cx="302" cy="96" r="22" fill="#fff"/><circle cx="295" cy="92" r="3" fill="#2b6cb0"/><circle cx="309" cy="92" r="3" fill="#2b6cb0"/><path d="M292 100c5 7 15 7 20 0" stroke="#2b6cb0" stroke-width="3" fill="none" stroke-linecap="round"/></g>`;
+    case "arch": return `<path d="M276 86c8 26 44 26 52 0" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity=".9"/>`;
+    case "fill": default: return `<circle cx="302" cy="96" r="14" fill="#fff" opacity=".95"/>`;
+  }
+}
+
+function svg([name,a,b,badge,key]){
+  const nm = name.replace(/&/g,"&amp;");
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" role="img" aria-label="${nm}">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>
+    <filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0a2540" flood-opacity="0.18"/></filter>
+  </defs>
+  <rect width="400" height="260" fill="url(#g)"/>
+  <circle cx="60" cy="40" r="70" fill="#fff" opacity=".10"/>
+  <circle cx="350" cy="220" r="90" fill="#fff" opacity=".08"/>
+  <circle cx="150" cy="135" r="78" fill="#fff" opacity=".22"/>
+  <g filter="url(#s)">${tooth(150,135,1.15,"#ffffff")}</g>
+  ${tooth(150,135,1.0,"url(#g)")}
+  ${motif(key)}
+  <circle cx="332" cy="60" r="26" fill="#fff" opacity=".95"/>
+  <text x="332" y="69" font-size="24" text-anchor="middle">${badge}</text>
+</svg>`;
+}
+
+const dir = path.join(__dirname,"..","assets","services");
+fs.mkdirSync(dir,{recursive:true});
+ITEMS.forEach(it=>fs.writeFileSync(path.join(dir, slug(it[0])+".svg"), svg(it)));
+console.log("Generated",ITEMS.length,"treatment illustrations into assets/services/");
