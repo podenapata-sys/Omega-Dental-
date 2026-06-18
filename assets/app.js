@@ -157,6 +157,7 @@ const I18N = {
     nav_tech:"Technology", nav_faq:"FAQ",
     nav_about_us:"About Us", nav_ourservices:"Our Services", nav_branch:"Branch",
     nav_doctors:"Doctors", nav_pricelist:"Price List", nav_blog:"Blog",
+    svc_learn:"Learn more",
     steps_eyebrow:"How It Works", steps_title:"Your visit in 4 easy steps",
     steps_text:"From your first message to aftercare, we keep everything simple and stress-free.",
     step1_t:"Book", step1_d:"Request an appointment online, by phone or WhatsApp — same-day slots available.",
@@ -241,6 +242,7 @@ const I18N = {
     nav_tech:"প্রযুক্তি", nav_faq:"প্রশ্নোত্তর",
     nav_about_us:"আমাদের সম্পর্কে", nav_ourservices:"আমাদের সেবা", nav_branch:"শাখা",
     nav_doctors:"ডাক্তার", nav_pricelist:"মূল্য তালিকা", nav_blog:"ব্লগ",
+    svc_learn:"বিস্তারিত",
     steps_eyebrow:"যেভাবে কাজ করে", steps_title:"৪টি সহজ ধাপে আপনার ভিজিট",
     steps_text:"প্রথম বার্তা থেকে আফটারকেয়ার পর্যন্ত, আমরা সবকিছু সহজ ও চাপমুক্ত রাখি।",
     step1_t:"বুক করুন", step1_d:"অনলাইন, ফোন বা হোয়াটসঅ্যাপে অ্যাপয়েন্টমেন্ট নিন — একই দিনের স্লট আছে।",
@@ -351,16 +353,30 @@ function applyI18n(){
 function setLang(l){ LANG = l; localStorage.setItem("omega_lang", l); applyI18n(); }
 
 /* ----- Services grid ----- */
+const SVC_SLUG = {
+  "Scaling & Polishing":"scaling-polishing",
+  "Tooth Fillings":"tooth-fillings",
+  "Root Canal (RCT)":"root-canal",
+  "Crowns & Bridges":"crowns-bridges",
+  "Teeth Whitening":"teeth-whitening",
+  "Dentures":"dentures",
+  "Braces & Aligners":"braces-aligners",
+  "Dental Implants":"dental-implants",
+};
 function renderServices(){
   const wrap = document.getElementById("servicesGrid");
   if(!wrap) return;
-  wrap.innerHTML = SERVICES.map(s=>`
+  wrap.innerHTML = SERVICES.map(s=>{
+    const slug = SVC_SLUG[s.en];
+    const href = slug ? `services/${slug}.html` : "#book";
+    const label = slug ? t("svc_learn") : t("book");
+    return `
     <article class="svc-card">
       <div class="svc-icon">${s.icon}</div>
       <h3>${LANG==="bn"?s.bn:s.en}</h3>
       <p>${LANG==="bn"?s.db:s.de}</p>
-      <a class="svc-link" href="#book">${t("book")} →</a>
-    </article>`).join("");
+      <a class="svc-link" href="${href}">${label} →</a>
+    </article>`;}).join("");
 }
 
 /* ----- Pricing table (grouped by category) ----- */

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://podenapata-sys.github.io/Omega-Dental-/sitemap.xml
