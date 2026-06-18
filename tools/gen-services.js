@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260618m";
+const VER = "20260618n";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const FACT_IC = ["💎","🕐","🛡️","🎖️"]; // procedure, visits, success, hygiene
@@ -169,6 +169,58 @@ const SERVICES = [
       process:["স্মাইল পরামর্শ","কাস্টম মেকওভার পরিকল্পনা","ধাপে ধাপে চিকিৎসা","চূড়ান্ত ফল ও যত্ন"] } },
 ];
 
+/* per-service cost comparison rows: [desc_en, desc_bn, avgInDhaka, omegaPrice] */
+const COSTS = {
+  "root-canal":[
+    ["Front Tooth RCT (Single Canal)","সামনের দাঁত RCT (সিঙ্গেল ক্যানেল)","৳7,000–8,000","৳5,000"],
+    ["Back Tooth RCT (Multi-Canal)","পেছনের দাঁত RCT (মাল্টি-ক্যানেল)","৳8,000–9,000","৳5,000"],
+    ["Single Visit RCT with Filling","সিঙ্গেল ভিজিট RCT + ফিলিং","৳14,000–16,000","৳12,000"],
+    ["Re-RCT (Failed Case)","রি-RCT (ব্যর্থ কেস)","৳8,000–10,000","৳6,500"],
+    ["Wisdom Tooth RCT","আক্কেল দাঁত RCT","৳10,000–11,000","৳8,000"]],
+  "scaling-polishing":[
+    ["Teeth Scaling","দাঁত স্কেলিং","৳2,000–2,500","৳1,500"],
+    ["Teeth Polishing","দাঁত পলিশিং","৳1,500–2,000","৳1,000"],
+    ["Gum Treatment","মাড়ির চিকিৎসা","৳10,000–12,000","৳8,500"]],
+  "tooth-fillings":[
+    ["Composite Filling (General)","কম্পোজিট ফিলিং (জেনারেল)","৳1,500–2,000","৳1,000"],
+    ["Composite Filling (Advance)","কম্পোজিট ফিলিং (অ্যাডভান্স)","৳3,500–4,500","৳2,500–3,000"],
+    ["GI Filling","জিআই ফিলিং","৳2,000–2,500","৳1,500–2,000"],
+    ["Temporary Filling","অস্থায়ী ফিলিং","৳800–1,000","৳500"]],
+  "crowns-bridges":[
+    ["Zirconia Crown","জিরকোনিয়া ক্রাউন","৳16,000–20,000","৳12,000–15,000"],
+    ["PFM Crown (Advance)","পিএফএম ক্রাউন (অ্যাডভান্স)","৳10,000–12,000","৳8,000"],
+    ["PFM Crown (General)","পিএফএম ক্রাউন (জেনারেল)","৳6,500–8,000","৳5,000"],
+    ["Composite Crown","কম্পোজিট ক্রাউন","৳8,000–9,000","৳6,500"],
+    ["Fiber Bridge (Premium)","ফাইবার ব্রিজ (প্রিমিয়াম)","৳26,000–30,000","৳22,000–24,000"]],
+  "teeth-whitening":[
+    ["Professional Teeth Whitening","পেশাদার দাঁত সাদা করা","৳15,000–18,000","৳12,000"]],
+  "veneers":[
+    ["Composite Veneer (General)","কম্পোজিট ভিনিয়ার (জেনারেল)","৳4,500–5,500","৳3,500–4,000"],
+    ["Composite Veneer (Advance)","কম্পোজিট ভিনিয়ার (অ্যাডভান্স)","৳8,000–10,000","৳5,500–7,500"]],
+  "dentures":[
+    ["Partial Denture (per tooth)","পার্শিয়াল ডেনচার (প্রতি দাঁত)","৳5,000–6,500","৳4,000–5,000"],
+    ["Flexible Denture","ফ্লেক্সিবল ডেনচার","৳10,000–12,000","৳8,000"],
+    ["Complete Denture","কমপ্লিট ডেনচার","৳25,000–30,000","৳22,000"]],
+  "braces-aligners":[
+    ["Orthodontic Braces","অর্থোডন্টিক ব্রেসেস","৳30,000–40,000","৳25,000 + ৳6,000/mo"],
+    ["Clear Aligners","ক্লিয়ার অ্যালাইনার","৳2,00,000–3,00,000","৳1,50,000–2,50,000"]],
+  "dental-implants":[
+    ["Dental Implant (per tooth)","ডেন্টাল ইমপ্লান্ট (প্রতি দাঁত)","৳1,50,000–2,00,000","৳1,20,000–1,50,000"]],
+  "extractions":[
+    ["Permanent Tooth Extraction","স্থায়ী দাঁত তোলা","৳3,000–6,000","৳2,000–5,000"],
+    ["Surgical Extraction (Wisdom)","সার্জিক্যাল এক্সট্রাকশন (আক্কেল)","৳12,000–15,000","৳8,000–12,000"],
+    ["Milk Tooth Extraction","দুধ দাঁত তোলা","৳1,200–1,500","৳1,000"],
+    ["Frenectomy","ফ্রেনেক্টমি","৳4,000–5,000","৳3,000"]],
+  "kids-dentistry":[
+    ["Kids Check-up & Cleaning","শিশুর চেকআপ ও পরিষ্কার","৳1,500–2,000","৳1,000"],
+    ["Milk Tooth Filling","দুধ দাঁতের ফিলিং","৳1,200–1,500","৳1,000"],
+    ["Milk Tooth Extraction","দুধ দাঁত তোলা","৳1,200–1,500","৳1,000"]],
+  "cosmetic-dentistry":[
+    ["Teeth Whitening","দাঁত সাদা করা","৳15,000–18,000","৳12,000"],
+    ["Composite Veneer","কম্পোজিট ভিনিয়ার","৳4,500–10,000","৳3,500–7,500"],
+    ["Tooth Shaping","টুথ শেপিং","৳800–1,000","৳500"]],
+};
+
 /* shared tab content */
 const DOC = {
   en:["Dr. Afsana Haque","Chief Dental Surgeon, Omega Dental",
@@ -194,6 +246,16 @@ function buildTabs(s){
   const creds = DOC.en[2].map((c,i)=>`<li><span class="ck">✓</span><span ${bl(c,DOC.bn[2][i])}></span></li>`).join("");
   const reviews = REVIEWS.map(r=>`<article class="test-card"><div class="stars">★★★★★</div><p ${bl('“'+r[0]+'”','“'+r[1]+'”')}></p><div class="test-meta"><span class="avatar">${r[2].charAt(0)}</span><div><strong>${r[2]}</strong></div></div></article>`).join("");
   const faqs = FAQG.map(f=>`<div class="faq-item"><button class="faq-q" aria-expanded="false" ${bl(f[0],f[2])}></button><div class="faq-a"><p ${bl(f[1],f[3])}></p></div></div>`).join("");
+  const cost = COSTS[s.slug]||[];
+  const costRows = cost.map(c=>`<tr><td ${bl(c[0],c[1])}></td><td>${c[2]}</td><td class="cmp-omega">${c[3]}</td></tr>`).join("");
+  const costTable = cost.length ? `
+    <h3 ${bl(s.en.name+" Cost in Bangladesh","বাংলাদেশে "+s.bn.name+" খরচ")}></h3>
+    <p ${bl("The cost depends on the tooth's condition, location and the technology used. At Omega Dental we ensure premium quality while keeping the most competitive prices.","খরচ নির্ভর করে দাঁতের অবস্থা, অবস্থান ও ব্যবহৃত প্রযুক্তির উপর। ওমেগা ডেন্টালে আমরা প্রিমিয়াম মান নিশ্চিত করে সবচেয়ে প্রতিযোগিতামূলক মূল্য রাখি।")}></p>
+    <div class="cmp-wrap"><table class="cmp-table">
+      <thead><tr><th ${bl("Service Description","সেবার বিবরণ")}></th><th ${bl("Average Cost in BD","বিডিতে গড় খরচ")}></th><th ${bl("Omega Dental Price","ওমেগা ডেন্টাল মূল্য")}></th></tr></thead>
+      <tbody>${costRows}</tbody>
+    </table></div>
+    <p class="cmp-note" ${bl("* Final price is confirmed after a quick check-up.","* সঠিক মূল্য একটি দ্রুত চেকআপের পর নিশ্চিত হয়।")}></p>` : "";
   return `
 <section class="section"><div class="container" style="max-width:920px">
   <div class="tabs" id="tabs">
@@ -208,6 +270,7 @@ function buildTabs(s){
     <p ${bl(s.en.desc,s.bn.desc)}></p>
     <h3 ${bl("What is "+s.en.name+"?","“"+s.bn.name+"” কী?")}></h3>
     <p ${bl(s.en.overview,s.bn.overview)}></p>
+    ${costTable}
     <h3 ${bl("Why choose Omega Dental","কেন ওমেগা ডেন্টাল বেছে নেবেন")}></h3>
     <ul class="tab-list">${facts}</ul>
     <h3 ${bl("Your treatment steps","আপনার চিকিৎসার ধাপ")}></h3>
