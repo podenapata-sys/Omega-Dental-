@@ -229,7 +229,7 @@ fs.writeFileSync(path.join(blogDir,"index.html"),indexPage());
 // rebuild sitemap: home + service pages + blog
 const svcDir=path.join(__dirname,"..","services");
 const svc=fs.existsSync(svcDir)?fs.readdirSync(svcDir).filter(f=>f.endsWith(".html")):[];
-const urls=[`${SITE}/`, `${SITE}/blog/index.html`,
+const urls=[`${SITE}/`, `${SITE}/treatments.html`, `${SITE}/blog/index.html`,
   ...svc.map(f=>`${SITE}/services/${f}`),
   ...ARTICLES.map(a=>`${SITE}/blog/${a.slug}.html`)];
 fs.writeFileSync(path.join(__dirname,"..","sitemap.xml"),
