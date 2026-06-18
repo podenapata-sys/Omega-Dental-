@@ -307,11 +307,11 @@ const FAQS = [
 
 /* ---------- Dental tips / blog ---------- */
 const POSTS = [
-  { ic:"🪥", te:"5 daily habits for healthier teeth", ee:"Simple brushing, flossing and diet habits that protect your smile for life.",
+  { ic:"🪥", slug:"five-habits-healthier-teeth", te:"5 daily habits for healthier teeth", ee:"Simple brushing, flossing and diet habits that protect your smile for life.",
     tb:"সুস্থ দাঁতের জন্য ৫টি দৈনিক অভ্যাস", eb:"সহজ ব্রাশ, ফ্লস ও খাদ্যাভ্যাস যা সারাজীবন আপনার হাসি রক্ষা করে।" },
-  { ic:"🌱", te:"When do you really need a root canal?", ee:"The warning signs of an infected tooth and how a root canal saves it painlessly.",
+  { ic:"🌱", slug:"when-you-need-root-canal", te:"When do you really need a root canal?", ee:"The warning signs of an infected tooth and how a root canal saves it painlessly.",
     tb:"কখন সত্যিই রুট ক্যানেল দরকার?", eb:"সংক্রমিত দাঁতের সতর্ক সংকেত এবং কীভাবে রুট ক্যানেল ব্যথাহীনভাবে তা বাঁচায়।" },
-  { ic:"✨", te:"Teeth whitening: what to expect", ee:"How professional whitening works, how long it lasts and how to keep results bright.",
+  { ic:"✨", slug:"teeth-whitening-what-to-expect", te:"Teeth whitening: what to expect", ee:"How professional whitening works, how long it lasts and how to keep results bright.",
     tb:"দাঁত সাদা করা: কী আশা করবেন", eb:"পেশাদার হোয়াইটেনিং কীভাবে কাজ করে, কতদিন থাকে এবং ফল উজ্জ্বল রাখার উপায়।" },
 ];
 
@@ -490,11 +490,11 @@ function renderTips(){
   if(!wrap) return;
   wrap.innerHTML = POSTS.map(p=>`
     <article class="tip-card">
-      <div class="tip-img">${p.ic}</div>
+      <a class="tip-img" href="blog/${p.slug}.html">${p.ic}</a>
       <div class="tip-body">
         <h3>${LANG==="bn"?p.tb:p.te}</h3>
         <p>${LANG==="bn"?p.eb:p.ee}</p>
-        <a class="svc-link" href="#book">${t("tips_read")} →</a>
+        <a class="svc-link" href="blog/${p.slug}.html">${t("tips_read")} →</a>
       </div>
     </article>`).join("");
 }
