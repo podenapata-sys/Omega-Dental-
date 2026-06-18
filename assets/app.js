@@ -76,18 +76,18 @@ const PRICES = [
 
 /* ---------- Services (homepage grid) ---------- */
 const SERVICES = [
-  { icon:"🦷", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"সুস্থ মাড়ির জন্য প্লাক, টার্টার ও দাগ দূর করতে পেশাদার পরিষ্কার।" },
-  { icon:"🪥", en:"Tooth Fillings", bn:"দাঁতের ফিলিং", de:"Tooth-coloured composite & GI fillings that restore decayed teeth painlessly.", db:"ব্যথাহীনভাবে ক্ষয়প্রাপ্ত দাঁত ঠিক করতে দাঁতের রঙের কম্পোজিট ও জিআই ফিলিং।" },
-  { icon:"🌱", en:"Root Canal (RCT)", bn:"রুট ক্যানেল", de:"Save infected teeth with gentle single & multi-visit root canal therapy.", db:"সংক্রমিত দাঁত বাঁচাতে কোমল সিঙ্গেল ও মাল্টি-ভিজিট রুট ক্যানেল চিকিৎসা।" },
-  { icon:"👑", en:"Crowns & Bridges", bn:"ক্রাউন ও ব্রিজ", de:"Zirconia, PFM and composite crowns to rebuild strength and beauty.", db:"শক্তি ও সৌন্দর্য ফেরাতে জিরকোনিয়া, পিএফএম ও কম্পোজিট ক্রাউন।" },
-  { icon:"✨", en:"Teeth Whitening", bn:"দাঁত সাদা করা", de:"Brighten your smile several shades with safe professional whitening.", db:"নিরাপদ পেশাদার হোয়াইটেনিং-এ আপনার হাসি কয়েক শেড উজ্জ্বল করুন।" },
-  { icon:"💎", en:"Veneers", bn:"ভিনিয়ার", de:"Composite veneers to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে কম্পোজিট ভিনিয়ার।" },
-  { icon:"🦿", en:"Dentures", bn:"ডেনচার", de:"Partial, flexible and complete dentures for comfortable chewing.", db:"আরামে চিবানোর জন্য পার্শিয়াল, ফ্লেক্সিবল ও কমপ্লিট ডেনচার।" },
-  { icon:"📏", en:"Braces & Aligners", bn:"ব্রেসেস ও অ্যালাইনার", de:"Orthodontic braces and clear aligners to straighten misaligned teeth.", db:"আঁকাবাঁকা দাঁত সোজা করতে অর্থোডন্টিক ব্রেসেস ও ক্লিয়ার অ্যালাইনার।" },
-  { icon:"🔩", en:"Dental Implants", bn:"ডেন্টাল ইমপ্লান্ট", de:"Permanent, natural-looking replacement for missing teeth.", db:"হারানো দাঁতের স্থায়ী, প্রাকৃতিক দেখতে প্রতিস্থাপন।" },
-  { icon:"🩺", en:"Extractions & Surgery", bn:"দাঁত তোলা ও সার্জারি", de:"Painless simple and surgical extractions including wisdom teeth.", db:"আক্কেল দাঁতসহ ব্যথাহীন সাধারণ ও সার্জিক্যাল দাঁত তোলা।" },
-  { icon:"🧒", en:"Kids Dentistry", bn:"শিশু দন্তচিকিৎসা", de:"Gentle paediatric care, milk-tooth treatment and check-ups for children.", db:"শিশুদের জন্য কোমল যত্ন, দুধ দাঁতের চিকিৎসা ও চেকআপ।" },
-  { icon:"💖", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", de:"Smile makeovers combining whitening, veneers and reshaping.", db:"হোয়াইটেনিং, ভিনিয়ার ও রিশেপিং মিলিয়ে স্মাইল মেকওভার।" },
+  { icon:"🦷", pr:"৳1,000–1,500", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"সুস্থ মাড়ির জন্য প্লাক, টার্টার ও দাগ দূর করতে পেশাদার পরিষ্কার।" },
+  { icon:"🪥", pr:"৳1,000–3,000", en:"Tooth Fillings", bn:"দাঁতের ফিলিং", de:"Tooth-coloured composite & GI fillings that restore decayed teeth painlessly.", db:"ব্যথাহীনভাবে ক্ষয়প্রাপ্ত দাঁত ঠিক করতে দাঁতের রঙের কম্পোজিট ও জিআই ফিলিং।" },
+  { icon:"🌱", pr:"From ৳5,000", en:"Root Canal (RCT)", bn:"রুট ক্যানেল", de:"Save infected teeth with gentle single & multi-visit root canal therapy.", db:"সংক্রমিত দাঁত বাঁচাতে কোমল সিঙ্গেল ও মাল্টি-ভিজিট রুট ক্যানেল চিকিৎসা।" },
+  { icon:"👑", pr:"From ৳5,000", en:"Crowns & Bridges", bn:"ক্রাউন ও ব্রিজ", de:"Zirconia, PFM and composite crowns to rebuild strength and beauty.", db:"শক্তি ও সৌন্দর্য ফেরাতে জিরকোনিয়া, পিএফএম ও কম্পোজিট ক্রাউন।" },
+  { icon:"✨", pr:"৳12,000", en:"Teeth Whitening", bn:"দাঁত সাদা করা", de:"Brighten your smile several shades with safe professional whitening.", db:"নিরাপদ পেশাদার হোয়াইটেনিং-এ আপনার হাসি কয়েক শেড উজ্জ্বল করুন।" },
+  { icon:"💎", pr:"৳3,500–7,500", en:"Veneers", bn:"ভিনিয়ার", de:"Composite veneers to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে কম্পোজিট ভিনিয়ার।" },
+  { icon:"🦿", pr:"৳4,000–22,000", en:"Dentures", bn:"ডেনচার", de:"Partial, flexible and complete dentures for comfortable chewing.", db:"আরামে চিবানোর জন্য পার্শিয়াল, ফ্লেক্সিবল ও কমপ্লিট ডেনচার।" },
+  { icon:"📏", pr:"From ৳25,000", en:"Braces & Aligners", bn:"ব্রেসেস ও অ্যালাইনার", de:"Orthodontic braces and clear aligners to straighten misaligned teeth.", db:"আঁকাবাঁকা দাঁত সোজা করতে অর্থোডন্টিক ব্রেসেস ও ক্লিয়ার অ্যালাইনার।" },
+  { icon:"🔩", pr:"৳1,20,000+", en:"Dental Implants", bn:"ডেন্টাল ইমপ্লান্ট", de:"Permanent, natural-looking replacement for missing teeth.", db:"হারানো দাঁতের স্থায়ী, প্রাকৃতিক দেখতে প্রতিস্থাপন।" },
+  { icon:"🩺", pr:"৳1,000–12,000", en:"Extractions & Surgery", bn:"দাঁত তোলা ও সার্জারি", de:"Painless simple and surgical extractions including wisdom teeth.", db:"আক্কেল দাঁতসহ ব্যথাহীন সাধারণ ও সার্জিক্যাল দাঁত তোলা।" },
+  { icon:"🧒", pr:"From ৳1,000", en:"Kids Dentistry", bn:"শিশু দন্তচিকিৎসা", de:"Gentle paediatric care, milk-tooth treatment and check-ups for children.", db:"শিশুদের জন্য কোমল যত্ন, দুধ দাঁতের চিকিৎসা ও চেকআপ।" },
+  { icon:"💖", pr:"From ৳3,500", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", de:"Smile makeovers combining whitening, veneers and reshaping.", db:"হোয়াইটেনিং, ভিনিয়ার ও রিশেপিং মিলিয়ে স্মাইল মেকওভার।" },
 ];
 
 /* ---------- i18n strings ---------- */
@@ -159,7 +159,7 @@ const I18N = {
     nav_tech:"Technology", nav_faq:"FAQ",
     nav_about_us:"About Us", nav_ourservices:"Our Services", nav_branch:"Branch",
     nav_doctors:"Doctors", nav_pricelist:"Price List", nav_blog:"Blog",
-    svc_learn:"Learn more",
+    svc_learn:"Learn more", book_now:"Book Now",
     dd_gapfill:"Teeth Gap Filling", dd_toothfill:"Tooth Filling", dd_implant:"Dental Implant",
     dd_ortho:"Orthodontic Treatment", dd_scaling:"Teeth Scaling & Polishing",
     dd_wisdom:"Wisdom Teeth Removal", dd_rct:"Root Canal Treatment (RCT)", dd_more:"More Services",
@@ -249,7 +249,7 @@ const I18N = {
     nav_tech:"প্রযুক্তি", nav_faq:"প্রশ্নোত্তর",
     nav_about_us:"আমাদের সম্পর্কে", nav_ourservices:"আমাদের সেবা", nav_branch:"শাখা",
     nav_doctors:"ডাক্তার", nav_pricelist:"মূল্য তালিকা", nav_blog:"ব্লগ",
-    svc_learn:"বিস্তারিত",
+    svc_learn:"বিস্তারিত", book_now:"বুক করুন",
     dd_gapfill:"দাঁতের ফাঁক ফিলিং", dd_toothfill:"দাঁতের ফিলিং", dd_implant:"ডেন্টাল ইমপ্লান্ট",
     dd_ortho:"অর্থোডন্টিক চিকিৎসা", dd_scaling:"স্কেলিং ও পলিশিং",
     dd_wisdom:"আক্কেল দাঁত তোলা", dd_rct:"রুট ক্যানেল চিকিৎসা (RCT)", dd_more:"আরও সেবা",
@@ -373,19 +373,26 @@ const SVC_SLUG = {
   "Braces & Aligners":"braces-aligners",
   "Dental Implants":"dental-implants",
 };
+const SVC_TONE = ["#dff3ee","#cfe0f7","#ffe7cf","#e3f7f1","#e7ecfb","#fde7d6"];
 function renderServices(){
   const wrap = document.getElementById("servicesGrid");
   if(!wrap) return;
-  wrap.innerHTML = SERVICES.map(s=>{
+  wrap.innerHTML = SERVICES.map((s,i)=>{
     const slug = SVC_SLUG[s.en];
     const href = slug ? `services/${slug}.html` : "#book";
-    const label = slug ? t("svc_learn") : t("book");
+    const name = LANG==="bn"?s.bn:s.en;
+    const tone = SVC_TONE[i%SVC_TONE.length];
     return `
     <article class="svc-card">
-      <div class="svc-icon">${s.icon}</div>
-      <h3>${LANG==="bn"?s.bn:s.en}</h3>
-      <p>${LANG==="bn"?s.db:s.de}</p>
-      <a class="svc-link" href="${href}">${label} →</a>
+      <a class="svc-img" href="${href}" style="--tone:${tone}" aria-label="${name}"><span>${s.icon}</span></a>
+      <div class="svc-body">
+        <h3><a href="${href}">${name}</a></h3>
+        <p>${LANG==="bn"?s.db:s.de}</p>
+        <div class="svc-foot">
+          <span class="svc-price">${s.pr}</span>
+          <a class="btn btn-primary svc-book" href="#book" data-service="${s.en}">${t("book_now")}</a>
+        </div>
+      </div>
     </article>`;}).join("");
 }
 
@@ -645,6 +652,14 @@ document.addEventListener("DOMContentLoaded", ()=>{
   renderBA("all");
 
   document.getElementById("langToggle")?.addEventListener("click", ()=> setLang(LANG==="en"?"bn":"en"));
+  // service catalog "Book Now" → prefill booking
+  document.getElementById("servicesGrid")?.addEventListener("click", (e)=>{
+    const a = e.target.closest(".svc-book");
+    if(!a) return;
+    const sel = document.getElementById("f_service");
+    if(sel && a.dataset.service) sel.value = a.dataset.service;
+  });
+
   document.getElementById("calcCategory")?.addEventListener("change", renderCalcServices);
   document.getElementById("calcService")?.addEventListener("change", updateCalc);
   document.getElementById("calcQty")?.addEventListener("change", updateCalc);

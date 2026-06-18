@@ -132,16 +132,23 @@ a{color:inherit;text-decoration:none}
 .stat-num{font-family:var(--f-head);font-weight:800;font-size:clamp(1.9rem,4vw,2.7rem)}
 .stat-lbl{opacity:.94;font-size:.92rem;margin-top:4px}
 
-/* services */
+/* services — treatment catalog */
 .svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
-.svc-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:30px 24px;box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s,border-color .25s;overflow:hidden}
-.svc-card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--grad-brand);opacity:0;transition:.25s}
-.svc-card:hover{transform:translateY(-8px);box-shadow:var(--shadow);border-color:transparent}
-.svc-card:hover::before{opacity:1}
-.svc-icon{width:62px;height:62px;border-radius:18px;background:linear-gradient(135deg,rgba(87,195,173,.16),rgba(43,108,176,.14));display:grid;place-items:center;font-size:1.8rem;margin-bottom:18px}
-.svc-card h3{font-size:1.13rem;margin-bottom:8px}
-.svc-card p{color:var(--muted);font-size:.92rem;min-height:66px}
-.svc-link{display:inline-block;margin-top:12px;color:var(--teal-dd);font-weight:700;font-size:.9rem}
+.svc-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s;overflow:hidden}
+.svc-card:hover{transform:translateY(-8px);box-shadow:var(--shadow)}
+.svc-img{display:block;height:150px;position:relative;overflow:hidden;background:
+  radial-gradient(120px 80px at 75% 25%,rgba(255,255,255,.6),transparent),
+  linear-gradient(135deg,var(--tone,#dff3ee),#ffffff)}
+.svc-img span{position:absolute;inset:0;display:grid;place-items:center;font-size:3.2rem;transition:transform .3s}
+.svc-card:hover .svc-img span{transform:scale(1.12) rotate(-4deg)}
+.svc-body{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1}
+.svc-card h3{font-size:1.08rem;margin-bottom:7px;line-height:1.25}
+.svc-card h3 a{color:var(--navy)}
+.svc-card h3 a:hover{color:var(--teal-dd)}
+.svc-card p{color:var(--muted);font-size:.88rem;flex:1}
+.svc-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px}
+.svc-price{font-family:var(--f-head);font-weight:800;color:var(--teal-dd);font-size:1rem;white-space:nowrap}
+.svc-book{padding:9px 16px;font-size:.82rem;border-radius:10px}
 
 /* how it works */
 .steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
