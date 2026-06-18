@@ -383,6 +383,23 @@ a{color:inherit;text-decoration:none}
 .foot-soc a:hover{background:var(--grad-brand)}
 .foot-bottom{border-top:1px solid rgba(255,255,255,.13);margin-top:44px;padding-top:22px;text-align:center;font-size:.85rem;color:#a9c2cd}
 
+/* inline svg icons */
+.ic-svg{width:1.5em;height:1.5em;display:block}
+.step-ic{color:var(--teal-dd)}
+.step-ic .ic-svg{width:34px;height:34px}
+.tech-ic{color:var(--teal-dd)}
+.tech-ic .ic-svg{width:26px;height:26px}
+.ci-ic{color:var(--teal-dd)}
+.ci-ic .ic-svg{width:22px;height:22px}
+.fc-ic{color:#fff}
+.fc-ic .ic-svg{width:22px;height:22px}
+.fact-ic{color:var(--teal-dd)}
+.fact-ic .ic-svg{width:20px;height:20px}
+
+/* accessibility: visible keyboard focus + pointer affordance (UI UX Pro Max checklist) */
+a,button,select,.tab-btn,.pthumb,.faq-q,.lang-toggle,.svc-img,[role="button"]{cursor:pointer}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,.tab-btn:focus-visible,.faq-q:focus-visible,.pthumb:focus-visible,.svc-img:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:8px}
+
 /* scroll progress bar */
 #scrollbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;background:linear-gradient(90deg,var(--teal),var(--blue),var(--orange));transition:width .08s linear}
 

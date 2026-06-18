@@ -283,20 +283,20 @@ const TESTIMONIALS = [
 
 /* ---------- Process steps ---------- */
 const STEPS = [
-  { ic:"📅", t:"step1_t", d:"step1_d" },
-  { ic:"🩺", t:"step2_t", d:"step2_d" },
-  { ic:"😌", t:"step3_t", d:"step3_d" },
-  { ic:"💚", t:"step4_t", d:"step4_d" },
+  { ic:"calendar", t:"step1_t", d:"step1_d" },
+  { ic:"stethoscope", t:"step2_t", d:"step2_d" },
+  { ic:"smile", t:"step3_t", d:"step3_d" },
+  { ic:"heart", t:"step4_t", d:"step4_d" },
 ];
 
 /* ---------- Technology & safety ---------- */
 const TECH = [
-  { ic:"🧼", en:"4-Step Sterilization", bn:"৪-ধাপ স্টেরিলাইজেশন", de:"Every instrument is cleaned and sterilized through a strict 4-step protocol.", db:"প্রতিটি যন্ত্র কঠোর ৪-ধাপ প্রোটোকলে পরিষ্কার ও জীবাণুমুক্ত করা হয়।" },
-  { ic:"🩻", en:"Digital X-Ray", bn:"ডিজিটাল এক্স-রে", de:"Low-radiation digital imaging for fast, accurate diagnosis.", db:"দ্রুত ও নির্ভুল রোগ নির্ণয়ে কম-রেডিয়েশন ডিজিটাল ইমেজিং।" },
-  { ic:"📷", en:"Intraoral Camera", bn:"ইন্ট্রাঅরাল ক্যামেরা", de:"See exactly what we see — clear images of your teeth on screen.", db:"আমরা যা দেখি তাই দেখুন — পর্দায় আপনার দাঁতের স্পষ্ট ছবি।" },
-  { ic:"💉", en:"Painless Techniques", bn:"ব্যথাহীন কৌশল", de:"Gentle anaesthesia and modern methods keep treatment comfortable.", db:"কোমল অ্যানেস্থেসিয়া ও আধুনিক পদ্ধতিতে চিকিৎসা আরামদায়ক থাকে।" },
-  { ic:"🧴", en:"Sterile Disposables", bn:"জীবাণুমুক্ত ডিসপোজেবল", de:"Single-use, sealed disposables for every patient.", db:"প্রতি রোগীর জন্য একবার-ব্যবহার্য, সিলড ডিসপোজেবল।" },
-  { ic:"⚙️", en:"Modern Equipment", bn:"আধুনিক যন্ত্রপাতি", de:"Up-to-date dental units and tools for better results.", db:"ভালো ফলাফলের জন্য হালনাগাদ ডেন্টাল ইউনিট ও যন্ত্র।" },
+  { ic:"shield", en:"4-Step Sterilization", bn:"৪-ধাপ স্টেরিলাইজেশন", de:"Every instrument is cleaned and sterilized through a strict 4-step protocol.", db:"প্রতিটি যন্ত্র কঠোর ৪-ধাপ প্রোটোকলে পরিষ্কার ও জীবাণুমুক্ত করা হয়।" },
+  { ic:"scan", en:"Digital X-Ray", bn:"ডিজিটাল এক্স-রে", de:"Low-radiation digital imaging for fast, accurate diagnosis.", db:"দ্রুত ও নির্ভুল রোগ নির্ণয়ে কম-রেডিয়েশন ডিজিটাল ইমেজিং।" },
+  { ic:"camera", en:"Intraoral Camera", bn:"ইন্ট্রাঅরাল ক্যামেরা", de:"See exactly what we see — clear images of your teeth on screen.", db:"আমরা যা দেখি তাই দেখুন — পর্দায় আপনার দাঁতের স্পষ্ট ছবি।" },
+  { ic:"zap", en:"Painless Techniques", bn:"ব্যথাহীন কৌশল", de:"Gentle anaesthesia and modern methods keep treatment comfortable.", db:"কোমল অ্যানেস্থেসিয়া ও আধুনিক পদ্ধতিতে চিকিৎসা আরামদায়ক থাকে।" },
+  { ic:"package", en:"Sterile Disposables", bn:"জীবাণুমুক্ত ডিসপোজেবল", de:"Single-use, sealed disposables for every patient.", db:"প্রতি রোগীর জন্য একবার-ব্যবহার্য, সিলড ডিসপোজেবল।" },
+  { ic:"cpu", en:"Modern Equipment", bn:"আধুনিক যন্ত্রপাতি", de:"Up-to-date dental units and tools for better results.", db:"ভালো ফলাফলের জন্য হালনাগাদ ডেন্টাল ইউনিট ও যন্ত্র।" },
 ];
 
 /* ---------- FAQs ---------- */
@@ -361,6 +361,27 @@ function applyI18n(){
 }
 
 function setLang(l){ LANG = l; localStorage.setItem("omega_lang", l); applyI18n(); }
+
+/* ----- Inline SVG icons (Lucide-style, currentColor) ----- */
+const ICONS = {
+  calendar:'<path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>',
+  stethoscope:'<path d="M4 3v6a5 5 0 0 0 10 0V3"/><path d="M9 18a4 4 0 0 0 8 0v-3"/><circle cx="20" cy="12" r="2"/>',
+  smile:'<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/>',
+  heart:'<path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 21l8.8-8.8a5 5 0 0 0 0-7.1z"/>',
+  shield:'<path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/>',
+  scan:'<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/>',
+  camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+  zap:'<path d="M13 2L3 14h9l-1 8 10-12h-9z"/>',
+  package:'<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
+  cpu:'<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>',
+  pin:'<path d="M12 22s8-5.5 8-12a8 8 0 1 0-16 0c0 6.5 8 12 8 12z"/><circle cx="12" cy="10" r="3"/>',
+  phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7A2 2 0 0 1 22 16.9z"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7 10-7"/>',
+  chat:'<path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+};
+function svgIcon(name){return `<svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]||ICONS.check}</svg>`;}
 
 /* ----- Services grid ----- */
 const SVC_SLUG = {
@@ -508,7 +529,7 @@ function renderSteps(){
   wrap.innerHTML = STEPS.map((s,i)=>`
     <article class="step-card">
       <span class="step-num">${i+1}</span>
-      <div class="step-ic">${s.ic}</div>
+      <div class="step-ic">${svgIcon(s.ic)}</div>
       <h3>${t(s.t)}</h3>
       <p>${t(s.d)}</p>
     </article>`).join("");
@@ -520,7 +541,7 @@ function renderTech(){
   if(!wrap) return;
   wrap.innerHTML = TECH.map(x=>`
     <article class="tech-card">
-      <div class="tech-ic">${x.ic}</div>
+      <div class="tech-ic">${svgIcon(x.ic)}</div>
       <div><h3>${LANG==="bn"?x.bn:x.en}</h3><p>${LANG==="bn"?x.db:x.de}</p></div>
     </article>`).join("");
 }
@@ -635,7 +656,7 @@ function submitBooking(e){
 function renderMarquee(){
   const el = document.getElementById("marqueeTrack");
   if(!el) return;
-  const items = SERVICES.map(s=>`<span>${s.icon} ${LANG==="bn"?s.bn:s.en}</span>`).join("");
+  const items = SERVICES.map(s=>`<span>${LANG==="bn"?s.bn:s.en}</span>`).join("");
   el.innerHTML = items + items; // duplicate for seamless loop
 }
 
