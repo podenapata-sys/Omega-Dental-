@@ -154,6 +154,24 @@ const I18N = {
     foot_about:"Modern, painless and affordable dental care in Dhaka. Healthy smiles for the whole family.",
     foot_links:"Quick Links", foot_services:"Services", foot_contact:"Contact",
     foot_rights:"All rights reserved.",
+    nav_tech:"Technology", nav_faq:"FAQ",
+    steps_eyebrow:"How It Works", steps_title:"Your visit in 4 easy steps",
+    steps_text:"From your first message to aftercare, we keep everything simple and stress-free.",
+    step1_t:"Book", step1_d:"Request an appointment online, by phone or WhatsApp — same-day slots available.",
+    step2_t:"Consult", step2_d:"Meet Dr. Afsana for a thorough check-up and a clear, honest treatment plan.",
+    step3_t:"Treatment", step3_d:"Relax through gentle, painless treatment using modern equipment.",
+    step4_t:"Aftercare", step4_d:"Go home with simple care tips and easy follow-up support.",
+    tech_eyebrow:"Technology & Safety",
+    tech_title:"Modern tools, 10x safer care",
+    tech_text:"We invest in advanced equipment and strict hygiene, so every treatment is precise, comfortable and safe.",
+    emerg_eyebrow:"Always Here For You",
+    emerg_title:"Dental emergency? We're ready",
+    emerg_text:"Same-day appointments for urgent pain, and online video consultations for patients living abroad (NRB).",
+    emerg_b1:"Same-day emergency care", emerg_b2:"Online video consultation", emerg_b3:"Friendly support on WhatsApp",
+    emerg_call:"Call for emergency", emerg_video:"Book a video consult",
+    faq_eyebrow:"Questions", faq_title:"Frequently asked questions",
+    tips_eyebrow:"Dental Tips", tips_title:"Healthy-smile tips & guides",
+    tips_read:"Read more",
     lang_label:"বাংলা",
   },
   bn: {
@@ -218,6 +236,24 @@ const I18N = {
     foot_about:"ঢাকায় আধুনিক, ব্যথাহীন ও সাশ্রয়ী দন্তচিকিৎসা। পুরো পরিবারের সুস্থ হাসি।",
     foot_links:"দ্রুত লিংক", foot_services:"সেবা", foot_contact:"যোগাযোগ",
     foot_rights:"সর্বস্বত্ব সংরক্ষিত।",
+    nav_tech:"প্রযুক্তি", nav_faq:"প্রশ্নোত্তর",
+    steps_eyebrow:"যেভাবে কাজ করে", steps_title:"৪টি সহজ ধাপে আপনার ভিজিট",
+    steps_text:"প্রথম বার্তা থেকে আফটারকেয়ার পর্যন্ত, আমরা সবকিছু সহজ ও চাপমুক্ত রাখি।",
+    step1_t:"বুক করুন", step1_d:"অনলাইন, ফোন বা হোয়াটসঅ্যাপে অ্যাপয়েন্টমেন্ট নিন — একই দিনের স্লট আছে।",
+    step2_t:"পরামর্শ", step2_d:"ডা. আফসানার সঙ্গে পূর্ণাঙ্গ চেকআপ ও স্পষ্ট, সৎ চিকিৎসা পরিকল্পনা।",
+    step3_t:"চিকিৎসা", step3_d:"আধুনিক যন্ত্রপাতিতে কোমল, ব্যথাহীন চিকিৎসায় নিশ্চিন্ত থাকুন।",
+    step4_t:"আফটারকেয়ার", step4_d:"সহজ যত্নের পরামর্শ ও সহজ ফলোআপ সহায়তা নিয়ে বাড়ি ফিরুন।",
+    tech_eyebrow:"প্রযুক্তি ও নিরাপত্তা",
+    tech_title:"আধুনিক যন্ত্র, ১০ গুণ নিরাপদ সেবা",
+    tech_text:"আমরা উন্নত যন্ত্রপাতি ও কঠোর পরিচ্ছন্নতায় বিনিয়োগ করি, যাতে প্রতিটি চিকিৎসা সুনির্দিষ্ট, আরামদায়ক ও নিরাপদ হয়।",
+    emerg_eyebrow:"সবসময় আপনার পাশে",
+    emerg_title:"ডেন্টাল জরুরি অবস্থা? আমরা প্রস্তুত",
+    emerg_text:"জরুরি ব্যথায় একই দিনের অ্যাপয়েন্টমেন্ট এবং প্রবাসী (এনআরবি) রোগীদের জন্য অনলাইন ভিডিও পরামর্শ।",
+    emerg_b1:"একই দিনে জরুরি সেবা", emerg_b2:"অনলাইন ভিডিও পরামর্শ", emerg_b3:"হোয়াটসঅ্যাপে সহায়তা",
+    emerg_call:"জরুরি কল করুন", emerg_video:"ভিডিও পরামর্শ বুক করুন",
+    faq_eyebrow:"প্রশ্ন", faq_title:"সচরাচর জিজ্ঞাসিত প্রশ্ন",
+    tips_eyebrow:"ডেন্টাল টিপস", tips_title:"সুস্থ হাসির টিপস ও গাইড",
+    tips_read:"আরও পড়ুন",
     lang_label:"EN",
   }
 };
@@ -227,6 +263,50 @@ const TESTIMONIALS = [
   { en:"Truly painless! I was terrified of dentists but Dr. Afsana made my root canal completely comfortable.", bn:"সত্যিই ব্যথাহীন! ডেন্টিস্টকে ভয় পেতাম, কিন্তু ডা. আফসানা আমার রুট ক্যানেল পুরোপুরি আরামদায়ক করে তুলেছেন।", name:"Nusrat J.", role:"Mirpur, Dhaka" },
   { en:"Got my teeth whitening done and the result is amazing. Clean clinic, friendly staff and fair pricing.", bn:"দাঁত হোয়াইটেনিং করিয়েছি, ফলাফল অসাধারণ। পরিষ্কার ক্লিনিক, বন্ধুত্বপূর্ণ স্টাফ ও ন্যায্য মূল্য।", name:"Tanvir A.", role:"Kazipara" },
   { en:"My daughter's first dental visit was so gentle. Highly recommend Omega Dental for kids.", bn:"আমার মেয়ের প্রথম ডেন্টাল ভিজিট খুবই কোমল ছিল। শিশুদের জন্য ওমেগা ডেন্টাল অত্যন্ত প্রস্তাবিত।", name:"Shirin S.", role:"Pallabi" },
+];
+
+/* ---------- Process steps ---------- */
+const STEPS = [
+  { ic:"📅", t:"step1_t", d:"step1_d" },
+  { ic:"🩺", t:"step2_t", d:"step2_d" },
+  { ic:"😌", t:"step3_t", d:"step3_d" },
+  { ic:"💚", t:"step4_t", d:"step4_d" },
+];
+
+/* ---------- Technology & safety ---------- */
+const TECH = [
+  { ic:"🧼", en:"4-Step Sterilization", bn:"৪-ধাপ স্টেরিলাইজেশন", de:"Every instrument is cleaned and sterilized through a strict 4-step protocol.", db:"প্রতিটি যন্ত্র কঠোর ৪-ধাপ প্রোটোকলে পরিষ্কার ও জীবাণুমুক্ত করা হয়।" },
+  { ic:"🩻", en:"Digital X-Ray", bn:"ডিজিটাল এক্স-রে", de:"Low-radiation digital imaging for fast, accurate diagnosis.", db:"দ্রুত ও নির্ভুল রোগ নির্ণয়ে কম-রেডিয়েশন ডিজিটাল ইমেজিং।" },
+  { ic:"📷", en:"Intraoral Camera", bn:"ইন্ট্রাঅরাল ক্যামেরা", de:"See exactly what we see — clear images of your teeth on screen.", db:"আমরা যা দেখি তাই দেখুন — পর্দায় আপনার দাঁতের স্পষ্ট ছবি।" },
+  { ic:"💉", en:"Painless Techniques", bn:"ব্যথাহীন কৌশল", de:"Gentle anaesthesia and modern methods keep treatment comfortable.", db:"কোমল অ্যানেস্থেসিয়া ও আধুনিক পদ্ধতিতে চিকিৎসা আরামদায়ক থাকে।" },
+  { ic:"🧴", en:"Sterile Disposables", bn:"জীবাণুমুক্ত ডিসপোজেবল", de:"Single-use, sealed disposables for every patient.", db:"প্রতি রোগীর জন্য একবার-ব্যবহার্য, সিলড ডিসপোজেবল।" },
+  { ic:"⚙️", en:"Modern Equipment", bn:"আধুনিক যন্ত্রপাতি", de:"Up-to-date dental units and tools for better results.", db:"ভালো ফলাফলের জন্য হালনাগাদ ডেন্টাল ইউনিট ও যন্ত্র।" },
+];
+
+/* ---------- FAQs ---------- */
+const FAQS = [
+  { qe:"Is the treatment really painless?", ae:"Yes. Dr. Afsana is specially trained in painless dentistry. We use gentle anaesthesia and modern techniques so most patients feel little to no discomfort.",
+    qb:"চিকিৎসা কি সত্যিই ব্যথাহীন?", ab:"হ্যাঁ। ডা. আফসানা ব্যথাহীন দন্তচিকিৎসায় বিশেষ প্রশিক্ষিত। আমরা কোমল অ্যানেস্থেসিয়া ও আধুনিক কৌশল ব্যবহার করি, তাই বেশিরভাগ রোগী খুব কম বা কোনো অস্বস্তি অনুভব করেন না।" },
+  { qe:"How much will my treatment cost?", ae:"Use our online cost estimator for an instant range, or see the full price list. The exact cost is confirmed after a quick check-up.",
+    qb:"আমার চিকিৎসায় কত খরচ হবে?", ab:"তাৎক্ষণিক ধারণার জন্য আমাদের অনলাইন কস্ট এস্টিমেটর ব্যবহার করুন, অথবা সম্পূর্ণ মূল্য তালিকা দেখুন। সঠিক খরচ একটি দ্রুত চেকআপের পর নিশ্চিত হয়।" },
+  { qe:"Do you offer same-day or emergency appointments?", ae:"Yes, we keep slots for urgent pain and dental emergencies. Call or WhatsApp us and we'll see you as soon as possible.",
+    qb:"আপনারা কি একই দিনে বা জরুরি অ্যাপয়েন্টমেন্ট দেন?", ab:"হ্যাঁ, জরুরি ব্যথা ও ডেন্টাল ইমার্জেন্সির জন্য আমরা স্লট রাখি। কল বা হোয়াটসঅ্যাপ করুন, যত দ্রুত সম্ভব আপনাকে দেখব।" },
+  { qe:"Can I consult from abroad?", ae:"Yes. We offer online video consultations for non-resident Bangladeshis and overseas patients who need advice before travelling or treatment.",
+    qb:"আমি কি বিদেশ থেকে পরামর্শ নিতে পারি?", ab:"হ্যাঁ। ভ্রমণ বা চিকিৎসার আগে পরামর্শ প্রয়োজন এমন প্রবাসী বাংলাদেশি ও বিদেশি রোগীদের জন্য আমরা অনলাইন ভিডিও পরামর্শ দিই।" },
+  { qe:"Do you treat children?", ae:"Absolutely. We provide gentle paediatric care including check-ups, milk-tooth treatment and fillings for kids of all ages.",
+    qb:"আপনারা কি শিশুদের চিকিৎসা করেন?", ab:"অবশ্যই। আমরা সব বয়সের শিশুদের জন্য চেকআপ, দুধ দাঁতের চিকিৎসা ও ফিলিংসহ কোমল পেডিয়াট্রিক সেবা দিই।" },
+  { qe:"Where is Omega Dental located?", ae:"We are at 1252/3, East Monipur, near Metro Pillar 267(W), West Kazipara, Begum Rokeya Sarani, Dhaka. Tap 'Get Directions' on the map for the route.",
+    qb:"ওমেগা ডেন্টাল কোথায়?", ab:"আমরা ১২৫২/৩, পূর্ব মনিপুর, মেট্রো পিলার ২৬৭(ওয়াই)-এর কাছে, পশ্চিম কাজীপাড়া, বেগম রোকেয়া সরণি, ঢাকায় অবস্থিত। পথের জন্য ম্যাপে 'দিকনির্দেশ নিন' চাপুন।" },
+];
+
+/* ---------- Dental tips / blog ---------- */
+const POSTS = [
+  { ic:"🪥", te:"5 daily habits for healthier teeth", ee:"Simple brushing, flossing and diet habits that protect your smile for life.",
+    tb:"সুস্থ দাঁতের জন্য ৫টি দৈনিক অভ্যাস", eb:"সহজ ব্রাশ, ফ্লস ও খাদ্যাভ্যাস যা সারাজীবন আপনার হাসি রক্ষা করে।" },
+  { ic:"🌱", te:"When do you really need a root canal?", ee:"The warning signs of an infected tooth and how a root canal saves it painlessly.",
+    tb:"কখন সত্যিই রুট ক্যানেল দরকার?", eb:"সংক্রমিত দাঁতের সতর্ক সংকেত এবং কীভাবে রুট ক্যানেল ব্যথাহীনভাবে তা বাঁচায়।" },
+  { ic:"✨", te:"Teeth whitening: what to expect", ee:"How professional whitening works, how long it lasts and how to keep results bright.",
+    tb:"দাঁত সাদা করা: কী আশা করবেন", eb:"পেশাদার হোয়াইটেনিং কীভাবে কাজ করে, কতদিন থাকে এবং ফল উজ্জ্বল রাখার উপায়।" },
 ];
 
 /* ---------- Before/After cases (SVG placeholders) ---------- */
@@ -259,6 +339,7 @@ function applyI18n(){
   });
   // dynamic blocks
   renderServices(); renderPricing(); renderCalcOptions(); renderTestimonials(); renderBookOptions();
+  renderSteps(); renderTech(); renderFaqs(); renderTips();
   const tgl = document.getElementById("langText");
   if (tgl) tgl.textContent = t("lang_label");
 }
@@ -338,6 +419,63 @@ function renderTestimonials(){
       <p>“${LANG==="bn"?x.bn:x.en}”</p>
       <div class="test-meta"><span class="avatar">${x.name.charAt(0)}</span>
         <div><strong>${x.name}</strong><small>${x.role}</small></div></div>
+    </article>`).join("");
+}
+
+/* ----- Process steps ----- */
+function renderSteps(){
+  const wrap = document.getElementById("stepsGrid");
+  if(!wrap) return;
+  wrap.innerHTML = STEPS.map((s,i)=>`
+    <article class="step-card">
+      <span class="step-num">${i+1}</span>
+      <div class="step-ic">${s.ic}</div>
+      <h3>${t(s.t)}</h3>
+      <p>${t(s.d)}</p>
+    </article>`).join("");
+}
+
+/* ----- Technology & safety ----- */
+function renderTech(){
+  const wrap = document.getElementById("techGrid");
+  if(!wrap) return;
+  wrap.innerHTML = TECH.map(x=>`
+    <article class="tech-card">
+      <div class="tech-ic">${x.ic}</div>
+      <div><h3>${LANG==="bn"?x.bn:x.en}</h3><p>${LANG==="bn"?x.db:x.de}</p></div>
+    </article>`).join("");
+}
+
+/* ----- FAQ accordion ----- */
+function renderFaqs(){
+  const wrap = document.getElementById("faqList");
+  if(!wrap) return;
+  wrap.innerHTML = FAQS.map((f,i)=>`
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">${LANG==="bn"?f.qb:f.qe}<span class="faq-ic">+</span></button>
+      <div class="faq-a"><p>${LANG==="bn"?f.ab:f.ae}</p></div>
+    </div>`).join("");
+  wrap.querySelectorAll(".faq-q").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const open = btn.getAttribute("aria-expanded")==="true";
+      btn.setAttribute("aria-expanded", String(!open));
+      btn.parentElement.classList.toggle("open", !open);
+    });
+  });
+}
+
+/* ----- Dental tips ----- */
+function renderTips(){
+  const wrap = document.getElementById("tipsGrid");
+  if(!wrap) return;
+  wrap.innerHTML = POSTS.map(p=>`
+    <article class="tip-card">
+      <div class="tip-img">${p.ic}</div>
+      <div class="tip-body">
+        <h3>${LANG==="bn"?p.tb:p.te}</h3>
+        <p>${LANG==="bn"?p.eb:p.ee}</p>
+        <a class="svc-link" href="#book">${t("tips_read")} →</a>
+      </div>
     </article>`).join("");
 }
 
