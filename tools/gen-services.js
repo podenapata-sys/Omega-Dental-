@@ -5,10 +5,21 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260618n";
+const VER = "20260618p";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
-const FACT_IC = ["💎","🕐","🛡️","🎖️"]; // procedure, visits, success, hygiene
+const IC = {
+  checkc:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  award:'<circle cx="12" cy="9" r="6"/><path d="M9 14l-1.5 7L12 18l4.5 3L15 14"/>',
+  shield:'<path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/>',
+  pin:'<path d="M12 22s8-5.5 8-12a8 8 0 1 0-16 0c0 6.5 8 12 8 12z"/><circle cx="12" cy="10" r="3"/>',
+  phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7A2 2 0 0 1 22 16.9z"/>',
+  chat:'<path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z"/>',
+  clockw:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+};
+function ico(n,sz){return `<svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${sz?` style="width:${sz}px;height:${sz}px"`:""}>${IC[n]||IC.checkc}</svg>`;}
+const FACT_KEYS = ["checkc","clock","award","shield"]; // procedure, visits, success/material, hygiene
 const THUMB_POOL = ["teeth-whitening","scaling-polishing","tooth-fillings","crowns-bridges","dental-implants","braces-aligners","dentures","root-canal-rct"];
 
 const SERVICES = [
@@ -289,9 +300,9 @@ function buildTabs(s){
   </div>
 
   <div class="tab-panel" data-tab="branches">
-    <div class="ci-row"><div class="ci-ic">📍</div><div><strong ${bl("Address","ঠিকানা")}></strong><span ${bl("1252/3, East Monipur, Metro Pillar-267(W), West Kazipara, Begum Rokeya Sarani, Dhaka","১২৫২/৩, পূর্ব মনিপুর, মেট্রো পিলার-২৬৭(ওয়াই), পশ্চিম কাজীপাড়া, বেগম রোকেয়া সরণি, ঢাকা")}></span></div></div>
-    <div class="ci-row"><div class="ci-ic">🕐</div><div><strong ${bl("Hours","সময়")}></strong><span ${bl("Saturday – Thursday: 10:00 AM – 8:00 PM · Friday: Closed","শনিবার – বৃহস্পতিবার: সকাল ১০টা – রাত ৮টা · শুক্রবার: বন্ধ")}></span></div></div>
-    <div class="ci-row"><div class="ci-ic">📞</div><div><strong ${bl("Phone","ফোন")}></strong><span>01706-516868 · WhatsApp 01713-241670</span></div></div>
+    <div class="ci-row"><div class="ci-ic">${ico("pin")}</div><div><strong ${bl("Address","ঠিকানা")}></strong><span ${bl("1252/3, East Monipur, Metro Pillar-267(W), West Kazipara, Begum Rokeya Sarani, Dhaka","১২৫২/৩, পূর্ব মনিপুর, মেট্রো পিলার-২৬৭(ওয়াই), পশ্চিম কাজীপাড়া, বেগম রোকেয়া সরণি, ঢাকা")}></span></div></div>
+    <div class="ci-row"><div class="ci-ic">${ico("clockw")}</div><div><strong ${bl("Hours","সময়")}></strong><span ${bl("Saturday – Thursday: 10:00 AM – 8:00 PM · Friday: Closed","শনিবার – বৃহস্পতিবার: সকাল ১০টা – রাত ৮টা · শুক্রবার: বন্ধ")}></span></div></div>
+    <div class="ci-row"><div class="ci-ic">${ico("phone")}</div><div><strong ${bl("Phone","ফোন")}></strong><span>01706-516868 · WhatsApp 01713-241670</span></div></div>
     <a class="btn btn-primary" style="margin-top:14px" href="https://maps.app.goo.gl/3RLwiXGBDZXptKE79" target="_blank" rel="noopener" ${bl("Get Directions","দিকনির্দেশ নিন")}></a>
   </div>
 
@@ -310,7 +321,7 @@ function page(s){
   const thumbs = [s.img, ...THUMB_POOL.filter(x=>x!==s.img)].slice(0,4);
   const thumbHtml = thumbs.map((tg,i)=>`<button class="pthumb${i===0?' active':''}" type="button" data-src="../assets/services/${tg}.svg"><img src="../assets/services/${tg}.svg" alt=""></button>`).join("");
   const facts = s.en.facts.map((f,i)=>`
-        <div class="fact"><span class="fact-ic">${FACT_IC[i]}</span>
+        <div class="fact"><span class="fact-ic">${ico(FACT_KEYS[i])}</span>
           <div><strong ${bl(f[0],s.bn.facts[i][0])}></strong><span ${bl(f[1],s.bn.facts[i][1])}></span></div></div>`).join("");
   const steps = s.en.process.map((_,i)=>`<article class="step-card"><span class="step-num">${i+1}</span><h3 ${bl(s.en.process[i],s.bn.process[i])}></h3></article>`).join("");
   const jsonld=`{"@context":"https://schema.org","@type":"MedicalProcedure","name":"${esc(s.en.name)}","procedureType":"Dentistry","description":"${esc(s.en.meta)}","url":"${url}","provider":{"@type":"Dentist","name":"Omega Dental","telephone":"+8801706516868","address":{"@type":"PostalAddress","streetAddress":"1252/3, East Monipur, West Kazipara, Begum Rokeya Sarani","addressLocality":"Dhaka","addressCountry":"BD"}}}`;
@@ -361,7 +372,7 @@ function page(s){
         <div class="prod-thumbs">${thumbHtml}</div>
       </div>
       <div class="prod-info">
-        <span class="eyebrow">${s.icon} <span ${bl("Our Services","আমাদের সেবা")}></span></span>
+        <span class="eyebrow"><span ${bl("Our Services","আমাদের সেবা")}></span></span>
         <h1 ${bl(s.en.name,s.bn.name)}></h1>
         <div class="prod-price" ${bl(s.en.price,s.bn.price)}></div>
         <p class="prod-desc" ${bl(s.en.desc,s.bn.desc)}></p>
@@ -382,8 +393,8 @@ ${buildTabs(s)}
   <div><h2 ${bl("Ready to book your "+s.en.name+"?","আপনার "+s.bn.name+" বুক করতে প্রস্তুত?")}></h2>
     <p ${bl("Same-day appointments available. Call us or message on WhatsApp and our team will help you right away.","একই দিনের অ্যাপয়েন্টমেন্ট আছে। কল করুন বা হোয়াটসঅ্যাপে মেসেজ দিন, আমাদের টিম সাথে সাথে সাহায্য করবে।")}></p></div>
   <div class="emerg-cta">
-    <a class="btn btn-orange" href="tel:+8801706516868">📞 <span ${bl("Call Now","কল করুন")}></span></a>
-    <a class="btn btn-wa" href="https://wa.me/8801713241670" target="_blank" rel="noopener">💬 <span ${bl("WhatsApp","হোয়াটসঅ্যাপ")}></span></a>
+    <a class="btn btn-orange" href="tel:+8801706516868">${ico("phone",18)} <span ${bl("Call Now","কল করুন")}></span></a>
+    <a class="btn btn-wa" href="https://wa.me/8801713241670" target="_blank" rel="noopener">${ico("chat",18)} <span ${bl("WhatsApp","হোয়াটসঅ্যাপ")}></span></a>
   </div>
 </div></section>
 
@@ -393,7 +404,7 @@ ${buildTabs(s)}
   <a class="btn btn-primary" href="../treatments.html" ${bl("← All treatments","← সব চিকিৎসা")}></a>
   <div class="foot-bottom">© <span id="yr"></span> OMEGA DENTAL</div>
 </div></footer>
-<a class="fab" href="https://wa.me/8801713241670" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+<a class="fab" href="https://wa.me/8801713241670" target="_blank" rel="noopener" aria-label="WhatsApp">${ico("chat",28)}</a>
 <script>
 document.getElementById('yr').textContent=new Date().getFullYear();
 function setLang(l){document.documentElement.setAttribute('data-lang',l);document.body.classList.toggle('bn',l==='bn');try{localStorage.setItem('omega_lang',l)}catch(e){}
