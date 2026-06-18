@@ -355,7 +355,7 @@ function applyI18n(){
   });
   // dynamic blocks
   renderServices(); renderPricing(); renderCalcOptions(); renderTestimonials(); renderBookOptions();
-  renderSteps(); renderTech(); renderFaqs(); renderTips(); renderCalcBA();
+  renderSteps(); renderTech(); renderFaqs(); renderTips(); renderCalcBA(); renderMarquee();
   const tgl = document.getElementById("langText");
   if (tgl) tgl.textContent = t("lang_label");
 }
@@ -620,6 +620,14 @@ function submitBooking(e){
   window.open(url, "_blank");
 }
 
+/* ----- Marquee ----- */
+function renderMarquee(){
+  const el = document.getElementById("marqueeTrack");
+  if(!el) return;
+  const items = SERVICES.map(s=>`<span>${s.icon} ${LANG==="bn"?s.bn:s.en}</span>`).join("");
+  el.innerHTML = items + items; // duplicate for seamless loop
+}
+
 /* ----- Counters ----- */
 function animateCounters(){
   document.querySelectorAll(".stat-num").forEach(el=>{
@@ -666,6 +674,19 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const ob = new IntersectionObserver((ent)=>{ if(ent[0].isIntersecting){ animateCounters(); ob.disconnect(); }},{threshold:.4});
     ob.observe(stats);
   }
+
+  // scroll progress bar + back-to-top
+  const bar = document.getElementById("scrollbar");
+  const toTop = document.getElementById("toTop");
+  const onScroll = ()=>{
+    const h = document.documentElement;
+    const sc = h.scrollTop || document.body.scrollTop;
+    const max = h.scrollHeight - h.clientHeight;
+    if(bar) bar.style.width = (max>0 ? (sc/max*100) : 0) + "%";
+    if(toTop) toTop.classList.toggle("show", sc > 600);
+  };
+  window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+  toTop?.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
 
   // scroll reveal
   const revealEls = document.querySelectorAll(".sec-head, .svc-card, .step-card, .tech-card, .test-card, .tip-card, .ci-row, .why-art, .doc-photo, .hero-photo, .calc-card, .calc-ba");

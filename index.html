@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=20260618f">
+<link rel="stylesheet" href="assets/styles.css?v=20260618g">
 <!-- Structured data: Dentist / MedicalClinic -->
 <script type="application/ld+json">
 {
@@ -41,6 +41,8 @@
 </script>
 </head>
 <body>
+
+<div id="scrollbar"></div>
 
 <!-- topbar -->
 <div class="topbar"><span data-i18n="topbar"></span> · <a id="topcall" href="tel:+8801706516868">01706-516868</a></div>
@@ -120,6 +122,9 @@
     <div><div class="stat-num" data-target="99" data-suffix="%">0</div><div class="stat-lbl" data-i18n="stat4"></div></div>
   </div>
 </section>
+
+<!-- marquee -->
+<div class="marquee" aria-hidden="true"><div class="marquee-track" id="marqueeTrack"></div></div>
 
 <!-- services -->
 <section class="section" id="services">
@@ -429,9 +434,10 @@
   <div class="container foot-bottom">© <span id="year"></span> OMEGA DENTAL · <span data-i18n="foot_rights"></span></div>
 </footer>
 
+<button id="toTop" class="totop" aria-label="Back to top">↑</button>
 <a class="fab" href="https://wa.me/8801713241670" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
 
 <script>document.getElementById("year").textContent=new Date().getFullYear();</script>
-<script src="assets/app.js?v=20260618f"></script>
+<script src="assets/app.js?v=20260618g"></script>
 </body>
 </html>
