@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260618q";
+const VER = "20260618r";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 
@@ -57,7 +57,7 @@ const html = `<!DOCTYPE html>
 </head>
 <body>
 <div id="scrollbar"></div>
-<div class="topbar"><span>Painless &amp; Cosmetic Dental Care · Sat–Thu 10am–8pm</span> · <a href="tel:+8801706516868">01706-516868</a></div>
+<div class="topbar"><span>Painless &amp; Cosmetic Dental Care · Sat–Thu 10:00 AM–9:30 PM · Fri 11:00 AM–9:30 PM</span> · <a href="tel:+8801706516868">01706-516868</a></div>
 <header class="header"><nav class="nav container">
   <a class="brand" href="index.html"><span class="logo-anim"><img src="assets/mark.png?v=2" alt="Omega Dental"></span><span>OMEGA<small>DENTAL</small></span></a>
   <div class="navlist" id="navlist">
@@ -92,7 +92,7 @@ const html = `<!DOCTYPE html>
 
 <footer class="footer"><div class="container" style="text-align:center">
   <div class="foot-logo" style="justify-content:center"><span class="logo-anim"><img src="assets/mark.png?v=2" alt="Omega Dental" style="height:50px"></span><span style="font-family:var(--f-head);font-weight:800;color:#fff;font-size:1.25rem">OMEGA<small style="display:block;font-size:.62rem;letter-spacing:.34em;color:var(--orange)">DENTAL</small></span></div>
-  <p style="color:#a9c2cd;margin:14px 0">1252/3, East Monipur, West Kazipara, Begum Rokeya Sarani, Dhaka · 01706-516868</p>
+  <p style="color:#a9c2cd;margin:14px 0">1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni, Dhaka · 01706-516868</p>
   <a class="btn btn-primary" href="index.html" ${bl("← Back to home","← হোমে ফিরুন")}></a>
   <div class="foot-bottom">© <span id="yr"></span> OMEGA DENTAL</div>
 </div></footer>

@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260618q";
+const VER = "20260618r";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -300,8 +300,8 @@ function buildTabs(s){
   </div>
 
   <div class="tab-panel" data-tab="branches">
-    <div class="ci-row"><div class="ci-ic">${ico("pin")}</div><div><strong ${bl("Address","ঠিকানা")}></strong><span ${bl("1252/3, East Monipur, Metro Pillar-267(W), West Kazipara, Begum Rokeya Sarani, Dhaka","১২৫২/৩, পূর্ব মনিপুর, মেট্রো পিলার-২৬৭(ওয়াই), পশ্চিম কাজীপাড়া, বেগম রোকেয়া সরণি, ঢাকা")}></span></div></div>
-    <div class="ci-row"><div class="ci-ic">${ico("clockw")}</div><div><strong ${bl("Hours","সময়")}></strong><span ${bl("Saturday – Thursday: 10:00 AM – 8:00 PM · Friday: Closed","শনিবার – বৃহস্পতিবার: সকাল ১০টা – রাত ৮টা · শুক্রবার: বন্ধ")}></span></div></div>
+    <div class="ci-row"><div class="ci-ic">${ico("pin")}</div><div><strong ${bl("Address","ঠিকানা")}></strong><span ${bl("1252/3, East Monipur, Metro Pillar-267 (W), West Kazipara, Begum Rokeya Soroni, Dhaka","১২৫২/৩, পূর্ব মনিপুর, মেট্রো পিলার-২৬৭(ওয়াই), পশ্চিম কাজীপাড়া, বেগম রোকেয়া সরণি, ঢাকা")}></span></div></div>
+    <div class="ci-row"><div class="ci-ic">${ico("clockw")}</div><div><strong ${bl("Hours","সময়")}></strong><span ${bl("Saturday – Thursday: 10:00 AM – 9:30 PM · Friday: 11:00 AM – 9:30 PM","শনিবার – বৃহস্পতিবার: সকাল ১০টা – রাত ৯:৩০ · শুক্রবার: দুপুর ১১টা – রাত ৯:৩০")}></span></div></div>
     <div class="ci-row"><div class="ci-ic">${ico("phone")}</div><div><strong ${bl("Phone","ফোন")}></strong><span>01706-516868 · WhatsApp 01713-241670</span></div></div>
     <a class="btn btn-primary" style="margin-top:14px" href="https://maps.app.goo.gl/3RLwiXGBDZXptKE79" target="_blank" rel="noopener" ${bl("Get Directions","দিকনির্দেশ নিন")}></a>
   </div>
@@ -324,7 +324,7 @@ function page(s){
         <div class="fact"><span class="fact-ic">${ico(FACT_KEYS[i])}</span>
           <div><strong ${bl(f[0],s.bn.facts[i][0])}></strong><span ${bl(f[1],s.bn.facts[i][1])}></span></div></div>`).join("");
   const steps = s.en.process.map((_,i)=>`<article class="step-card"><span class="step-num">${i+1}</span><h3 ${bl(s.en.process[i],s.bn.process[i])}></h3></article>`).join("");
-  const jsonld=`{"@context":"https://schema.org","@type":"MedicalProcedure","name":"${esc(s.en.name)}","procedureType":"Dentistry","description":"${esc(s.en.meta)}","url":"${url}","provider":{"@type":"Dentist","name":"Omega Dental","telephone":"+8801706516868","address":{"@type":"PostalAddress","streetAddress":"1252/3, East Monipur, West Kazipara, Begum Rokeya Sarani","addressLocality":"Dhaka","addressCountry":"BD"}}}`;
+  const jsonld=`{"@context":"https://schema.org","@type":"MedicalProcedure","name":"${esc(s.en.name)}","procedureType":"Dentistry","description":"${esc(s.en.meta)}","url":"${url}","provider":{"@type":"Dentist","name":"Omega Dental","telephone":"+8801713241670","address":{"@type":"PostalAddress","streetAddress":"1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni","addressLocality":"Dhaka","addressCountry":"BD"}}}`;
   return `<!DOCTYPE html>
 <html lang="en" data-lang="en">
 <head>
@@ -346,7 +346,7 @@ function page(s){
 </head>
 <body>
 <div id="scrollbar"></div>
-<div class="topbar"><span>Painless &amp; Cosmetic Dental Care · Sat–Thu 10am–8pm</span> · <a href="tel:+8801706516868">01706-516868</a></div>
+<div class="topbar"><span>Painless &amp; Cosmetic Dental Care · Sat–Thu 10:00 AM–9:30 PM · Fri 11:00 AM–9:30 PM</span> · <a href="tel:+8801706516868">01706-516868</a></div>
 <header class="header"><nav class="nav container">
   <a class="brand" href="../index.html"><span class="logo-anim"><img src="../assets/mark.png?v=2" alt="Omega Dental"></span><span>OMEGA<small>DENTAL</small></span></a>
   <div class="navlist" id="navlist">
@@ -400,7 +400,7 @@ ${buildTabs(s)}
 
 <footer class="footer"><div class="container" style="text-align:center">
   <div class="foot-logo" style="justify-content:center"><span class="logo-anim"><img src="../assets/mark.png?v=2" alt="Omega Dental" style="height:50px"></span><span style="font-family:var(--f-head);font-weight:800;color:#fff;font-size:1.25rem">OMEGA<small style="display:block;font-size:.62rem;letter-spacing:.34em;color:var(--orange)">DENTAL</small></span></div>
-  <p style="color:#a9c2cd;margin:14px 0">1252/3, East Monipur, West Kazipara, Begum Rokeya Sarani, Dhaka · 01706-516868</p>
+  <p style="color:#a9c2cd;margin:14px 0">1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni, Dhaka · 01706-516868</p>
   <a class="btn btn-primary" href="../treatments.html" ${bl("← All treatments","← সব চিকিৎসা")}></a>
   <div class="foot-bottom">© <span id="yr"></span> OMEGA DENTAL</div>
 </div></footer>
