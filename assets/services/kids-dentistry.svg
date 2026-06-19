@@ -11,5 +11,5 @@
   <path transform="translate(110 89) scale(1)" fill="url(#g)" d="M40 2C22 2 9 16 9 35c0 14 5 38 13 49 4 5 9 4 10-3 1-9 1-19 8-19s7 10 8 19c1 7 6 8 10 3 8-11 13-35 13-49C71 16 58 2 40 2Z"/>
   <g opacity=".95"><circle cx="302" cy="96" r="22" fill="#fff"/><circle cx="295" cy="92" r="3" fill="#2b6cb0"/><circle cx="309" cy="92" r="3" fill="#2b6cb0"/><path d="M292 100c5 7 15 7 20 0" stroke="#2b6cb0" stroke-width="3" fill="none" stroke-linecap="round"/></g>
   <circle cx="332" cy="60" r="26" fill="#fff" opacity=".95"/>
-  <text x="332" y="69" font-size="24" text-anchor="middle">🧒</text>
+  <g transform="translate(320,48)" fill="none" stroke="#2b6cb0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4 4 0 0 0 7 0"/><path d="M9 9h.01M15 9h.01"/></g>
 </svg>

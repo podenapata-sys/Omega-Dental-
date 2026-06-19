@@ -409,7 +409,7 @@ function renderServices(){
     const img = s.en.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
     return `
     <article class="svc-card">
-      <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${img}.svg" alt="${name}" loading="lazy"></a>
+      <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${img}.svg?v=2" alt="${name}" loading="lazy"></a>
       <div class="svc-body">
         <h3><a href="${href}">${name}</a></h3>
         <p>${LANG==="bn"?s.db:s.de}</p>

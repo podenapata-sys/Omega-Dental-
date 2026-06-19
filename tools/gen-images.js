@@ -5,21 +5,35 @@ const path = require("path");
 
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 
-// [name, gradA, gradB, badge emoji, motif key]
+// [name, gradA, gradB, iconKey, motif key]
 const ITEMS = [
-  ["Scaling & Polishing","#5bd0b8","#2b9e8a","🪥","sparkle"],
-  ["Tooth Fillings","#6fb1ee","#2b6cb0","🦷","fill"],
-  ["Root Canal (RCT)","#57c3ad","#2b8fb0","🌱","root"],
-  ["Crowns & Bridges","#f6b45a","#ef7b1e","👑","crown"],
-  ["Teeth Whitening","#7fd7c6","#3aa0d6","✨","sparkle"],
-  ["Veneers","#9aa7f5","#5566e0","💎","sparkle"],
-  ["Dentures","#67c1e8","#2b6cb0","🦷","arch"],
-  ["Braces & Aligners","#5bd0b8","#2b6cb0","📏","braces"],
-  ["Dental Implants","#7bb8f0","#3a5fb0","🔩","implant"],
-  ["Extractions & Surgery","#f59a8c","#e0594a","🩺","plus"],
-  ["Kids Dentistry","#ffd17a","#f6a93b","🧒","smile"],
-  ["Cosmetic Dentistry","#f59ec9","#d65a9c","💖","sparkle"],
+  ["Scaling & Polishing","#5bd0b8","#2b9e8a","sparkles","sparkle"],
+  ["Tooth Fillings","#6fb1ee","#2b6cb0","droplet","fill"],
+  ["Root Canal (RCT)","#57c3ad","#2b8fb0","shield","root"],
+  ["Crowns & Bridges","#f6b45a","#ef7b1e","crown","crown"],
+  ["Teeth Whitening","#7fd7c6","#3aa0d6","sparkles","sparkle"],
+  ["Veneers","#9aa7f5","#5566e0","gem","sparkle"],
+  ["Dentures","#67c1e8","#2b6cb0","smile","arch"],
+  ["Braces & Aligners","#5bd0b8","#2b6cb0","braces","braces"],
+  ["Dental Implants","#7bb8f0","#3a5fb0","implant","implant"],
+  ["Extractions & Surgery","#f59a8c","#e0594a","plus","plus"],
+  ["Kids Dentistry","#ffd17a","#f6a93b","smile","smile"],
+  ["Cosmetic Dentistry","#f59ec9","#d65a9c","heart","sparkle"],
 ];
+
+// badge glyphs (Lucide-style, 24x24, stroke)
+const GLYPH = {
+  sparkles:'<path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z"/><path d="M18 14l.8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8z"/>',
+  droplet:'<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
+  shield:'<path d="M12 3l7 3v5c0 4.4-3 7-7 8.5C8 17 5 14.4 5 10V6z"/><path d="M9 11l2 2 4-4"/>',
+  crown:'<path d="M3 8l4 4 5-7 5 7 4-4v9H3z"/>',
+  gem:'<path d="M6 4h12l3 5-9 11L3 9z"/><path d="M3 9h18M9 4l-3 5 6 11 6-11-3-5"/>',
+  smile:'<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4 4 0 0 0 7 0"/><path d="M9 9h.01M15 9h.01"/>',
+  braces:'<path d="M5 12h14"/><rect x="7.5" y="9" width="3.5" height="6" rx="1"/><rect x="13" y="9" width="3.5" height="6" rx="1"/>',
+  implant:'<path d="M10 3h4l-1 6h-2z"/><path d="M9 9h6l-3 11z"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  heart:'<path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 22l8.8-8.3a5 5 0 0 0 0-7.1z"/>',
+};
 
 const tooth = (cx,cy,sc,fill)=>`<path transform="translate(${cx-40*sc} ${cy-46*sc}) scale(${sc})" fill="${fill}" d="M40 2C22 2 9 16 9 35c0 14 5 38 13 49 4 5 9 4 10-3 1-9 1-19 8-19s7 10 8 19c1 7 6 8 10 3 8-11 13-35 13-49C71 16 58 2 40 2Z"/>`;
 
@@ -37,7 +51,7 @@ function motif(key){
   }
 }
 
-function svg([name,a,b,badge,key]){
+function svg([name,a,b,icon,key]){
   const nm = name.replace(/&/g,"&amp;");
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" role="img" aria-label="${nm}">
   <defs>
@@ -52,7 +66,7 @@ function svg([name,a,b,badge,key]){
   ${tooth(150,135,1.0,"url(#g)")}
   ${motif(key)}
   <circle cx="332" cy="60" r="26" fill="#fff" opacity=".95"/>
-  <text x="332" y="69" font-size="24" text-anchor="middle">${badge}</text>
+  <g transform="translate(320,48)" fill="none" stroke="#2b6cb0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${GLYPH[icon]||GLYPH.sparkles}</g>
 </svg>`;
 }
 
