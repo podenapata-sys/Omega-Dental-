@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260618y";
+const VER = "20260619b";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -303,7 +303,7 @@ function buildTabs(s){
     <div class="ci-row"><div class="ci-ic">${ico("pin")}</div><div><strong ${bl("Address","ঠিকানা")}></strong><span ${bl("1252/3, East Monipur, Metro Pillar-267 (W), West Kazipara, Begum Rokeya Soroni, Dhaka","১২৫২/৩, পূর্ব মনিপুর, মেট্রো পিলার-২৬৭(ওয়াই), পশ্চিম কাজীপাড়া, বেগম রোকেয়া সরণি, ঢাকা")}></span></div></div>
     <div class="ci-row"><div class="ci-ic">${ico("clockw")}</div><div><strong ${bl("Hours","সময়")}></strong><span ${bl("Saturday – Thursday: 10:00 AM – 9:30 PM · Friday: 11:00 AM – 9:30 PM","শনিবার – বৃহস্পতিবার: সকাল ১০টা – রাত ৯:৩০ · শুক্রবার: দুপুর ১১টা – রাত ৯:৩০")}></span></div></div>
     <div class="ci-row"><div class="ci-ic">${ico("phone")}</div><div><strong ${bl("Phone","ফোন")}></strong><span>01706-516868 · WhatsApp 01713-241670</span></div></div>
-    <a class="btn btn-primary" style="margin-top:14px" href="https://www.google.com/maps/dir/?api=1&destination=1252%2F3%20East%20Monipur%2C%20Metro%20Pillar%20267(W)%2C%20West%20Kazipara%2C%20Begum%20Rokeya%20Sarani%2C%20Dhaka" target="_blank" rel="noopener" ${bl("Get Directions","দিকনির্দেশ নিন")}></a>
+    <a class="btn btn-primary" style="margin-top:14px" href="https://www.google.com/maps/dir/?api=1&destination=23.8018173%2C90.370624" target="_blank" rel="noopener" ${bl("Get Directions","দিকনির্দেশ নিন")}></a>
   </div>
 
   <div class="tab-panel" data-tab="review">
@@ -324,7 +324,7 @@ function page(s){
         <div class="fact"><span class="fact-ic">${ico(FACT_KEYS[i])}</span>
           <div><strong ${bl(f[0],s.bn.facts[i][0])}></strong><span ${bl(f[1],s.bn.facts[i][1])}></span></div></div>`).join("");
   const steps = s.en.process.map((_,i)=>`<article class="step-card"><span class="step-num">${i+1}</span><h3 ${bl(s.en.process[i],s.bn.process[i])}></h3></article>`).join("");
-  const jsonld=`{"@context":"https://schema.org","@type":"MedicalProcedure","name":"${esc(s.en.name)}","procedureType":"Dentistry","description":"${esc(s.en.meta)}","url":"${url}","provider":{"@type":"Dentist","name":"Omega Dental","telephone":"+8801713241670","address":{"@type":"PostalAddress","streetAddress":"1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni","addressLocality":"Dhaka","addressCountry":"BD"}}}`;
+  const jsonld=`{"@context":"https://schema.org","@type":"MedicalProcedure","name":"${esc(s.en.name)}","procedureType":"Dentistry","description":"${esc(s.en.meta)}","url":"${url}","provider":{"@type":"Dentist","name":"Omega Dental","telephone":"+8801713241670","address":{"@type":"PostalAddress","streetAddress":"1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni","addressLocality":"Dhaka","addressCountry":"BD"},"geo":{"@type":"GeoCoordinates","latitude":23.8018173,"longitude":90.370624}}}`;
   return `<!DOCTYPE html>
 <html lang="en" data-lang="en">
 <head>

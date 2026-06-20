@@ -9,8 +9,9 @@ const OMEGA = {
   whatsapp: "8801713241670",
   email: "omegadental@gmail.com",
   facebook: "https://www.facebook.com/profile.php?id=61586889212076",
-  maps: "https://maps.app.goo.gl/3RLwiXGBDZXptKE79",
-  mapEmbed: "https://www.google.com/maps?q=1252/3+East+Monipur,+Metro+Pillar+267(W),+West+Kazipara,+Begum+Rokeya+Sarani,+Dhaka&output=embed",
+  maps: "https://www.google.com/maps/place/OMEGA+Dental/@23.8018173,90.370624,16z/data=!3m1!4b1!4m7!3m6!1s0x3755c144389f4e91:0xf69deedb238d0bb7!8m2!3d23.8018173!4d90.370624!16s%2Fg%2F11ms4g6xnd",
+  mapDir: "https://www.google.com/maps/dir/?api=1&destination=23.8018173,90.370624",
+  mapEmbed: "https://www.google.com/maps?q=23.8018173,90.370624&z=16&output=embed",
 };
 
 /* ---------- Price list (single source of truth) ----------
