@@ -150,7 +150,7 @@ const I18N = {
     book_title:"Book your appointment",
     book_text:"Fill in the form and we'll confirm your appointment on WhatsApp, or message us directly.",
     f_name:"Full name", f_phone:"Phone number", f_service:"Treatment needed",
-    f_date:"Preferred date", f_time:"Preferred time", f_msg:"Where are you coming from? (optional)", f_msg_ph:"e.g. Mirpur, Kazipara, Uttara…",
+    f_date:"Preferred date", f_time:"Preferred time", f_date_ph:"Type or pick a date", f_time_ph:"Type or pick a time", f_today:"Today", f_tomorrow:"Tomorrow", f_msg:"Where are you coming from? (optional)", f_msg_ph:"e.g. Mirpur, Kazipara, Uttara…",
     f_emerg:"This is an emergency / I need same-day care",
     f_select:"Select a treatment", f_submit:"Send via WhatsApp", f_wa:"Quick WhatsApp",
     f_success:"Opening WhatsApp with your appointment details…",
@@ -244,7 +244,7 @@ const I18N = {
     book_title:"আপনার অ্যাপয়েন্টমেন্ট বুক করুন",
     book_text:"ফর্মটি পূরণ করুন, আমরা হোয়াটসঅ্যাপে আপনার অ্যাপয়েন্টমেন্ট নিশ্চিত করব, অথবা সরাসরি মেসেজ করুন।",
     f_name:"পুরো নাম", f_phone:"ফোন নম্বর", f_service:"প্রয়োজনীয় চিকিৎসা",
-    f_date:"পছন্দের তারিখ", f_time:"পছন্দের সময়", f_msg:"আপনি কোথা থেকে আসছেন? (ঐচ্ছিক)", f_msg_ph:"যেমন: মিরপুর, কাজীপাড়া, উত্তরা…",
+    f_date:"পছন্দের তারিখ", f_time:"পছন্দের সময়", f_date_ph:"তারিখ লিখুন বা বেছে নিন", f_time_ph:"সময় লিখুন বা বেছে নিন", f_today:"আজ", f_tomorrow:"আগামীকাল", f_msg:"আপনি কোথা থেকে আসছেন? (ঐচ্ছিক)", f_msg_ph:"যেমন: মিরপুর, কাজীপাড়া, উত্তরা…",
     f_emerg:"এটি জরুরি / আমার একই দিনে সেবা দরকার",
     f_select:"একটি চিকিৎসা নির্বাচন করুন", f_submit:"হোয়াটসঅ্যাপে পাঠান", f_wa:"দ্রুত হোয়াটসঅ্যাপ",
     f_success:"আপনার অ্যাপয়েন্টমেন্টের তথ্যসহ হোয়াটসঅ্যাপ খোলা হচ্ছে…",
@@ -362,7 +362,7 @@ function applyI18n(){
     el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph")));
   });
   // dynamic blocks
-  renderServices(); renderPricing(); renderCalcOptions(); renderTestimonials(); renderBookOptions();
+  renderServices(); renderPricing(); renderCalcOptions(); renderTestimonials(); renderBookOptions(); renderBookSlots();
   renderSteps(); renderTech(); renderFaqs(); renderTips(); renderCalcBA(); renderMarquee();
   const tgl = document.getElementById("langText");
   if (tgl) tgl.textContent = t("lang_label");
@@ -631,6 +631,31 @@ function renderBookOptions(){
   sel.innerHTML = `<option value="">${t("f_select")}</option>` +
     PRICES.map(p=>`<option value="${p.n}">${p.n}</option>`).join("");
   if(cur) sel.value = cur;
+}
+function renderBookSlots(){
+  // upcoming dates — "type or select" datalist
+  const dl = document.getElementById("dateList");
+  if(dl){
+    const loc = LANG==="bn" ? "bn-BD" : "en-GB";
+    let opts = "";
+    for(let i=0;i<14;i++){
+      const d = new Date(); d.setDate(d.getDate()+i);
+      const label = d.toLocaleDateString(loc,{weekday:"short",day:"numeric",month:"short",year:"numeric"});
+      const prefix = i===0 ? t("f_today")+" — " : i===1 ? t("f_tomorrow")+" — " : "";
+      opts += `<option value="${prefix}${label}"></option>`;
+    }
+    dl.innerHTML = opts;
+  }
+  // clinic time slots (10:00 AM – 9:30 PM, 30-min)
+  const tl = document.getElementById("timeList");
+  if(tl){
+    let opts = "";
+    for(let m=600;m<=1290;m+=30){              // minutes from midnight
+      let h=Math.floor(m/60), mi=m%60, ap=h<12?"AM":"PM", h12=h%12||12;
+      opts += `<option value="${h12}:${String(mi).padStart(2,"0")} ${ap}"></option>`;
+    }
+    tl.innerHTML = opts;
+  }
 }
 function submitBooking(e){
   e.preventDefault();
