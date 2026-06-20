@@ -390,6 +390,8 @@ a{color:inherit;text-decoration:none}
 .book-side p{color:var(--muted);margin:14px 0 22px}
 .book-side .btn{margin-bottom:14px}
 .book-side .wa-note{display:flex;gap:13px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:var(--shadow-sm)}
+.wa-phone{display:inline-block;font-family:var(--f-head);font-weight:800;font-size:1.32rem;letter-spacing:.4px;color:var(--teal-dd);line-height:1.15;transition:color .15s}
+.wa-phone:hover{color:var(--navy)}
 
 /* footer */
 .footer{background:linear-gradient(180deg,var(--navy),#0d1f3d);color:#cfe0e8;padding:66px 0 28px;position:relative}
@@ -479,6 +481,7 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
   .navlist.open{display:flex}
   .navlist .nav-actions{margin:6px 0 0;flex-wrap:wrap}
   .burger{display:flex}
+  .nav-lang{display:inline-flex;margin-left:auto;padding:9px 13px;font-size:.82rem}
   .stats-grid{grid-template-columns:1fr 1fr;gap:16px}
   .hero-stats .stats-grid{grid-template-columns:1fr 1fr;gap:12px}
   .callback-form{flex-wrap:nowrap}

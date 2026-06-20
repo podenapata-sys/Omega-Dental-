@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260618s";
+const VER = "20260618t";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -356,9 +356,9 @@ function page(s){
     <a href="../blog/index.html" ${bl("Blog","ব্লগ")}></a>
     <div class="nav-actions">
       <a class="btn btn-primary" href="../index.html#book" ${bl("Book Appointment","অ্যাপয়েন্টমেন্ট নিন")}></a>
-      <button class="lang-toggle" id="langToggle"><span id="langText">বাংলা</span></button>
     </div>
   </div>
+  <button class="lang-toggle nav-lang" id="langToggle"><span id="langText">বাংলা</span></button>
   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav></header>
 
