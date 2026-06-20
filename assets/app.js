@@ -150,7 +150,7 @@ const I18N = {
     book_title:"Book your appointment",
     book_text:"Fill in the form and we'll confirm your appointment on WhatsApp, or message us directly.",
     f_name:"Full name", f_phone:"Phone number", f_service:"Treatment needed",
-    f_date:"Preferred date", f_time:"Preferred time", f_msg:"Message (optional)",
+    f_date:"Preferred date", f_time:"Preferred time", f_msg:"Where are you coming from? (optional)", f_msg_ph:"e.g. Mirpur, Kazipara, Uttara…",
     f_emerg:"This is an emergency / I need same-day care",
     f_select:"Select a treatment", f_submit:"Send via WhatsApp", f_wa:"Quick WhatsApp",
     f_success:"Opening WhatsApp with your appointment details…",
@@ -244,7 +244,7 @@ const I18N = {
     book_title:"আপনার অ্যাপয়েন্টমেন্ট বুক করুন",
     book_text:"ফর্মটি পূরণ করুন, আমরা হোয়াটসঅ্যাপে আপনার অ্যাপয়েন্টমেন্ট নিশ্চিত করব, অথবা সরাসরি মেসেজ করুন।",
     f_name:"পুরো নাম", f_phone:"ফোন নম্বর", f_service:"প্রয়োজনীয় চিকিৎসা",
-    f_date:"পছন্দের তারিখ", f_time:"পছন্দের সময়", f_msg:"বার্তা (ঐচ্ছিক)",
+    f_date:"পছন্দের তারিখ", f_time:"পছন্দের সময়", f_msg:"আপনি কোথা থেকে আসছেন? (ঐচ্ছিক)", f_msg_ph:"যেমন: মিরপুর, কাজীপাড়া, উত্তরা…",
     f_emerg:"এটি জরুরি / আমার একই দিনে সেবা দরকার",
     f_select:"একটি চিকিৎসা নির্বাচন করুন", f_submit:"হোয়াটসঅ্যাপে পাঠান", f_wa:"দ্রুত হোয়াটসঅ্যাপ",
     f_success:"আপনার অ্যাপয়েন্টমেন্টের তথ্যসহ হোয়াটসঅ্যাপ খোলা হচ্ছে…",
@@ -652,7 +652,7 @@ function submitBooking(e){
     data.date ? `Preferred date: ${data.date}` : "",
     data.time ? `Preferred time: ${data.time}` : "",
     data.emerg ? "⚠️ EMERGENCY / same-day requested" : "",
-    data.msg ? `Message: ${data.msg}` : "",
+    data.msg ? `Coming from: ${data.msg}` : "",
   ].filter(Boolean);
   const url = `https://wa.me/${OMEGA.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`;
   const note = document.getElementById("bookSuccess");
