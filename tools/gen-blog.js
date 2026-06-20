@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260618x";
+const VER = "20260618y";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 
@@ -140,16 +140,16 @@ const header = `
   <a class="brand" href="../index.html"><span class="logo-anim"><img src="../assets/mark.png?v=2" alt="Omega Dental"></span><span>OMEGA<small>DENTAL</small></span></a>
   <div class="navlist" id="navlist">
     <a href="../index.html#why" ${bl("About Us","আমাদের সম্পর্কে")}></a>
-    <a href="../index.html#services" ${bl("Our Services","আমাদের সেবা")}></a>
-    <a href="../index.html#contact" ${bl("Branch","শাখা")}></a>
-    <a href="../index.html#about" ${bl("Doctors","ডাক্তার")}></a>
+    <a href="../treatments.html" ${bl("Our Services","আমাদের সেবা")}></a>
+    <a href="../index.html#contact" ${bl("Contact","যোগাযোগ")}></a>
     <a href="../index.html#pricing" ${bl("Price List","মূল্য তালিকা")}></a>
     <a href="index.html" ${bl("Blog","ব্লগ")}></a>
+    <a href="../careers.html" ${bl("Careers","ক্যারিয়ার")}></a>
     <div class="nav-actions">
       <a class="btn btn-primary" href="../index.html#book" ${bl("Book Appointment","অ্যাপয়েন্টমেন্ট নিন")}></a>
-      <button class="lang-toggle" id="langToggle"><span id="langText">বাংলা</span></button>
     </div>
   </div>
+  <button class="lang-toggle nav-lang" id="langToggle"><span id="langText">বাংলা</span></button>
   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav></header>`;
 
@@ -228,7 +228,7 @@ fs.writeFileSync(path.join(blogDir,"index.html"),indexPage());
 // rebuild sitemap: home + service pages + blog
 const svcDir=path.join(__dirname,"..","services");
 const svc=fs.existsSync(svcDir)?fs.readdirSync(svcDir).filter(f=>f.endsWith(".html")):[];
-const urls=[`${SITE}/`, `${SITE}/treatments.html`, `${SITE}/blog/index.html`,
+const urls=[`${SITE}/`, `${SITE}/treatments.html`, `${SITE}/careers.html`, `${SITE}/blog/index.html`,
   ...svc.map(f=>`${SITE}/services/${f}`),
   ...ARTICLES.map(a=>`${SITE}/blog/${a.slug}.html`)];
 fs.writeFileSync(path.join(__dirname,"..","sitemap.xml"),
