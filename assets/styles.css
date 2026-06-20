@@ -10,6 +10,11 @@
   font-display:swap;
   unicode-range:U+0980-09FF,U+0964-0965,U+200C-200D,U+25CC;
 }
+/* animated glow for service cards */
+@property --svc-hue{syntax:"<number>";inherits:false;initial-value:0}
+@property --svc-rot{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes svcHue{to{--svc-hue:360}}
+@keyframes svcSpin{to{--svc-rot:360deg}}
 :root{
   --teal:#57C3AD; --teal-d:#3aa893; --teal-dd:#2c8a78;
   --blue:#2B6CB0; --blue-d:#1f5290; --navy:#13294e; --navy2:#1c3a63;
@@ -223,9 +228,31 @@ a{color:inherit;text-decoration:none}
 
 /* services — treatment catalog */
 .svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
-.svc-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s;overflow:hidden}
+.svc-card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s}
 .svc-card:hover{transform:translateY(-8px);box-shadow:var(--shadow)}
-.svc-img{display:block;height:150px;position:relative;overflow:hidden;background:var(--bg-soft)}
+/* rotating, hue-shifting glow halo behind each card */
+.svc-card::before{content:"";position:absolute;inset:-3px;z-index:-1;border-radius:calc(var(--r) + 3px);
+  background:conic-gradient(from var(--svc-rot),
+    hsl(calc(var(--svc-hue)) 90% 62%),
+    hsl(calc(var(--svc-hue) + 140) 90% 62%),
+    hsl(calc(var(--svc-hue) + 280) 90% 62%),
+    hsl(calc(var(--svc-hue)) 90% 62%));
+  filter:blur(12px);opacity:.32;transition:opacity .35s;
+  animation:svcSpin 6s linear infinite,svcHue 10s linear infinite}
+.svc-card:hover::before{opacity:.85}
+/* crisp gradient border ring */
+.svc-card::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:1.5px;pointer-events:none;
+  background:conic-gradient(from var(--svc-rot),
+    hsl(calc(var(--svc-hue)) 90% 60%),
+    hsl(calc(var(--svc-hue) + 140) 90% 60%),
+    hsl(calc(var(--svc-hue) + 280) 90% 60%),
+    hsl(calc(var(--svc-hue)) 90% 60%));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
+  opacity:.5;transition:opacity .35s;
+  animation:svcSpin 6s linear infinite,svcHue 10s linear infinite}
+.svc-card:hover::after{opacity:1}
+.svc-img{display:block;height:150px;position:relative;overflow:hidden;border-radius:calc(var(--r) - 1px) calc(var(--r) - 1px) 0 0;background:var(--bg-soft)}
 .svc-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
 .svc-card:hover .svc-img img{transform:scale(1.07)}
 .svc-body{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1}
@@ -529,4 +556,5 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
   .fc-1,.fc-2,.marquee-track,.hero .blob,.fab::after{animation:none}
   .hero h1,.hero p.lead,.hero .hero-cta,.hero .hero-badges,.hero-art{opacity:1;transform:none;animation:none}
   .reveal{opacity:1;transform:none;transition:none}
+  .svc-card::before,.svc-card::after{animation:none}
 }
