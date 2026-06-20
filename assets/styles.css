@@ -228,8 +228,8 @@ a{color:inherit;text-decoration:none}
 
 /* services — treatment catalog */
 .svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
-.svc-card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s}
-.svc-card:hover{transform:translateY(-8px);box-shadow:var(--shadow)}
+.svc-card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);transition:transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .35s ease}
+.svc-card:hover{transform:translateY(-6px) scale(1.03);box-shadow:var(--shadow)}
 /* rotating, hue-shifting glow halo behind each card */
 .svc-card::before{content:"";position:absolute;inset:-3px;z-index:-1;border-radius:calc(var(--r) + 3px);
   background:conic-gradient(from var(--svc-rot),
@@ -253,8 +253,8 @@ a{color:inherit;text-decoration:none}
   animation:svcSpin 6s linear infinite,svcHue 10s linear infinite}
 .svc-card:hover::after{opacity:1}
 .svc-img{display:block;height:150px;position:relative;overflow:hidden;border-radius:calc(var(--r) - 1px) calc(var(--r) - 1px) 0 0;background:var(--bg-soft)}
-.svc-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
-.svc-card:hover .svc-img img{transform:scale(1.07)}
+.svc-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.svc-card:hover .svc-img img{transform:scale(1.1)}
 .svc-body{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1}
 .svc-card h3{font-size:1.08rem;margin-bottom:7px;line-height:1.25}
 .svc-card h3 a{color:var(--navy)}
@@ -507,6 +507,14 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
 /* reveal on scroll */
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
+/* service cards: framer-style spring entrance (fade + slide + scale overshoot) */
+.svc-card.reveal{opacity:0;transform:translateY(40px) scale(.95);
+  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.34,1.56,.64,1)}
+.svc-card.reveal.in{opacity:1;transform:none}
+/* gentle per-column stagger within a grid row */
+.svc-grid .svc-card:nth-child(4n+2){transition-delay:.07s}
+.svc-grid .svc-card:nth-child(4n+3){transition-delay:.14s}
+.svc-grid .svc-card:nth-child(4n+4){transition-delay:.21s}
 
 /* responsive */
 @media(max-width:980px){
@@ -556,5 +564,6 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
   .fc-1,.fc-2,.marquee-track,.hero .blob,.fab::after{animation:none}
   .hero h1,.hero p.lead,.hero .hero-cta,.hero .hero-badges,.hero-art{opacity:1;transform:none;animation:none}
   .reveal{opacity:1;transform:none;transition:none}
+  .svc-card.reveal{opacity:1;transform:none;transition:none}
   .svc-card::before,.svc-card::after{animation:none}
 }
