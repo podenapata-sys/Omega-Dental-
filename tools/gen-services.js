@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260618r";
+const VER = "20260618s";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -351,8 +351,7 @@ function page(s){
   <div class="navlist" id="navlist">
     <a href="../index.html#why" ${bl("About Us","আমাদের সম্পর্কে")}></a>
     <a href="../treatments.html" ${bl("Our Services","আমাদের সেবা")}></a>
-    <a href="../index.html#contact" ${bl("Branch","শাখা")}></a>
-    <a href="../index.html#about" ${bl("Doctors","ডাক্তার")}></a>
+    <a href="../index.html#contact" ${bl("Contact","যোগাযোগ")}></a>
     <a href="../index.html#pricing" ${bl("Price List","মূল্য তালিকা")}></a>
     <a href="../blog/index.html" ${bl("Blog","ব্লগ")}></a>
     <div class="nav-actions">
