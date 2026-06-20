@@ -158,6 +158,9 @@ const I18N = {
     foot_links:"Quick Links", foot_services:"Services", foot_contact:"Contact",
     foot_rights:"All rights reserved.",
     nav_tech:"Technology", nav_faq:"FAQ",
+    nav_contact_link:"Contact",
+    cb_title:"Request a Free Callback", cb_ph:"Enter Your Number", cb_wa:"WhatsApp",
+    cb_success:"Thanks! Opening WhatsApp to confirm your callback…",
     nav_about_us:"About Us", nav_ourservices:"Our Services", nav_branch:"Branch",
     nav_doctors:"Doctors", nav_pricelist:"Price List", nav_blog:"Blog",
     svc_learn:"Learn more", book_now:"Book Now", view_all:"View All Treatments",
@@ -249,6 +252,9 @@ const I18N = {
     foot_links:"দ্রুত লিংক", foot_services:"সেবা", foot_contact:"যোগাযোগ",
     foot_rights:"সর্বস্বত্ব সংরক্ষিত।",
     nav_tech:"প্রযুক্তি", nav_faq:"প্রশ্নোত্তর",
+    nav_contact_link:"যোগাযোগ",
+    cb_title:"ফ্রি কলব্যাক অনুরোধ করুন", cb_ph:"আপনার নম্বর লিখুন", cb_wa:"হোয়াটসঅ্যাপ",
+    cb_success:"ধন্যবাদ! কলব্যাক নিশ্চিত করতে হোয়াটসঅ্যাপ খোলা হচ্ছে…",
     nav_about_us:"আমাদের সম্পর্কে", nav_ourservices:"আমাদের সেবা", nav_branch:"শাখা",
     nav_doctors:"ডাক্তার", nav_pricelist:"মূল্য তালিকা", nav_blog:"ব্লগ",
     svc_learn:"বিস্তারিত", book_now:"বুক করুন", view_all:"সব চিকিৎসা দেখুন",
@@ -696,6 +702,14 @@ document.addEventListener("DOMContentLoaded", ()=>{
     document.getElementById("book")?.scrollIntoView({behavior:"smooth"});
   });
   document.getElementById("bookForm")?.addEventListener("submit", submitBooking);
+  document.getElementById("callbackForm")?.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const num = document.getElementById("cbNumber").value.trim();
+    const msg = `📞 Omega Dental — Callback request\nPlease call me back at: ${num}`;
+    const note = document.getElementById("cbSuccess");
+    if(note){ note.textContent = t("cb_success"); note.style.display = "block"; }
+    window.open(`https://wa.me/${OMEGA.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+  });
 
   document.querySelectorAll(".ba-filter").forEach(b=>{
     b.addEventListener("click", ()=>{
