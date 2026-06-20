@@ -2,6 +2,14 @@
    OMEGA DENTAL — advanced / premium theme
    Gradient-mesh + glassmorphism on a clean clinical base
    ============================================================ */
+@font-face{
+  font-family:"Noto Sans Bengali";
+  src:url("fonts/noto-bengali.woff2") format("woff2");
+  font-weight:400 800;
+  font-style:normal;
+  font-display:swap;
+  unicode-range:U+0980-09FF,U+0964-0965,U+200C-200D,U+25CC;
+}
 :root{
   --teal:#57C3AD; --teal-d:#3aa893; --teal-dd:#2c8a78;
   --blue:#2B6CB0; --blue-d:#1f5290; --navy:#13294e; --navy2:#1c3a63;
@@ -19,7 +27,7 @@
   --r:20px; --r-lg:30px; --r-xl:38px; --maxw:1200px;
   --f-head:"Sora","Poppins",system-ui,sans-serif;
   --f-body:"Inter",system-ui,sans-serif;
-  --f-bn:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;
+  --f-bn:"Noto Sans Bengali","Hind Siliguri",system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
