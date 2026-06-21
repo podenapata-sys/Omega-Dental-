@@ -35,7 +35,7 @@ const PRICES = [
   { c:"general", n:"Temporary Filling", per:true, min:500, max:500 },
   { c:"general", n:"Composite Filling — Advance", per:true, min:2500, max:3000 },
   { c:"general", n:"Composite Filling — General", per:true, min:1000, max:1000 },
-  { c:"general", n:"GI Filling", per:true, min:1500, max:2000 },
+  { c:"general", n:"GIC Filling", per:true, min:1500, max:2000 },
   { c:"general", n:"Tooth Shaping", per:true, min:500, max:500 },
   { c:"general", n:"Dressing / Abscess Drainage", min:1000, max:1500 },
 
@@ -77,18 +77,23 @@ const PRICES = [
 
 /* ---------- Services (homepage grid) ---------- */
 const SERVICES = [
-  { icon:"🦷", pr:"৳1,000–1,500", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"সুস্থ মাড়ির জন্য প্লাক, টার্টার ও দাগ দূর করতে পেশাদার পরিষ্কার।" },
-  { icon:"🪥", pr:"৳1,000–3,000", en:"Tooth Fillings", bn:"দাঁতের ফিলিং", de:"Tooth-coloured composite & GI fillings that restore decayed teeth painlessly.", db:"ব্যথাহীনভাবে ক্ষয়প্রাপ্ত দাঁত ঠিক করতে দাঁতের রঙের কম্পোজিট ও জিআই ফিলিং।" },
-  { icon:"🌱", pr:"From ৳5,000", en:"Root Canal (RCT)", bn:"রুট ক্যানেল", de:"Save infected teeth with gentle single & multi-visit root canal therapy.", db:"সংক্রমিত দাঁত বাঁচাতে কোমল সিঙ্গেল ও মাল্টি-ভিজিট রুট ক্যানেল চিকিৎসা।" },
-  { icon:"👑", pr:"From ৳5,000", en:"Crowns & Bridges", bn:"ক্রাউন ও ব্রিজ", de:"Zirconia, PFM and composite crowns to rebuild strength and beauty.", db:"শক্তি ও সৌন্দর্য ফেরাতে জিরকোনিয়া, পিএফএম ও কম্পোজিট ক্রাউন।" },
-  { icon:"✨", pr:"৳12,000", en:"Teeth Whitening", bn:"দাঁত সাদা করা", de:"Brighten your smile several shades with safe professional whitening.", db:"নিরাপদ পেশাদার হোয়াইটেনিং-এ আপনার হাসি কয়েক শেড উজ্জ্বল করুন।" },
-  { icon:"💎", pr:"৳3,500–7,500", en:"Veneers", bn:"ভিনিয়ার", de:"Composite veneers to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে কম্পোজিট ভিনিয়ার।" },
-  { icon:"🦿", pr:"৳4,000–22,000", en:"Dentures", bn:"ডেনচার", de:"Partial, flexible and complete dentures for comfortable chewing.", db:"আরামে চিবানোর জন্য পার্শিয়াল, ফ্লেক্সিবল ও কমপ্লিট ডেনচার।" },
-  { icon:"📏", pr:"From ৳25,000", en:"Braces & Aligners", bn:"ব্রেসেস ও অ্যালাইনার", de:"Orthodontic braces and clear aligners to straighten misaligned teeth.", db:"আঁকাবাঁকা দাঁত সোজা করতে অর্থোডন্টিক ব্রেসেস ও ক্লিয়ার অ্যালাইনার।" },
-  { icon:"🔩", pr:"৳1,20,000+", en:"Dental Implants", bn:"ডেন্টাল ইমপ্লান্ট", de:"Permanent, natural-looking replacement for missing teeth.", db:"হারানো দাঁতের স্থায়ী, প্রাকৃতিক দেখতে প্রতিস্থাপন।" },
-  { icon:"🩺", pr:"৳1,000–12,000", en:"Extractions & Surgery", bn:"দাঁত তোলা ও সার্জারি", de:"Painless simple and surgical extractions including wisdom teeth.", db:"আক্কেল দাঁতসহ ব্যথাহীন সাধারণ ও সার্জিক্যাল দাঁত তোলা।" },
-  { icon:"🧒", pr:"From ৳1,000", en:"Kids Dentistry", bn:"শিশু দন্তচিকিৎসা", de:"Gentle paediatric care, milk-tooth treatment and check-ups for children.", db:"শিশুদের জন্য কোমল যত্ন, দুধ দাঁতের চিকিৎসা ও চেকআপ।" },
-  { icon:"💖", pr:"From ৳3,500", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", de:"Smile makeovers combining whitening, veneers and reshaping.", db:"হোয়াইটেনিং, ভিনিয়ার ও রিশেপিং মিলিয়ে স্মাইল মেকওভার।" },
+  { icon:"🦷", img:"scaling-polishing", slug:"scaling-polishing", pr:"৳1,000–1,500", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"সুস্থ মাড়ির জন্য প্লাক, টার্টার ও দাগ দূর করতে পেশাদার পরিষ্কার।" },
+  { icon:"💎", img:"veneers", slug:"veneers", pr:"৳3,500–7,500", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে কম্পোজিট ভিনিয়ার।" },
+  { icon:"🌱", img:"root-canal-rct", slug:"root-canal", pr:"From ৳5,000", en:"Root Canal Treatment (RCT)", bn:"রুট ক্যানেল চিকিৎসা (RCT)", de:"Save an infected tooth with gentle single & multi-visit root canal therapy.", db:"সংক্রমিত দাঁত বাঁচাতে কোমল সিঙ্গেল ও মাল্টি-ভিজিট রুট ক্যানেল চিকিৎসা।" },
+  { icon:"🪥", img:"tooth-fillings", slug:"tooth-fillings", pr:"৳1,000–3,000", en:"Tooth Filling", bn:"দাঁতের ফিলিং", de:"Tooth-coloured filling that restores a decayed tooth painlessly.", db:"ব্যথাহীনভাবে ক্ষয়প্রাপ্ত দাঁত ঠিক করতে দাঁতের রঙের ফিলিং।",
+    sub:[ {en:"Composite Filling",bn:"কম্পোজিট ফিলিং",slug:"tooth-fillings"}, {en:"GIC Filling",bn:"জিআইসি ফিলিং",slug:"tooth-fillings"}, {en:"Temporary Filling",bn:"অস্থায়ী ফিলিং",slug:"tooth-fillings"} ] },
+  { icon:"🌉", img:"crowns-bridges", slug:"crowns-bridges", pr:"From ৳22,000", dur:"1 Session", durbn:"১ সেশন", en:"Fiber Bridge", bn:"ফাইবার ব্রিজ", de:"Fixed fiber bridge to replace a missing tooth in a single session.", db:"একটি সেশনেই হারানো দাঁত প্রতিস্থাপনে স্থায়ী ফাইবার ব্রিজ।" },
+  { icon:"👑", img:"crowns-bridges", slug:"crowns-bridges", pr:"From ৳5,000", en:"Zirconia & PFM Crown", bn:"জিরকোনিয়া ও পিএফএম ক্রাউন", de:"Zirconia, PFM and composite crown to rebuild strength and beauty.", db:"শক্তি ও সৌন্দর্য ফেরাতে জিরকোনিয়া, পিএফএম ও কম্পোজিট ক্রাউন।" },
+  { icon:"🦿", img:"dentures", slug:"dentures", pr:"৳4,000–22,000", en:"Denture", bn:"ডেনচার", de:"Removable denture for comfortable chewing and a confident smile.", db:"আরামে চিবানো ও আত্মবিশ্বাসী হাসির জন্য ডেনচার।",
+    sub:[ {en:"Flexible Denture",bn:"ফ্লেক্সিবল ডেনচার",slug:"dentures"}, {en:"Partial Denture",bn:"পার্শিয়াল ডেনচার",slug:"dentures"}, {en:"Complete Denture",bn:"কমপ্লিট ডেনচার",slug:"dentures"} ] },
+  { icon:"🔩", img:"dental-implants", slug:"dental-implants", pr:"৳1,20,000+", en:"Dental Implant", bn:"ডেন্টাল ইমপ্লান্ট", de:"Permanent, natural-looking replacement for a missing tooth.", db:"হারানো দাঁতের স্থায়ী, প্রাকৃতিক দেখতে প্রতিস্থাপন।" },
+  { icon:"✨", img:"teeth-whitening", slug:"teeth-whitening", pr:"৳12,000", en:"Teeth Whitening", bn:"দাঁত সাদা করা", de:"Brighten your smile several shades with safe professional whitening.", db:"নিরাপদ পেশাদার হোয়াইটেনিং-এ আপনার হাসি কয়েক শেড উজ্জ্বল করুন।" },
+  { icon:"🩺", img:"extractions-surgery", slug:"extractions", pr:"৳1,000–12,000", en:"Painless Extraction & Surgery", bn:"ব্যথাহীন দাঁত তোলা ও সার্জারি", de:"Painless simple and surgical extraction including wisdom teeth.", db:"আক্কেল দাঁতসহ ব্যথাহীন সাধারণ ও সার্জিক্যাল দাঁত তোলা।" },
+  { icon:"🧒", img:"kids-dentistry", slug:"kids-dentistry", pr:"From ৳1,000", en:"Kids Dentistry", bn:"শিশু দন্তচিকিৎসা", de:"Gentle paediatric care, milk-tooth treatment and check-ups for children.", db:"শিশুদের জন্য কোমল যত্ন, দুধ দাঁতের চিকিৎসা ও চেকআপ।" },
+  { icon:"💖", img:"cosmetic-dentistry", slug:"cosmetic-dentistry", pr:"From ৳3,500", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", de:"Smile makeovers combining whitening, veneer and reshaping.", db:"হোয়াইটেনিং, ভিনিয়ার ও রিশেপিং মিলিয়ে স্মাইল মেকওভার।" },
+  { icon:"📏", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳25,000", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত সোজা ও কামড় ঠিক করতে অর্থোডন্টিক চিকিৎসা।",
+    sub:[ {en:"Braces",bn:"ব্রেসেস",slug:"braces-aligners"} ] },
+  { icon:"😁", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳50,000", en:"Aligner", bn:"অ্যালাইনার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"দাঁত গোপনে সোজা করতে প্রায় অদৃশ্য ক্লিয়ার অ্যালাইনার।" },
 ];
 
 /* ---------- i18n strings ---------- */
@@ -123,7 +128,7 @@ const I18N = {
     pricing_eyebrow:"Transparent Pricing",
     pricing_title:"Treatment price list",
     pricing_text:"Clear, upfront pricing for every treatment. Prices in Bangladeshi Taka (৳).",
-    pricing_th1:"Treatment", pricing_th2:"Price (BDT)", per_tooth:"per tooth",
+    pricing_th1:"Treatment", pricing_th2:"Price (BDT)", per_tooth:"Per Tooth",
     ba_eyebrow:"Real Results",
     ba_title:"Before & after smiles",
     ba_text:"Drag the slider to see the transformation our patients enjoy.",
@@ -411,17 +416,19 @@ const SVC_TONE = ["#dff3ee","#cfe0f7","#ffe7cf","#e3f7f1","#e7ecfb","#fde7d6"];
 function renderServices(){
   const wrap = document.getElementById("servicesGrid");
   if(!wrap) return;
-  wrap.innerHTML = SERVICES.map((s,i)=>{
-    const slug = SVC_SLUG[s.en];
-    const href = slug ? `services/${slug}.html` : "#book";
+  wrap.innerHTML = SERVICES.map((s)=>{
+    const href = s.slug ? `services/${s.slug}.html` : "#book";
     const name = LANG==="bn"?s.bn:s.en;
-    const img = s.en.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+    const sub = (s.sub||[]).map(o=>`<a class="svc-sub-chip" href="services/${o.slug}.html">${LANG==="bn"?o.bn:o.en}</a>`).join("");
+    const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
     return `
     <article class="svc-card">
-      <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${img}.svg?v=2" alt="${name}" loading="lazy"></a>
+      <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${s.img}.svg?v=2" alt="${name}" loading="lazy"></a>
       <div class="svc-body">
         <h3><a href="${href}">${name}</a></h3>
         <p>${LANG==="bn"?s.db:s.de}</p>
+        ${sub?`<div class="svc-sub">${sub}</div>`:""}
+        ${dur}
         <div class="svc-foot">
           <span class="svc-price">${s.pr}</span>
           <a class="btn btn-primary svc-book" href="#book" data-service="${s.en}">${t("book_now")}</a>
@@ -441,12 +448,11 @@ function renderPricing(){
     html += `<tr class="price-cat"><td colspan="2">${LANG==="bn"?CATS[cat].bn:CATS[cat].en}</td></tr>`;
     items.forEach(p=>{
       const price = p.min===p.max ? `৳ ${fmt(p.min)}` : `৳ ${fmt(p.min)} – ${fmt(p.max)}`;
-      const tags = [];
-      if(p.per) tags.push(`<span class="tag">${t("per_tooth")}</span>`);
-      if(p.note) tags.push(`<span class="tag tag-soft">${p.note}</span>`);
+      const noteTag = p.note ? ` <span class="tag tag-soft">${p.note}</span>` : "";
+      const perLabel = p.per ? `<span class="pprice-per">${t("per_tooth")}</span>` : "";
       html += `<tr>
-        <td><span class="pname">${p.n}</span> ${tags.join(" ")}</td>
-        <td class="pprice">${price}</td></tr>`;
+        <td><span class="pname">${p.n}</span>${noteTag}</td>
+        <td class="pprice">${price}${perLabel}</td></tr>`;
     });
   });
   wrap.innerHTML = html;
