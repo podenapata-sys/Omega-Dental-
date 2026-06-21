@@ -17,32 +17,36 @@ const OMEGA = {
 /* ---------- Price list (single source of truth) ----------
    min/max in BDT used by the cost calculator.
    perTooth => quantity selector shown.                       */
+// Ordered to mirror the homepage service-menu serial.
 const CATS = {
-  general:   { en: "Preventive & General", bn: "প্রিভেন্টিভ ও জেনারেল" },
-  cosmetic:  { en: "Cosmetic Dentistry",   bn: "কসমেটিক ডেন্টিস্ট্রি" },
+  general:   { en: "Scaling, Polishing & Filling", bn: "স্কেলিং, পলিশিং ও ফিলিং" },
+  cosmetic:  { en: "Veneer & Cosmetic",     bn: "ভিনিয়ার ও কসমেটিক" },
   endo:      { en: "Root Canal (Endodontics)", bn: "রুট ক্যানেল (এন্ডোডন্টিক্স)" },
-  crown:     { en: "Crowns & Bridges",     bn: "ক্রাউন ও ব্রিজ" },
-  denture:   { en: "Dentures",             bn: "ডেনচার" },
-  ortho:     { en: "Orthodontics",         bn: "অর্থোডন্টিক্স" },
-  surgery:   { en: "Oral Surgery & Extractions", bn: "ওরাল সার্জারি ও দাঁত তোলা" },
-  implant:   { en: "Dental Implants",       bn: "ডেন্টাল ইমপ্লান্ট" },
+  crown:     { en: "Bridge & Crown",        bn: "ব্রিজ ও ক্রাউন" },
+  denture:   { en: "Denture",               bn: "ডেনচার" },
+  implant:   { en: "Dental Implant",        bn: "ডেন্টাল ইমপ্লান্ট" },
+  surgery:   { en: "Extraction & Oral Surgery", bn: "দাঁত তোলা ও ওরাল সার্জারি" },
+  ortho:     { en: "Orthodontic & Aligner", bn: "অর্থোডন্টিক ও অ্যালাইনার" },
 };
 
 const PRICES = [
+  // 1. Scaling & Polishing  +  4. Tooth Filling
   { c:"general", n:"Scaling", min:1500, max:1500 },
   { c:"general", n:"Polishing", min:1000, max:1000 },
   { c:"general", n:"Gum Treatment", min:8500, max:8500 },
-  { c:"general", n:"Temporary Filling", per:true, min:500, max:500 },
   { c:"general", n:"Composite Filling — Advance", per:true, min:2500, max:3000 },
   { c:"general", n:"Composite Filling — General", per:true, min:1000, max:1000 },
   { c:"general", n:"GIC Filling", per:true, min:1500, max:2000 },
+  { c:"general", n:"Temporary Filling", per:true, min:500, max:500 },
   { c:"general", n:"Tooth Shaping", per:true, min:500, max:500 },
   { c:"general", n:"Dressing / Abscess Drainage", min:1000, max:1500 },
 
+  // 2. Composite Veneer  +  9. Teeth Whitening
   { c:"cosmetic", n:"Composite Veneer — Advance", note:"Warranty 5 Yrs · 3 Times", per:true, min:5500, max:7500 },
   { c:"cosmetic", n:"Composite Veneer — General", note:"Warranty 3 Yrs · 3 Times", per:true, min:3500, max:4000 },
   { c:"cosmetic", n:"Teeth Whitening", min:12000, max:12000 },
 
+  // 3. Root Canal Treatment (RCT)
   { c:"endo", n:"Root Canal Treatment (RCT)", per:true, min:5000, max:5000 },
   { c:"endo", n:"RCT — Wisdom Tooth", per:true, min:8000, max:8000 },
   { c:"endo", n:"Re-RCT", per:true, min:6500, max:6500 },
@@ -52,27 +56,32 @@ const PRICES = [
   { c:"endo", n:"Fiber Post — General", per:true, min:3500, max:3500 },
   { c:"endo", n:"Apisectomy", min:20000, max:25000 },
 
+  // 5. Fiber Bridge  +  6. Zirconia & PFM Crown
+  { c:"crown", n:"Fiber Bridge — Premium", note:"Warranty 2 Yrs · 2 Times", per:true, min:22000, max:24000 },
   { c:"crown", n:"Zirconia Crown", per:true, min:12000, max:15000 },
   { c:"crown", n:"PFM Crown — Advance", per:true, min:8000, max:8000 },
   { c:"crown", n:"PFM Crown — General", per:true, min:5000, max:5000 },
   { c:"crown", n:"Composite Crown", per:true, min:6500, max:6500 },
   { c:"crown", n:"Immediate Crown", per:true, min:3000, max:3000 },
-  { c:"crown", n:"Fiber Bridge — Premium", note:"Warranty 2 Yrs · 2 Times", per:true, min:22000, max:24000 },
 
-  { c:"denture", n:"Partial Denture", per:true, min:4000, max:5000 },
+  // 7. Denture
   { c:"denture", n:"Flexible Denture", per:true, min:8000, max:8000 },
+  { c:"denture", n:"Partial Denture", per:true, min:4000, max:5000 },
   { c:"denture", n:"Complete Denture", min:22000, max:22000 },
 
-  { c:"ortho", n:"Orthodontic Treatment", note:"+ Monthly 6,000", min:25000, max:25000 },
-  { c:"ortho", n:"Aligner Treatment", min:150000, max:250000 },
+  // 8. Dental Implant
+  { c:"implant", n:"Dental Implant", min:120000, max:150000 },
 
+  // 10. Painless Extraction & Surgery  (+ 11. Kids: milk-tooth)
   { c:"surgery", n:"Deciduous (Milk) Tooth Extraction", min:1000, max:1000 },
   { c:"surgery", n:"Permanent Tooth Extraction", min:2000, max:5000 },
   { c:"surgery", n:"Surgical Tooth Extraction", min:8000, max:12000 },
   { c:"surgery", n:"Frenectomy", min:3000, max:3000 },
   { c:"surgery", n:"Operculectomy", min:3000, max:3000 },
 
-  { c:"implant", n:"Dental Implant", min:120000, max:150000 },
+  // 13. Orthodontic Treatment  +  14. Aligner
+  { c:"ortho", n:"Orthodontic Treatment", note:"+ Monthly 6,000", min:25000, max:25000 },
+  { c:"ortho", n:"Aligner Treatment", min:150000, max:250000 },
 ];
 
 /* ---------- Services (homepage grid) ---------- */
@@ -93,7 +102,7 @@ const SERVICES = [
   { icon:"💖", img:"cosmetic-dentistry", slug:"cosmetic-dentistry", pr:"From ৳3,500", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", de:"Smile makeovers combining whitening, veneer and reshaping.", db:"হোয়াইটেনিং, ভিনিয়ার ও রিশেপিং মিলিয়ে স্মাইল মেকওভার।" },
   { icon:"📏", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳25,000", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত সোজা ও কামড় ঠিক করতে অর্থোডন্টিক চিকিৎসা।",
     sub:[ {en:"Braces",bn:"ব্রেসেস",slug:"braces-aligners"} ] },
-  { icon:"😁", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳50,000", en:"Aligner", bn:"অ্যালাইনার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"দাঁত গোপনে সোজা করতে প্রায় অদৃশ্য ক্লিয়ার অ্যালাইনার।" },
+  { icon:"😁", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳1,50,000", en:"Aligner", bn:"অ্যালাইনার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"দাঁত গোপনে সোজা করতে প্রায় অদৃশ্য ক্লিয়ার অ্যালাইনার।" },
 ];
 
 /* ---------- i18n strings ---------- */
