@@ -67,7 +67,7 @@ const PRICES = [
   // 7. Denture
   { c:"denture", n:"Flexible Denture", per:true, min:8000, max:8000 },
   { c:"denture", n:"Partial Denture", per:true, min:4000, max:5000 },
-  { c:"denture", n:"Complete Denture", min:22000, max:22000 },
+  { c:"denture", n:"Complete Denture", per:true, min:22000, max:22000 },
 
   // 8. Dental Implant
   { c:"implant", n:"Dental Implant", min:120000, max:150000 },
