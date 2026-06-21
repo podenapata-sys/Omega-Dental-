@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260619j";
+const VER = "20260619p";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 
@@ -24,7 +24,7 @@ const T = [
 ];
 
 const cards = T.map(([en,bn,price,img,detail,de,db])=>{
-  const href = detail ? `services/${detail}.html` : "#book";
+  const href = detail ? `services/${detail}.html` : "book.html";
   return `
       <article class="svc-card">
         <a class="svc-img" href="${href}"><img src="assets/services/${img}.svg?v=2" alt="${esc(en)}" loading="lazy"></a>
@@ -33,7 +33,7 @@ const cards = T.map(([en,bn,price,img,detail,de,db])=>{
           <p ${bl(de,db)}></p>
           <div class="svc-foot">
             <span class="svc-price">${esc(price)}</span>
-            <a class="btn btn-primary svc-book" href="#book" ${bl("Book Now","বুক করুন")}></a>
+            <a class="btn btn-primary svc-book" href="book.html" ${bl("Book Now","বুক করুন")}></a>
           </div>
         </div>
       </article>`;
@@ -67,7 +67,7 @@ const html = `<!DOCTYPE html>
     <a href="blog/index.html" ${bl("Blog","ব্লগ")}></a>
     <a href="careers.html" ${bl("Careers","ক্যারিয়ার")}></a>
     <div class="nav-actions">
-      <a class="btn btn-primary" href="index.html#book" ${bl("Book Appointment","অ্যাপয়েন্টমেন্ট নিন")}></a>
+      <a class="btn btn-primary" href="book.html" ${bl("Book Appointment","অ্যাপয়েন্টমেন্ট নিন")}></a>
     </div>
   </div>
   <button class="lang-toggle nav-lang" id="langToggle"><span id="langText">বাংলা</span></button>
@@ -85,7 +85,7 @@ const html = `<!DOCTYPE html>
 <section class="section" id="book" style="padding-top:24px"><div class="container">
   <div class="svc-grid">${cards}</div>
   <div style="text-align:center;margin-top:46px">
-    <a class="btn btn-primary" href="index.html#book" ${bl("Book an Appointment","অ্যাপয়েন্টমেন্ট নিন")}></a>
+    <a class="btn btn-primary" href="book.html" ${bl("Book an Appointment","অ্যাপয়েন্টমেন্ট নিন")}></a>
   </div>
 </div></section>
 

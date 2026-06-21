@@ -163,7 +163,10 @@ const I18N = {
     contact_dir:"Get Directions",
     book_eyebrow:"Appointments",
     book_title:"Book your appointment",
-    book_text:"Fill in the form and we'll confirm your appointment on WhatsApp, or message us directly.",
+    book_text:"Pick a treatment, date and time below — we'll confirm instantly on WhatsApp.",
+    book_side_eyebrow:"Prefer to talk?",
+    book_side_title:"Message or call us directly",
+    book_side_text:"Send us a quick WhatsApp message, call the clinic, or get directions — whatever is easiest for you.",
     f_name:"Full name", f_phone:"Phone number", f_service:"Treatment needed",
     f_date:"Preferred date", f_time:"Preferred time", f_date_ph:"Type or pick a date", f_time_ph:"Type or pick a time", f_today:"Today", f_tomorrow:"Tomorrow", f_msg:"Where are you coming from? (optional)", f_msg_ph:"e.g. Mirpur, Kazipara, Uttara…",
     f_emerg:"This is an emergency / I need same-day care",
@@ -257,7 +260,10 @@ const I18N = {
     contact_dir:"দিকনির্দেশ নিন",
     book_eyebrow:"অ্যাপয়েন্টমেন্ট",
     book_title:"আপনার অ্যাপয়েন্টমেন্ট বুক করুন",
-    book_text:"ফর্মটি পূরণ করুন, আমরা হোয়াটসঅ্যাপে আপনার অ্যাপয়েন্টমেন্ট নিশ্চিত করব, অথবা সরাসরি মেসেজ করুন।",
+    book_text:"নিচে চিকিৎসা, তারিখ ও সময় বেছে নিন — আমরা সঙ্গে সঙ্গে হোয়াটসঅ্যাপে নিশ্চিত করব।",
+    book_side_eyebrow:"সরাসরি কথা বলবেন?",
+    book_side_title:"মেসেজ বা কল করুন",
+    book_side_text:"দ্রুত হোয়াটসঅ্যাপ মেসেজ দিন, ক্লিনিকে কল করুন, অথবা দিকনির্দেশ নিন — যেটি আপনার জন্য সহজ।",
     f_name:"পুরো নাম", f_phone:"ফোন নম্বর", f_service:"প্রয়োজনীয় চিকিৎসা",
     f_date:"পছন্দের তারিখ", f_time:"পছন্দের সময়", f_date_ph:"তারিখ লিখুন বা বেছে নিন", f_time_ph:"সময় লিখুন বা বেছে নিন", f_today:"আজ", f_tomorrow:"আগামীকাল", f_msg:"আপনি কোথা থেকে আসছেন? (ঐচ্ছিক)", f_msg_ph:"যেমন: মিরপুর, কাজীপাড়া, উত্তরা…",
     f_emerg:"এটি জরুরি / আমার একই দিনে সেবা দরকার",
@@ -426,7 +432,7 @@ function renderServices(){
   const wrap = document.getElementById("servicesGrid");
   if(!wrap) return;
   wrap.innerHTML = SERVICES.map((s)=>{
-    const href = s.slug ? `services/${s.slug}.html` : "#book";
+    const href = s.slug ? `services/${s.slug}.html` : "book.html";
     const name = LANG==="bn"?s.bn:s.en;
     const sub = (s.sub||[]).map(o=>`<a class="svc-sub-chip" href="services/${o.slug}.html">${LANG==="bn"?o.bn:o.en}</a>`).join("");
     const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
@@ -440,7 +446,7 @@ function renderServices(){
         ${dur}
         <div class="svc-foot">
           <span class="svc-price">${s.pr}</span>
-          <a class="btn btn-primary svc-book" href="#book" data-service="${s.en}">${t("book_now")}</a>
+          <a class="btn btn-primary svc-book" href="book.html?service=${encodeURIComponent(s.en)}">${t("book_now")}</a>
         </div>
       </div>
     </article>`;}).join("");
@@ -723,6 +729,9 @@ function animateCounters(){
 /* ----- Wire up ----- */
 document.addEventListener("DOMContentLoaded", ()=>{
   applyI18n();
+  // prefill booking-page treatment from ?service=
+  try{ const q=new URLSearchParams(location.search).get("service"); const sel=document.getElementById("f_service");
+    if(q&&sel&&[...sel.options].some(o=>o.value===q)) sel.value=q; }catch(e){}
   renderBA("all");
 
   document.getElementById("langToggle")?.addEventListener("click", ()=> setLang(LANG==="en"?"bn":"en"));
@@ -738,9 +747,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("calcService")?.addEventListener("change", updateCalc);
   document.getElementById("calcQty")?.addEventListener("change", updateCalc);
   document.getElementById("calcBook")?.addEventListener("click", function(){
-    const sel = document.getElementById("f_service");
-    if(sel && this.dataset.service){ sel.value = this.dataset.service; }
-    document.getElementById("book")?.scrollIntoView({behavior:"smooth"});
+    const svc = this.dataset.service ? "?service="+encodeURIComponent(this.dataset.service) : "";
+    window.location.href = "book.html"+svc;
   });
   document.getElementById("bookForm")?.addEventListener("submit", submitBooking);
   document.getElementById("callbackForm")?.addEventListener("submit", (e)=>{

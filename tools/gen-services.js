@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260619j";
+const VER = "20260619p";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -294,7 +294,7 @@ function buildTabs(s){
       <div class="doc-card"><h3 ${bl(DOC.en[0],DOC.bn[0])}></h3>
         <div class="doc-role" ${bl(DOC.en[1],DOC.bn[1])}></div>
         <ul class="doc-creds">${creds}</ul>
-        <a class="btn btn-primary" href="../index.html#book" ${bl("Book with Dr. Afsana","ডা. আফসানার অ্যাপয়েন্টমেন্ট")}></a>
+        <a class="btn btn-primary" href="../book.html" ${bl("Book with Dr. Afsana","ডা. আফসানার অ্যাপয়েন্টমেন্ট")}></a>
       </div>
     </div>
   </div>
@@ -356,7 +356,7 @@ function page(s){
     <a href="../blog/index.html" ${bl("Blog","ব্লগ")}></a>
     <a href="../careers.html" ${bl("Careers","ক্যারিয়ার")}></a>
     <div class="nav-actions">
-      <a class="btn btn-primary" href="../index.html#book" ${bl("Book Appointment","অ্যাপয়েন্টমেন্ট নিন")}></a>
+      <a class="btn btn-primary" href="../book.html" ${bl("Book Appointment","অ্যাপয়েন্টমেন্ট নিন")}></a>
     </div>
   </div>
   <button class="lang-toggle nav-lang" id="langToggle"><span id="langText">বাংলা</span></button>
@@ -378,7 +378,7 @@ function page(s){
         <hr class="prod-div">
         <div class="prod-facts">${facts}</div>
         <div class="prod-cta">
-          <a class="btn btn-red" href="../index.html#book" ${bl("Book Appointment","অ্যাপয়েন্টমেন্ট নিন")}></a>
+          <a class="btn btn-red" href="../book.html" ${bl("Book Appointment","অ্যাপয়েন্টমেন্ট নিন")}></a>
           <a class="btn btn-wa" href="https://wa.me/8801713241670?text=${encodeURIComponent("I want to book: "+s.en.name)}" target="_blank" rel="noopener" ${bl("WhatsApp","হোয়াটসঅ্যাপ")}></a>
         </div>
       </div>
