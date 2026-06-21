@@ -97,7 +97,7 @@ const html = `<!DOCTYPE html>
 </div></footer>
 <a class="fab" href="https://wa.me/8801713241670" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
 <script>
-document.getElementById('yr').textContent=new Date().getFullYear();
+document.getElementById('yr').textContent='2025';
 function setLang(l){document.documentElement.setAttribute('data-lang',l);document.body.classList.toggle('bn',l==='bn');try{localStorage.setItem('omega_lang',l)}catch(e){}
 document.querySelectorAll('[data-en]').forEach(function(el){el.textContent=(l==='bn'?el.getAttribute('data-bn'):el.getAttribute('data-en'));});
 var t=document.getElementById('langText');if(t)t.textContent=(l==='bn'?'EN':'বাংলা');}
