@@ -181,7 +181,7 @@ const I18N = {
     cb_success:"Thanks! Opening WhatsApp to confirm your callback…",
     nav_about_us:"About Us", nav_ourservices:"Our Services", nav_branch:"Branch",
     nav_doctors:"Doctors", nav_pricelist:"Price List", nav_blog:"Blog", nav_careers:"Careers",
-    svc_learn:"Learn more", book_now:"Book Now", explore:"Explore Now", view_all:"View All Treatments",
+    svc_learn:"Learn more", book_now:"Book Now", view_all:"View All Treatments",
     dd_gapfill:"Teeth Gap Filling", dd_toothfill:"Tooth Filling", dd_implant:"Dental Implant",
     dd_ortho:"Orthodontic Treatment", dd_scaling:"Teeth Scaling & Polishing",
     dd_wisdom:"Wisdom Teeth Removal", dd_rct:"Root Canal Treatment (RCT)", dd_more:"More Services",
@@ -278,7 +278,7 @@ const I18N = {
     cb_success:"ধন্যবাদ! কলব্যাক নিশ্চিত করতে হোয়াটসঅ্যাপ খোলা হচ্ছে…",
     nav_about_us:"আমাদের সম্পর্কে", nav_ourservices:"আমাদের সেবা", nav_branch:"শাখা",
     nav_doctors:"ডাক্তার", nav_pricelist:"মূল্য তালিকা", nav_blog:"ব্লগ", nav_careers:"ক্যারিয়ার",
-    svc_learn:"বিস্তারিত", book_now:"বুক করুন", explore:"বিস্তারিত দেখুন", view_all:"সব চিকিৎসা দেখুন",
+    svc_learn:"বিস্তারিত", book_now:"বুক করুন", view_all:"সব চিকিৎসা দেখুন",
     dd_gapfill:"দাঁতের ফাঁক ফিলিং", dd_toothfill:"দাঁতের ফিলিং", dd_implant:"ডেন্টাল ইমপ্লান্ট",
     dd_ortho:"অর্থোডন্টিক চিকিৎসা", dd_scaling:"স্কেলিং ও পলিশিং",
     dd_wisdom:"আক্কেল দাঁত তোলা", dd_rct:"রুট ক্যানেল চিকিৎসা (RCT)", dd_more:"আরও সেবা",
@@ -431,20 +431,25 @@ const SVC_TONE = ["#dff3ee","#cfe0f7","#ffe7cf","#e3f7f1","#e7ecfb","#fde7d6"];
 function renderServices(){
   const wrap = document.getElementById("servicesGrid");
   if(!wrap) return;
-  const arrow = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`;
   wrap.innerHTML = SERVICES.map((s)=>{
     const href = s.slug ? `services/${s.slug}.html` : "book.html";
     const name = LANG==="bn"?s.bn:s.en;
+    const sub = (s.sub||[]).map(o=>`<a class="svc-sub-chip" href="services/${o.slug}.html">${LANG==="bn"?o.bn:o.en}</a>`).join("");
+    const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
     return `
-    <a class="dcard" href="${href}" aria-label="${name}">
-      <img class="dcard-bg" src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy">
-      <span class="dcard-ov"></span>
-      <div class="dcard-body">
-        <h3 class="dcard-name">${name}<span class="dcard-flag">${s.icon}</span></h3>
-        <div class="dcard-price">${s.pr}</div>
-        <div class="dcard-cta"><span>${t("explore")}</span> ${arrow}</div>
+    <article class="svc-card">
+      <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"></a>
+      <div class="svc-body">
+        <h3><a href="${href}">${name}</a></h3>
+        <p>${LANG==="bn"?s.db:s.de}</p>
+        ${sub?`<div class="svc-sub">${sub}</div>`:""}
+        ${dur}
+        <div class="svc-foot">
+          <span class="svc-price">${s.pr}</span>
+          <a class="btn btn-primary svc-book" href="book.html?service=${encodeURIComponent(s.en)}">${t("book_now")}</a>
+        </div>
       </div>
-    </a>`;}).join("");
+    </article>`;}).join("");
 }
 
 /* ----- Pricing table (grouped by category) ----- */
@@ -807,7 +812,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
   toTop?.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
 
   // scroll reveal
-  const revealEls = document.querySelectorAll(".sec-head, .dcard, .svc-card, .step-card, .tech-card, .test-card, .tip-card, .ci-row, .why-art, .doc-photo, .hero-photo, .calc-card, .calc-ba");
+  const revealEls = document.querySelectorAll(".sec-head, .svc-card, .step-card, .tech-card, .test-card, .tip-card, .ci-row, .why-art, .doc-photo, .hero-photo, .calc-card, .calc-ba");
   revealEls.forEach(el=>el.classList.add("reveal"));
   const rob = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); rob.unobserve(e.target); }});

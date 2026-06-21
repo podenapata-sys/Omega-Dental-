@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260619s";
+const VER = "20260619t";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 
@@ -23,19 +23,20 @@ const T = [
   ["Cosmetic Dentistry","কসমেটিক ডেন্টিস্ট্রি","From ৳3,500","cosmetic-dentistry","cosmetic-dentistry","Smile makeovers: whitening, veneers, reshaping.","স্মাইল মেকওভার: হোয়াইটেনিং, ভিনিয়ার, রিশেপিং।"],
 ];
 
-const arrow = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`;
 const cards = T.map(([en,bn,price,img,detail,de,db])=>{
   const href = detail ? `services/${detail}.html` : "book.html";
   return `
-      <a class="dcard" href="${href}" aria-label="${esc(en)}">
-        <img class="dcard-bg" src="assets/services/${img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${img}.svg?v=3'" alt="${esc(en)}" loading="lazy">
-        <span class="dcard-ov"></span>
-        <div class="dcard-body">
-          <h3 class="dcard-name" ${bl(en,bn)}></h3>
-          <div class="dcard-price">${esc(price)}</div>
-          <div class="dcard-cta"><span ${bl("Explore Now","বিস্তারিত দেখুন")}></span> ${arrow}</div>
+      <article class="svc-card">
+        <a class="svc-img" href="${href}"><img src="assets/services/${img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${img}.svg?v=3'" alt="${esc(en)}" loading="lazy"></a>
+        <div class="svc-body">
+          <h3><a href="${href}" ${bl(en,bn)}></a></h3>
+          <p ${bl(de,db)}></p>
+          <div class="svc-foot">
+            <span class="svc-price">${esc(price)}</span>
+            <a class="btn btn-primary svc-book" href="book.html" ${bl("Book Now","বুক করুন")}></a>
+          </div>
         </div>
-      </a>`;
+      </article>`;
 }).join("");
 
 const html = `<!DOCTYPE html>

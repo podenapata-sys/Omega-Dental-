@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260619s";
+const VER = "20260619t";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -21,12 +21,6 @@ const IC = {
 function ico(n,sz){return `<svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${sz?` style="width:${sz}px;height:${sz}px"`:""}>${IC[n]||IC.checkc}</svg>`;}
 const FACT_KEYS = ["checkc","clock","award","shield"]; // procedure, visits, success/material, hygiene
 const THUMB_POOL = ["teeth-whitening","scaling-polishing","tooth-fillings","crowns-bridges","dental-implants","braces-aligners","dentures","root-canal-rct"];
-// sub-options shown as chips on the relevant detail pages (moved off the cinematic cards)
-const SUBS = {
-  "tooth-fillings":[["Composite Filling","কম্পোজিট ফিলিং"],["GI Filling","জিআই ফিলিং"],["Temporary Filling","অস্থায়ী ফিলিং"]],
-  "dentures":[["Flexible Denture","ফ্লেক্সিবল ডেনচার"],["Partial Denture","পার্শিয়াল ডেনচার"],["Complete Denture","কমপ্লিট ডেনচার"]],
-  "braces-aligners":[["Braces","ব্রেসেস"],["Clear Aligner","ক্লিয়ার অ্যালাইনার"]],
-};
 
 const SERVICES = [
   { slug:"root-canal", icon:"🌱", img:"root-canal-rct",
@@ -381,7 +375,6 @@ function page(s){
         <h1 ${bl(s.en.name,s.bn.name)}></h1>
         <div class="prod-price" ${bl(s.en.price,s.bn.price)}></div>
         <p class="prod-desc" ${bl(s.en.desc,s.bn.desc)}></p>
-        ${SUBS[s.slug]?`<div class="prod-sub">${SUBS[s.slug].map(o=>`<span class="svc-sub-chip" ${bl(o[0],o[1])}></span>`).join("")}</div>`:""}
         <hr class="prod-div">
         <div class="prod-facts">${facts}</div>
         <div class="prod-cta">
