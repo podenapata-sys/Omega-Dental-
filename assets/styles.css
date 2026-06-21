@@ -246,6 +246,35 @@ a{color:inherit;text-decoration:none}
 
 /* services — treatment catalog */
 .svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+
+/* cinematic image-overlay service cards (DestinationCard port) */
+.dcard{position:relative;display:block;aspect-ratio:3/4;border-radius:var(--r);overflow:hidden;background:var(--navy);color:#fff;
+  box-shadow:0 0 40px -15px rgba(43,108,176,.5),0 16px 38px rgba(19,41,78,.16);
+  transition:transform .5s cubic-bezier(.34,1.4,.5,1),box-shadow .5s ease}
+.dcard:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 0 60px -12px rgba(43,108,176,.65),0 24px 54px rgba(19,41,78,.3)}
+.dcard-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.dcard:hover .dcard-bg{transform:scale(1.1)}
+.dcard-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(19,41,78,.94),rgba(43,108,176,.5) 34%,rgba(43,108,176,.12) 56%,transparent 72%)}
+.dcard-body{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:20px}
+.dcard-name{font-family:var(--f-head);font-weight:800;font-size:1.22rem;line-height:1.18;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.45);margin:0}
+.dcard-flag{font-size:1rem;margin-left:4px}
+.dcard-price{font-family:var(--f-head);font-weight:700;font-size:.95rem;color:rgba(255,255,255,.92);margin-top:6px}
+.dcard-cta{margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:rgba(87,195,173,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:11px 15px;
+  font-family:var(--f-head);font-weight:700;font-size:.85rem;letter-spacing:.01em;transition:background .3s,border-color .3s}
+.dcard:hover .dcard-cta{background:rgba(87,195,173,.42);border-color:rgba(255,255,255,.5)}
+.dcard-cta svg{width:18px;height:18px;flex:0 0 auto;transition:transform .3s}
+.dcard:hover .dcard-cta svg{transform:translateX(4px)}
+.dcard.reveal{opacity:0;transform:translateY(40px) scale(.96);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.34,1.56,.64,1)}
+.dcard.reveal.in{opacity:1;transform:none}
+.svc-grid .dcard:nth-child(4n+2){transition-delay:.07s}
+.svc-grid .dcard:nth-child(4n+3){transition-delay:.14s}
+.svc-grid .dcard:nth-child(4n+4){transition-delay:.21s}
+@media (prefers-reduced-motion:reduce){.dcard,.dcard-bg,.dcard-cta svg{transition:none}.dcard.reveal{opacity:1;transform:none}}
+/* sub-options on detail pages */
+.prod-sub{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 6px}
+
 /* rotating conic-gradient border (BorderRotate effect) */
 .svc-card{position:relative;display:flex;flex-direction:column;
   border:2px solid transparent;border-radius:var(--r);box-shadow:var(--shadow-sm);
