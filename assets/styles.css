@@ -146,12 +146,12 @@ a{color:inherit;text-decoration:none}
 .nav-actions{display:flex;align-items:center;gap:10px;margin-left:8px}
 .nav-actions .btn{border-radius:12px;padding:11px 22px;font-size:.9rem}
 /* eye-catching Book Appointment CTA */
-.nav-actions .btn-primary{position:relative;overflow:hidden;font-weight:800;color:#fff;border:2px solid transparent;
+.nav-actions .btn-primary,a.btn[href*="book.html"],#calcBook{position:relative;overflow:hidden;font-weight:800;color:#fff;border:2px solid transparent;
   background:linear-gradient(120deg,#57C3AD,#2B6CB0 60%,#3a5fb0) padding-box,
     conic-gradient(from var(--svc-rot),#2B6CB0 0%,#57C3AD 37%,#d6f7ef 30%,#57C3AD 33%,#2B6CB0 40%,#2B6CB0 50%,#57C3AD 77%,#d6f7ef 80%,#57C3AD 83%,#2B6CB0 90%) border-box;
   animation:ctaPulse 2.4s ease-in-out infinite,svcSpin 5s linear infinite}
-.nav-actions .btn-primary::after{content:"";position:absolute;top:0;left:-65%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);transform:skewX(-20deg);pointer-events:none;animation:ctaShine 3.4s ease-in-out infinite}
-.nav-actions .btn-primary:hover{color:#fff;transform:translateY(-3px) scale(1.04);animation-play-state:paused}
+.nav-actions .btn-primary::after,a.btn[href*="book.html"]::after,#calcBook::after{content:"";position:absolute;top:0;left:-65%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);transform:skewX(-20deg);pointer-events:none;animation:ctaShine 3.4s ease-in-out infinite}
+.nav-actions .btn-primary:hover,a.btn[href*="book.html"]:hover,#calcBook:hover{color:#fff;transform:translateY(-3px) scale(1.04);animation-play-state:paused}
 @keyframes ctaPulse{0%,100%{box-shadow:0 8px 22px rgba(87,195,173,.40)}50%{box-shadow:0 12px 30px rgba(43,108,176,.55),0 0 0 5px rgba(87,195,173,.16)}}
 @keyframes ctaShine{0%{left:-65%}60%,100%{left:135%}}
 
@@ -615,5 +615,5 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
   .reveal{opacity:1;transform:none;transition:none}
   .svc-card.reveal{opacity:1;transform:none;transition:none}
   .svc-card{animation:none}
-  .nav-actions .btn-primary,.nav-actions .btn-primary::after{animation:none}
+  .nav-actions .btn-primary,a.btn[href*="book.html"],#calcBook,.nav-actions .btn-primary::after,a.btn[href*="book.html"]::after,#calcBook::after{animation:none}
 }
