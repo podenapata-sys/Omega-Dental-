@@ -220,9 +220,10 @@ a{color:inherit;text-decoration:none}
 .hero-badges span{display:inline-flex;align-items:center;gap:7px;background:var(--glass);border:1px solid var(--glass-brd);backdrop-filter:blur(10px);box-shadow:var(--shadow-sm);border-radius:999px;padding:9px 15px;font-size:.85rem;font-weight:600}
 .hero-badges span::before{content:"✓";color:var(--teal-dd);font-weight:800}
 .hero-art{position:relative}
-.hero-photo{border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/4.5;background:
+.hero-photo{position:relative;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/4.5;background:
   linear-gradient(135deg,#d6f2ec,#cfe0f7 55%,#dfe3fb);display:grid;place-items:center;border:6px solid rgba(255,255,255,.6)}
 .hero-photo svg{width:74%}
+.hero-photo-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
 .float-card{position:absolute;background:var(--glass);border:1px solid var(--glass-brd);backdrop-filter:blur(14px);border-radius:18px;box-shadow:var(--shadow);padding:14px 17px;display:flex;align-items:center;gap:12px}
 .float-card .fc-ic{width:44px;height:44px;border-radius:13px;background:var(--grad-brand);display:grid;place-items:center;font-size:1.3rem}
 .float-card strong{display:block;font-family:var(--f-head);color:var(--navy);font-size:.95rem}

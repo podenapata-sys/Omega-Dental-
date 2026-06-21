@@ -356,10 +356,10 @@ const POSTS = [
 
 /* ---------- Before/After cases (SVG placeholders) ---------- */
 const BA_CASES = [
-  { type:"whitening", before:"#cdbfa3", after:"#f5f3ec" },
-  { type:"veneers",   before:"#cdb196", after:"#f3f1ea" },
-  { type:"braces",    before:"#d8c7ad", after:"#f4f2ec" },
-  { type:"implants",  before:"#c9b79b", after:"#f1efe8" },
+  { type:"whitening", before:"#cdbfa3", after:"#f5f3ec", bImg:"assets/ba/whitening-before.jpg", aImg:"assets/ba/whitening-after.jpg" },
+  { type:"veneers",   before:"#cdb196", after:"#f3f1ea", bImg:"assets/ba/veneers-before.jpg",   aImg:"assets/ba/veneers-after.jpg" },
+  { type:"braces",    before:"#d8c7ad", after:"#f4f2ec", bImg:"assets/ba/braces-before.jpg",    aImg:"assets/ba/braces-after.jpg" },
+  { type:"implants",  before:"#c9b79b", after:"#f1efe8", bImg:"assets/ba/implants-before.jpg",  aImg:"assets/ba/implants-after.jpg" },
 ];
 
 /* ============================================================
@@ -438,7 +438,7 @@ function renderServices(){
     const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
     return `
     <article class="svc-card">
-      <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${s.img}.svg?v=2" alt="${name}" loading="lazy"></a>
+      <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=2'" alt="${name}" loading="lazy"></a>
       <div class="svc-body">
         <h3><a href="${href}">${name}</a></h3>
         <p>${LANG==="bn"?s.db:s.de}</p>
@@ -529,8 +529,8 @@ function renderCalcBA(){
   if(!el) return;
   const c = BA_CASES[0];
   el.innerHTML = `<div class="ba">
-      <img class="ba-after" src="${baSvg(c.after, t('ba_after'))}" alt="after">
-      <div class="ba-before-wrap"><img class="ba-before" src="${baSvg(c.before, t('ba_before'))}" alt="before"></div>
+      <img class="ba-after" src="${c.aImg}" data-fbcolor="${c.after}" data-fblabel="ba_after" alt="after">
+      <div class="ba-before-wrap"><img class="ba-before" src="${c.bImg}" data-fbcolor="${c.before}" data-fblabel="ba_before" alt="before"></div>
       <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="before after slider">
       <span class="ba-tag ba-tag-l">${t('ba_before')}</span>
       <span class="ba-tag ba-tag-r">${t('ba_after')}</span>
@@ -627,8 +627,8 @@ function renderBA(filter="all"){
   const list = BA_CASES.filter(c=>filter==="all"||c.type===filter);
   wrap.innerHTML = list.map((c,i)=>`
     <div class="ba" data-i="${i}">
-      <img class="ba-after" src="${baSvg(c.after, t('ba_after'))}" alt="after">
-      <div class="ba-before-wrap"><img class="ba-before" src="${baSvg(c.before, t('ba_before'))}" alt="before"></div>
+      <img class="ba-after" src="${c.aImg}" data-fbcolor="${c.after}" data-fblabel="ba_after" alt="after">
+      <div class="ba-before-wrap"><img class="ba-before" src="${c.bImg}" data-fbcolor="${c.before}" data-fblabel="ba_before" alt="before"></div>
       <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="before after slider">
       <span class="ba-tag ba-tag-l">${t('ba_before')}</span>
       <span class="ba-tag ba-tag-r">${t('ba_after')}</span>
@@ -637,6 +637,10 @@ function renderBA(filter="all"){
   wrap.querySelectorAll(".ba").forEach(initBA);
 }
 function initBA(el){
+  // fall back to colour placeholder if a before/after photo is missing
+  el.querySelectorAll("img[data-fbcolor]").forEach(img=>{
+    img.onerror = function(){ this.onerror=null; this.src = baSvg(this.dataset.fbcolor, t(this.dataset.fblabel)); };
+  });
   const range = el.querySelector(".ba-range");
   const clip = el.querySelector(".ba-before-wrap");
   const handle = el.querySelector(".ba-handle");
