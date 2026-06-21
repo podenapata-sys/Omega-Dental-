@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260619q";
+const VER = "20260619r";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 
@@ -27,7 +27,7 @@ const cards = T.map(([en,bn,price,img,detail,de,db])=>{
   const href = detail ? `services/${detail}.html` : "book.html";
   return `
       <article class="svc-card">
-        <a class="svc-img" href="${href}"><img src="assets/services/${img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${img}.svg?v=2'" alt="${esc(en)}" loading="lazy"></a>
+        <a class="svc-img" href="${href}"><img src="assets/services/${img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${img}.svg?v=3'" alt="${esc(en)}" loading="lazy"></a>
         <div class="svc-body">
           <h3><a href="${href}" ${bl(en,bn)}></a></h3>
           <p ${bl(de,db)}></p>

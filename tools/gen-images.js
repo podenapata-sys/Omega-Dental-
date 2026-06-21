@@ -58,15 +58,26 @@ function svg([name,a,b,icon,key]){
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>
     <filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0a2540" flood-opacity="0.18"/></filter>
   </defs>
+  <style>
+    .tooth{animation:floatY 4.2s ease-in-out infinite}
+    .b1{transform-box:fill-box;transform-origin:center;animation:drift 9s ease-in-out infinite}
+    .b2{transform-box:fill-box;transform-origin:center;animation:drift 11s ease-in-out infinite .6s}
+    .b3{animation:floatY 7s ease-in-out infinite .3s}
+    .motif{transform-box:fill-box;transform-origin:center;animation:twinkle 3.2s ease-in-out infinite}
+    .badge{transform-box:fill-box;transform-origin:center;animation:pop 3.6s ease-in-out infinite}
+    @keyframes floatY{50%{transform:translateY(-6px)}}
+    @keyframes drift{50%{transform:translate(5px,-5px) scale(1.05)}}
+    @keyframes twinkle{0%,100%{opacity:.6;transform:scale(.92)}50%{opacity:1;transform:scale(1.1)}}
+    @keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+    @media (prefers-reduced-motion:reduce){.tooth,.b1,.b2,.b3,.motif,.badge{animation:none}}
+  </style>
   <rect width="400" height="260" fill="url(#g)"/>
-  <circle cx="60" cy="40" r="70" fill="#fff" opacity=".10"/>
-  <circle cx="350" cy="220" r="90" fill="#fff" opacity=".08"/>
-  <circle cx="150" cy="135" r="78" fill="#fff" opacity=".22"/>
-  <g filter="url(#s)">${tooth(150,135,1.15,"#ffffff")}</g>
-  ${tooth(150,135,1.0,"url(#g)")}
-  ${motif(key)}
-  <circle cx="332" cy="60" r="26" fill="#fff" opacity=".95"/>
-  <g transform="translate(320,48)" fill="none" stroke="#2b6cb0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${GLYPH[icon]||GLYPH.sparkles}</g>
+  <circle class="b1" cx="60" cy="40" r="70" fill="#fff" opacity=".10"/>
+  <circle class="b2" cx="350" cy="220" r="90" fill="#fff" opacity=".08"/>
+  <circle class="b3" cx="150" cy="135" r="78" fill="#fff" opacity=".22"/>
+  <g class="tooth"><g filter="url(#s)">${tooth(150,135,1.15,"#ffffff")}</g>${tooth(150,135,1.0,"url(#g)")}</g>
+  <g class="motif">${motif(key)}</g>
+  <g class="badge"><circle cx="332" cy="60" r="26" fill="#fff" opacity=".95"/><g transform="translate(320,48)" fill="none" stroke="#2b6cb0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${GLYPH[icon]||GLYPH.sparkles}</g></g>
 </svg>`;
 }
 

@@ -438,7 +438,7 @@ function renderServices(){
     const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
     return `
     <article class="svc-card">
-      <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=2'" alt="${name}" loading="lazy"></a>
+      <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"></a>
       <div class="svc-body">
         <h3><a href="${href}">${name}</a></h3>
         <p>${LANG==="bn"?s.db:s.de}</p>
@@ -647,6 +647,20 @@ function initBA(el){
   const set = v=>{ clip.style.width = v+"%"; handle.style.left = v+"%"; };
   range.addEventListener("input", e=>set(e.target.value));
   set(50);
+  // one-time auto-sweep when first scrolled into view (signals it's draggable)
+  if(!window.matchMedia || !matchMedia("(prefers-reduced-motion: reduce)").matches){
+    const demo = ()=>{
+      el.classList.add("ba-anim");
+      const steps = [82,22,50]; let i=0;
+      const next = ()=>{ if(i>=steps.length){ el.classList.remove("ba-anim"); return; }
+        const v=steps[i++]; range.value=v; set(v); setTimeout(next, 760); };
+      setTimeout(next, 400);
+    };
+    if("IntersectionObserver" in window){
+      const io = new IntersectionObserver((es)=>{ es.forEach(e=>{ if(e.isIntersecting){ io.disconnect(); demo(); } }); }, {threshold:.4});
+      io.observe(el);
+    } else demo();
+  }
 }
 
 /* ----- Booking ----- */

@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260619q";
+const VER = "20260619r";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -319,7 +319,7 @@ function buildTabs(s){
 function page(s){
   const url = `${SITE}/services/${s.slug}.html`;
   const thumbs = [s.img, ...THUMB_POOL.filter(x=>x!==s.img)].slice(0,4);
-  const thumbHtml = thumbs.map((tg,i)=>`<button class="pthumb${i===0?' active':''}" type="button" data-src="../assets/services/${tg}.jpg?v=1" data-fallback="../assets/services/${tg}.svg?v=2"><img src="../assets/services/${tg}.jpg?v=1" onerror="this.onerror=null;this.src='../assets/services/${tg}.svg?v=2'" alt=""></button>`).join("");
+  const thumbHtml = thumbs.map((tg,i)=>`<button class="pthumb${i===0?' active':''}" type="button" data-src="../assets/services/${tg}.jpg?v=1" data-fallback="../assets/services/${tg}.svg?v=3"><img src="../assets/services/${tg}.jpg?v=1" onerror="this.onerror=null;this.src='../assets/services/${tg}.svg?v=3'" alt=""></button>`).join("");
   const facts = s.en.facts.map((f,i)=>`
         <div class="fact"><span class="fact-ic">${ico(FACT_KEYS[i])}</span>
           <div><strong ${bl(f[0],s.bn.facts[i][0])}></strong><span ${bl(f[1],s.bn.facts[i][1])}></span></div></div>`).join("");
@@ -367,7 +367,7 @@ function page(s){
   <div class="prod-card">
     <div class="prod-grid">
       <div class="prod-gallery">
-        <div class="prod-main"><img id="pmain" src="../assets/services/${s.img}.jpg?v=1" data-fallback="../assets/services/${s.img}.svg?v=2" onerror="this.onerror=null;this.src=this.getAttribute('data-fallback')" alt="${esc(s.en.name)}"></div>
+        <div class="prod-main"><img id="pmain" src="../assets/services/${s.img}.jpg?v=1" data-fallback="../assets/services/${s.img}.svg?v=3" onerror="this.onerror=null;this.src=this.getAttribute('data-fallback')" alt="${esc(s.en.name)}"></div>
         <div class="prod-thumbs">${thumbHtml}</div>
       </div>
       <div class="prod-info">
