@@ -261,10 +261,12 @@ a{color:inherit;text-decoration:none}
 .svc-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
 .svc-card:hover .svc-img img{transform:scale(1.1)}
 /* full-cover image with the service info overlaid on top */
-.svc-card:has(.svc-img){overflow:hidden;min-height:360px;justify-content:flex-end}
+.svc-card:has(.svc-img){overflow:hidden;min-height:360px;justify-content:flex-end;cursor:pointer}
 .svc-card:has(.svc-img) .svc-img{position:absolute;inset:0;width:100%;height:100%;border-radius:0;z-index:0}
-.svc-card:has(.svc-img) .svc-body{position:relative;z-index:1;flex:0 0 auto;padding:70px 18px 18px;
+.svc-card:has(.svc-img) .svc-body{position:relative;z-index:1;flex:0 0 auto;padding:70px 18px 18px;pointer-events:none;
   background:linear-gradient(to top,rgba(8,18,38,.96) 0%,rgba(8,18,38,.84) 36%,rgba(8,18,38,.42) 70%,transparent 100%)}
+/* clicking anywhere on the card opens the service; buttons/links stay independent */
+.svc-card:has(.svc-img) .svc-body a,.svc-card:has(.svc-img) .svc-body button{pointer-events:auto}
 .svc-card:has(.svc-img) h3 a{color:#fff}
 .svc-card:has(.svc-img) h3 a:hover{color:#cdeee6}
 .svc-card:has(.svc-img) .svc-body p{color:rgba(255,255,255,.85);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
