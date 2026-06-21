@@ -254,8 +254,9 @@ a{color:inherit;text-decoration:none}
       #2B6CB0 0%,#57C3AD 37%,#d6f7ef 30%,#57C3AD 33%,#2B6CB0 40%,
       #2B6CB0 50%,#57C3AD 77%,#d6f7ef 80%,#57C3AD 83%,#2B6CB0 90%) border-box;
   animation:svcSpin 5s linear infinite;
-  transition:transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .35s ease}
-.svc-card:hover{transform:translateY(-6px) scale(1.03);box-shadow:var(--shadow)}
+  box-shadow:0 0 40px -16px rgba(43,108,176,.45),var(--shadow-sm);
+  transition:transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .4s ease}
+.svc-card:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 0 60px -12px rgba(43,108,176,.6),var(--shadow)}
 .svc-img{display:block;height:150px;position:relative;overflow:hidden;border-radius:calc(var(--r) - 2px) calc(var(--r) - 2px) 0 0;background:var(--bg-soft)}
 .svc-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
 .svc-card:hover .svc-img img{transform:scale(1.1)}
