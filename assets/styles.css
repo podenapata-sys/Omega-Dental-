@@ -567,14 +567,35 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
 /* reveal on scroll */
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
-/* service cards: framer-style spring entrance (fade + slide + scale overshoot) */
-.svc-card.reveal{opacity:0;transform:translateY(40px) scale(.95);
-  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.34,1.56,.64,1)}
-.svc-card.reveal.in{opacity:1;transform:none}
+/* service cards: fade in from bottom — JS-observer fallback for browsers
+   without scroll-driven CSS. Uses the independent `translate` property so it
+   never fights the hover `transform`. */
+.svc-card.reveal{opacity:0;translate:0 40px;
+  transition:opacity .7s cubic-bezier(.22,1,.36,1),translate .7s cubic-bezier(.22,1,.36,1)}
+.svc-card.reveal.in{opacity:1;translate:0 0}
 /* gentle per-column stagger within a grid row */
 .svc-grid .svc-card:nth-child(4n+2){transition-delay:.07s}
 .svc-grid .svc-card:nth-child(4n+3){transition-delay:.14s}
 .svc-grid .svc-card:nth-child(4n+4){transition-delay:.21s}
+
+/* preferred path: pure-CSS scroll-driven fade-in-from-bottom (no JS, no libs).
+   Each card animates as it scrolls up into view; cards naturally stagger because
+   they enter the viewport at slightly different scroll positions. `svcSpin` (the
+   rotating border) is preserved by listing both animations with paired timelines. */
+@keyframes svcRise{
+  from{opacity:0;translate:0 46px}
+  to{opacity:1;translate:0 0}
+}
+@supports (animation-timeline:view()){
+  .svc-card{
+    animation:svcSpin 5s linear infinite, svcRise both linear;
+    animation-timeline:auto, view();
+    animation-range:normal, entry 0% entry 65%;
+  }
+  /* scroll-timeline now owns the reveal — silence the JS-observer fallback so the
+     two never double-fire (the `both`-fill animation overrides these anyway). */
+  .svc-card.reveal{opacity:1;translate:0 0;transition:none}
+}
 
 /* responsive */
 @media(max-width:980px){
@@ -625,7 +646,7 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
   .fc-1,.fc-2,.marquee-track,.hero .blob,.fab::after{animation:none}
   .hero h1,.hero p.lead,.hero .hero-cta,.hero .hero-badges,.hero-art{opacity:1;transform:none;animation:none}
   .reveal{opacity:1;transform:none;transition:none}
-  .svc-card.reveal{opacity:1;transform:none;transition:none}
-  .svc-card{animation:none}
+  .svc-card.reveal{opacity:1;transform:none;translate:0 0;transition:none}
+  .svc-card{animation:none;translate:0 0}
   .nav-actions .btn-primary,a.btn[href*="book.html"],#calcBook,.nav-actions .btn-primary::after,a.btn[href*="book.html"]::after,#calcBook::after{animation:none}
 }
