@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260619x";
+const VER = "20260619y";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 
@@ -77,7 +77,7 @@ const html = `<!DOCTYPE html>
 <section class="hero"><span class="blob b1"></span><span class="blob b2"></span>
   <div class="container" style="position:relative;z-index:1;padding:56px 0 40px;text-align:center;max-width:780px">
     <span class="eyebrow" ${bl("Our Services","আমাদের সেবা")}></span>
-    <h1 ${bl("All Dental Treatments","সকল দন্ত চিকিৎসা")} style="font-size:clamp(2rem,4.4vw,3rem)"></h1>
+    <h1 ${bl("All Dental Treatments","সকল দন্ত চিকিৎসা")}></h1>
     <p ${bl("Complete dental care with clear, upfront pricing. Tap any treatment to learn more or book.","স্বচ্ছ ও আগাম মূল্যে সম্পূর্ণ দন্তসেবা। বিস্তারিত জানতে বা বুক করতে যেকোনো চিকিৎসায় চাপুন।")} style="color:var(--muted);margin-top:12px"></p>
   </div>
 </section>

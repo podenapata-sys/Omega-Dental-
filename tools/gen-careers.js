@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260619x";
+const VER = "20260619y";
 const WA = "8801713241670"; // WhatsApp number for applications
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
@@ -98,7 +98,7 @@ const html = `<!DOCTYPE html>
 <section class="hero"><span class="blob b1"></span><span class="blob b2"></span>
   <div class="container" style="position:relative;z-index:1;padding:56px 0 40px;text-align:center;max-width:780px">
     <span class="eyebrow" ${bl("Careers","ক্যারিয়ার")}></span>
-    <h1 ${bl("Join the Omega Dental Team","ওমেগা ডেন্টাল টিমে যোগ দিন")} style="font-size:clamp(2rem,4.4vw,3rem)"></h1>
+    <h1 ${bl("Join the Omega Dental Team","ওমেগা ডেন্টাল টিমে যোগ দিন")}></h1>
     <p ${bl("Build your career with a modern, caring dental clinic in Dhaka. We're always looking for dedicated people who put patients first.","ঢাকার একটি আধুনিক, যত্নশীল ডেন্টাল ক্লিনিকে আপনার ক্যারিয়ার গড়ুন। আমরা সবসময় রোগী-কেন্দ্রিক নিবেদিত মানুষ খুঁজছি।")} style="color:var(--muted);margin-top:12px"></p>
   </div>
 </section>

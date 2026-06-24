@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260619x";
+const VER = "20260619y";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 
@@ -181,7 +181,7 @@ function articlePage(a){
 <section class="hero"><span class="blob b1"></span><span class="blob b2"></span>
   <div class="container" style="position:relative;z-index:1;padding:60px 0 44px;max-width:780px;text-align:center">
     <span class="eyebrow">${a.icon} <span ${bl("Dental Tips","ডেন্টাল টিপস")}></span></span>
-    <h1 ${bl(a.en.title,a.bn.title)} style="font-size:clamp(1.8rem,4vw,2.7rem)"></h1>
+    <h1 ${bl(a.en.title,a.bn.title)}></h1>
     <p ${bl(a.en.read+" · Omega Dental",a.bn.read+" · ওমেগা ডেন্টাল")} style="color:var(--muted);margin-top:10px"></p>
   </div>
 </section>
@@ -211,7 +211,7 @@ function indexPage(){
 <section class="hero"><span class="blob b1"></span><span class="blob b2"></span>
   <div class="container" style="position:relative;z-index:1;padding:60px 0 40px;text-align:center;max-width:760px">
     <span class="eyebrow" ${bl("Dental Tips","ডেন্টাল টিপস")}></span>
-    <h1 ${bl("Healthy-smile tips & guides","সুস্থ হাসির টিপস ও গাইড")} style="font-size:clamp(2rem,4.4vw,3rem)"></h1>
+    <h1 ${bl("Healthy-smile tips & guides","সুস্থ হাসির টিপস ও গাইড")}></h1>
     <p ${bl("Practical dental advice and treatment guides from our team.","আমাদের টিমের ব্যবহারিক দন্ত-পরামর্শ ও চিকিৎসা গাইড।")} style="color:var(--muted);margin-top:12px"></p>
   </div>
 </section>
