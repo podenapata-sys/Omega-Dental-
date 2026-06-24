@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260619z";
+const VER = "20260624a";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -392,7 +392,7 @@ ${buildTabs(s)}
   <div><h2 ${bl("Ready to book your "+s.en.name+"?","আপনার "+s.bn.name+" বুক করতে প্রস্তুত?")}></h2>
     <p ${bl("Same-day appointments available. Call us or message on WhatsApp and our team will help you right away.","একই দিনের অ্যাপয়েন্টমেন্ট আছে। কল করুন বা হোয়াটসঅ্যাপে মেসেজ দিন, আমাদের টিম সাথে সাথে সাহায্য করবে।")}></p></div>
   <div class="emerg-cta">
-    <a class="btn btn-orange" href="tel:+8801706516868">${ico("phone",18)} <span ${bl("Call Now","কল করুন")}></span></a>
+    <a class="btn btn-call" href="tel:+8801706516868">${ico("phone",18)} <span ${bl("Call Now","কল করুন")}></span></a>
     <a class="btn btn-wa" href="https://wa.me/8801713241670" target="_blank" rel="noopener">${ico("chat",18)} <span ${bl("WhatsApp","হোয়াটসঅ্যাপ")}></span></a>
   </div>
 </div></section>
