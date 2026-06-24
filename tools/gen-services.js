@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260624a";
+const VER = "20260624b";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -19,6 +19,21 @@ const IC = {
   clockw:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
 };
 function ico(n,sz){return `<svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${sz?` style="width:${sz}px;height:${sz}px"`:""}>${IC[n]||IC.checkc}</svg>`;}
+// Familiar everyday name people actually say [common_en, common_bn], keyed by slug
+const CN = {
+  "root-canal":["Tooth-root treatment","দাঁতের শিকড়ের চিকিৎসা"],
+  "dental-implants":["Permanent new tooth","নতুন দাঁত বসানো"],
+  "braces-aligners":["Teeth straightening","দাঁত সোজা করা (তার/ব্রেস)"],
+  "teeth-whitening":["Teeth whitening","দাঁত সাদা করা"],
+  "crowns-bridges":["Tooth cap & bridge","দাঁতের ক্যাপ ও নকল দাঁত"],
+  "dentures":["Removable teeth set","বাঁধানো দাঁত"],
+  "scaling-polishing":["Teeth cleaning","দাঁত পরিষ্কার"],
+  "tooth-fillings":["Cavity filling","দাঁত বাঁধাই"],
+  "veneers":["Front-tooth cover","দাঁতের আবরণ"],
+  "extractions":["Tooth removal","দাঁত ফেলা"],
+  "kids-dentistry":["Children's dental care","শিশুদের দাঁতের যত্ন"],
+  "cosmetic-dentistry":["Smile makeover","দাঁতের সৌন্দর্য চিকিৎসা"],
+};
 const FACT_KEYS = ["checkc","clock","award","shield"]; // procedure, visits, success/material, hygiene
 const THUMB_POOL = ["teeth-whitening","scaling-polishing","tooth-fillings","crowns-bridges","dental-implants","braces-aligners","dentures","root-canal-rct"];
 
@@ -373,6 +388,7 @@ function page(s){
       <div class="prod-info">
         <span class="eyebrow"><span ${bl("Our Services","আমাদের সেবা")}></span></span>
         <h1 ${bl(s.en.name,s.bn.name)}></h1>
+        ${CN[s.slug]?`<span class="svc-common prod-common" ${bl(CN[s.slug][0],CN[s.slug][1])}></span>`:""}
         <div class="prod-price" ${bl(s.en.price,s.bn.price)}></div>
         <p class="prod-desc" ${bl(s.en.desc,s.bn.desc)}></p>
         <hr class="prod-div">
@@ -409,7 +425,7 @@ document.getElementById('yr').textContent='2025';
 function setLang(l){document.documentElement.setAttribute('data-lang',l);document.body.classList.toggle('bn',l==='bn');try{localStorage.setItem('omega_lang',l)}catch(e){}
 document.querySelectorAll('[data-en]').forEach(function(el){el.textContent=(l==='bn'?el.getAttribute('data-bn'):el.getAttribute('data-en'));});
 var t=document.getElementById('langText');if(t)t.textContent=(l==='bn'?'EN':'বাংলা');}
-var L='en';try{L=localStorage.getItem('omega_lang')||'en'}catch(e){}
+var L='bn';try{L=localStorage.getItem('omega_lang')||'bn'}catch(e){}
 setLang(L);
 document.getElementById('langToggle').onclick=function(){setLang(document.documentElement.getAttribute('data-lang')==='en'?'bn':'en');};
 var b=document.getElementById('burger'),n=document.getElementById('navlist');if(b)b.onclick=function(){n.classList.toggle('open');};

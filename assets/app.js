@@ -31,78 +31,78 @@ const CATS = {
 
 const PRICES = [
   // 1. Scaling & Polishing  +  4. Tooth Filling
-  { c:"general", n:"Scaling", min:1500, max:1500 },
-  { c:"general", n:"Polishing", min:1000, max:1000 },
-  { c:"general", n:"Gum Treatment", min:8500, max:8500 },
-  { c:"general", n:"Composite Filling — Advance", per:true, min:2500, max:3000 },
-  { c:"general", n:"Composite Filling — General", per:true, min:1000, max:1000 },
-  { c:"general", n:"GI Filling", per:true, min:1500, max:2000 },
-  { c:"general", n:"Temporary Filling", per:true, min:500, max:500 },
-  { c:"general", n:"Tooth Shaping", per:true, min:500, max:500 },
-  { c:"general", n:"Dressing / Abscess Drainage", min:1000, max:1500 },
+  { c:"general", n:"Scaling", nb:"স্কেলিং", min:1500, max:1500 },
+  { c:"general", n:"Polishing", nb:"পলিশিং", min:1000, max:1000 },
+  { c:"general", n:"Gum Treatment", nb:"মাড়ির চিকিৎসা", min:8500, max:8500 },
+  { c:"general", n:"Composite Filling — Advance", nb:"কম্পোজিট ফিলিং — অ্যাডভান্স", per:true, min:2500, max:3000 },
+  { c:"general", n:"Composite Filling — General", nb:"কম্পোজিট ফিলিং — সাধারণ", per:true, min:1000, max:1000 },
+  { c:"general", n:"GI Filling", nb:"জিআই ফিলিং", per:true, min:1500, max:2000 },
+  { c:"general", n:"Temporary Filling", nb:"অস্থায়ী ফিলিং", per:true, min:500, max:500 },
+  { c:"general", n:"Tooth Shaping", nb:"দাঁতের শেপিং", per:true, min:500, max:500 },
+  { c:"general", n:"Dressing / Abscess Drainage", nb:"ড্রেসিং / পুঁজ বের করা", min:1000, max:1500 },
 
   // 2. Composite Veneer  +  9. Teeth Whitening
-  { c:"cosmetic", n:"Composite Veneer — Advance", note:"Warranty 5 Yrs · 3 Times", per:true, min:5500, max:7500 },
-  { c:"cosmetic", n:"Composite Veneer — General", note:"Warranty 3 Yrs · 3 Times", per:true, min:3500, max:4000 },
-  { c:"cosmetic", n:"Teeth Whitening", min:12000, max:12000 },
+  { c:"cosmetic", n:"Composite Veneer — Advance", nb:"কম্পোজিট ভিনিয়ার — অ্যাডভান্স", note:"Warranty 5 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৫ বছর · ৩ বার", per:true, min:5500, max:7500 },
+  { c:"cosmetic", n:"Composite Veneer — General", nb:"কম্পোজিট ভিনিয়ার — সাধারণ", note:"Warranty 3 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৩ বছর · ৩ বার", per:true, min:3500, max:4000 },
+  { c:"cosmetic", n:"Teeth Whitening", nb:"দাঁত সাদা করা", min:12000, max:12000 },
 
   // 3. Root Canal Treatment (RCT)
-  { c:"endo", n:"Root Canal Treatment (RCT)", per:true, min:5000, max:5000 },
-  { c:"endo", n:"RCT — Wisdom Tooth", per:true, min:8000, max:8000 },
-  { c:"endo", n:"Re-RCT", per:true, min:6500, max:6500 },
-  { c:"endo", n:"Single Visit RCT with Filling", per:true, min:12000, max:12000 },
-  { c:"endo", n:"Pulpectomy", min:5500, max:5500 },
-  { c:"endo", n:"Fiber Post — Advance", per:true, min:4500, max:4500 },
-  { c:"endo", n:"Fiber Post — General", per:true, min:3500, max:3500 },
-  { c:"endo", n:"Apisectomy", min:20000, max:25000 },
+  { c:"endo", n:"Root Canal Treatment (RCT)", nb:"রুট ক্যানেল চিকিৎসা (RCT)", per:true, min:5000, max:5000 },
+  { c:"endo", n:"RCT — Wisdom Tooth", nb:"রুট ক্যানেল — আক্কেল দাঁত", per:true, min:8000, max:8000 },
+  { c:"endo", n:"Re-RCT", nb:"পুনরায় রুট ক্যানেল", per:true, min:6500, max:6500 },
+  { c:"endo", n:"Single Visit RCT with Filling", nb:"এক ভিজিটে রুট ক্যানেল ও ফিলিং", per:true, min:12000, max:12000 },
+  { c:"endo", n:"Pulpectomy", nb:"পাল্পেকটমি", min:5500, max:5500 },
+  { c:"endo", n:"Fiber Post — Advance", nb:"ফাইবার পোস্ট — অ্যাডভান্স", per:true, min:4500, max:4500 },
+  { c:"endo", n:"Fiber Post — General", nb:"ফাইবার পোস্ট — সাধারণ", per:true, min:3500, max:3500 },
+  { c:"endo", n:"Apisectomy", nb:"অ্যাপিসেকটমি", min:20000, max:25000 },
 
   // 5. Fiber Bridge  +  6. Zirconia & PFM Crown
-  { c:"crown", n:"Fiber Bridge — Premium", note:"Warranty 2 Yrs · 2 Times", per:true, min:22000, max:24000 },
-  { c:"crown", n:"Zirconia Crown", per:true, min:12000, max:15000 },
-  { c:"crown", n:"PFM Crown — Advance", per:true, min:8000, max:8000 },
-  { c:"crown", n:"PFM Crown — General", per:true, min:5000, max:5000 },
-  { c:"crown", n:"Composite Crown", per:true, min:6500, max:6500 },
-  { c:"crown", n:"Immediate Crown", per:true, min:3000, max:3000 },
+  { c:"crown", n:"Fiber Bridge — Premium", nb:"ফাইবার ব্রিজ — প্রিমিয়াম", note:"Warranty 2 Yrs · 2 Times", noteb:"ওয়ারেন্টি ২ বছর · ২ বার", per:true, min:22000, max:24000 },
+  { c:"crown", n:"Zirconia Crown", nb:"জিরকোনিয়া ক্রাউন", per:true, min:12000, max:15000 },
+  { c:"crown", n:"PFM Crown — Advance", nb:"পিএফএম ক্রাউন — অ্যাডভান্স", per:true, min:8000, max:8000 },
+  { c:"crown", n:"PFM Crown — General", nb:"পিএফএম ক্রাউন — সাধারণ", per:true, min:5000, max:5000 },
+  { c:"crown", n:"Composite Crown", nb:"কম্পোজিট ক্রাউন", per:true, min:6500, max:6500 },
+  { c:"crown", n:"Immediate Crown", nb:"ইমিডিয়েট ক্রাউন", per:true, min:3000, max:3000 },
 
   // 7. Denture
-  { c:"denture", n:"Flexible Denture", per:true, min:8000, max:8000 },
-  { c:"denture", n:"Partial Denture", per:true, min:4000, max:5000 },
-  { c:"denture", n:"Complete Denture", per:true, min:22000, max:22000 },
+  { c:"denture", n:"Flexible Denture", nb:"ফ্লেক্সিবল ডেনচার", per:true, min:8000, max:8000 },
+  { c:"denture", n:"Partial Denture", nb:"পার্শিয়াল ডেনচার", per:true, min:4000, max:5000 },
+  { c:"denture", n:"Complete Denture", nb:"কমপ্লিট ডেনচার", per:true, min:22000, max:22000 },
 
   // 8. Dental Implant
-  { c:"implant", n:"Dental Implant", min:120000, max:150000 },
+  { c:"implant", n:"Dental Implant", nb:"ডেন্টাল ইমপ্লান্ট", min:120000, max:150000 },
 
   // 10. Painless Extraction & Surgery  (+ 11. Kids: milk-tooth)
-  { c:"surgery", n:"Deciduous (Milk) Tooth Extraction", min:1000, max:1000 },
-  { c:"surgery", n:"Permanent Tooth Extraction", min:2000, max:5000 },
-  { c:"surgery", n:"Surgical Tooth Extraction", min:8000, max:12000 },
-  { c:"surgery", n:"Frenectomy", min:3000, max:3000 },
-  { c:"surgery", n:"Operculectomy", min:3000, max:3000 },
+  { c:"surgery", n:"Deciduous (Milk) Tooth Extraction", nb:"দুধ দাঁত তোলা", min:1000, max:1000 },
+  { c:"surgery", n:"Permanent Tooth Extraction", nb:"স্থায়ী দাঁত তোলা", min:2000, max:5000 },
+  { c:"surgery", n:"Surgical Tooth Extraction", nb:"সার্জিক্যাল দাঁত তোলা", min:8000, max:12000 },
+  { c:"surgery", n:"Frenectomy", nb:"ফ্রেনেকটমি", min:3000, max:3000 },
+  { c:"surgery", n:"Operculectomy", nb:"অপারকুলেকটমি", min:3000, max:3000 },
 
   // 13. Orthodontic Treatment  +  14. Aligner
-  { c:"ortho", n:"Orthodontic Treatment", note:"+ Monthly 6,000", min:25000, max:25000 },
-  { c:"ortho", n:"Aligner Treatment", min:150000, max:250000 },
+  { c:"ortho", n:"Orthodontic Treatment", nb:"অর্থোডন্টিক চিকিৎসা", note:"+ Monthly 6,000", noteb:"+ মাসিক ৬,০০০", min:25000, max:25000 },
+  { c:"ortho", n:"Aligner Treatment", nb:"অ্যালাইনার চিকিৎসা", min:150000, max:250000 },
 ];
 
 /* ---------- Services (homepage grid) ---------- */
 const SERVICES = [
-  { icon:"🦷", img:"scaling-polishing", slug:"scaling-polishing", pr:"৳1,000–1,500", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"সুস্থ মাড়ির জন্য প্লাক, টার্টার ও দাগ দূর করতে পেশাদার পরিষ্কার।" },
-  { icon:"💎", img:"veneers", slug:"veneers", pr:"৳3,500–7,500", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে কম্পোজিট ভিনিয়ার।" },
-  { icon:"🌱", img:"root-canal-rct", slug:"root-canal", pr:"From ৳5,000", en:"Root Canal Treatment (RCT)", bn:"রুট ক্যানেল চিকিৎসা (RCT)", de:"Save an infected tooth with gentle single & multi-visit root canal therapy.", db:"সংক্রমিত দাঁত বাঁচাতে কোমল সিঙ্গেল ও মাল্টি-ভিজিট রুট ক্যানেল চিকিৎসা।" },
-  { icon:"🪥", img:"tooth-fillings", slug:"tooth-fillings", pr:"৳1,000–3,000", en:"Tooth Filling", bn:"দাঁতের ফিলিং", de:"Tooth-coloured filling that restores a decayed tooth painlessly.", db:"ব্যথাহীনভাবে ক্ষয়প্রাপ্ত দাঁত ঠিক করতে দাঁতের রঙের ফিলিং।",
+  { icon:"🦷", img:"scaling-polishing", slug:"scaling-polishing", pr:"৳1,000–1,500", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।" },
+  { icon:"💎", img:"veneers", slug:"veneers", pr:"৳3,500–7,500", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", cne:"Front-tooth cover", cn:"দাঁতের আবরণ", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।" },
+  { icon:"🌱", img:"root-canal-rct", slug:"root-canal", pr:"From ৳5,000", en:"Root Canal Treatment (RCT)", bn:"রুট ক্যানেল চিকিৎসা (RCT)", cne:"Tooth-root treatment", cn:"দাঁতের শিকড়ের চিকিৎসা", de:"Save an infected tooth with gentle single & multi-visit root canal therapy.", db:"ব্যথা ছাড়াই সংক্রমিত দাঁত না তুলে বাঁচানোর চিকিৎসা।" },
+  { icon:"🪥", img:"tooth-fillings", slug:"tooth-fillings", pr:"৳1,000–3,000", en:"Tooth Filling", bn:"দাঁতের ফিলিং", cne:"Cavity filling", cn:"দাঁত বাঁধাই", de:"Tooth-coloured filling that restores a decayed tooth painlessly.", db:"পোকা ধরা বা ক্ষয়ে যাওয়া দাঁত ব্যথা ছাড়াই ভরাট করে ঠিক করা।",
     sub:[ {en:"Composite Filling",bn:"কম্পোজিট ফিলিং",slug:"tooth-fillings"}, {en:"GI Filling",bn:"জিআই ফিলিং",slug:"tooth-fillings"}, {en:"Temporary Filling",bn:"অস্থায়ী ফিলিং",slug:"tooth-fillings"} ] },
-  { icon:"🌉", img:"crowns-bridges", slug:"crowns-bridges", pr:"From ৳22,000", dur:"1 Session", durbn:"১ সেশন", en:"Fiber Bridge", bn:"ফাইবার ব্রিজ", de:"Fixed fiber bridge to replace a missing tooth in a single session.", db:"একটি সেশনেই হারানো দাঁত প্রতিস্থাপনে স্থায়ী ফাইবার ব্রিজ।" },
-  { icon:"👑", img:"crowns-bridges", slug:"crowns-bridges", pr:"From ৳5,000", en:"Zirconia & PFM Crown", bn:"জিরকোনিয়া ও পিএফএম ক্রাউন", de:"Zirconia, PFM and composite crown to rebuild strength and beauty.", db:"শক্তি ও সৌন্দর্য ফেরাতে জিরকোনিয়া, পিএফএম ও কম্পোজিট ক্রাউন।" },
-  { icon:"🦿", img:"dentures", slug:"dentures", pr:"৳4,000–22,000", en:"Denture", bn:"ডেনচার", de:"Removable denture for comfortable chewing and a confident smile.", db:"আরামে চিবানো ও আত্মবিশ্বাসী হাসির জন্য ডেনচার।",
+  { icon:"🌉", img:"crowns-bridges", slug:"crowns-bridges", pr:"From ৳22,000", dur:"1 Session", durbn:"১ সিটিং", en:"Fiber Bridge", bn:"ফাইবার ব্রিজ", cne:"Gap-filling bridge", cn:"নকল দাঁত (ব্রিজ)", de:"Fixed fiber bridge to replace a missing tooth in a single session.", db:"এক সিটিংয়েই হারানো দাঁতের জায়গায় স্থায়ী নকল দাঁত।" },
+  { icon:"👑", img:"crowns-bridges", slug:"crowns-bridges", pr:"From ৳5,000", en:"Zirconia & PFM Crown", bn:"জিরকোনিয়া ও পিএফএম ক্রাউন", cne:"Tooth cap", cn:"দাঁতের ক্যাপ", de:"Zirconia, PFM and composite crown to rebuild strength and beauty.", db:"ভাঙা বা দুর্বল দাঁত ঢেকে শক্ত ও সুন্দর করতে দাঁতের ক্যাপ।" },
+  { icon:"🦿", img:"dentures", slug:"dentures", pr:"৳4,000–22,000", en:"Denture", bn:"ডেনচার", cne:"Removable teeth set", cn:"বাঁধানো দাঁত", de:"Removable denture for comfortable chewing and a confident smile.", db:"আরামে চিবানো ও সুন্দর হাসির জন্য খুলে-লাগানো যায় এমন নকল দাঁত।",
     sub:[ {en:"Flexible Denture",bn:"ফ্লেক্সিবল ডেনচার",slug:"dentures"}, {en:"Partial Denture",bn:"পার্শিয়াল ডেনচার",slug:"dentures"}, {en:"Complete Denture",bn:"কমপ্লিট ডেনচার",slug:"dentures"} ] },
-  { icon:"🔩", img:"dental-implants", slug:"dental-implants", pr:"৳1,20,000+", en:"Dental Implant", bn:"ডেন্টাল ইমপ্লান্ট", de:"Permanent, natural-looking replacement for a missing tooth.", db:"হারানো দাঁতের স্থায়ী, প্রাকৃতিক দেখতে প্রতিস্থাপন।" },
-  { icon:"✨", img:"teeth-whitening", slug:"teeth-whitening", pr:"৳12,000", en:"Teeth Whitening", bn:"দাঁত সাদা করা", de:"Brighten your smile several shades with safe professional whitening.", db:"নিরাপদ পেশাদার হোয়াইটেনিং-এ আপনার হাসি কয়েক শেড উজ্জ্বল করুন।" },
-  { icon:"🩺", img:"extractions-surgery", slug:"extractions", pr:"৳1,000–12,000", en:"Painless Extraction & Surgery", bn:"ব্যথাহীন দাঁত তোলা ও সার্জারি", de:"Painless simple and surgical extraction including wisdom teeth.", db:"আক্কেল দাঁতসহ ব্যথাহীন সাধারণ ও সার্জিক্যাল দাঁত তোলা।" },
-  { icon:"🧒", img:"kids-dentistry", slug:"kids-dentistry", pr:"From ৳1,000", en:"Kids Dentistry", bn:"শিশু দন্তচিকিৎসা", de:"Gentle paediatric care, milk-tooth treatment and check-ups for children.", db:"শিশুদের জন্য কোমল যত্ন, দুধ দাঁতের চিকিৎসা ও চেকআপ।" },
-  { icon:"💖", img:"cosmetic-dentistry", slug:"cosmetic-dentistry", pr:"From ৳3,500", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", de:"Smile makeovers combining whitening, veneer and reshaping.", db:"হোয়াইটেনিং, ভিনিয়ার ও রিশেপিং মিলিয়ে স্মাইল মেকওভার।" },
-  { icon:"📏", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳25,000", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত সোজা ও কামড় ঠিক করতে অর্থোডন্টিক চিকিৎসা।",
+  { icon:"🔩", img:"dental-implants", slug:"dental-implants", pr:"৳1,20,000+", en:"Dental Implant", bn:"ডেন্টাল ইমপ্লান্ট", cne:"Permanent new tooth", cn:"নতুন দাঁত বসানো", de:"Permanent, natural-looking replacement for a missing tooth.", db:"হারানো দাঁতের জায়গায় চিরস্থায়ী, আসল দাঁতের মতো নতুন দাঁত।" },
+  { icon:"✨", img:"teeth-whitening", slug:"teeth-whitening", pr:"৳12,000", en:"Teeth Whitening", bn:"দাঁত সাদা করা", cne:"Teeth whitening", cn:"দাঁত সাদা করা", de:"Brighten your smile several shades with safe professional whitening.", db:"নিরাপদে দাঁতের হলদে ভাব দূর করে কয়েক শেড উজ্জ্বল হাসি।" },
+  { icon:"🩺", img:"extractions-surgery", slug:"extractions", pr:"৳1,000–12,000", en:"Painless Extraction & Surgery", bn:"ব্যথাহীন দাঁত তোলা ও সার্জারি", cne:"Tooth removal", cn:"দাঁত ফেলা", de:"Painless simple and surgical extraction including wisdom teeth.", db:"আক্কেল দাঁতসহ যেকোনো দাঁত ব্যথা ছাড়াই তুলে ফেলা।" },
+  { icon:"🧒", img:"kids-dentistry", slug:"kids-dentistry", pr:"From ৳1,000", en:"Kids Dentistry", bn:"শিশু দন্তচিকিৎসা", cne:"Children's dental care", cn:"শিশুদের দাঁতের যত্ন", de:"Gentle paediatric care, milk-tooth treatment and check-ups for children.", db:"শিশুদের দুধ দাঁতের চিকিৎসা, কোমল যত্ন ও নিয়মিত চেকআপ।" },
+  { icon:"💖", img:"cosmetic-dentistry", slug:"cosmetic-dentistry", pr:"From ৳3,500", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", cne:"Smile makeover", cn:"দাঁতের সৌন্দর্য চিকিৎসা", de:"Smile makeovers combining whitening, veneer and reshaping.", db:"হাসি সুন্দর করতে দাঁত সাদা করা, আবরণ ও শেপ ঠিক করা।" },
+  { icon:"📏", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳25,000", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", cne:"Teeth straightening", cn:"দাঁত সোজা করা (তার/ব্রেস)", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত ও কামড় ঠিক করতে তার (ব্রেস) লাগিয়ে চিকিৎসা।",
     sub:[ {en:"Braces",bn:"ব্রেসেস",slug:"braces-aligners"} ] },
-  { icon:"😁", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳1,50,000", en:"Aligner", bn:"অ্যালাইনার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"দাঁত গোপনে সোজা করতে প্রায় অদৃশ্য ক্লিয়ার অ্যালাইনার।" },
+  { icon:"😁", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳1,50,000", en:"Aligner", bn:"অ্যালাইনার", cne:"Invisible aligner", cn:"অদৃশ্য তার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।" },
 ];
 
 /* ---------- i18n strings ---------- */
@@ -365,7 +365,7 @@ const BA_CASES = [
 /* ============================================================
    Rendering + interactions
    ============================================================ */
-let LANG = localStorage.getItem("omega_lang") || "en";
+let LANG = localStorage.getItem("omega_lang") || "bn";  // Bangladeshi audience → Bangla first
 
 function t(key){ return (I18N[LANG] && I18N[LANG][key]) ?? (I18N.en[key] ?? key); }
 function fmt(n){ return n.toLocaleString("en-IN"); } // 1,20,000 style grouping
@@ -434,6 +434,7 @@ function renderServices(){
   wrap.innerHTML = SERVICES.map((s)=>{
     const href = s.slug ? `services/${s.slug}.html` : "book.html";
     const name = LANG==="bn"?s.bn:s.en;
+    const common = LANG==="bn"?s.cn:s.cne;
     const sub = (s.sub||[]).map(o=>`<a class="svc-sub-chip" href="services/${o.slug}.html">${LANG==="bn"?o.bn:o.en}</a>`).join("");
     const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
     return `
@@ -441,6 +442,7 @@ function renderServices(){
       <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"></a>
       <div class="svc-body">
         <h3><a href="${href}">${name}</a></h3>
+        ${common?`<span class="svc-common">${common}</span>`:""}
         <p>${LANG==="bn"?s.db:s.de}</p>
         ${sub?`<div class="svc-sub">${sub}</div>`:""}
         ${dur}
@@ -463,10 +465,12 @@ function renderPricing(){
     html += `<tr class="price-cat"><td colspan="2">${LANG==="bn"?CATS[cat].bn:CATS[cat].en}</td></tr>`;
     items.forEach(p=>{
       const price = p.min===p.max ? `৳ ${fmt(p.min)}` : `৳ ${fmt(p.min)} – ${fmt(p.max)}`;
-      const noteTag = p.note ? ` <span class="tag tag-soft">${p.note}</span>` : "";
+      const pname = LANG==="bn" && p.nb ? p.nb : p.n;
+      const noteTxt = LANG==="bn" && p.noteb ? p.noteb : p.note;
+      const noteTag = noteTxt ? ` <span class="tag tag-soft">${noteTxt}</span>` : "";
       const perLabel = p.per ? `<span class="pprice-per">${t("per_tooth")}</span>` : "";
       html += `<tr>
-        <td><span class="pname">${p.n}</span>${noteTag}</td>
+        <td><span class="pname">${pname}</span>${noteTag}</td>
         <td class="pprice">${price}${perLabel}</td></tr>`;
     });
   });

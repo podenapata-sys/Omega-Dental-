@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" href="../assets/mark.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/styles.css?v=20260624a">
+<link rel="stylesheet" href="../assets/styles.css?v=20260624b">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"MedicalProcedure","name":"Dentures","procedureType":"Dentistry","description":"Partial, flexible &amp; complete dentures in Dhaka at Omega Dental from ৳4,000. Book with Dr. Afsana Haque.","url":"https://podenapata-sys.github.io/Omega-Dental-/services/dentures.html","provider":{"@type":"Dentist","name":"Omega Dental","telephone":"+8801713241670","address":{"@type":"PostalAddress","streetAddress":"1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni","addressLocality":"Dhaka","addressCountry":"BD"},"geo":{"@type":"GeoCoordinates","latitude":23.8018173,"longitude":90.370624}}}</script>
 </head>
 <body>
@@ -46,6 +46,7 @@
       <div class="prod-info">
         <span class="eyebrow"><span data-en="Our Services" data-bn="আমাদের সেবা"></span></span>
         <h1 data-en="Dentures" data-bn="ডেনচার"></h1>
+        <span class="svc-common prod-common" data-en="Removable teeth set" data-bn="বাঁধানো দাঁত"></span>
         <div class="prod-price" data-en="৳ 4,000" data-bn="৳ ৪,০০০"></div>
         <p class="prod-desc" data-en="Chew, speak and smile with confidence again with custom partial, flexible and complete dentures." data-bn="কাস্টম পার্শিয়াল, ফ্লেক্সিবল ও কমপ্লিট ডেনচার দিয়ে আবার আত্মবিশ্বাসে চিবান, কথা বলুন ও হাসুন।"></p>
         <hr class="prod-div">
@@ -143,7 +144,7 @@ document.getElementById('yr').textContent='2025';
 function setLang(l){document.documentElement.setAttribute('data-lang',l);document.body.classList.toggle('bn',l==='bn');try{localStorage.setItem('omega_lang',l)}catch(e){}
 document.querySelectorAll('[data-en]').forEach(function(el){el.textContent=(l==='bn'?el.getAttribute('data-bn'):el.getAttribute('data-en'));});
 var t=document.getElementById('langText');if(t)t.textContent=(l==='bn'?'EN':'বাংলা');}
-var L='en';try{L=localStorage.getItem('omega_lang')||'en'}catch(e){}
+var L='bn';try{L=localStorage.getItem('omega_lang')||'bn'}catch(e){}
 setLang(L);
 document.getElementById('langToggle').onclick=function(){setLang(document.documentElement.getAttribute('data-lang')==='en'?'bn':'en');};
 var b=document.getElementById('burger'),n=document.getElementById('navlist');if(b)b.onclick=function(){n.classList.toggle('open');};
