@@ -363,6 +363,13 @@ a{color:inherit;text-decoration:none}
 .calc-field select,.calc-field input,.f-field input,.f-field select,.f-field textarea{width:100%;padding:14px 16px;border:1.6px solid var(--line);border-radius:13px;font:inherit;color:var(--ink);background:#fff;transition:.15s}
 .calc-top .calc-field select{border:0;box-shadow:0 6px 16px rgba(0,0,0,.18);font-weight:600}
 .calc-field select:focus,.calc-field input:focus,.f-field input:focus,.f-field select:focus,.f-field textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 4px rgba(87,195,173,.16)}
+/* date/time fields with a calendar / clock picker button */
+.f-pick{position:relative;display:block}
+.f-pick > input:not(.f-native){padding-right:48px}
+.f-native{position:absolute;right:12px;bottom:6px;width:1px;height:1px;padding:0;margin:0;border:0;opacity:0;pointer-events:none}
+.f-pick-btn{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:33px;height:33px;border:0;border-radius:9px;background:var(--bg-soft);color:var(--teal-dd);display:grid;place-items:center;cursor:pointer;transition:background .15s,color .15s}
+.f-pick-btn:hover{background:var(--grad-brand);color:#fff}
+.f-pick-btn svg{width:18px;height:18px}
 .calc-bottom{flex:1;background:linear-gradient(120deg,#2bb39a,#2B6CB0 55%,#3a5fb0);color:#fff;padding:40px 34px;text-align:center;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
 .calc-bottom::before{content:"";position:absolute;inset:0;background:radial-gradient(500px 240px at 80% -30%,rgba(255,255,255,.22),transparent)}
 .calc-bottom>*{position:relative}

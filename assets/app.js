@@ -745,9 +745,32 @@ function animateCounters(){
   });
 }
 
+/* ----- Calendar + clock pickers on the booking date/time fields ----- */
+function fmtPickedDate(v){            // v = "2026-06-28"
+  try{ const d = new Date(v+"T00:00:00");
+    return d.toLocaleDateString(LANG==="bn"?"bn-BD":"en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"});
+  }catch(e){ return v; }
+}
+function fmtPickedTime(v){            // v = "14:30" → "2:30 PM"
+  const p=v.split(":"); let h=+p[0]; const m=p[1]||"00";
+  const ap=h<12?"AM":"PM"; h=h%12; if(h===0)h=12;
+  return `${h}:${m} ${ap}`;
+}
+function wirePicker(inputId, nativeId, btnId, fmt){
+  const inp=document.getElementById(inputId), nat=document.getElementById(nativeId), btn=document.getElementById(btnId);
+  if(!inp||!nat||!btn) return;
+  btn.addEventListener("click", ()=>{ try{ nat.showPicker(); }catch(e){ nat.focus(); nat.click(); } });
+  nat.addEventListener("change", ()=>{ if(nat.value){ inp.value = fmt(nat.value); inp.dispatchEvent(new Event("input",{bubbles:true})); } });
+}
+function initBookPickers(){
+  wirePicker("f_date","f_date_native","f_date_btn", fmtPickedDate);
+  wirePicker("f_time","f_time_native","f_time_btn", fmtPickedTime);
+}
+
 /* ----- Wire up ----- */
 document.addEventListener("DOMContentLoaded", ()=>{
   applyI18n();
+  initBookPickers();
   // prefill booking-page treatment from ?service=
   try{ const q=new URLSearchParams(location.search).get("service"); const sel=document.getElementById("f_service");
     if(q&&sel&&[...sel.options].some(o=>o.value===q)) sel.value=q; }catch(e){}
