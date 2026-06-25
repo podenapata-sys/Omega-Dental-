@@ -86,23 +86,23 @@ const PRICES = [
 
 /* ---------- Services (homepage grid) ---------- */
 const SERVICES = [
-  { icon:"🦷", img:"scaling-polishing", slug:"scaling-polishing", pr:"৳1,000–1,500", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।" },
-  { icon:"💎", img:"veneers", slug:"veneers", pr:"৳3,500–7,500", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", cne:"Front-tooth cover", cn:"দাঁতের আবরণ", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।" },
-  { icon:"🌱", img:"root-canal-rct", slug:"root-canal", pr:"From ৳5,000", en:"Root Canal Treatment (RCT)", bn:"রুট ক্যানেল চিকিৎসা (RCT)", cne:"Tooth-root treatment", cn:"দাঁতের শিকড়ের চিকিৎসা", de:"Save an infected tooth with gentle single & multi-visit root canal therapy.", db:"ব্যথা ছাড়াই সংক্রমিত দাঁত না তুলে বাঁচানোর চিকিৎসা।" },
-  { icon:"🪥", img:"tooth-fillings", slug:"tooth-fillings", pr:"৳1,000–3,000", en:"Tooth Filling", bn:"দাঁতের ফিলিং", cne:"Cavity filling", cn:"দাঁত বাঁধাই", de:"Tooth-coloured filling that restores a decayed tooth painlessly.", db:"পোকা ধরা বা ক্ষয়ে যাওয়া দাঁত ব্যথা ছাড়াই ভরাট করে ঠিক করা।",
+  { icon:"🦷", img:"scaling-polishing", slug:"scaling-polishing", pr:"৳1,000–1,500", dur:"30–40 min", durbn:"৩০–৪০ মিনিট", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।" },
+  { icon:"💎", img:"veneers", slug:"veneers", pr:"৳3,500–7,500", dur:"1 Session", durbn:"১ সিটিং", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", cne:"Front-tooth cover", cn:"দাঁতের আবরণ", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।" },
+  { icon:"🌱", img:"root-canal-rct", slug:"root-canal", pr:"From ৳5,000", dur:"1–2 Sessions", durbn:"১–২ সিটিং", en:"Root Canal Treatment (RCT)", bn:"রুট ক্যানেল চিকিৎসা (RCT)", cne:"Tooth-root treatment", cn:"দাঁতের শিকড়ের চিকিৎসা", de:"Save an infected tooth with gentle single & multi-visit root canal therapy.", db:"ব্যথা ছাড়াই সংক্রমিত দাঁত না তুলে বাঁচানোর চিকিৎসা।" },
+  { icon:"🪥", img:"tooth-fillings", slug:"tooth-fillings", pr:"৳1,000–3,000", dur:"~30 min", durbn:"~৩০ মিনিট", en:"Tooth Filling", bn:"দাঁতের ফিলিং", cne:"Cavity filling", cn:"দাঁত বাঁধাই", de:"Tooth-coloured filling that restores a decayed tooth painlessly.", db:"পোকা ধরা বা ক্ষয়ে যাওয়া দাঁত ব্যথা ছাড়াই ভরাট করে ঠিক করা।",
     sub:[ {en:"Composite Filling",bn:"কম্পোজিট ফিলিং",slug:"tooth-fillings"}, {en:"GI Filling",bn:"জিআই ফিলিং",slug:"tooth-fillings"}, {en:"Temporary Filling",bn:"অস্থায়ী ফিলিং",slug:"tooth-fillings"} ] },
   { icon:"🌉", img:"crowns-bridges", slug:"crowns-bridges", pr:"From ৳22,000", dur:"1 Session", durbn:"১ সিটিং", en:"Fiber Bridge", bn:"ফাইবার ব্রিজ", cne:"Gap-filling bridge", cn:"নকল দাঁত (ব্রিজ)", de:"Fixed fiber bridge to replace a missing tooth in a single session.", db:"এক সিটিংয়েই হারানো দাঁতের জায়গায় স্থায়ী নকল দাঁত।" },
-  { icon:"👑", img:"crowns-bridges", slug:"crowns-bridges", pr:"From ৳5,000", en:"Zirconia & PFM Crown", bn:"জিরকোনিয়া ও পিএফএম ক্রাউন", cne:"Tooth cap", cn:"দাঁতের ক্যাপ", de:"Zirconia, PFM and composite crown to rebuild strength and beauty.", db:"ভাঙা বা দুর্বল দাঁত ঢেকে শক্ত ও সুন্দর করতে দাঁতের ক্যাপ।" },
-  { icon:"🦿", img:"dentures", slug:"dentures", pr:"৳4,000–22,000", en:"Denture", bn:"ডেনচার", cne:"Removable teeth set", cn:"বাঁধানো দাঁত", de:"Removable denture for comfortable chewing and a confident smile.", db:"আরামে চিবানো ও সুন্দর হাসির জন্য খুলে-লাগানো যায় এমন নকল দাঁত।",
+  { icon:"👑", img:"crowns-bridges", slug:"crowns-bridges", pr:"From ৳5,000", dur:"2 Sessions", durbn:"২ সিটিং", en:"Zirconia & PFM Crown", bn:"জিরকোনিয়া ও পিএফএম ক্রাউন", cne:"Tooth cap", cn:"দাঁতের ক্যাপ", de:"Zirconia, PFM and composite crown to rebuild strength and beauty.", db:"ভাঙা বা দুর্বল দাঁত ঢেকে শক্ত ও সুন্দর করতে দাঁতের ক্যাপ।" },
+  { icon:"🦿", img:"dentures", slug:"dentures", pr:"৳4,000–22,000", dur:"3–4 Visits", durbn:"৩–৪ ভিজিট", en:"Denture", bn:"ডেনচার", cne:"Removable teeth set", cn:"বাঁধানো দাঁত", de:"Removable denture for comfortable chewing and a confident smile.", db:"আরামে চিবানো ও সুন্দর হাসির জন্য খুলে-লাগানো যায় এমন নকল দাঁত।",
     sub:[ {en:"Flexible Denture",bn:"ফ্লেক্সিবল ডেনচার",slug:"dentures"}, {en:"Partial Denture",bn:"পার্শিয়াল ডেনচার",slug:"dentures"}, {en:"Complete Denture",bn:"কমপ্লিট ডেনচার",slug:"dentures"} ] },
-  { icon:"🔩", img:"dental-implants", slug:"dental-implants", pr:"৳1,20,000+", en:"Dental Implant", bn:"ডেন্টাল ইমপ্লান্ট", cne:"Permanent new tooth", cn:"নতুন দাঁত বসানো", de:"Permanent, natural-looking replacement for a missing tooth.", db:"হারানো দাঁতের জায়গায় চিরস্থায়ী, আসল দাঁতের মতো নতুন দাঁত।" },
-  { icon:"✨", img:"teeth-whitening", slug:"teeth-whitening", pr:"৳12,000", en:"Teeth Whitening", bn:"দাঁত সাদা করা", cne:"Teeth whitening", cn:"দাঁত সাদা করা", de:"Brighten your smile several shades with safe professional whitening.", db:"নিরাপদে দাঁতের হলদে ভাব দূর করে কয়েক শেড উজ্জ্বল হাসি।" },
-  { icon:"🩺", img:"extractions-surgery", slug:"extractions", pr:"৳1,000–12,000", en:"Painless Extraction & Surgery", bn:"ব্যথাহীন দাঁত তোলা ও সার্জারি", cne:"Tooth removal", cn:"দাঁত ফেলা", de:"Painless simple and surgical extraction including wisdom teeth.", db:"আক্কেল দাঁতসহ যেকোনো দাঁত ব্যথা ছাড়াই তুলে ফেলা।" },
-  { icon:"🧒", img:"kids-dentistry", slug:"kids-dentistry", pr:"From ৳1,000", en:"Kids Dentistry", bn:"শিশু দন্তচিকিৎসা", cne:"Children's dental care", cn:"শিশুদের দাঁতের যত্ন", de:"Gentle paediatric care, milk-tooth treatment and check-ups for children.", db:"শিশুদের দুধ দাঁতের চিকিৎসা, কোমল যত্ন ও নিয়মিত চেকআপ।" },
-  { icon:"💖", img:"cosmetic-dentistry", slug:"cosmetic-dentistry", pr:"From ৳3,500", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", cne:"Smile makeover", cn:"দাঁতের সৌন্দর্য চিকিৎসা", de:"Smile makeovers combining whitening, veneer and reshaping.", db:"হাসি সুন্দর করতে দাঁত সাদা করা, আবরণ ও শেপ ঠিক করা।" },
-  { icon:"📏", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳25,000", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", cne:"Teeth straightening", cn:"দাঁত সোজা করা (তার/ব্রেস)", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত ও কামড় ঠিক করতে তার (ব্রেস) লাগিয়ে চিকিৎসা।",
+  { icon:"🔩", img:"dental-implants", slug:"dental-implants", pr:"৳1,20,000+", dur:"Multi-stage", durbn:"একাধিক ধাপ", en:"Dental Implant", bn:"ডেন্টাল ইমপ্লান্ট", cne:"Permanent new tooth", cn:"নতুন দাঁত বসানো", de:"Permanent, natural-looking replacement for a missing tooth.", db:"হারানো দাঁতের জায়গায় চিরস্থায়ী, আসল দাঁতের মতো নতুন দাঁত।" },
+  { icon:"✨", img:"teeth-whitening", slug:"teeth-whitening", pr:"৳12,000", dur:"1 Session", durbn:"১ সিটিং", en:"Teeth Whitening", bn:"দাঁত সাদা করা", cne:"Teeth whitening", cn:"দাঁত সাদা করা", de:"Brighten your smile several shades with safe professional whitening.", db:"নিরাপদে দাঁতের হলদে ভাব দূর করে কয়েক শেড উজ্জ্বল হাসি।" },
+  { icon:"🩺", img:"extractions-surgery", slug:"extractions", pr:"৳1,000–12,000", dur:"20–30 min", durbn:"২০–৩০ মিনিট", en:"Painless Extraction & Surgery", bn:"ব্যথাহীন দাঁত তোলা ও সার্জারি", cne:"Tooth removal", cn:"দাঁত ফেলা", de:"Painless simple and surgical extraction including wisdom teeth.", db:"আক্কেল দাঁতসহ যেকোনো দাঁত ব্যথা ছাড়াই তুলে ফেলা।" },
+  { icon:"🧒", img:"kids-dentistry", slug:"kids-dentistry", pr:"From ৳1,000", dur:"20–30 min", durbn:"২০–৩০ মিনিট", en:"Kids Dentistry", bn:"শিশু দন্তচিকিৎসা", cne:"Children's dental care", cn:"শিশুদের দাঁতের যত্ন", de:"Gentle paediatric care, milk-tooth treatment and check-ups for children.", db:"শিশুদের দুধ দাঁতের চিকিৎসা, কোমল যত্ন ও নিয়মিত চেকআপ।" },
+  { icon:"💖", img:"cosmetic-dentistry", slug:"cosmetic-dentistry", pr:"From ৳3,500", dur:"Varies", durbn:"পরিবর্তনশীল", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", cne:"Smile makeover", cn:"দাঁতের সৌন্দর্য চিকিৎসা", de:"Smile makeovers combining whitening, veneer and reshaping.", db:"হাসি সুন্দর করতে দাঁত সাদা করা, আবরণ ও শেপ ঠিক করা।" },
+  { icon:"📏", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳25,000", dur:"12–24 months", durbn:"১২–২৪ মাস", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", cne:"Teeth straightening", cn:"দাঁত সোজা করা (তার/ব্রেস)", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত ও কামড় ঠিক করতে তার (ব্রেস) লাগিয়ে চিকিৎসা।",
     sub:[ {en:"Braces",bn:"ব্রেসেস",slug:"braces-aligners"} ] },
-  { icon:"😁", img:"aligner", slug:"braces-aligners", pr:"From ৳1,50,000", en:"Aligner", bn:"অ্যালাইনার", cne:"Invisible aligner", cn:"অদৃশ্য তার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।" },
+  { icon:"😁", img:"aligner", slug:"braces-aligners", pr:"From ৳1,50,000", dur:"6–18 months", durbn:"৬–১৮ মাস", en:"Aligner", bn:"অ্যালাইনার", cne:"Invisible aligner", cn:"অদৃশ্য তার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।" },
 ];
 
 /* ---------- i18n strings ---------- */
@@ -441,15 +441,12 @@ function renderServices(){
     <article class="svc-card">
       <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"></a>
       <div class="svc-body">
+        <div class="svc-top"><span class="svc-price">${s.pr}</span>${dur}</div>
         <h3><a href="${href}">${name}</a></h3>
         ${common?`<span class="svc-common">${common}</span>`:""}
         <p>${LANG==="bn"?s.db:s.de}</p>
         ${sub?`<div class="svc-sub">${sub}</div>`:""}
-        ${dur}
-        <div class="svc-foot">
-          <span class="svc-price">${s.pr}</span>
-          <a class="btn btn-primary svc-book" href="book.html?service=${encodeURIComponent(s.en)}">${t("book_now")}</a>
-        </div>
+        <a class="btn btn-primary svc-book" href="book.html?service=${encodeURIComponent(s.en)}">${t("book_now")}</a>
       </div>
     </article>`;}).join("");
 }
