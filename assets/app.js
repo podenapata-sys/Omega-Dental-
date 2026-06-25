@@ -705,8 +705,8 @@ function submitBooking(e){
     name: f.f_name.value.trim(),
     phone: f.f_phone.value.trim(),
     service: f.f_service.value,
-    date: f.f_date.value,
-    time: f.f_time.value,
+    date: f.f_date.value ? fmtPickedDate(f.f_date.value) : "",
+    time: f.f_time.value ? fmtPickedTime(f.f_time.value) : "",
     msg: f.f_msg.value.trim(),
     emerg: f.f_emerg.checked,
   };
@@ -756,15 +756,14 @@ function fmtPickedTime(v){            // v = "14:30" → "2:30 PM"
   const ap=h<12?"AM":"PM"; h=h%12; if(h===0)h=12;
   return `${h}:${m} ${ap}`;
 }
-function wirePicker(inputId, nativeId, btnId, fmt){
-  const inp=document.getElementById(inputId), nat=document.getElementById(nativeId), btn=document.getElementById(btnId);
-  if(!inp||!nat||!btn) return;
-  btn.addEventListener("click", ()=>{ try{ nat.showPicker(); }catch(e){ nat.focus(); nat.click(); } });
-  nat.addEventListener("change", ()=>{ if(nat.value){ inp.value = fmt(nat.value); inp.dispatchEvent(new Event("input",{bubbles:true})); } });
-}
 function initBookPickers(){
-  wirePicker("f_date","f_date_native","f_date_btn", fmtPickedDate);
-  wirePicker("f_time","f_time_native","f_time_btn", fmtPickedTime);
+  // native date/time inputs — block past dates on the calendar
+  const d=document.getElementById("f_date");
+  if(d && d.type==="date"){
+    try{ const t=new Date();
+      d.min = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}-${String(t.getDate()).padStart(2,"0")}`;
+    }catch(e){}
+  }
 }
 
 /* ----- Wire up ----- */
