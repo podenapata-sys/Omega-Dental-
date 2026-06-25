@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625d";
+const VER = "20260625e";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -129,7 +129,7 @@ const SERVICES = [
       overview:"স্কেলিং প্লাক ও শক্ত টার্টার দূর করে যা ব্রাশে যায় না, আর পলিশিং দাঁত মসৃণ ও উজ্জ্বল করে। নিয়মিত পরিষ্কার মাড়ির রোগ, দুর্গন্ধ ও দাঁত পড়া রোধ করে।",
       process:["মাড়ি ও দাঁত পরীক্ষা","আল্ট্রাসনিক স্কেলিং","পলিশিং","যত্ন ও প্রতিরোধের পরামর্শ"] } },
 
-  { slug:"tooth-fillings", icon:"🪥", img:"tooth-fillings",
+  { slug:"tooth-fillings", icon:"🪥", img:"tooth-fillings", gallery:["tooth-fillings","filling-composite","filling-gi","filling-temporary"],
     en:{ name:"Tooth Fillings", tag:"Restore decayed teeth, painlessly", price:"৳ 1,000",
       meta:"Tooth-coloured composite & GI fillings in Dhaka at Omega Dental from ৳1,000. Book with Dr. Afsana Haque.",
       desc:"Repair decayed teeth with natural, tooth-coloured fillings that stop pain and prevent further damage.",
