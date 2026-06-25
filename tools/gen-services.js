@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260624b";
+const VER = "20260624c";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -64,7 +64,7 @@ const SERVICES = [
       overview:"ডেন্টাল ইমপ্লান্ট হলো চোয়ালে স্থাপিত টাইটানিয়াম রুট যা প্রাকৃতিক দেখতে নকল দাঁত ধরে রাখে। হারানো দাঁতের জন্য ইমপ্লান্ট সেরা সমাধান — এটি চোয়ালের হাড় রক্ষা করে ও পাশের দাঁতের ক্ষতি করে না।",
       process:["পরামর্শ ও থ্রিডি মূল্যায়ন","ইমপ্লান্ট স্থাপন","নিরাময় ও সংযুক্তি","উপরে চূড়ান্ত ক্রাউন বসানো"] } },
 
-  { slug:"braces-aligners", icon:"📏", img:"braces-aligners",
+  { slug:"braces-aligners", icon:"📏", img:"braces-aligners", gallery:["braces-aligners","aligner","aligner-tray"],
     en:{ name:"Braces & Clear Aligners", tag:"Straighten your smile with confidence", price:"৳ 25,000",
       meta:"Orthodontic braces & invisible clear aligners in Dhaka at Omega Dental. Braces from ৳25,000. Book with Dr. Afsana Haque.",
       desc:"Gently move misaligned teeth into a straight, healthy position with traditional braces or near-invisible clear aligners.",
@@ -333,7 +333,7 @@ function buildTabs(s){
 
 function page(s){
   const url = `${SITE}/services/${s.slug}.html`;
-  const thumbs = [s.img, ...THUMB_POOL.filter(x=>x!==s.img)].slice(0,4);
+  const thumbs = (s.gallery || [s.img, ...THUMB_POOL.filter(x=>x!==s.img)]).slice(0,4);
   const thumbHtml = thumbs.map((tg,i)=>`<button class="pthumb${i===0?' active':''}" type="button" data-src="../assets/services/${tg}.jpg?v=1" data-fallback="../assets/services/${tg}.svg?v=3"><img src="../assets/services/${tg}.jpg?v=1" onerror="this.onerror=null;this.src='../assets/services/${tg}.svg?v=3'" alt=""></button>`).join("");
   const facts = s.en.facts.map((f,i)=>`
         <div class="fact"><span class="fact-ic">${ico(FACT_KEYS[i])}</span>
@@ -382,7 +382,7 @@ function page(s){
   <div class="prod-card">
     <div class="prod-grid">
       <div class="prod-gallery">
-        <div class="prod-main"><img id="pmain" src="../assets/services/${s.img}.jpg?v=1" data-fallback="../assets/services/${s.img}.svg?v=3" onerror="this.onerror=null;this.src=this.getAttribute('data-fallback')" alt="${esc(s.en.name)}"></div>
+        <div class="prod-main"><img id="pmain" src="../assets/services/${thumbs[0]}.jpg?v=1" data-fallback="../assets/services/${thumbs[0]}.svg?v=3" onerror="this.onerror=null;this.src=this.getAttribute('data-fallback')" alt="${esc(s.en.name)}"></div>
         <div class="prod-thumbs">${thumbHtml}</div>
       </div>
       <div class="prod-info">

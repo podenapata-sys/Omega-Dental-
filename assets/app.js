@@ -102,7 +102,7 @@ const SERVICES = [
   { icon:"💖", img:"cosmetic-dentistry", slug:"cosmetic-dentistry", pr:"From ৳3,500", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", cne:"Smile makeover", cn:"দাঁতের সৌন্দর্য চিকিৎসা", de:"Smile makeovers combining whitening, veneer and reshaping.", db:"হাসি সুন্দর করতে দাঁত সাদা করা, আবরণ ও শেপ ঠিক করা।" },
   { icon:"📏", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳25,000", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", cne:"Teeth straightening", cn:"দাঁত সোজা করা (তার/ব্রেস)", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত ও কামড় ঠিক করতে তার (ব্রেস) লাগিয়ে চিকিৎসা।",
     sub:[ {en:"Braces",bn:"ব্রেসেস",slug:"braces-aligners"} ] },
-  { icon:"😁", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳1,50,000", en:"Aligner", bn:"অ্যালাইনার", cne:"Invisible aligner", cn:"অদৃশ্য তার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।" },
+  { icon:"😁", img:"aligner", slug:"braces-aligners", pr:"From ৳1,50,000", en:"Aligner", bn:"অ্যালাইনার", cne:"Invisible aligner", cn:"অদৃশ্য তার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।" },
 ];
 
 /* ---------- i18n strings ---------- */
