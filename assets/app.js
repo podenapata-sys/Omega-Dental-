@@ -356,7 +356,7 @@ const POSTS = [
 
 /* ---------- Before/After cases (SVG placeholders) ---------- */
 const BA_CASES = [
-  { type:"whitening", before:"#cdbfa3", after:"#f5f3ec", bImg:"assets/ba/whitening-before.jpg", aImg:"assets/ba/whitening-after.jpg" },
+  { type:"whitening", before:"#cdbfa3", after:"#f5f3ec", bImg:"assets/ba/whitening-before.jpg?v=2", aImg:"assets/ba/whitening-after.jpg?v=2" },
   { type:"veneers",   before:"#cdb196", after:"#f3f1ea", bImg:"assets/ba/veneers-before.jpg",   aImg:"assets/ba/veneers-after.jpg" },
   { type:"braces",    before:"#d8c7ad", after:"#f4f2ec", bImg:"assets/ba/braces-before.jpg",    aImg:"assets/ba/braces-after.jpg" },
   { type:"implants",  before:"#c9b79b", after:"#f1efe8", bImg:"assets/ba/implants-before.jpg",  aImg:"assets/ba/implants-after.jpg" },
