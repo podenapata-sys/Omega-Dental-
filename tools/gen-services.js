@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625p";
+const VER = "20260625q";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -104,7 +104,7 @@ const SERVICES = [
       process:["দাঁত প্রস্তুত করা","নিখুঁত ডিজিটাল ছাপ","কাস্টম ক্রাউন/ব্রিজ তৈরি","ফিটিং ও চূড়ান্ত পলিশ"] },
     gallery:["crowns-bridges","crowns-implant-bridge","crowns-diagram"] },
 
-  { slug:"dentures", icon:"🦿", img:"dentures",
+  { slug:"dentures", icon:"🦿", img:"dentures", gallery:["dentures","dentures-partial","dentures-flexible"],
     en:{ name:"Dentures", tag:"Comfortable, natural-looking replacements", price:"৳ 4,000",
       meta:"Partial, flexible & complete dentures in Dhaka at Omega Dental from ৳4,000. Book with Dr. Afsana Haque.",
       desc:"Chew, speak and smile with confidence again with custom partial, flexible and complete dentures.",
