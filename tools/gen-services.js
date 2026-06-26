@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625m";
+const VER = "20260625n";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -142,7 +142,7 @@ const SERVICES = [
       overview:"ফিলিং ক্ষয়ে ক্ষতিগ্রস্ত দাঁত মেরামত করে, ব্যথা বন্ধ করে ও আরও ক্ষতি রোধ করে। আমরা দাঁতের রঙের কম্পোজিট ও জিআই ফিলিং ব্যবহার করি যা প্রাকৃতিকভাবে মিশে যায়।",
       process:["ক্যাভিটি পরীক্ষা","কোমল পরিষ্কার","দাঁতের রঙের ফিলিং","আকৃতি ও পলিশ"] } },
 
-  { slug:"veneers", icon:"💎", img:"veneers",
+  { slug:"veneers", icon:"💎", img:"veneers", gallery:["veneers","veneers-before","veneers-after"],
     en:{ name:"Composite Veneers", tag:"Reshape and perfect your smile", price:"৳ 3,500",
       meta:"Composite veneers in Dhaka at Omega Dental from ৳3,500 — close gaps, fix chips and perfect your front teeth. Book with Dr. Afsana Haque.",
       desc:"Reshape, close gaps and perfect the look of your front teeth with natural, tooth-coloured composite veneers.",
