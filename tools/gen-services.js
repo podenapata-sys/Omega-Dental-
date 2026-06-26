@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625g";
+const VER = "20260625h";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -168,7 +168,7 @@ const SERVICES = [
       overview:"যখন কোনো দাঁত বাঁচানোর অযোগ্য হয়, বা আক্কেল দাঁত ব্যথা ও ভিড় তৈরি করে, তখন কোমল এক্সট্রাকশন সমস্যা দূর করে ও অন্য দাঁত রক্ষা করে। আমরা আধুনিক, ব্যথাহীন কৌশলে সাধারণ ও সার্জিক্যাল এক্সট্রাকশন করি ও স্পষ্ট আফটারকেয়ার দিই।",
       process:["এক্স-রে ও মূল্যায়ন","কোমলভাবে অবশ করা","ব্যথাহীন অপসারণ","আফটারকেয়ার পরামর্শ"] } },
 
-  { slug:"kids-dentistry", icon:"🧒", img:"kids-dentistry",
+  { slug:"kids-dentistry", icon:"🧒", img:"kids-dentistry", gallery:["kids-dentistry","kids-checkup","kids-extraction"],
     en:{ name:"Kids Dentistry", tag:"Gentle, friendly care for children", price:"৳ 1,000",
       meta:"Gentle children's dentistry in Dhaka at Omega Dental from ৳1,000 — check-ups, cleaning, fillings and milk-tooth care. Book with Dr. Afsana Haque.",
       desc:"Gentle, friendly dental care for children — from check-ups and cleaning to fillings and milk-tooth treatment.",
