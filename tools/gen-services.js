@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625q";
+const VER = "20260625r";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -77,7 +77,7 @@ const SERVICES = [
       overview:"ব্রেসেস ও ক্লিয়ার অ্যালাইনার ধীরে ধীরে আঁকাবাঁকা দাঁত সোজা ও সুস্থ অবস্থানে নিয়ে আসে। আমরা সাধারণ অর্থোডন্টিক ব্রেসেসের পাশাপাশি প্রায় অদৃশ্য ক্লিয়ার অ্যালাইনারও দিই।",
       process:["অর্থোডন্টিক মূল্যায়ন","কাস্টম চিকিৎসা পরিকল্পনা","ব্রেসেস বা অ্যালাইনার লাগানো","নিয়মিত সমন্বয়ে চূড়ান্ত ফল"] } },
 
-  { slug:"teeth-whitening", icon:"✨", img:"teeth-whitening",
+  { slug:"teeth-whitening", icon:"✨", img:"teeth-whitening", gallery:["teeth-whitening","whitening-compare","whitening-stained"],
     en:{ name:"Teeth Whitening", tag:"A brighter smile in one visit", price:"৳ 12,000",
       meta:"Professional teeth whitening in Dhaka at Omega Dental for ৳12,000. Safe, fast and effective. Book with Dr. Afsana Haque.",
       desc:"Safely lighten years of stains and brighten your smile several shades in a single, comfortable visit.",
