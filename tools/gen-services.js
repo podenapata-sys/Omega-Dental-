@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625j";
+const VER = "20260625k";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -116,7 +116,7 @@ const SERVICES = [
       overview:"ডেনচার হারানো দাঁত প্রতিস্থাপন করে যাতে আপনি আবার আত্মবিশ্বাসে চিবাতে, কথা বলতে ও হাসতে পারেন। আমরা আরামদায়ক, প্রাকৃতিক ফিটের ডেনচার তৈরি করি।",
       process:["মুখ পরীক্ষা","ছাপ ও পরিমাপ","কাস্টম ডেনচার তৈরি","ফিটিং ও আরাম সমন্বয়"] } },
 
-  { slug:"scaling-polishing", icon:"🦷", img:"scaling-polishing",
+  { slug:"scaling-polishing", icon:"🦷", img:"scaling-polishing", gallery:["scaling-polishing","scaling-ba","scaling-stained","scaling-clean"],
     en:{ name:"Scaling & Polishing", tag:"Healthy gums, fresh clean smile", price:"৳ 1,500",
       meta:"Professional teeth scaling & polishing in Dhaka at Omega Dental from ৳1,000. Book a cleaning with Dr. Afsana Haque.",
       desc:"Remove plaque and tartar and polish your teeth for healthy gums, fresh breath and a brighter smile.",
