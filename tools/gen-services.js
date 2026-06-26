@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625k";
+const VER = "20260625l";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -38,7 +38,7 @@ const FACT_KEYS = ["checkc","clock","award","shield"]; // procedure, visits, suc
 const THUMB_POOL = ["teeth-whitening","scaling-polishing","tooth-fillings","crowns-bridges","dental-implants","braces-aligners","dentures","root-canal-rct"];
 
 const SERVICES = [
-  { slug:"root-canal", icon:"🌱", img:"root-canal-rct",
+  { slug:"root-canal", icon:"🌱", img:"root-canal-rct", gallery:["root-canal-rct","root-canal-steps","root-canal-grid","root-canal-xray"],
     en:{ name:"Root Canal Treatment (RCT)", tag:"Save your natural tooth, pain-free", price:"৳ 5,000",
       meta:"Painless root canal treatment (RCT) in Dhaka at Omega Dental. Single & multi-visit RCT from ৳5,000. Book with Dr. Afsana Haque.",
       desc:"Save your natural tooth with our painless, fully sterile treatment. Get fast relief from pain and return to your daily routine quickly.",
