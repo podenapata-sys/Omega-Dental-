@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625n";
+const VER = "20260625o";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -51,7 +51,7 @@ const SERVICES = [
       overview:"রুট ক্যানেল ক্ষতিগ্রস্ত দাঁতের ভেতরের সংক্রমিত পাল্প সরিয়ে ব্যথা কমায় এবং দাঁত তুলে ফেলার বদলে আসল দাঁত রক্ষা করে। ওমেগা ডেন্টালে আমরা কোমল, আধুনিক পদ্ধতি ব্যবহার করি — সিঙ্গেল-ভিজিট সহ — তাই বেশিরভাগ রোগী প্রায় কোনো ব্যথা অনুভব করেন না।",
       process:["ডিজিটাল এক্স-রে ও রোগ নির্ণয়","কোমলভাবে অবশ করা","ক্যানেল পরিষ্কার ও সিল করা","দাঁত রক্ষায় ফিলিং বা ক্রাউন"] } },
 
-  { slug:"dental-implants", icon:"🔩", img:"dental-implants",
+  { slug:"dental-implants", icon:"🔩", img:"dental-implants", gallery:["dental-implants","implant-double","implant-single"],
     en:{ name:"Dental Implants", tag:"Permanent, natural-looking new teeth", price:"৳ 1,20,000",
       meta:"Dental implants in Dhaka at Omega Dental — permanent replacement for missing teeth from ৳1,20,000. Book with Dr. Afsana Haque.",
       desc:"A permanent, natural-looking replacement for missing teeth that looks, feels and functions just like your own — built to last for decades.",
