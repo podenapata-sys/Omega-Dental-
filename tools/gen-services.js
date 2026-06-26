@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625f";
+const VER = "20260625g";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -155,7 +155,7 @@ const SERVICES = [
       overview:"কম্পোজিট ভিনিয়ার হলো দাঁতের রঙের পাতলা স্তর যা সামনের দাঁতে বসিয়ে ফাঁক, ভাঙা, দাগ ও আকৃতি ঠিক করা হয় — মাত্র এক-দুই ভিজিটেই প্রাকৃতিক, সমান হাসি দেয়, আসল দাঁত বেশি না কেটে।",
       process:["স্মাইল মূল্যায়ন","শেড ও আকৃতি পরিকল্পনা","ভিনিয়ার বন্ডিং","স্কাল্পটিং ও পলিশ"] } },
 
-  { slug:"extractions", icon:"🩺", img:"extractions-surgery",
+  { slug:"extractions", icon:"🩺", img:"extractions-surgery", gallery:["extractions-surgery","extraction-front","frenectomy","frenectomy-steps"],
     en:{ name:"Tooth Extraction & Surgery", tag:"Painless removal, including wisdom teeth", price:"৳ 1,000",
       meta:"Painless tooth extraction & minor oral surgery in Dhaka at Omega Dental from ৳1,000, including wisdom teeth. Book with Dr. Afsana Haque.",
       desc:"Safe, painless removal of badly damaged or wisdom teeth, with gentle care before, during and after.",
