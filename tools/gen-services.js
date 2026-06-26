@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625r";
+const VER = "20260625s";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -90,7 +90,7 @@ const SERVICES = [
       overview:"পেশাদার হোয়াইটেনিং চা, কফি, ধূমপান ও বয়সজনিত দাগ নিরাপদে দূর করে — দোকানের কিটের চেয়ে অনেক বেশি কার্যকর ও নিরাপদ, একই দিনে দৃশ্যমান ফল।",
       process:["পরিষ্কার ও শেড পরীক্ষা","মাড়ি সুরক্ষা","হোয়াইটেনিং জেল + লাইট","তাৎক্ষণিক উজ্জ্বল ফল"] } },
 
-  { slug:"crowns-bridges", icon:"👑", img:"crowns-bridges",
+  { slug:"crowns-bridges", icon:"👑", img:"crowns-diagram", gallery:["crowns-diagram","crowns-bridges","crowns-implant-bridge"],
     en:{ name:"Crowns & Bridges", tag:"Rebuild strength and beauty", price:"৳ 5,000",
       meta:"Dental crowns & bridges in Dhaka at Omega Dental — Zirconia, PFM & composite crowns from ৳5,000. Book with Dr. Afsana Haque.",
       desc:"Restore the strength, shape and beauty of damaged or missing teeth with durable, natural-looking crowns and bridges.",
@@ -101,8 +101,7 @@ const SERVICES = [
       desc:"টেকসই, প্রাকৃতিক দেখতে ক্রাউন ও ব্রিজ দিয়ে ক্ষতিগ্রস্ত বা হারানো দাঁতের শক্তি, আকৃতি ও সৌন্দর্য ফিরিয়ে আনুন।",
       facts:[["পদ্ধতি","ব্যথাহীন"],["ভিজিট","২ সেশন"],["উপাদান","জিরকোনিয়া / পিএফএম"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
       overview:"ক্রাউন ক্ষতিগ্রস্ত বা রুট-ক্যানেল করা দাঁত ঢেকে শক্তি ও আকৃতি ফেরায়, আর ব্রিজ এক বা একাধিক হারানো দাঁত প্রতিস্থাপন করে। আমরা টেকসই জিরকোনিয়া, পিএফএম ও কম্পোজিট অপশন দিই।",
-      process:["দাঁত প্রস্তুত করা","নিখুঁত ডিজিটাল ছাপ","কাস্টম ক্রাউন/ব্রিজ তৈরি","ফিটিং ও চূড়ান্ত পলিশ"] },
-    gallery:["crowns-bridges","crowns-implant-bridge","crowns-diagram"] },
+      process:["দাঁত প্রস্তুত করা","নিখুঁত ডিজিটাল ছাপ","কাস্টম ক্রাউন/ব্রিজ তৈরি","ফিটিং ও চূড়ান্ত পলিশ"] } },
 
   { slug:"dentures", icon:"🦿", img:"dentures", gallery:["dentures","dentures-partial","dentures-flexible"],
     en:{ name:"Dentures", tag:"Comfortable, natural-looking replacements", price:"৳ 4,000",
