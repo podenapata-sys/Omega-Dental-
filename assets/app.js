@@ -484,7 +484,7 @@ function renderCalcOptions(){            // categories + services + qty
     if(cur) cat.value = cur;
   }
   if(qty && !qty.options.length){
-    qty.innerHTML = Array.from({length:32},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
+    qty.innerHTML = Array.from({length:20},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
   }
   renderCalcServices();
 }
