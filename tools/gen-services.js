@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625o";
+const VER = "20260625p";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -101,7 +101,8 @@ const SERVICES = [
       desc:"টেকসই, প্রাকৃতিক দেখতে ক্রাউন ও ব্রিজ দিয়ে ক্ষতিগ্রস্ত বা হারানো দাঁতের শক্তি, আকৃতি ও সৌন্দর্য ফিরিয়ে আনুন।",
       facts:[["পদ্ধতি","ব্যথাহীন"],["ভিজিট","২ সেশন"],["উপাদান","জিরকোনিয়া / পিএফএম"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
       overview:"ক্রাউন ক্ষতিগ্রস্ত বা রুট-ক্যানেল করা দাঁত ঢেকে শক্তি ও আকৃতি ফেরায়, আর ব্রিজ এক বা একাধিক হারানো দাঁত প্রতিস্থাপন করে। আমরা টেকসই জিরকোনিয়া, পিএফএম ও কম্পোজিট অপশন দিই।",
-      process:["দাঁত প্রস্তুত করা","নিখুঁত ডিজিটাল ছাপ","কাস্টম ক্রাউন/ব্রিজ তৈরি","ফিটিং ও চূড়ান্ত পলিশ"] } },
+      process:["দাঁত প্রস্তুত করা","নিখুঁত ডিজিটাল ছাপ","কাস্টম ক্রাউন/ব্রিজ তৈরি","ফিটিং ও চূড়ান্ত পলিশ"] },
+    gallery:["crowns-bridges","crowns-implant-bridge","crowns-diagram"] },
 
   { slug:"dentures", icon:"🦿", img:"dentures",
     en:{ name:"Dentures", tag:"Comfortable, natural-looking replacements", price:"৳ 4,000",
