@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625h";
+const VER = "20260625i";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -181,7 +181,7 @@ const SERVICES = [
       overview:"আমরা শিশুদের জন্য ডেন্টাল ভিজিট শান্ত ও ইতিবাচক করি, ছোটবেলাতেই সুস্থ অভ্যাস গড়ে তুলি। চেকআপ ও পরিষ্কার থেকে কোমল ফিলিং ও দুধ দাঁতের যত্ন — আমাদের বন্ধুত্বপূর্ণ পদ্ধতি শিশুদের আরামদায়ক ও আত্মবিশ্বাসী রাখে।",
       process:["বন্ধুত্বপূর্ণ অভ্যর্থনা","কোমল চেকআপ","ব্যথাহীন চিকিৎসা","অভিভাবকদের প্রতিরোধ পরামর্শ"] } },
 
-  { slug:"cosmetic-dentistry", icon:"💖", img:"cosmetic-dentistry",
+  { slug:"cosmetic-dentistry", icon:"💖", img:"cosmetic-dentistry", gallery:["cosmetic-dentistry","cosmetic-veneers","cosmetic-ba"],
     en:{ name:"Cosmetic Dentistry", tag:"Design your perfect smile", price:"৳ 3,500",
       meta:"Cosmetic dentistry & smile makeovers in Dhaka at Omega Dental from ৳3,500 — whitening, veneers, bonding & reshaping. Book with Dr. Afsana Haque.",
       desc:"Transform your smile with a tailored combination of whitening, veneers, bonding and reshaping.",
