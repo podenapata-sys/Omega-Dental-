@@ -827,7 +827,14 @@ document.addEventListener("DOMContentLoaded", ()=>{
   const burger = document.getElementById("burger");
   const navlist = document.getElementById("navlist");
   burger?.addEventListener("click", ()=> navlist.classList.toggle("open"));
-  navlist?.querySelectorAll("a").forEach(a=>a.addEventListener("click", ()=>navlist.classList.remove("open")));
+  navlist?.querySelectorAll("a:not(.dd-toggle)").forEach(a=>a.addEventListener("click", ()=>navlist.classList.remove("open")));
+  // services dropdown toggle (click on mobile, hover on desktop)
+  const hasDD = document.querySelector(".has-dd");
+  const ddToggle = document.querySelector(".dd-toggle");
+  ddToggle?.addEventListener("click", e => {
+    if(window.innerWidth <= 760){ e.preventDefault(); hasDD.classList.toggle("open"); }
+  });
+  document.addEventListener("click", e => { if(hasDD && !hasDD.contains(e.target)) hasDD.classList.remove("open"); });
 
   // counters when visible
   const stats = document.getElementById("stats");
