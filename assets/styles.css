@@ -239,7 +239,14 @@ a{color:inherit;text-decoration:none}
 .hero h1 span{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p.lead{color:#2a4651;font-size:var(--fs-lead);margin:20px 0 28px;max-width:540px;text-shadow:0 1px 3px rgba(255,255,255,.95),0 2px 14px rgba(255,255,255,.9)}
 .hero-cta{display:flex;gap:13px;flex-wrap:wrap}
-.hero-badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.g-review-badge{display:inline-flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--teal-dd);border-radius:999px;padding:8px 18px;box-shadow:var(--shadow-sm);text-decoration:none;margin-top:18px;transition:transform .2s,box-shadow .2s}
+.g-review-badge:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.g-logo{width:24px;height:24px;flex-shrink:0}
+.g-review-text{display:flex;align-items:center;gap:7px}
+.g-stars{color:#F08A24;font-size:1rem;letter-spacing:1px}
+.g-score{font-weight:700;font-size:.95rem;color:var(--navy)}
+.g-label{font-size:.8rem;color:#555;font-family:var(--f-head)}
+.hero-badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
 .hero-badges span{display:inline-flex;align-items:center;gap:7px;background:var(--glass);border:1px solid var(--glass-brd);backdrop-filter:blur(10px);box-shadow:var(--shadow-sm);border-radius:999px;padding:9px 15px;font-size:.85rem;font-weight:600}
 .hero-badges span::before{content:"✓";color:var(--teal-dd);font-weight:800}
 .hero-art{position:relative}
@@ -560,8 +567,8 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
 @keyframes marquee{to{transform:translateX(-50%)}}
 
 /* kinetic hero reveal */
-.hero h1,.hero p.lead,.hero .hero-cta,.hero .hero-badges{opacity:0;transform:translateY(26px);animation:heroUp .8s cubic-bezier(.2,.7,.2,1) forwards}
-.hero p.lead{animation-delay:.12s}.hero .hero-cta{animation-delay:.24s}.hero .hero-badges{animation-delay:.36s}
+.hero h1,.hero p.lead,.hero .hero-cta,.hero .g-review-badge,.hero .hero-badges{opacity:0;transform:translateY(26px);animation:heroUp .8s cubic-bezier(.2,.7,.2,1) forwards}
+.hero p.lead{animation-delay:.12s}.hero .hero-cta{animation-delay:.24s}.hero .g-review-badge{animation-delay:.32s}.hero .hero-badges{animation-delay:.40s}
 .hero-art{opacity:0;transform:translateY(26px) scale(.98);animation:heroUp .9s .2s cubic-bezier(.2,.7,.2,1) forwards}
 @keyframes heroUp{to{opacity:1;transform:none}}
 .hero .blob{animation:blobDrift 16s ease-in-out infinite}
@@ -663,7 +670,7 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
 }
 @media(prefers-reduced-motion:reduce){
   .fc-1,.fc-2,.marquee-track,.hero .blob,.fab::after{animation:none}
-  .hero h1,.hero p.lead,.hero .hero-cta,.hero .hero-badges,.hero-art{opacity:1;transform:none;animation:none}
+  .hero h1,.hero p.lead,.hero .hero-cta,.hero .g-review-badge,.hero .hero-badges,.hero-art{opacity:1;transform:none;animation:none}
   .reveal{opacity:1;transform:none;transition:none}
   .svc-card.reveal{opacity:1;transform:none;translate:0 0;transition:none}
   .svc-card{animation:none;translate:0 0}

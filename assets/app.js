@@ -117,6 +117,7 @@ const I18N = {
     hero_title:"Keep your smile <span>healthy</span> & bright",
     hero_text:"Modern, painless and affordable dental care at Omega Dental. From routine check-ups to implants and smile makeovers — your comfort comes first.",
     hero_b1:"Painless Treatment", hero_b2:"Modern Technology", hero_b3:"Affordable Pricing", hero_b4:"Expert Surgeon",
+    g_reviews:"Google Reviews",
     hero_badge_t:"Trusted by 5,000+ patients", hero_badge_s:"Gentle, expert care",
     stat1:"Happy Patients", stat2:"Years Experience", stat3:"Treatments", stat4:"Satisfaction",
     services_eyebrow:"Our Services",
@@ -214,6 +215,7 @@ const I18N = {
     hero_title:"আপনার হাসি রাখুন <span>সুস্থ</span> ও উজ্জ্বল",
     hero_text:"ওমেগা ডেন্টালে আধুনিক, ব্যথাহীন ও সাশ্রয়ী দন্তচিকিৎসা। সাধারণ চেকআপ থেকে ইমপ্লান্ট ও স্মাইল মেকওভার — সবার আগে আপনার স্বস্তি।",
     hero_b1:"ব্যথাহীন চিকিৎসা", hero_b2:"আধুনিক প্রযুক্তি", hero_b3:"সাশ্রয়ী মূল্য", hero_b4:"অভিজ্ঞ সার্জন",
+    g_reviews:"গুগল রিভিউ",
     hero_badge_t:"৫,০০০+ রোগীর আস্থা", hero_badge_s:"কোমল, দক্ষ সেবা",
     stat1:"সন্তুষ্ট রোগী", stat2:"বছরের অভিজ্ঞতা", stat3:"চিকিৎসা", stat4:"সন্তুষ্টি",
     services_eyebrow:"আমাদের সেবা",
@@ -385,7 +387,7 @@ function applyI18n(){
   });
   // dynamic blocks
   renderServices(); renderPricing(); renderCalcOptions(); renderTestimonials(); renderBookOptions(); renderBookSlots();
-  renderSteps(); renderTech(); renderFaqs(); renderTips(); renderCalcBA(); renderMarquee();
+  renderSteps(); renderTech(); renderFaqs(); renderCalcBA(); renderMarquee();
   const tgl = document.getElementById("langText");
   if (tgl) tgl.textContent = t("lang_label");
 }
