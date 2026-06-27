@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260625s";
+const VER = "20260627a";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -143,15 +143,15 @@ const SERVICES = [
       process:["ক্যাভিটি পরীক্ষা","কোমল পরিষ্কার","দাঁতের রঙের ফিলিং","আকৃতি ও পলিশ"] } },
 
   { slug:"veneers", icon:"💎", img:"veneers", gallery:["veneers","veneers-before","veneers-after"],
-    en:{ name:"Composite Veneers", tag:"Reshape and perfect your smile", price:"৳ 3,500",
+    en:{ name:"Composite Veneers", tag:"Reshape and perfect your smile", price:"৳ 3,500 / tooth",
       meta:"Composite veneers in Dhaka at Omega Dental from ৳3,500 — close gaps, fix chips and perfect your front teeth. Book with Dr. Afsana Haque.",
       desc:"Reshape, close gaps and perfect the look of your front teeth with natural, tooth-coloured composite veneers.",
-      facts:[["Procedure","Pain-free"],["Visits","1–2 sessions"],["Warranty","Up to 5 years"],["Hygiene","100% sterile tools"]],
+      facts:[["Procedure","Pain-free"],["Visits","1 Session"],["Warranty","Up to 5 years"],["Hygiene","100% sterile tools"]],
       overview:"Composite veneers are thin, tooth-coloured layers bonded to the front of your teeth to fix gaps, chips, stains and shape — giving you a natural, even smile in just one or two visits, without removing much of your natural tooth.",
       process:["Smile assessment","Shade & shape planning","Bonding the veneer","Sculpting & polish"] },
-    bn:{ name:"কম্পোজিট ভিনিয়ার", tag:"হাসি নতুন আকৃতি ও নিখুঁত করুন", price:"৳ ৩,৫০০",
+    bn:{ name:"কম্পোজিট ভিনিয়ার", tag:"হাসি নতুন আকৃতি ও নিখুঁত করুন", price:"৳ ৩,৫০০ / দাঁত",
       desc:"প্রাকৃতিক, দাঁতের রঙের কম্পোজিট ভিনিয়ার দিয়ে সামনের দাঁতের ফাঁক বন্ধ করুন, আকৃতি ও সৌন্দর্য নিখুঁত করুন।",
-      facts:[["পদ্ধতি","ব্যথাহীন"],["ভিজিট","১–২ সেশন"],["ওয়ারেন্টি","৫ বছর পর্যন্ত"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
+      facts:[["পদ্ধতি","ব্যথাহীন"],["ভিজিট","১ সেশন"],["ওয়ারেন্টি","৫ বছর পর্যন্ত"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
       overview:"কম্পোজিট ভিনিয়ার হলো দাঁতের রঙের পাতলা স্তর যা সামনের দাঁতে বসিয়ে ফাঁক, ভাঙা, দাগ ও আকৃতি ঠিক করা হয় — মাত্র এক-দুই ভিজিটেই প্রাকৃতিক, সমান হাসি দেয়, আসল দাঁত বেশি না কেটে।",
       process:["স্মাইল মূল্যায়ন","শেড ও আকৃতি পরিকল্পনা","ভিনিয়ার বন্ডিং","স্কাল্পটিং ও পলিশ"] } },
 
