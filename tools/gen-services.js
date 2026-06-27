@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260627f";
+const VER = "20260627g";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -270,7 +270,7 @@ function buildTabs(s){
   const steps = s.en.process.map((_,i)=>`<li ${bl(s.en.process[i],s.bn.process[i])}></li>`).join("");
   const facts = s.en.facts.map((f,i)=>`<li><strong ${bl(f[0]+": ",s.bn.facts[i][0]+": ")}></strong><span ${bl(f[1],s.bn.facts[i][1])}></span></li>`).join("");
   const creds = DOC.en[2].map((c,i)=>`<li><span class="ck">✓</span><span ${bl(c,DOC.bn[2][i])}></span></li>`).join("");
-  const reviews = REVIEWS.map(r=>`<article class="test-card"><div class="stars">★★★★★</div><p ${bl('“'+r[0]+'”','“'+r[1]+'”')}></p><div class="test-meta"><span class="avatar">${r[2].charAt(0)}</span><div><strong>${r[2]}</strong></div></div></article>`).join("");
+  const reviews = REVIEWS.map(r=>`<article class="test-card"><div class="stars">★★★★★</div><p ${bl('"'+r[0]+'"','"'+r[1]+'"')}></p><div class="test-meta"><span class="avatar">${r[2].charAt(0)}</span><div><strong>${r[2]}</strong></div></div></article>`).join("");
   const faqs = FAQG.map(f=>`<div class="faq-item"><button class="faq-q" aria-expanded="false" ${bl(f[0],f[2])}></button><div class="faq-a"><p ${bl(f[1],f[3])}></p></div></div>`).join("");
   const cost = COSTS[s.slug]||[];
   const costRows = cost.map(c=>`<tr><td ${bl(c[0],c[1])}></td><td>${c[2]}</td><td class="cmp-omega">${c[3]}</td></tr>`).join("");
@@ -294,13 +294,13 @@ function buildTabs(s){
 
   <div class="tab-panel active" data-tab="details">
     <p ${bl(s.en.desc,s.bn.desc)}></p>
-    <h3 ${bl("What is "+s.en.name+"?","“"+s.bn.name+"” কী?")}></h3>
-    <p ${bl(s.en.overview,s.bn.overview)}></p>
-    ${costTable}
     <h3 ${bl("Your treatment steps","আপনার চিকিৎসার ধাপ")}></h3>
     <ol class="tab-steps">${steps}</ol>
     <h3 ${bl("Why choose Omega Dental","কেন ওমেগা ডেন্টাল বেছে নেবেন")}></h3>
     <ul class="tab-list">${facts}</ul>
+    <h3 ${bl("What is "+s.en.name+"?","“"+s.bn.name+"” কী?")}></h3>
+    <p ${bl(s.en.overview,s.bn.overview)}></p>
+    ${costTable}
   </div>
 
   <div class="tab-panel" data-tab="doctors">
