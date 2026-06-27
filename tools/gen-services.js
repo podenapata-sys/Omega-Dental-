@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260627c";
+const VER = "20260627d";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -42,12 +42,12 @@ const SERVICES = [
     en:{ name:"Root Canal Treatment (RCT)", tag:"Save your natural tooth, pain-free", price:"৳ 5,000",
       meta:"Painless root canal treatment (RCT) in Dhaka at Omega Dental. Single & multi-visit RCT from ৳5,000. Book with Dr. Afsana Haque.",
       desc:"Save your natural tooth with our painless, fully sterile treatment. Get fast relief from pain and return to your daily routine quickly.",
-      facts:[["Procedure","Pain-free treatment"],["Visits","1–2 sessions only"],["Success Rate","Long-lasting result"],["Hygiene","100% sterile tools"]],
+      facts:[["Procedure","Fully Painless"],["Visits","1–2 sessions only"],["Success Rate","Long-lasting result"],["Hygiene","100% sterile tools"]],
       overview:"A root canal removes infected pulp from inside a damaged tooth, relieves pain and lets you keep your natural tooth instead of extracting it. At Omega Dental we use gentle, modern techniques — including single-visit RCT — so most patients feel little to no discomfort.",
       process:["Digital X-ray & diagnosis","Gentle numbing of the area","Cleaning & sealing the canal","Filling or crown to protect the tooth"] },
     bn:{ name:"রুট ক্যানেল চিকিৎসা (RCT)", tag:"ব্যথাহীনভাবে আপনার আসল দাঁত বাঁচান", price:"৳ ৫,০০০",
       desc:"আমাদের ব্যথাহীন, সম্পূর্ণ জীবাণুমুক্ত চিকিৎসায় আপনার আসল দাঁত বাঁচান। দ্রুত ব্যথা থেকে মুক্তি পান এবং দ্রুত স্বাভাবিক জীবনে ফিরুন।",
-      facts:[["পদ্ধতি","ব্যথাহীন চিকিৎসা"],["ভিজিট","মাত্র ১–২ সেশন"],["সাফল্যের হার","দীর্ঘস্থায়ী ফল"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
+      facts:[["পদ্ধতি","সম্পূর্ণ ব্যথাহীন"],["ভিজিট","মাত্র ১–২ সেশন"],["সাফল্যের হার","দীর্ঘস্থায়ী ফল"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
       overview:"রুট ক্যানেল ক্ষতিগ্রস্ত দাঁতের ভেতরের সংক্রমিত পাল্প সরিয়ে ব্যথা কমায় এবং দাঁত তুলে ফেলার বদলে আসল দাঁত রক্ষা করে। ওমেগা ডেন্টালে আমরা কোমল, আধুনিক পদ্ধতি ব্যবহার করি — সিঙ্গেল-ভিজিট সহ — তাই বেশিরভাগ রোগী প্রায় কোনো ব্যথা অনুভব করেন না।",
       process:["ডিজিটাল এক্স-রে ও রোগ নির্ণয়","কোমলভাবে অবশ করা","ক্যানেল পরিষ্কার ও সিল করা","দাঁত রক্ষায় ফিলিং বা ক্রাউন"] } },
 
@@ -81,12 +81,12 @@ const SERVICES = [
     en:{ name:"Teeth Whitening", tag:"A brighter smile in one visit", price:"৳ 12,000",
       meta:"Professional teeth whitening in Dhaka at Omega Dental for ৳12,000. Safe, fast and effective. Book with Dr. Afsana Haque.",
       desc:"Safely lighten years of stains and brighten your smile several shades in a single, comfortable visit.",
-      facts:[["Procedure","Pain-free"],["Visits","1 session"],["Result","Several shades brighter"],["Hygiene","100% sterile tools"]],
+      facts:[["Procedure","Fully Painless"],["Visits","1 session"],["Result","Several shades brighter"],["Hygiene","100% sterile tools"]],
       overview:"Professional teeth whitening safely lightens stains from tea, coffee, smoking and age — far more effective and safer than over-the-counter kits, with results you can see the same day.",
       process:["Cleaning & shade check","Gum protection applied","Whitening gel + light","Instant brighter result"] },
     bn:{ name:"দাঁত সাদা করা", tag:"এক ভিজিটেই উজ্জ্বল হাসি", price:"৳ ১২,০০০",
       desc:"বছরের জমা দাগ নিরাপদে দূর করে এক ভিজিটেই আপনার হাসি কয়েক শেড উজ্জ্বল করুন।",
-      facts:[["পদ্ধতি","ব্যথাহীন"],["ভিজিট","১ সেশন"],["ফলাফল","কয়েক শেড উজ্জ্বল"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
+      facts:[["পদ্ধতি","সম্পূর্ণ ব্যথাহীন"],["ভিজিট","১ সেশন"],["ফলাফল","কয়েক শেড উজ্জ্বল"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
       overview:"পেশাদার হোয়াইটেনিং চা, কফি, ধূমপান ও বয়সজনিত দাগ নিরাপদে দূর করে — দোকানের কিটের চেয়ে অনেক বেশি কার্যকর ও নিরাপদ, একই দিনে দৃশ্যমান ফল।",
       process:["পরিষ্কার ও শেড পরীক্ষা","মাড়ি সুরক্ষা","হোয়াইটেনিং জেল + লাইট","তাৎক্ষণিক উজ্জ্বল ফল"] } },
 
@@ -94,12 +94,12 @@ const SERVICES = [
     en:{ name:"Crowns & Bridges", tag:"Rebuild strength and beauty", price:"৳ 5,000",
       meta:"Dental crowns & bridges in Dhaka at Omega Dental — Zirconia, PFM & composite crowns from ৳5,000. Book with Dr. Afsana Haque.",
       desc:"Restore the strength, shape and beauty of damaged or missing teeth with durable, natural-looking crowns and bridges.",
-      facts:[["Procedure","Pain-free"],["Visits","2 sessions"],["Material","Zirconia / PFM"],["Hygiene","100% sterile tools"]],
+      facts:[["Procedure","Fully Painless"],["Visits","2 sessions"],["Material","Zirconia / PFM"],["Hygiene","100% sterile tools"]],
       overview:"Crowns cap a damaged or root-treated tooth to restore its strength and shape, while bridges replace one or more missing teeth. We offer durable Zirconia, PFM and composite options matched to your natural teeth.",
       process:["Tooth preparation","Precise digital impression","Custom crown/bridge made","Fitting & final polish"] },
     bn:{ name:"ক্রাউন ও ব্রিজ", tag:"শক্তি ও সৌন্দর্য ফিরিয়ে আনুন", price:"৳ ৫,০০০",
       desc:"টেকসই, প্রাকৃতিক দেখতে ক্রাউন ও ব্রিজ দিয়ে ক্ষতিগ্রস্ত বা হারানো দাঁতের শক্তি, আকৃতি ও সৌন্দর্য ফিরিয়ে আনুন।",
-      facts:[["পদ্ধতি","ব্যথাহীন"],["ভিজিট","২ সেশন"],["উপাদান","জিরকোনিয়া / পিএফএম"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
+      facts:[["পদ্ধতি","সম্পূর্ণ ব্যথাহীন"],["ভিজিট","২ সেশন"],["উপাদান","জিরকোনিয়া / পিএফএম"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
       overview:"ক্রাউন ক্ষতিগ্রস্ত বা রুট-ক্যানেল করা দাঁত ঢেকে শক্তি ও আকৃতি ফেরায়, আর ব্রিজ এক বা একাধিক হারানো দাঁত প্রতিস্থাপন করে। আমরা টেকসই জিরকোনিয়া, পিএফএম ও কম্পোজিট অপশন দিই।",
       process:["দাঁত প্রস্তুত করা","নিখুঁত ডিজিটাল ছাপ","কাস্টম ক্রাউন/ব্রিজ তৈরি","ফিটিং ও চূড়ান্ত পলিশ"] } },
 
@@ -120,12 +120,12 @@ const SERVICES = [
     en:{ name:"Scaling & Polishing", tag:"Healthy gums, fresh clean smile", price:"৳ 1,500",
       meta:"Professional teeth scaling & polishing in Dhaka at Omega Dental from ৳1,000. Book a cleaning with Dr. Afsana Haque.",
       desc:"Remove plaque and tartar and polish your teeth for healthy gums, fresh breath and a brighter smile.",
-      facts:[["Procedure","Pain-free"],["Visits","1 session"],["Recommended","Every 6 months"],["Hygiene","100% sterile tools"]],
+      facts:[["Procedure","Fully Painless"],["Visits","1 session"],["Recommended","Every 6 months"],["Hygiene","100% sterile tools"]],
       overview:"Scaling removes plaque and hardened tartar that brushing can't, while polishing smooths and brightens your teeth. Regular cleaning prevents gum disease, bad breath and tooth loss.",
       process:["Gum & teeth check","Ultrasonic scaling","Polishing","Care & prevention tips"] },
     bn:{ name:"স্কেলিং ও পলিশিং", tag:"সুস্থ মাড়ি, পরিষ্কার সতেজ হাসি", price:"৳ ১,৫০০",
       desc:"প্লাক ও টার্টার দূর করে দাঁত পলিশ করুন — সুস্থ মাড়ি, সতেজ নিঃশ্বাস ও উজ্জ্বল হাসির জন্য।",
-      facts:[["পদ্ধতি","ব্যথাহীন"],["ভিজিট","১ সেশন"],["প্রস্তাবিত","প্রতি ৬ মাসে"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
+      facts:[["পদ্ধতি","সম্পূর্ণ ব্যথাহীন"],["ভিজিট","১ সেশন"],["প্রস্তাবিত","প্রতি ৬ মাসে"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
       overview:"স্কেলিং প্লাক ও শক্ত টার্টার দূর করে যা ব্রাশে যায় না, আর পলিশিং দাঁত মসৃণ ও উজ্জ্বল করে। নিয়মিত পরিষ্কার মাড়ির রোগ, দুর্গন্ধ ও দাঁত পড়া রোধ করে।",
       process:["মাড়ি ও দাঁত পরীক্ষা","আল্ট্রাসনিক স্কেলিং","পলিশিং","যত্ন ও প্রতিরোধের পরামর্শ"] } },
 
@@ -133,12 +133,12 @@ const SERVICES = [
     en:{ name:"Tooth Fillings", tag:"Restore decayed teeth, painlessly", price:"৳ 1,000",
       meta:"Tooth-coloured composite & GI fillings in Dhaka at Omega Dental from ৳1,000. Book with Dr. Afsana Haque.",
       desc:"Repair decayed teeth with natural, tooth-coloured fillings that stop pain and prevent further damage.",
-      facts:[["Procedure","Pain-free"],["Visits","1 session"],["Finish","Tooth-coloured"],["Hygiene","100% sterile tools"]],
+      facts:[["Procedure","Fully Painless"],["Visits","1 session"],["Finish","Tooth-coloured"],["Hygiene","100% sterile tools"]],
       overview:"A filling repairs a tooth damaged by decay, stopping pain and preventing further damage. We use tooth-coloured composite and GI fillings that blend in naturally and are placed gently and painlessly.",
       process:["Examine the cavity","Gentle cleaning","Tooth-coloured filling","Shaping & polish"] },
     bn:{ name:"দাঁতের ফিলিং", tag:"ব্যথাহীনভাবে ক্ষয়প্রাপ্ত দাঁত ঠিক করুন", price:"৳ ১,০০০",
       desc:"প্রাকৃতিক, দাঁতের রঙের ফিলিং দিয়ে ক্ষয়প্রাপ্ত দাঁত মেরামত করুন — ব্যথা বন্ধ করে ও আরও ক্ষতি রোধ করে।",
-      facts:[["পদ্ধতি","ব্যথাহীন"],["ভিজিট","১ সেশন"],["ফিনিশ","দাঁতের রঙের"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
+      facts:[["পদ্ধতি","সম্পূর্ণ ব্যথাহীন"],["ভিজিট","১ সেশন"],["ফিনিশ","দাঁতের রঙের"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
       overview:"ফিলিং ক্ষয়ে ক্ষতিগ্রস্ত দাঁত মেরামত করে, ব্যথা বন্ধ করে ও আরও ক্ষতি রোধ করে। আমরা দাঁতের রঙের কম্পোজিট ও জিআই ফিলিং ব্যবহার করি যা প্রাকৃতিকভাবে মিশে যায়।",
       process:["ক্যাভিটি পরীক্ষা","কোমল পরিষ্কার","দাঁতের রঙের ফিলিং","আকৃতি ও পলিশ"] } },
 
@@ -146,12 +146,12 @@ const SERVICES = [
     en:{ name:"Composite Veneer", tag:"Reshape and perfect your smile", price:"৳ 3,500 / tooth",
       meta:"Composite veneers in Dhaka at Omega Dental from ৳3,500 — close gaps, fix chips and perfect your front teeth. Book with Dr. Afsana Haque.",
       desc:"Reshape, close gaps and perfect the look of your front teeth with natural, tooth-coloured composite veneers.",
-      facts:[["Procedure","Pain-free"],["Visits","1 Session"],["Warranty","Up to 5 years"],["Hygiene","100% sterile tools"]],
+      facts:[["Procedure","Fully Painless"],["Visits","1 Session"],["Warranty","Up to 5 years"],["Hygiene","100% sterile tools"]],
       overview:"Composite veneers are thin, tooth-coloured layers bonded to the front of your teeth to fix gaps, chips, stains and shape — giving you a natural, even smile in just one or two visits, without removing much of your natural tooth.",
       process:["Smile assessment","Shade & shape planning","Bonding the veneer","Sculpting & polish"] },
     bn:{ name:"কম্পোজিট ভিনিয়ার", tag:"হাসি নতুন আকৃতি ও নিখুঁত করুন", price:"৳ ৩,৫০০ / দাঁত",
       desc:"প্রাকৃতিক, দাঁতের রঙের কম্পোজিট ভিনিয়ার দিয়ে সামনের দাঁতের ফাঁক বন্ধ করুন, আকৃতি ও সৌন্দর্য নিখুঁত করুন।",
-      facts:[["পদ্ধতি","ব্যথাহীন"],["ভিজিট","১ সেশন"],["ওয়ারেন্টি","৫ বছর পর্যন্ত"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
+      facts:[["পদ্ধতি","সম্পূর্ণ ব্যথাহীন"],["ভিজিট","১ সেশন"],["ওয়ারেন্টি","৫ বছর পর্যন্ত"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
       overview:"কম্পোজিট ভিনিয়ার হলো দাঁতের রঙের পাতলা স্তর যা সামনের দাঁতে বসিয়ে ফাঁক, ভাঙা, দাগ ও আকৃতি ঠিক করা হয় — মাত্র এক-দুই ভিজিটেই প্রাকৃতিক, সমান হাসি দেয়, আসল দাঁত বেশি না কেটে।",
       process:["স্মাইল মূল্যায়ন","শেড ও আকৃতি পরিকল্পনা","ভিনিয়ার বন্ডিং","স্কাল্পটিং ও পলিশ"] } },
 
@@ -159,12 +159,12 @@ const SERVICES = [
     en:{ name:"Tooth Extraction & Surgery", tag:"Painless removal, including wisdom teeth", price:"৳ 1,000",
       meta:"Painless tooth extraction & minor oral surgery in Dhaka at Omega Dental from ৳1,000, including wisdom teeth. Book with Dr. Afsana Haque.",
       desc:"Safe, painless removal of badly damaged or wisdom teeth, with gentle care before, during and after.",
-      facts:[["Procedure","Painless"],["Visits","1 session"],["Recovery","Quick & guided"],["Hygiene","100% sterile tools"]],
+      facts:[["Procedure","Fully Painless"],["Visits","1 session"],["Recovery","Quick & guided"],["Hygiene","100% sterile tools"]],
       overview:"When a tooth is too damaged to save, or a wisdom tooth is causing pain and crowding, a gentle extraction relieves the problem and protects your other teeth. We perform simple and surgical extractions with modern, painless techniques and clear aftercare.",
       process:["X-ray & assessment","Gentle numbing","Painless removal","Aftercare guidance"] },
     bn:{ name:"দাঁত তোলা ও সার্জারি", tag:"আক্কেল দাঁতসহ ব্যথাহীন অপসারণ", price:"৳ ১,০০০",
       desc:"মারাত্মক ক্ষতিগ্রস্ত বা আক্কেল দাঁতের নিরাপদ, ব্যথাহীন অপসারণ — আগে, চলাকালীন ও পরে কোমল যত্নসহ।",
-      facts:[["পদ্ধতি","ব্যথাহীন"],["ভিজিট","১ সেশন"],["আরোগ্য","দ্রুত ও নির্দেশিত"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
+      facts:[["পদ্ধতি","সম্পূর্ণ ব্যথাহীন"],["ভিজিট","১ সেশন"],["আরোগ্য","দ্রুত ও নির্দেশিত"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
       overview:"যখন কোনো দাঁত বাঁচানোর অযোগ্য হয়, বা আক্কেল দাঁত ব্যথা ও ভিড় তৈরি করে, তখন কোমল এক্সট্রাকশন সমস্যা দূর করে ও অন্য দাঁত রক্ষা করে। আমরা আধুনিক, ব্যথাহীন কৌশলে সাধারণ ও সার্জিক্যাল এক্সট্রাকশন করি ও স্পষ্ট আফটারকেয়ার দিই।",
       process:["এক্স-রে ও মূল্যায়ন","কোমলভাবে অবশ করা","ব্যথাহীন অপসারণ","আফটারকেয়ার পরামর্শ"] } },
 
@@ -185,12 +185,12 @@ const SERVICES = [
     en:{ name:"Cosmetic Dentistry", tag:"Design your perfect smile", price:"৳ 3,500",
       meta:"Cosmetic dentistry & smile makeovers in Dhaka at Omega Dental from ৳3,500 — whitening, veneers, bonding & reshaping. Book with Dr. Afsana Haque.",
       desc:"Transform your smile with a tailored combination of whitening, veneers, bonding and reshaping.",
-      facts:[["Procedure","Pain-free"],["Visits","Tailored plan"],["Result","Natural-looking"],["Hygiene","100% sterile tools"]],
+      facts:[["Procedure","Fully Painless"],["Visits","Tailored plan"],["Result","Natural-looking"],["Hygiene","100% sterile tools"]],
       overview:"A smile makeover combines treatments — whitening, composite veneers, bonding and reshaping — into one personalised plan to give you a brighter, more even and confident smile that still looks completely natural.",
       process:["Smile consultation","Custom makeover plan","Step-by-step treatment","Final reveal & care"] },
     bn:{ name:"কসমেটিক ডেন্টিস্ট্রি", tag:"আপনার নিখুঁত হাসি ডিজাইন করুন", price:"৳ ৩,৫০০",
       desc:"হোয়াইটেনিং, ভিনিয়ার, বন্ডিং ও রিশেপিং-এর উপযোগী সমন্বয়ে আপনার হাসি বদলে ফেলুন।",
-      facts:[["পদ্ধতি","ব্যথাহীন"],["ভিজিট","উপযোগী পরিকল্পনা"],["ফলাফল","প্রাকৃতিক দেখতে"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
+      facts:[["পদ্ধতি","সম্পূর্ণ ব্যথাহীন"],["ভিজিট","উপযোগী পরিকল্পনা"],["ফলাফল","প্রাকৃতিক দেখতে"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
       overview:"স্মাইল মেকওভার একাধিক চিকিৎসা — হোয়াইটেনিং, কম্পোজিট ভিনিয়ার, বন্ডিং ও রিশেপিং — একটি ব্যক্তিগত পরিকল্পনায় মিলিয়ে আপনাকে উজ্জ্বল, সমান ও আত্মবিশ্বাসী হাসি দেয় যা সম্পূর্ণ প্রাকৃতিক দেখায়।",
       process:["স্মাইল পরামর্শ","কাস্টম মেকওভার পরিকল্পনা","ধাপে ধাপে চিকিৎসা","চূড়ান্ত ফল ও যত্ন"] } },
 ];
