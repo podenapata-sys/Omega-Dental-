@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
-const VER = "20260627e";
+const VER = "20260627f";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const bl = (en,bn) => `data-en="${esc(en)}" data-bn="${esc(bn)}"`;
 const IC = {
@@ -296,11 +296,11 @@ function buildTabs(s){
     <p ${bl(s.en.desc,s.bn.desc)}></p>
     <h3 ${bl("What is "+s.en.name+"?","“"+s.bn.name+"” কী?")}></h3>
     <p ${bl(s.en.overview,s.bn.overview)}></p>
-    <h3 ${bl("Why choose Omega Dental","কেন ওমেগা ডেন্টাল বেছে নেবেন")}></h3>
-    <ul class="tab-list">${facts}</ul>
+    ${costTable}
     <h3 ${bl("Your treatment steps","আপনার চিকিৎসার ধাপ")}></h3>
     <ol class="tab-steps">${steps}</ol>
-    ${costTable}
+    <h3 ${bl("Why choose Omega Dental","কেন ওমেগা ডেন্টাল বেছে নেবেন")}></h3>
+    <ul class="tab-list">${facts}</ul>
   </div>
 
   <div class="tab-panel" data-tab="doctors">
