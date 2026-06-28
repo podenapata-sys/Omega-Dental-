@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=20260627k">
+<link rel="stylesheet" href="assets/styles.css?v=20260628a">
 <!-- Structured data: Dentist / MedicalClinic -->
 <script type="application/ld+json">
 {
@@ -45,6 +45,29 @@
 <body>
 
 <div id="scrollbar"></div>
+
+<!-- topbar -->
+<div class="topbar">
+  <div class="container topbar-inner">
+    <div class="tb-left">
+      <span class="tb-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <span data-i18n="tb_addr"></span>
+      </span>
+      <span class="tb-divider">|</span>
+      <span class="tb-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span data-i18n="tb_hours"></span>
+      </span>
+    </div>
+    <div class="tb-right">
+      <a href="https://www.facebook.com/profile.php?id=61586889212076" target="_blank" rel="noopener" aria-label="Facebook" class="tb-social"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram" class="tb-social"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.4a4 4 0 1 1-4.6-4 4 4 0 0 1 4.6 4z"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg></a>
+      <a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube" class="tb-social"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.5 6.4a2.8 2.8 0 0 0-2-2C18.9 4 12 4 12 4s-6.9 0-8.5.4a2.8 2.8 0 0 0-2 2A29 29 0 0 0 1 12a29 29 0 0 0 .5 5.6 2.8 2.8 0 0 0 2 2C5.1 20 12 20 12 20s6.9 0 8.5-.4a2.8 2.8 0 0 0 2-2A29 29 0 0 0 23 12a29 29 0 0 0-.5-5.6zM10 15.5v-7l6 3.5-6 3.5z"/></svg></a>
+      <a href="https://www.google.com/maps/place/OMEGA+Dental/@23.8018173,90.370624,16z" target="_blank" rel="noopener" aria-label="Google Maps" class="tb-social"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.2 0 5.9 1.1 8.1 2.9l6-6C34.4 3.2 29.5 1 24 1 14.8 1 7 6.7 3.7 14.7l7 5.4C12.4 14 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.4 5.7c4.3-4 6.8-9.9 6.8-16.9h.4z"/><path fill="#FBBC05" d="M10.7 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7-5.4A23.9 23.9 0 0 0 .5 24c0 3.9.9 7.5 2.6 10.7l7.6-6.1z"/><path fill="#34A853" d="M24 46.5c5.4 0 10-1.8 13.3-4.8l-7.4-5.7c-1.8 1.2-4.1 2-6.9 2-6.3 0-11.6-4.2-13.5-10l-7.6 5.9C6.8 41.5 14.8 46.5 24 46.5z"/></svg></a>
+    </div>
+  </div>
+</div>
 
 <!-- header -->
 <header class="header">
@@ -95,19 +118,32 @@
         <a class="btn btn-primary" href="book.html" data-i18n="book"></a>
         <a class="btn btn-call" href="tel:+8801706516868"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7A2 2 0 0 1 22 16.9z"/></svg> <span data-i18n="call"></span></a>
       </div>
-      <a class="g-review-badge" href="https://www.google.com/maps/place/OMEGA+Dental/@23.7985491,90.3551216,14z/data=!4m12!1m2!2m1!1somega+dental!3m8!1s0x3755c144389f4e91:0xf69deedb238d0bb7!8m2!3d23.8018173!4d90.370624!9m1!1b1!15sCgxvbWVnYSBkZW50YWySAQ1kZW50YWxfY2xpbmlj4AEA!16s%2Fg%2F11ms4g6xnd?entry=ttu&g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" aria-label="See our Google reviews">
-        <svg class="g-logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path fill="#EA4335" d="M24 9.5c3.2 0 5.9 1.1 8.1 2.9l6-6C34.4 3.2 29.5 1 24 1 14.8 1 7 6.7 3.7 14.7l7 5.4C12.4 14 17.7 9.5 24 9.5z"/>
-          <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.4 5.7c4.3-4 6.8-9.9 6.8-16.9h.4z"/>
-          <path fill="#FBBC05" d="M10.7 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7-5.4A23.9 23.9 0 0 0 .5 24c0 3.9.9 7.5 2.6 10.7l7.6-6.1z"/>
-          <path fill="#34A853" d="M24 46.5c5.4 0 10-1.8 13.3-4.8l-7.4-5.7c-1.8 1.2-4.1 2-6.9 2-6.3 0-11.6-4.2-13.5-10l-7.6 5.9C6.8 41.5 14.8 46.5 24 46.5z"/>
-        </svg>
-        <div class="g-review-text">
-          <span class="g-stars">★★★★★</span>
-          <span class="g-score">4.9</span>
-          <span class="g-label" data-i18n="g_reviews"></span>
+      <div class="hero-trust-row">
+        <a class="g-review-badge" href="https://www.google.com/maps/place/OMEGA+Dental/@23.7985491,90.3551216,14z/data=!4m12!1m2!2m1!1somega+dental!3m8!1s0x3755c144389f4e91:0xf69deedb238d0bb7!8m2!3d23.8018173!4d90.370624!9m1!1b1!15sCgxvbWVnYSBkZW50YWySAQ1kZW50YWxfY2xpbmlj4AEA!16s%2Fg%2F11ms4g6xnd?entry=ttu&g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" aria-label="See our Google reviews">
+          <svg class="g-logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path fill="#EA4335" d="M24 9.5c3.2 0 5.9 1.1 8.1 2.9l6-6C34.4 3.2 29.5 1 24 1 14.8 1 7 6.7 3.7 14.7l7 5.4C12.4 14 17.7 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.4 5.7c4.3-4 6.8-9.9 6.8-16.9h.4z"/>
+            <path fill="#FBBC05" d="M10.7 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7-5.4A23.9 23.9 0 0 0 .5 24c0 3.9.9 7.5 2.6 10.7l7.6-6.1z"/>
+            <path fill="#34A853" d="M24 46.5c5.4 0 10-1.8 13.3-4.8l-7.4-5.7c-1.8 1.2-4.1 2-6.9 2-6.3 0-11.6-4.2-13.5-10l-7.6 5.9C6.8 41.5 14.8 46.5 24 46.5z"/>
+          </svg>
+          <div class="g-review-text">
+            <span class="g-stars">★★★★★</span>
+            <span class="g-score">4.9</span>
+            <span class="g-label" data-i18n="g_reviews"></span>
+          </div>
+        </a>
+        <div class="hp-badge">
+          <div class="hp-avatars">
+            <span class="hp-av">😊</span>
+            <span class="hp-av">😁</span>
+            <span class="hp-av">🙂</span>
+          </div>
+          <div class="hp-text">
+            <span class="hp-count">230+</span>
+            <span class="hp-label" data-i18n="hp_label"></span>
+          </div>
         </div>
-      </a>
+      </div>
       <div class="hero-badges">
         <span data-i18n="hero_b1"></span><span data-i18n="hero_b2"></span>
         <span data-i18n="hero_b3"></span><span data-i18n="hero_b4"></span>
@@ -132,6 +168,28 @@
       <div class="hstat"><div class="stat-num" data-target="10" data-suffix="+">0</div><div class="stat-lbl" data-i18n="stat2"></div></div>
       <div class="hstat"><div class="stat-num" data-target="37" data-suffix="+">0</div><div class="stat-lbl" data-i18n="stat3"></div></div>
       <div class="hstat"><div class="stat-num" data-target="99" data-suffix="%">0</div><div class="stat-lbl" data-i18n="stat4"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- features bar -->
+<section class="features-bar">
+  <div class="container fb-grid">
+    <div class="fb-item">
+      <div class="fb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></div>
+      <div><strong data-i18n="fb1_t"></strong><p data-i18n="fb1_s"></p></div>
+    </div>
+    <div class="fb-item">
+      <div class="fb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></div>
+      <div><strong data-i18n="fb2_t"></strong><p data-i18n="fb2_s"></p></div>
+    </div>
+    <div class="fb-item">
+      <div class="fb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <div><strong data-i18n="fb3_t"></strong><p data-i18n="fb3_s"></p></div>
+    </div>
+    <div class="fb-item">
+      <div class="fb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1A5.5 5.5 0 0 0 3.2 12.4l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div>
+      <div><strong data-i18n="fb4_t"></strong><p data-i18n="fb4_s"></p></div>
     </div>
   </div>
 </section>
@@ -411,9 +469,22 @@
 </footer>
 
 <button id="toTop" class="totop" aria-label="Back to top">↑</button>
-<a class="fab" href="https://wa.me/8801713241670" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:28px;height:28px"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z"/></svg></a>
+<div class="fixed-sidebar">
+  <a class="fsb-btn fsb-call" href="tel:+8801706516868" aria-label="Call us">
+    <div class="fsb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7A2 2 0 0 1 22 16.9z"/></svg></div>
+    <span data-i18n="call"></span>
+  </a>
+  <a class="fsb-btn fsb-wa" href="https://wa.me/8801713241670" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <div class="fsb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z"/></svg></div>
+    <span>WhatsApp</span>
+  </a>
+  <a class="fsb-btn fsb-rev" href="https://www.google.com/maps/place/OMEGA+Dental/@23.7985491,90.3551216,14z/data=!4m12!1m2!2m1!1somega+dental!3m8!1s0x3755c144389f4e91:0xf69deedb238d0bb7!8m2!3d23.8018173!4d90.370624!9m1!1b1!15sCgxvbWVnYSBkZW50YWySAQ1kZW50YWxfY2xpbmlj4AEA!16s%2Fg%2F11ms4g6xnd?entry=ttu&g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" aria-label="Review us on Google">
+    <div class="fsb-ic"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.2 0 5.9 1.1 8.1 2.9l6-6C34.4 3.2 29.5 1 24 1 14.8 1 7 6.7 3.7 14.7l7 5.4C12.4 14 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.4 5.7c4.3-4 6.8-9.9 6.8-16.9h.4z"/><path fill="#FBBC05" d="M10.7 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7-5.4A23.9 23.9 0 0 0 .5 24c0 3.9.9 7.5 2.6 10.7l7.6-6.1z"/><path fill="#34A853" d="M24 46.5c5.4 0 10-1.8 13.3-4.8l-7.4-5.7c-1.8 1.2-4.1 2-6.9 2-6.3 0-11.6-4.2-13.5-10l-7.6 5.9C6.8 41.5 14.8 46.5 24 46.5z"/></svg></div>
+    <span data-i18n="rev_us"></span>
+  </a>
+</div>
 
 <script>document.getElementById("year").textContent="2025";</script>
-<script src="assets/app.js?v=20260627k"></script>
+<script src="assets/app.js?v=20260628a"></script>
 </body>
 </html>
