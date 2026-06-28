@@ -47,7 +47,7 @@ const PRICES = [
   { c:"cosmetic", n:"Teeth Whitening", nb:"দাঁত সাদা করা", min:12000, max:12000 },
 
   // 3. Root Canal Treatment (RCT)
-  { c:"endo", n:"Root Canal Treatment (RCT)", nb:"রুট ক্যানেল চিকিৎসা (RCT)", per:true, min:5000, max:5000 },
+  { c:"endo", n:"Root Canal Treatment (RCT)", nb:"রুট ক্যানেল চিকিৎসা (RCT)", per:true, min:5000, max:8000 },
   { c:"endo", n:"RCT — Wisdom Tooth", nb:"রুট ক্যানেল — আক্কেল দাঁত", per:true, min:8000, max:8000 },
   { c:"endo", n:"Re-RCT", nb:"পুনরায় রুট ক্যানেল", per:true, min:6500, max:6500 },
   { c:"endo", n:"Single Visit RCT with Filling", nb:"এক ভিজিটে রুট ক্যানেল ও ফিলিং", per:true, min:12000, max:12000 },
