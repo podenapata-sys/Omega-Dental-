@@ -840,6 +840,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
   const navlist = document.getElementById("navlist");
   burger?.addEventListener("click", ()=> navlist.classList.toggle("open"));
   navlist?.querySelectorAll("a:not(.dd-toggle)").forEach(a=>a.addEventListener("click", ()=>navlist.classList.remove("open")));
+  navlist?.querySelectorAll(".dd-menu a").forEach(a=>a.addEventListener("click", ()=>navlist.classList.remove("open")));
   // services dropdown toggle (click on mobile, hover on desktop)
   const hasDD = document.querySelector(".has-dd");
   const ddToggle = document.querySelector(".dd-toggle");
