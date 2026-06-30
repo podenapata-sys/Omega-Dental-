@@ -216,6 +216,7 @@ const I18N = {
     google_reviews_label:"Based on 230+ Google Reviews",
     qr_scan_label:"Scan to Review Us on Google",
     see_reviews:"See All Reviews →",
+    hero_wa:"WhatsApp Us",
     lang_label:"বাংলা",
   },
   bn: {
@@ -326,6 +327,7 @@ const I18N = {
     google_reviews_label:"২৩০+ গুগল রিভিউ এর ভিত্তিতে",
     qr_scan_label:"গুগলে রিভিউ দিতে স্ক্যান করুন",
     see_reviews:"সব রিভিউ দেখুন →",
+    hero_wa:"WhatsApp করুন",
     lang_label:"EN",
   }
 };

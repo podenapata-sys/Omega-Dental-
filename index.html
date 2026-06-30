@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=20260629a">
+<link rel="stylesheet" href="assets/styles.css?v=20260630a">
 <!-- Structured data: Dentist / MedicalClinic -->
 <script type="application/ld+json">
 {
@@ -115,8 +115,9 @@
       <h1 data-i18n="hero_title" data-i18n-html></h1>
       <p class="lead" data-i18n="hero_text"></p>
       <div class="hero-cta">
-        <a class="btn btn-primary" href="book.html" data-i18n="book"></a>
         <a class="btn btn-call" href="tel:+8801706516868"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7A2 2 0 0 1 22 16.9z"/></svg> <span data-i18n="call"></span></a>
+        <a class="btn btn-wa hero-wa-btn" href="https://wa.me/8801713241670" target="_blank" rel="noopener"><svg class="ic-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z"/></svg> <span data-i18n="hero_wa"></span></a>
+        <a class="btn btn-ghost" href="book.html" data-i18n="book"></a>
       </div>
       <div class="hero-trust-row">
         <a class="g-review-badge" href="https://www.google.com/maps/place/OMEGA+Dental/@23.7985491,90.3551216,14z/data=!4m12!1m2!2m1!1somega+dental!3m8!1s0x3755c144389f4e91:0xf69deedb238d0bb7!8m2!3d23.8018173!4d90.370624!9m1!1b1!15sCgxvbWVnYSBkZW50YWySAQ1kZW50YWxfY2xpbmlj4AEA!16s%2Fg%2F11ms4g6xnd?entry=ttu&g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" aria-label="See our Google reviews">
@@ -151,11 +152,54 @@
     </div>
     <div class="hero-art">
       <div class="hero-photo">
-        <img class="hero-photo-img" src="assets/hero-portrait.jpg" alt="Smiling dental patient at Omega Dental" onerror="this.remove()">
-        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <circle cx="100" cy="100" r="92" fill="#ffffff" opacity=".5"/>
-          <path d="M70 150c-18-22-15-58 5-74 14-11 28-6 25 12-3-18 11-23 25-12 20 16 23 52 5 74-8 10-14 4-15-8-1-12-1-24-15-24s-14 12-15 24c-1 12-7 18-15 8Z" fill="#57C3AD"/>
-          <circle cx="135" cy="62" r="10" fill="#F08A24"/>
+        <img class="hero-photo-img" src="assets/hero-portrait.jpg" alt="Smiling child dental patient at Omega Dental" onerror="this.remove()">
+        <!-- Placeholder illustration: smiling child at dentist — replaced when client uploads hero-portrait.jpg -->
+        <svg viewBox="0 0 300 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:90%;max-width:280px">
+          <!-- background circle glow -->
+          <circle cx="150" cy="200" r="140" fill="url(#heroGrad)" opacity=".18"/>
+          <!-- dental chair base -->
+          <rect x="60" y="300" width="180" height="28" rx="14" fill="#2B6CB0" opacity=".22"/>
+          <rect x="80" y="260" width="140" height="50" rx="18" fill="#57C3AD" opacity=".28"/>
+          <!-- chair back -->
+          <rect x="100" y="160" width="100" height="110" rx="20" fill="#c7e8e2"/>
+          <!-- body / white coat area -->
+          <rect x="95" y="220" width="110" height="70" rx="16" fill="#f0faf8"/>
+          <!-- head -->
+          <ellipse cx="150" cy="155" rx="46" ry="50" fill="#FDDBB4"/>
+          <!-- hair -->
+          <ellipse cx="150" cy="118" rx="48" ry="24" fill="#5a3a1a"/>
+          <ellipse cx="106" cy="138" rx="14" ry="28" fill="#5a3a1a"/>
+          <ellipse cx="194" cy="138" rx="14" ry="28" fill="#5a3a1a"/>
+          <!-- eyes -->
+          <ellipse cx="134" cy="155" rx="7" ry="8" fill="#3a2510"/>
+          <ellipse cx="166" cy="155" rx="7" ry="8" fill="#3a2510"/>
+          <circle cx="136" cy="152" r="2.5" fill="#fff"/>
+          <circle cx="168" cy="152" r="2.5" fill="#fff"/>
+          <!-- big smile -->
+          <path d="M127 172 Q150 192 173 172" stroke="#c0392b" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <!-- teeth -->
+          <rect x="135" y="174" width="30" height="11" rx="4" fill="#fff"/>
+          <!-- cheeks blush -->
+          <ellipse cx="120" cy="170" rx="11" ry="7" fill="#f08080" opacity=".28"/>
+          <ellipse cx="180" cy="170" rx="11" ry="7" fill="#f08080" opacity=".28"/>
+          <!-- arm / thumbs up -->
+          <path d="M210 230 Q240 210 238 180 Q237 160 220 162 Q205 164 206 182 L200 182 Q188 182 188 192 Q188 202 200 202 L198 208 Q186 208 186 218 Q186 228 198 228 L198 234 Q186 234 187 244 Q188 252 200 252 L210 252 Q224 252 230 240 Q236 230 210 230Z" fill="#FDDBB4"/>
+          <path d="M220 162 Q228 148 222 136 Q216 124 206 130 Q200 136 200 148 L200 182" stroke="#e8b98a" stroke-width="1.5" fill="none"/>
+          <!-- thumbs up detail -->
+          <path d="M206 148 Q210 142 216 146" stroke="#c89060" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <!-- tooth icon badge -->
+          <circle cx="70" cy="290" r="26" fill="#fff" opacity=".9"/>
+          <path d="M62 280 Q57 275 60 268 Q63 261 70 261 Q77 261 80 268 Q83 275 78 280 L76 296 Q75 300 70 300 Q65 300 64 296Z" fill="#57C3AD"/>
+          <!-- star sparkles -->
+          <text x="220" y="120" font-size="22" fill="#F08A24" opacity=".9">★</text>
+          <text x="46" y="200" font-size="16" fill="#57C3AD" opacity=".7">✦</text>
+          <text x="240" y="280" font-size="14" fill="#2B6CB0" opacity=".6">✦</text>
+          <defs>
+            <radialGradient id="heroGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#57C3AD"/>
+              <stop offset="100%" stop-color="#2B6CB0"/>
+            </radialGradient>
+          </defs>
         </svg>
       </div>
       <div class="float-card fc-1"><div class="fc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg></div><div><strong data-i18n="hero_badge_t"></strong><small data-i18n="hero_badge_s"></small></div></div>
@@ -530,6 +574,6 @@
 
 <script>document.getElementById("year").textContent="2025";</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="assets/app.js?v=20260629a"></script>
+<script src="assets/app.js?v=20260630a"></script>
 </body>
 </html>
