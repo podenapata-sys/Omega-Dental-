@@ -210,6 +210,12 @@ const I18N = {
     faq_eyebrow:"Questions", faq_title:"Frequently asked questions",
     tips_eyebrow:"Dental Tips", tips_title:"Healthy-smile tips & guides",
     tips_read:"Read more",
+    wa_online:"● Online now", wa_greeting:"Hi! 👋 How can we help you today? We typically reply within minutes.",
+    wa_chip_book:"📅 Book Appointment", wa_chip_price:"💰 Treatment Price?", wa_chip_q:"❓ Ask a Question",
+    wa_start:"Start Chat on WhatsApp →",
+    google_reviews_label:"Based on 230+ Google Reviews",
+    qr_scan_label:"Scan to Review Us on Google",
+    see_reviews:"See All Reviews →",
     lang_label:"বাংলা",
   },
   bn: {
@@ -314,6 +320,12 @@ const I18N = {
     faq_eyebrow:"প্রশ্ন", faq_title:"সচরাচর জিজ্ঞাসিত প্রশ্ন",
     tips_eyebrow:"ডেন্টাল টিপস", tips_title:"সুস্থ হাসির টিপস ও গাইড",
     tips_read:"আরও পড়ুন",
+    wa_online:"● এখন অনলাইন", wa_greeting:"হ্যালো! 👋 আপনাকে কীভাবে সাহায্য করতে পারি? আমরা কয়েক মিনিটের মধ্যে উত্তর দিই।",
+    wa_chip_book:"📅 অ্যাপয়েন্টমেন্ট নিন", wa_chip_price:"💰 চিকিৎসার খরচ?", wa_chip_q:"❓ প্রশ্ন করুন",
+    wa_start:"WhatsApp-এ চ্যাট শুরু করুন →",
+    google_reviews_label:"২৩০+ গুগল রিভিউ এর ভিত্তিতে",
+    qr_scan_label:"গুগলে রিভিউ দিতে স্ক্যান করুন",
+    see_reviews:"সব রিভিউ দেখুন →",
     lang_label:"EN",
   }
 };
@@ -376,6 +388,18 @@ const BA_CASES = [
   { type:"braces",    before:"#d8c7ad", after:"#f4f2ec", bImg:"assets/ba/braces-before.jpg",    aImg:"assets/ba/braces-after.jpg" },
   { type:"implants",  before:"#c9b79b", after:"#f1efe8", bImg:"assets/ba/implants-before.jpg",  aImg:"assets/ba/implants-after.jpg" },
 ];
+
+/* ---------- WhatsApp chat pre-filled messages ---------- */
+const WA_MSGS = {
+  book:"Hi, I'd like to book an appointment at Omega Dental.",
+  price:"Hi, I'd like to know the treatment prices at Omega Dental.",
+  question:"Hi, I have a question about dental treatment at Omega Dental."
+};
+const WA_MSGS_BN = {
+  book:"হ্যালো, আমি ওমেগা ডেন্টালে অ্যাপয়েন্টমেন্ট নিতে চাই।",
+  price:"হ্যালো, আমি ওমেগা ডেন্টালের চিকিৎসার খরচ জানতে চাই।",
+  question:"হ্যালো, ওমেগা ডেন্টালে চিকিৎসা সম্পর্কে আমার একটি প্রশ্ন আছে।"
+};
 
 /* ============================================================
    Rendering + interactions
@@ -876,4 +900,40 @@ document.addEventListener("DOMContentLoaded", ()=>{
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); rob.unobserve(e.target); }});
   },{threshold:.12});
   revealEls.forEach(el=>rob.observe(el));
+
+  // WhatsApp Live Chat Widget
+  (function initWaChat(){
+    const bubble = document.getElementById("waBubble");
+    const popup  = document.getElementById("waPopup");
+    const closeBtn = document.getElementById("waClose");
+    const start  = document.getElementById("waStart");
+    if(!bubble||!popup) return;
+    function openPopup(){ popup.classList.add("open"); popup.setAttribute("aria-hidden","false"); bubble.classList.add("active"); }
+    function closePopup(){ popup.classList.remove("open"); popup.setAttribute("aria-hidden","true"); bubble.classList.remove("active"); }
+    bubble.addEventListener("click", ()=> popup.classList.contains("open") ? closePopup() : openPopup());
+    closeBtn?.addEventListener("click", closePopup);
+    popup.querySelectorAll(".wcp-chip").forEach(chip=>{
+      chip.addEventListener("click", ()=>{
+        const key = chip.dataset.msg;
+        const msgs = LANG==="bn" ? WA_MSGS_BN : WA_MSGS;
+        if(start) start.href = "https://wa.me/8801713241670?text=" + encodeURIComponent(msgs[key]||"");
+        start?.click();
+      });
+    });
+    if(!sessionStorage.getItem("wa_auto")){
+      setTimeout(()=>{ openPopup(); sessionStorage.setItem("wa_auto","1"); }, 8000);
+    }
+  })();
+
+  // Google Review QR Code
+  setTimeout(()=>{
+    const qrEl = document.getElementById("reviewQRCode");
+    if(qrEl && window.QRCode){
+      new QRCode(qrEl, {
+        text:"https://www.google.com/maps/place/OMEGA+Dental/@23.8018173,90.370624,16z",
+        width:128, height:128,
+        colorDark:"#13294e", colorLight:"#ffffff"
+      });
+    }
+  }, 600);
 });

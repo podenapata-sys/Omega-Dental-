@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=20260628b">
+<link rel="stylesheet" href="assets/styles.css?v=20260629a">
 <!-- Structured data: Dentist / MedicalClinic -->
 <script type="application/ld+json">
 {
@@ -389,6 +389,25 @@
       <h2 data-i18n="test_title"></h2>
     </div>
     <div class="test-grid" id="testGrid"></div>
+    <div class="review-cta">
+      <div class="review-score">
+        <svg class="g-logo-lg" viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="#EA4335" d="M24 9.5c3.2 0 5.9 1.1 8.1 2.9l6-6C34.4 3.2 29.5 1 24 1 14.8 1 7 6.7 3.7 14.7l7 5.4C12.4 14 17.7 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.4 5.7c4.3-4 6.8-9.9 6.8-16.9h.4z"/>
+          <path fill="#FBBC05" d="M10.7 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7-5.4A23.9 23.9 0 0 0 .5 24c0 3.9.9 7.5 2.6 10.7l7.6-6.1z"/>
+          <path fill="#34A853" d="M24 46.5c5.4 0 10-1.8 13.3-4.8l-7.4-5.7c-1.8 1.2-4.1 2-6.9 2-6.3 0-11.6-4.2-13.5-10l-7.6 5.9C6.8 41.5 14.8 46.5 24 46.5z"/>
+        </svg>
+        <div>
+          <div class="rs-score">4.9 <span class="rs-stars">★★★★★</span></div>
+          <div class="rs-label" data-i18n="google_reviews_label"></div>
+        </div>
+        <a class="btn btn-primary" href="https://www.google.com/maps/place/OMEGA+Dental/@23.8018173,90.370624,16z" target="_blank" rel="noopener" data-i18n="see_reviews"></a>
+      </div>
+      <div class="review-qr">
+        <div id="reviewQRCode"></div>
+        <p data-i18n="qr_scan_label"></p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -484,7 +503,33 @@
   </a>
 </div>
 
+<!-- WhatsApp Live Chat Widget -->
+<div class="wa-chat-bubble" id="waBubble" role="button" tabindex="0" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z"/></svg>
+  <span class="wa-bubble-badge" aria-hidden="true">1</span>
+</div>
+<div class="wa-chat-popup" id="waPopup" aria-hidden="true">
+  <div class="wcp-head">
+    <div class="wcp-avatar">Ω</div>
+    <div><strong>OMEGA DENTAL</strong><br><span class="wcp-online" data-i18n="wa_online"></span></div>
+    <button class="wcp-close" id="waClose" aria-label="Close chat">✕</button>
+  </div>
+  <div class="wcp-body">
+    <div class="wcp-msg"><p data-i18n="wa_greeting"></p></div>
+    <div class="wcp-chips">
+      <button class="wcp-chip" data-msg="book" data-i18n="wa_chip_book"></button>
+      <button class="wcp-chip" data-msg="price" data-i18n="wa_chip_price"></button>
+      <button class="wcp-chip" data-msg="question" data-i18n="wa_chip_q"></button>
+    </div>
+  </div>
+  <a class="wcp-start" id="waStart" href="https://wa.me/8801713241670" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z"/></svg>
+    <span data-i18n="wa_start"></span>
+  </a>
+</div>
+
 <script>document.getElementById("year").textContent="2025";</script>
-<script src="assets/app.js?v=20260628b"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="assets/app.js?v=20260629a"></script>
 </body>
 </html>
