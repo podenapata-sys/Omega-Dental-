@@ -590,7 +590,7 @@ function renderCalcBA(){
   const c = BA_CASES[0];
   el.innerHTML = `<div class="ba">
       <img class="ba-after" src="${c.aImg}" data-fbcolor="${c.after}" data-fblabel="ba_after" alt="after">
-      <img class="ba-before" src="${c.bImg}" data-fbcolor="${c.before}" data-fblabel="ba_before" alt="before">
+      <div class="ba-before-wrap"><img class="ba-before" src="${c.bImg}" data-fbcolor="${c.before}" data-fblabel="ba_before" alt="before"></div>
       <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="before after slider">
       <span class="ba-tag ba-tag-l">${t('ba_before')}</span>
       <span class="ba-tag ba-tag-r">${t('ba_after')}</span>
@@ -688,7 +688,7 @@ function renderBA(filter="all"){
   wrap.innerHTML = list.map((c,i)=>`
     <div class="ba" data-i="${i}">
       <img class="ba-after" src="${c.aImg}" data-fbcolor="${c.after}" data-fblabel="ba_after" alt="after">
-      <img class="ba-before" src="${c.bImg}" data-fbcolor="${c.before}" data-fblabel="ba_before" alt="before">
+      <div class="ba-before-wrap"><img class="ba-before" src="${c.bImg}" data-fbcolor="${c.before}" data-fblabel="ba_before" alt="before"></div>
       <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="before after slider">
       <span class="ba-tag ba-tag-l">${t('ba_before')}</span>
       <span class="ba-tag ba-tag-r">${t('ba_after')}</span>
@@ -702,9 +702,9 @@ function initBA(el){
     img.onerror = function(){ this.onerror=null; this.src = baSvg(this.dataset.fbcolor, t(this.dataset.fblabel)); };
   });
   const range = el.querySelector(".ba-range");
-  const before = el.querySelector(".ba-before");
+  const clip = el.querySelector(".ba-before-wrap");
   const handle = el.querySelector(".ba-handle");
-  const set = v=>{ before.style.clipPath="inset(0 "+(100-v)+"% 0 0)"; handle.style.left=v+"%"; };
+  const set = v=>{ clip.style.width = v+"%"; handle.style.left = v+"%"; };
   range.addEventListener("input", e=>set(e.target.value));
   set(50);
   // one-time auto-sweep when first scrolled into view (signals it's draggable)
