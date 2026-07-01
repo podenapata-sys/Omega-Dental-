@@ -31,57 +31,57 @@ const CATS = {
 
 const PRICES = [
   // 1. Scaling & Polishing  +  4. Tooth Filling
-  { c:"general", n:"Scaling", nb:"স্কেলিং", min:1500, max:8500 },
-  { c:"general", n:"Polishing", nb:"পলিশিং", min:1000, max:1000 },
-  { c:"general", n:"Gum Treatment", nb:"মাড়ির চিকিৎসা", min:8500, max:8500 },
-  { c:"general", n:"Composite Filling — Advance", nb:"কম্পোজিট ফিলিং — অ্যাডভান্স", per:true, min:2500, max:3000 },
-  { c:"general", n:"Composite Filling — General", nb:"কম্পোজিট ফিলিং — সাধারণ", per:true, min:1000, max:1000 },
-  { c:"general", n:"GI Filling", nb:"জিআই ফিলিং", per:true, min:1500, max:2000 },
-  { c:"general", n:"Temporary Filling", nb:"অস্থায়ী ফিলিং", per:true, min:500, max:500 },
-  { c:"general", n:"Tooth Shaping", nb:"দাঁতের শেপিং", per:true, min:500, max:500 },
-  { c:"general", n:"Dressing / Abscess Drainage", nb:"ড্রেসিং / পুঁজ বের করা", min:1000, max:1500 },
+  { c:"general", slug:"scaling-polishing", n:"Scaling", nb:"স্কেলিং", min:1500, max:8500 },
+  { c:"general", slug:"scaling-polishing", n:"Polishing", nb:"পলিশিং", min:1000, max:1000 },
+  { c:"general", slug:"scaling-polishing", n:"Gum Treatment", nb:"মাড়ির চিকিৎসা", min:8500, max:8500 },
+  { c:"general", slug:"tooth-fillings", n:"Composite Filling — Advance", nb:"কম্পোজিট ফিলিং — অ্যাডভান্স", per:true, min:2500, max:3000 },
+  { c:"general", slug:"tooth-fillings", n:"Composite Filling — General", nb:"কম্পোজিট ফিলিং — সাধারণ", per:true, min:1000, max:1000 },
+  { c:"general", slug:"tooth-fillings", n:"GI Filling", nb:"জিআই ফিলিং", per:true, min:1500, max:2000 },
+  { c:"general", slug:"tooth-fillings", n:"Temporary Filling", nb:"অস্থায়ী ফিলিং", per:true, min:500, max:500 },
+  { c:"general", slug:"tooth-fillings", n:"Tooth Shaping", nb:"দাঁতের শেপিং", per:true, min:500, max:500 },
+  { c:"general", slug:"tooth-fillings", n:"Dressing / Abscess Drainage", nb:"ড্রেসিং / পুঁজ বের করা", min:1000, max:1500 },
 
   // 2. Composite Veneer  +  9. Teeth Whitening
-  { c:"cosmetic", n:"Composite Veneer — Advance", nb:"কম্পোজিট ভিনিয়ার — অ্যাডভান্স", note:"Warranty 5 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৫ বছর · ৩ বার", per:true, min:5500, max:7500 },
-  { c:"cosmetic", n:"Composite Veneer — General", nb:"কম্পোজিট ভিনিয়ার — সাধারণ", note:"Warranty 3 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৩ বছর · ৩ বার", per:true, min:3500, max:4000 },
-  { c:"cosmetic", n:"Teeth Whitening", nb:"দাঁত সাদা করা", min:12000, max:12000 },
+  { c:"cosmetic", slug:"veneers", n:"Composite Veneer — Advance", nb:"কম্পোজিট ভিনিয়ার — অ্যাডভান্স", note:"Warranty 5 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৫ বছর · ৩ বার", per:true, min:5500, max:7500 },
+  { c:"cosmetic", slug:"veneers", n:"Composite Veneer — General", nb:"কম্পোজিট ভিনিয়ার — সাধারণ", note:"Warranty 3 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৩ বছর · ৩ বার", per:true, min:3500, max:4000 },
+  { c:"cosmetic", slug:"teeth-whitening", n:"Teeth Whitening", nb:"দাঁত সাদা করা", min:12000, max:12000 },
 
   // 3. Root Canal Treatment (RCT)
-  { c:"endo", n:"Root Canal Treatment (RCT)", nb:"রুট ক্যানেল চিকিৎসা (RCT)", per:true, min:5000, max:8000 },
-  { c:"endo", n:"RCT — Wisdom Tooth", nb:"রুট ক্যানেল — আক্কেল দাঁত", per:true, min:8000, max:8000 },
-  { c:"endo", n:"Re-RCT", nb:"পুনরায় রুট ক্যানেল", per:true, min:6500, max:6500 },
-  { c:"endo", n:"Single Visit RCT with Filling", nb:"এক ভিজিটে রুট ক্যানেল ও ফিলিং", per:true, min:12000, max:12000 },
-  { c:"endo", n:"Pulpectomy", nb:"পাল্পেকটমি", min:5500, max:5500 },
-  { c:"endo", n:"Fiber Post — Advance", nb:"ফাইবার পোস্ট — অ্যাডভান্স", per:true, min:4500, max:4500 },
-  { c:"endo", n:"Fiber Post — General", nb:"ফাইবার পোস্ট — সাধারণ", per:true, min:3500, max:3500 },
-  { c:"endo", n:"Apisectomy", nb:"অ্যাপিসেকটমি", min:20000, max:25000 },
+  { c:"endo", slug:"root-canal", n:"Root Canal Treatment (RCT)", nb:"রুট ক্যানেল চিকিৎসা (RCT)", per:true, min:5000, max:8000 },
+  { c:"endo", slug:"root-canal", n:"RCT — Wisdom Tooth", nb:"রুট ক্যানেল — আক্কেল দাঁত", per:true, min:8000, max:8000 },
+  { c:"endo", slug:"root-canal", n:"Re-RCT", nb:"পুনরায় রুট ক্যানেল", per:true, min:6500, max:6500 },
+  { c:"endo", slug:"root-canal", n:"Single Visit RCT with Filling", nb:"এক ভিজিটে রুট ক্যানেল ও ফিলিং", per:true, min:12000, max:12000 },
+  { c:"endo", slug:"root-canal", n:"Pulpectomy", nb:"পাল্পেকটমি", min:5500, max:5500 },
+  { c:"endo", slug:"root-canal", n:"Fiber Post — Advance", nb:"ফাইবার পোস্ট — অ্যাডভান্স", per:true, min:4500, max:4500 },
+  { c:"endo", slug:"root-canal", n:"Fiber Post — General", nb:"ফাইবার পোস্ট — সাধারণ", per:true, min:3500, max:3500 },
+  { c:"endo", slug:"root-canal", n:"Apisectomy", nb:"অ্যাপিসেকটমি", min:20000, max:25000 },
 
   // 5. Fiber Bridge  +  6. Zirconia & PFM Crown
-  { c:"crown", n:"Fiber Bridge — Premium", nb:"ফাইবার ব্রিজ — প্রিমিয়াম", note:"Warranty 2 Yrs · 2 Times", noteb:"ওয়ারেন্টি ২ বছর · ২ বার", per:true, min:24000, max:24000 },
-  { c:"crown", n:"Zirconia Crown", nb:"জিরকোনিয়া ক্রাউন", per:true, min:12000, max:15000 },
-  { c:"crown", n:"PFM Crown — Advance", nb:"পিএফএম ক্রাউন — অ্যাডভান্স", per:true, min:8000, max:8000 },
-  { c:"crown", n:"PFM Crown — General", nb:"পিএফএম ক্রাউন — সাধারণ", per:true, min:5000, max:5000 },
-  { c:"crown", n:"Composite Crown", nb:"কম্পোজিট ক্রাউন", per:true, min:6500, max:6500 },
-  { c:"crown", n:"Immediate Crown", nb:"ইমিডিয়েট ক্রাউন", per:true, min:3000, max:3000 },
+  { c:"crown", slug:"crowns-bridges", n:"Fiber Bridge — Premium", nb:"ফাইবার ব্রিজ — প্রিমিয়াম", note:"Warranty 2 Yrs · 2 Times", noteb:"ওয়ারেন্টি ২ বছর · ২ বার", per:true, min:24000, max:24000 },
+  { c:"crown", slug:"crowns-bridges", n:"Zirconia Crown", nb:"জিরকোনিয়া ক্রাউন", per:true, min:12000, max:15000 },
+  { c:"crown", slug:"crowns-bridges", n:"PFM Crown — Advance", nb:"পিএফএম ক্রাউন — অ্যাডভান্স", per:true, min:8000, max:8000 },
+  { c:"crown", slug:"crowns-bridges", n:"PFM Crown — General", nb:"পিএফএম ক্রাউন — সাধারণ", per:true, min:5000, max:5000 },
+  { c:"crown", slug:"crowns-bridges", n:"Composite Crown", nb:"কম্পোজিট ক্রাউন", per:true, min:6500, max:6500 },
+  { c:"crown", slug:"crowns-bridges", n:"Immediate Crown", nb:"ইমিডিয়েট ক্রাউন", per:true, min:3000, max:3000 },
 
   // 7. Denture
-  { c:"denture", n:"Flexible Denture", nb:"ফ্লেক্সিবল ডেনচার", per:true, min:8000, max:8000 },
-  { c:"denture", n:"Partial Denture", nb:"পার্শিয়াল ডেনচার", per:true, min:4000, max:5000 },
-  { c:"denture", n:"Complete Denture", nb:"কমপ্লিট ডেনচার", per:true, min:22000, max:22000 },
+  { c:"denture", slug:"dentures", n:"Flexible Denture", nb:"ফ্লেক্সিবল ডেনচার", per:true, min:8000, max:8000 },
+  { c:"denture", slug:"dentures", n:"Partial Denture", nb:"পার্শিয়াল ডেনচার", per:true, min:4000, max:5000 },
+  { c:"denture", slug:"dentures", n:"Complete Denture", nb:"কমপ্লিট ডেনচার", per:true, min:22000, max:22000 },
 
   // 8. Dental Implant
-  { c:"implant", n:"Dental Implant", nb:"ডেন্টাল ইমপ্লান্ট", min:120000, max:150000 },
+  { c:"implant", slug:"dental-implants", n:"Dental Implant", nb:"ডেন্টাল ইমপ্লান্ট", min:120000, max:150000 },
 
   // 10. Painless Extraction & Surgery  (+ 11. Kids: milk-tooth)
-  { c:"surgery", n:"Deciduous (Milk) Tooth Extraction", nb:"দুধ দাঁত তোলা", min:1000, max:1000 },
-  { c:"surgery", n:"Permanent Tooth Extraction", nb:"স্থায়ী দাঁত তোলা", min:2000, max:5000 },
-  { c:"surgery", n:"Surgical Tooth Extraction", nb:"সার্জিক্যাল দাঁত তোলা", min:8000, max:12000 },
-  { c:"surgery", n:"Frenectomy", nb:"ফ্রেনেকটমি", min:3000, max:3000 },
-  { c:"surgery", n:"Operculectomy", nb:"অপারকুলেকটমি", min:3000, max:3000 },
+  { c:"surgery", slug:"extractions", n:"Deciduous (Milk) Tooth Extraction", nb:"দুধ দাঁত তোলা", min:1000, max:1000 },
+  { c:"surgery", slug:"extractions", n:"Permanent Tooth Extraction", nb:"স্থায়ী দাঁত তোলা", min:2000, max:5000 },
+  { c:"surgery", slug:"extractions", n:"Surgical Tooth Extraction", nb:"সার্জিক্যাল দাঁত তোলা", min:8000, max:12000 },
+  { c:"surgery", slug:"extractions", n:"Frenectomy", nb:"ফ্রেনেকটমি", min:3000, max:3000 },
+  { c:"surgery", slug:"extractions", n:"Operculectomy", nb:"অপারকুলেকটমি", min:3000, max:3000 },
 
   // 13. Orthodontic Treatment  +  14. Aligner
-  { c:"ortho", n:"Orthodontic Treatment", nb:"অর্থোডন্টিক চিকিৎসা", note:"+ Monthly 6,000", noteb:"+ মাসিক ৬,০০০", min:25000, max:25000 },
-  { c:"ortho", n:"Aligner Treatment", nb:"অ্যালাইনার চিকিৎসা", min:150000, max:250000 },
+  { c:"ortho", slug:"braces-aligners", n:"Orthodontic Treatment", nb:"অর্থোডন্টিক চিকিৎসা", note:"+ Monthly 6,000", noteb:"+ মাসিক ৬,০০০", min:25000, max:25000 },
+  { c:"ortho", slug:"braces-aligners", n:"Aligner Treatment", nb:"অ্যালাইনার চিকিৎসা", min:150000, max:250000 },
 ];
 
 /* ---------- Services (homepage grid) ---------- */
@@ -507,8 +507,11 @@ function renderPricing(){
       const noteTxt = LANG==="bn" && p.noteb ? p.noteb : p.note;
       const noteTag = noteTxt ? ` <span class="tag tag-soft">${noteTxt}</span>` : "";
       const perLabel = p.per ? `<span class="pprice-per">${t("per_tooth")}</span>` : "";
-      html += `<tr>
-        <td><span class="pname">${pname}</span>${noteTag}</td>
+      const nameCell = p.slug
+        ? `<a class="pname-link" href="services/${p.slug}.html"><span class="pname">${pname}</span>${noteTag}<span class="plink-arr">→</span></a>`
+        : `<span class="pname">${pname}</span>${noteTag}`;
+      html += `<tr${p.slug?' class="price-row-link"':''}>
+        <td>${nameCell}</td>
         <td class="pprice">${price}${perLabel}</td></tr>`;
     });
   });
