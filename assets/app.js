@@ -480,10 +480,10 @@ function renderServices(){
     const sub = (s.sub||[]).map(o=>`<a class="svc-sub-chip" href="services/${o.slug}.html">${LANG==="bn"?o.bn:o.en}</a>`).join("");
     const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
     const media = s.vid
-      ? `<video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:block"><source src="assets/services/${s.vid}.mp4" type="video/mp4"><img src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}"></video>`
+      ? `<img class="svc-static" src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"><video class="svc-anim" muted loop playsinline preload="metadata"><source src="assets/services/${s.vid}.mp4" type="video/mp4"></video>`
       : `<img src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy">`;
     return `
-    <article class="svc-card">
+    <article class="svc-card${s.vid?' svc-has-vid':''}">
       <a class="svc-img" href="${href}" aria-label="${name}">${media}</a>
       <div class="svc-body">
         <div class="svc-top"><span class="svc-price">${s.pr}</span>${dur}</div>
@@ -494,6 +494,17 @@ function renderServices(){
         <a class="btn btn-primary svc-book" href="book.html?service=${encodeURIComponent(s.en)}">${t("book_now")}</a>
       </div>
     </article>`;}).join("");
+  wrap.querySelectorAll(".svc-has-vid").forEach(function(card){
+    var img=card.querySelector(".svc-static");
+    var vid=card.querySelector(".svc-anim");
+    if(!img||!vid) return;
+    function showVid(){img.style.opacity="0";vid.style.opacity="1";vid.play();}
+    function showImg(){img.style.opacity="1";vid.style.opacity="0";vid.pause();}
+    card.addEventListener("mouseenter",showVid);
+    card.addEventListener("mouseleave",showImg);
+    card.addEventListener("touchstart",function(){card.classList.add("touch-active");showVid();},{passive:true});
+    card.addEventListener("touchend",function(){card.classList.remove("touch-active");showImg();},{passive:true});
+  });
 }
 
 /* ----- Pricing table (grouped by category) ----- */

@@ -310,6 +310,10 @@ a{color:inherit;text-decoration:none}
 .svc-book,.svc-sub,.svc-img{position:relative;z-index:2}
 .svc-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
 .svc-card:hover .svc-img img{transform:scale(1.1)}
+.svc-img .svc-static{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:opacity .35s,transform .5s cubic-bezier(.34,1.56,.64,1)}
+.svc-img .svc-anim{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s}
+.svc-has-vid .svc-img .svc-static{transform:none}
+.svc-has-vid:hover .svc-img .svc-static,.svc-has-vid.touch-active .svc-img .svc-static{transform:none}
 /* clean light card — large photo on top, then price + time, title and CTA */
 .svc-card:has(.svc-img){overflow:hidden;cursor:pointer}
 .svc-card:has(.svc-img) .svc-img{height:210px;width:100%;border-radius:calc(var(--r) - 2px) calc(var(--r) - 2px) 0 0}
