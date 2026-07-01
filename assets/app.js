@@ -31,7 +31,7 @@ const CATS = {
 
 const PRICES = [
   // 1. Scaling & Polishing  +  4. Tooth Filling
-  { c:"general", n:"Scaling", nb:"স্কেলিং", min:1500, max:1500 },
+  { c:"general", n:"Scaling", nb:"স্কেলিং", min:8500, max:8500 },
   { c:"general", n:"Polishing", nb:"পলিশিং", min:1000, max:1000 },
   { c:"general", n:"Gum Treatment", nb:"মাড়ির চিকিৎসা", min:8500, max:8500 },
   { c:"general", n:"Composite Filling — Advance", nb:"কম্পোজিট ফিলিং — অ্যাডভান্স", per:true, min:2500, max:3000 },
@@ -86,7 +86,7 @@ const PRICES = [
 
 /* ---------- Services (homepage grid) ---------- */
 const SERVICES = [
-  { icon:"🦷", img:"scaling-polishing", slug:"scaling-polishing", pr:"৳1,000–1,500", dur:"30–40 min", durbn:"৩০–৪০ মিনিট", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।" },
+  { icon:"🦷", img:"scaling-polishing", slug:"scaling-polishing", pr:"৳8,500", dur:"30–40 min", durbn:"৩০–৪০ মিনিট", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।" },
   { icon:"💎", img:"veneers", slug:"veneers", pr:"৳3,500–7,500/tooth", dur:"1 Session", durbn:"১ সিটিং", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", cne:"Front-tooth cover", cn:"দাঁতের আবরণ", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।",
     sub:[{en:"General",bn:"সাধারণ",slug:"veneers"},{en:"Advanced",bn:"অ্যাডভান্স",slug:"veneers"}] },
   { icon:"🌱", img:"root-canal-rct", slug:"root-canal", pr:"৳5,000–8,000", dur:"1–2 Sessions", durbn:"১–২ সিটিং", en:"Root Canal Treatment (RCT)", bn:"রুট ক্যানেল চিকিৎসা (RCT)", cne:"Tooth-root treatment", cn:"দাঁতের শিকড়ের চিকিৎসা", de:"Save an infected tooth with gentle single & multi-visit root canal therapy.", db:"ব্যথা ছাড়াই সংক্রমিত দাঁত না তুলে বাঁচানোর চিকিৎসা।" },
