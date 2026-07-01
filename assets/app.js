@@ -87,7 +87,7 @@ const PRICES = [
 /* ---------- Services (homepage grid) ---------- */
 const SERVICES = [
   { icon:"🦷", img:"scaling-polishing", vid:"scaling-animation-sm", slug:"scaling-polishing", pr:"৳1,500–8,500", dur:"30–40 min", durbn:"৩০–৪০ মিনিট", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।" },
-  { icon:"💎", img:"veneers", slug:"veneers", pr:"৳3,500–7,500/tooth", dur:"1 Session", durbn:"১ সিটিং", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", cne:"Front-tooth cover", cn:"দাঁতের আবরণ", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।",
+  { icon:"💎", img:"veneers-before", img2:"veneers-after", slug:"veneers", pr:"৳3,500–7,500/tooth", dur:"1 Session", durbn:"১ সিটিং", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", cne:"Front-tooth cover", cn:"দাঁতের আবরণ", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।",
     sub:[{en:"General",bn:"সাধারণ",slug:"veneers"},{en:"Advanced",bn:"অ্যাডভান্স",slug:"veneers"}] },
   { icon:"🌱", img:"root-canal-rct", vid:"root-canal-animation-sm", slug:"root-canal", pr:"৳5,000–8,000", dur:"1–2 Sessions", durbn:"১–২ সিটিং", en:"Root Canal Treatment (RCT)", bn:"রুট ক্যানেল চিকিৎসা (RCT)", cne:"Tooth-root treatment", cn:"দাঁতের শিকড়ের চিকিৎসা", de:"Save an infected tooth with gentle single & multi-visit root canal therapy.", db:"ব্যথা ছাড়াই সংক্রমিত দাঁত না তুলে বাঁচানোর চিকিৎসা।" },
   { icon:"🪥", img:"tooth-fillings", slug:"tooth-fillings", pr:"৳1,000–3,000", dur:"~30 min", durbn:"~৩০ মিনিট", en:"Tooth Filling", bn:"দাঁতের ফিলিং", cne:"Cavity filling", cn:"দাঁত বাঁধাই", de:"Tooth-coloured filling that restores a decayed tooth painlessly.", db:"পোকা ধরা বা ক্ষয়ে যাওয়া দাঁত ব্যথা ছাড়াই ভরাট করে ঠিক করা।",
@@ -481,9 +481,11 @@ function renderServices(){
     const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
     const media = s.vid
       ? `<img class="svc-static" src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"><video class="svc-anim" muted loop playsinline preload="metadata"><source src="assets/services/${s.vid}.mp4?v=2" type="video/mp4"></video>`
-      : `<img src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy">`;
+      : s.img2
+        ? `<img class="svc-static" src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"><img class="svc-anim svc-anim-img" src="assets/services/${s.img2}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img2}.svg?v=3'" alt="${name}" loading="lazy">`
+        : `<img src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy">`;
     return `
-    <article class="svc-card${s.vid?' svc-has-vid':''}">
+    <article class="svc-card${s.vid||s.img2?' svc-has-vid':''}">
       <a class="svc-img" href="${href}" aria-label="${name}">${media}</a>
       <div class="svc-body">
         <div class="svc-top"><span class="svc-price">${s.pr}</span>${dur}</div>
