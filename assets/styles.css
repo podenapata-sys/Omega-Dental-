@@ -313,7 +313,6 @@ a{color:inherit;text-decoration:none}
 .svc-card:hover .svc-img img{transform:scale(1.1)}
 .svc-img .svc-static{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:opacity .35s,transform .5s cubic-bezier(.34,1.56,.64,1)}
 .svc-img .svc-anim{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s}
-.svc-img video.svc-anim{object-fit:contain;background:#000}
 .svc-has-vid .svc-img img,.svc-has-vid:hover .svc-img img,.svc-has-vid.touch-active .svc-img img{transform:none}
 /* clean light card — large photo on top, then price + time, title and CTA */
 .svc-card:has(.svc-img){overflow:hidden;cursor:pointer}
