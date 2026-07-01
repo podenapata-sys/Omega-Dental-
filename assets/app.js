@@ -57,7 +57,7 @@ const PRICES = [
   { c:"endo", slug:"root-canal", n:"Apisectomy", nb:"অ্যাপিসেকটমি", min:20000, max:25000 },
 
   // 5. Fiber Bridge  +  6. Zirconia & PFM Crown
-  { c:"crown", slug:"crowns-bridges", n:"Fiber Bridge — Premium", nb:"ফাইবার ব্রিজ — প্রিমিয়াম", note:"Warranty 2 Yrs · 2 Times", noteb:"ওয়ারেন্টি ২ বছর · ২ বার", per:true, min:24000, max:24000 },
+  { c:"crown", slug:"crowns-bridges", n:"Fiber Bridge — Premium", nb:"ফাইবার ব্রিজ — প্রিমিয়াম", note:"Warranty 2 Yrs · 2 Times", noteb:"ওয়ারেন্টি ২ বছর · ২ বার", per:true, min:22000, max:24000 },
   { c:"crown", slug:"crowns-bridges", n:"Zirconia Crown", nb:"জিরকোনিয়া ক্রাউন", per:true, min:12000, max:15000 },
   { c:"crown", slug:"crowns-bridges", n:"PFM Crown — Advance", nb:"পিএফএম ক্রাউন — অ্যাডভান্স", per:true, min:8000, max:8000 },
   { c:"crown", slug:"crowns-bridges", n:"PFM Crown — General", nb:"পিএফএম ক্রাউন — সাধারণ", per:true, min:5000, max:5000 },
@@ -92,7 +92,7 @@ const SERVICES = [
   { icon:"🌱", img:"root-canal-rct", slug:"root-canal", pr:"৳5,000–8,000", dur:"1–2 Sessions", durbn:"১–২ সিটিং", en:"Root Canal Treatment (RCT)", bn:"রুট ক্যানেল চিকিৎসা (RCT)", cne:"Tooth-root treatment", cn:"দাঁতের শিকড়ের চিকিৎসা", de:"Save an infected tooth with gentle single & multi-visit root canal therapy.", db:"ব্যথা ছাড়াই সংক্রমিত দাঁত না তুলে বাঁচানোর চিকিৎসা।" },
   { icon:"🪥", img:"tooth-fillings", slug:"tooth-fillings", pr:"৳1,000–3,000", dur:"~30 min", durbn:"~৩০ মিনিট", en:"Tooth Filling", bn:"দাঁতের ফিলিং", cne:"Cavity filling", cn:"দাঁত বাঁধাই", de:"Tooth-coloured filling that restores a decayed tooth painlessly.", db:"পোকা ধরা বা ক্ষয়ে যাওয়া দাঁত ব্যথা ছাড়াই ভরাট করে ঠিক করা।",
     sub:[ {en:"Composite Filling",bn:"কম্পোজিট ফিলিং",slug:"tooth-fillings"}, {en:"GI Filling",bn:"জিআই ফিলিং",slug:"tooth-fillings"}, {en:"Temporary Filling",bn:"অস্থায়ী ফিলিং",slug:"tooth-fillings"} ] },
-  { icon:"🌉", img:"crowns-bridges", slug:"crowns-bridges", pr:"৳24,000", dur:"1 Session", durbn:"১ সিটিং", en:"Fiber Bridge", bn:"ফাইবার ব্রিজ", cne:"Gap-filling bridge", cn:"নকল দাঁত (ব্রিজ)", de:"Fixed fiber bridge to replace a missing tooth in a single session.", db:"এক সিটিংয়েই হারানো দাঁতের জায়গায় স্থায়ী নকল দাঁত।" },
+  { icon:"🌉", img:"crowns-bridges", slug:"crowns-bridges", pr:"৳22,000–24,000", dur:"1 Session", durbn:"১ সিটিং", en:"Fiber Bridge", bn:"ফাইবার ব্রিজ", cne:"Gap-filling bridge", cn:"নকল দাঁত (ব্রিজ)", de:"Fixed fiber bridge to replace a missing tooth in a single session.", db:"এক সিটিংয়েই হারানো দাঁতের জায়গায় স্থায়ী নকল দাঁত।" },
   { icon:"👑", img:"crowns-bridges", slug:"crowns-bridges", pr:"From ৳5,000", dur:"2 Sessions", durbn:"২ সিটিং", en:"Zirconia & PFM Crown", bn:"জিরকোনিয়া ও পিএফএম ক্রাউন", cne:"Tooth cap", cn:"দাঁতের ক্যাপ", de:"Zirconia, PFM and composite crown to rebuild strength and beauty.", db:"ভাঙা বা দুর্বল দাঁত ঢেকে শক্ত ও সুন্দর করতে দাঁতের ক্যাপ।" },
   { icon:"🦿", img:"dentures", slug:"dentures", pr:"৳4,000–22,000", dur:"3–4 Visits", durbn:"৩–৪ ভিজিট", en:"Denture", bn:"ডেনচার", cne:"Removable teeth set", cn:"বাঁধানো দাঁত", de:"Removable denture for comfortable chewing and a confident smile.", db:"আরামে চিবানো ও সুন্দর হাসির জন্য খুলে-লাগানো যায় এমন নকল দাঁত।",
     sub:[ {en:"Flexible Denture",bn:"ফ্লেক্সিবল ডেনচার",slug:"dentures"}, {en:"Partial Denture",bn:"পার্শিয়াল ডেনচার",slug:"dentures"}, {en:"Complete Denture",bn:"কমপ্লিট ডেনচার",slug:"dentures"} ] },
