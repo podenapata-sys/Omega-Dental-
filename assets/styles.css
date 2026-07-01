@@ -304,6 +304,7 @@ a{color:inherit;text-decoration:none}
   box-shadow:0 0 40px -16px rgba(43,108,176,.45),var(--shadow-sm);
   transition:transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .4s ease}
 .svc-card:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 0 60px -12px rgba(43,108,176,.6),var(--shadow)}
+.svc-has-vid:hover{transform:translateY(-6px);}
 .svc-img{display:block;height:150px;position:relative;overflow:hidden;border-radius:calc(var(--r) - 2px) calc(var(--r) - 2px) 0 0;background:var(--bg-soft)}
 /* stretched link: h3 anchor covers the entire card; book button sits above it */
 .svc-card h3 a::after{content:"";position:absolute;inset:0;z-index:1}
