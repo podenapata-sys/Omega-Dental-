@@ -86,7 +86,7 @@ const PRICES = [
 
 /* ---------- Services (homepage grid) ---------- */
 const SERVICES = [
-  { icon:"🦷", img:"scaling-polishing", slug:"scaling-polishing", pr:"৳1,500–8,500", dur:"30–40 min", durbn:"৩০–৪০ মিনিট", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।" },
+  { icon:"🦷", img:"scaling-polishing", vid:"scaling-animation-sm", slug:"scaling-polishing", pr:"৳1,500–8,500", dur:"30–40 min", durbn:"৩০–৪০ মিনিট", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।" },
   { icon:"💎", img:"veneers", slug:"veneers", pr:"৳3,500–7,500/tooth", dur:"1 Session", durbn:"১ সিটিং", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", cne:"Front-tooth cover", cn:"দাঁতের আবরণ", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।",
     sub:[{en:"General",bn:"সাধারণ",slug:"veneers"},{en:"Advanced",bn:"অ্যাডভান্স",slug:"veneers"}] },
   { icon:"🌱", img:"root-canal-rct", slug:"root-canal", pr:"৳5,000–8,000", dur:"1–2 Sessions", durbn:"১–২ সিটিং", en:"Root Canal Treatment (RCT)", bn:"রুট ক্যানেল চিকিৎসা (RCT)", cne:"Tooth-root treatment", cn:"দাঁতের শিকড়ের চিকিৎসা", de:"Save an infected tooth with gentle single & multi-visit root canal therapy.", db:"ব্যথা ছাড়াই সংক্রমিত দাঁত না তুলে বাঁচানোর চিকিৎসা।" },
@@ -479,9 +479,12 @@ function renderServices(){
     const common = LANG==="bn"?s.cn:s.cne;
     const sub = (s.sub||[]).map(o=>`<a class="svc-sub-chip" href="services/${o.slug}.html">${LANG==="bn"?o.bn:o.en}</a>`).join("");
     const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
+    const media = s.vid
+      ? `<video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:block"><source src="assets/services/${s.vid}.mp4" type="video/mp4"><img src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}"></video>`
+      : `<img src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy">`;
     return `
     <article class="svc-card">
-      <a class="svc-img" href="${href}" aria-label="${name}"><img src="assets/services/${s.img}.jpg?v=1" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"></a>
+      <a class="svc-img" href="${href}" aria-label="${name}">${media}</a>
       <div class="svc-body">
         <div class="svc-top"><span class="svc-price">${s.pr}</span>${dur}</div>
         <h3><a href="${href}">${name}</a></h3>
