@@ -942,9 +942,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
         start?.click();
       });
     });
-    if(!sessionStorage.getItem("wa_auto")){
-      setTimeout(()=>{ openPopup(); sessionStorage.setItem("wa_auto","1"); }, 8000);
-    }
   })();
 
   // Google Review QR Code

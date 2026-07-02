@@ -756,22 +756,18 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
 .wa-chat-bubble svg{width:30px;height:30px}
 .wa-chat-bubble:hover,.wa-chat-bubble.active{transform:scale(1.1);box-shadow:0 6px 32px rgba(37,211,102,.65)}
 .wa-bubble-badge{position:absolute;top:-3px;right:-3px;background:#e53e3e;color:#fff;font-size:.62rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;border:2px solid #fff}
-.wa-chat-popup{position:fixed;bottom:96px;right:24px;z-index:299;width:320px;background:#fff;border-radius:18px;box-shadow:0 10px 48px rgba(0,0,0,.2);overflow:hidden;transform:scale(.92) translateY(12px);opacity:0;pointer-events:none;transition:transform .28s cubic-bezier(.34,1.56,.64,1),opacity .22s ease}
+.wa-chat-popup{position:fixed;bottom:90px;right:20px;z-index:299;width:260px;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.18);overflow:hidden;transform:scale(.92) translateY(10px);opacity:0;pointer-events:none;transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s ease}
 .wa-chat-popup.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
-.wcp-head{background:#25D366;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px}
-.wcp-avatar{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.25);display:grid;place-items:center;font-family:var(--f-head);font-weight:800;font-size:1.1rem;flex-shrink:0}
-.wcp-head strong{display:block;font-size:.92rem;line-height:1.2}
-.wcp-online{font-size:.72rem;opacity:.9}
-.wcp-close{margin-left:auto;background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer;padding:4px 6px;opacity:.8;line-height:1}
+.wcp-mini-head{background:#25D366;color:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;font-size:.78rem;font-weight:700;letter-spacing:.04em}
+.wcp-close{background:none;border:none;color:#fff;font-size:1rem;cursor:pointer;padding:2px 4px;opacity:.85;line-height:1}
 .wcp-close:hover{opacity:1}
-.wcp-body{padding:14px;background:#ece5dd}
-.wcp-msg{background:#fff;border-radius:0 12px 12px 12px;padding:12px 14px;font-size:.88rem;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.1);line-height:1.5}
-.wcp-chips{display:flex;flex-direction:column;gap:7px}
-.wcp-chip{background:#fff;border:1.5px solid #25D366;color:var(--navy);border-radius:20px;padding:8px 14px;font-size:.82rem;font-weight:600;cursor:pointer;text-align:left;transition:background .15s,transform .1s}
-.wcp-chip:hover{background:#f0fff4;transform:translateX(2px)}
-.wcp-start{display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#fff;padding:14px;font-weight:700;font-size:.9rem;text-decoration:none;transition:background .15s}
+.wcp-chips{display:flex;flex-direction:column;gap:0}
+.wcp-chip{background:#fff;border:0;border-bottom:1px solid #f0f0f0;color:var(--navy);padding:11px 16px;font-size:.84rem;font-weight:600;cursor:pointer;text-align:left;transition:background .15s;width:100%}
+.wcp-chip:last-child{border-bottom:0}
+.wcp-chip:hover{background:#f0fff4}
+.wcp-start{display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#fff;padding:11px 14px;font-weight:700;font-size:.84rem;text-decoration:none;transition:background .15s;border-top:1px solid #1fc45a}
 .wcp-start:hover{background:#1ebe5d;color:#fff}
-@media(max-width:480px){.wa-chat-popup{width:calc(100vw - 48px);right:24px;left:auto}}
+@media(max-width:480px){.wa-chat-popup{width:calc(100vw - 40px);right:20px;bottom:84px}}
 
 /* ============================================================
    Google Review QR + Score Block
