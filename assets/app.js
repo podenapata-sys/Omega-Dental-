@@ -500,12 +500,14 @@ function renderServices(){
     var img=card.querySelector(".svc-static");
     var vid=card.querySelector(".svc-anim");
     if(!img||!vid) return;
-    function showVid(){img.style.opacity="0";vid.style.opacity="1";vid.play();}
-    function showImg(){img.style.opacity="1";vid.style.opacity="0";vid.pause();}
+    function showVid(){img.style.opacity="0";vid.style.opacity="1";if(vid.tagName==="VIDEO")vid.play().catch(function(){});}
+    function showImg(){img.style.opacity="1";vid.style.opacity="0";if(vid.tagName==="VIDEO")vid.pause();}
     card.addEventListener("mouseenter",showVid);
     card.addEventListener("mouseleave",showImg);
     card.addEventListener("touchstart",function(){card.classList.add("touch-active");showVid();},{passive:true});
     card.addEventListener("touchend",function(){card.classList.remove("touch-active");showImg();},{passive:true});
+    var svcIO=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)showVid();else showImg();});},{threshold:0.3});
+    svcIO.observe(card);
   });
 }
 
