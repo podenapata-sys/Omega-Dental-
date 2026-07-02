@@ -915,13 +915,21 @@ document.addEventListener("DOMContentLoaded", ()=>{
   window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
   toTop?.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
 
-  // scroll reveal
+  // scroll reveal — above-fold elements animate immediately; below-fold on scroll
   const revealEls = document.querySelectorAll(".sec-head, .svc-card, .step-card, .tech-card, .test-card, .tip-card, .ci-row, .why-art, .doc-photo, .hero-photo, .calc-card, .calc-ba");
   revealEls.forEach(el=>el.classList.add("reveal"));
   const rob = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); rob.unobserve(e.target); }});
   },{threshold:.12});
-  revealEls.forEach(el=>rob.observe(el));
+  let stagger = 0;
+  revealEls.forEach(el=>{
+    if(el.getBoundingClientRect().top < window.innerHeight){
+      setTimeout(()=>el.classList.add("in"), stagger);
+      stagger += 80;
+    } else {
+      rob.observe(el);
+    }
+  });
 
   // WhatsApp Live Chat Widget
   (function initWaChat(){
