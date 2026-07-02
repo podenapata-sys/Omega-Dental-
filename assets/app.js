@@ -884,13 +884,9 @@ document.addEventListener("DOMContentLoaded", ()=>{
   // mobile nav
   const burger = document.getElementById("burger");
   const navlist = document.getElementById("navlist");
-  const navOverlay = document.getElementById("nav-overlay");
-  function openNav(){navlist.classList.add("open");navOverlay?.classList.add("open");burger.classList.add("open");document.body.style.overflow="hidden"}
-  function closeNav(){navlist.classList.remove("open");navOverlay?.classList.remove("open");burger.classList.remove("open");document.body.style.overflow=""}
-  burger?.addEventListener("click", ()=> navlist.classList.contains("open") ? closeNav() : openNav());
-  navOverlay?.addEventListener("click", closeNav);
-  navlist?.querySelectorAll("a:not(.dd-toggle)").forEach(a=>a.addEventListener("click", closeNav));
-  navlist?.querySelectorAll(".dd-menu a").forEach(a=>a.addEventListener("click", closeNav));
+  burger?.addEventListener("click", ()=> navlist.classList.toggle("open"));
+  navlist?.querySelectorAll("a:not(.dd-toggle)").forEach(a=>a.addEventListener("click", ()=>navlist.classList.remove("open")));
+  navlist?.querySelectorAll(".dd-menu a").forEach(a=>a.addEventListener("click", ()=>navlist.classList.remove("open")));
   // services dropdown toggle (click on mobile, hover on desktop)
   const hasDD = document.querySelector(".has-dd");
   const ddToggle = document.querySelector(".dd-toggle");

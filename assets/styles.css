@@ -691,16 +691,10 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
   .brand img{height:48px}
   .brand{font-size:1.3rem;gap:0}
   .logo-anim--mark{margin-right:-4px}
-  .nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:99;opacity:0;pointer-events:none;transition:opacity .28s}
-  .nav-overlay.open{opacity:1;pointer-events:auto}
-  .navlist{position:fixed;top:0;right:0;bottom:0;width:min(55vw,240px);flex-direction:column;background:#fff;padding:72px 20px 32px;gap:14px;box-shadow:-4px 0 28px rgba(0,0,0,.14);transform:translateX(110%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;z-index:100;overflow-y:auto}
-  .navlist.open{transform:translateX(0)}
-  .navlist .nav-actions{margin-top:auto;padding-top:16px;flex-wrap:wrap}
+  .navlist{position:fixed;inset:84px 0 auto 0;flex-direction:column;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:18px 24px;gap:14px;display:none;box-shadow:var(--shadow)}
+  .navlist.open{display:flex}
+  .navlist .nav-actions{margin:6px 0 0;flex-wrap:wrap}
   .burger{display:flex}
-  .burger span{transition:transform .25s,opacity .2s}
-  .burger.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}
-  .burger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
-  .burger.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
   .nav-lang{display:inline-flex;margin-left:auto;padding:9px 13px;font-size:.82rem}
   .stats-grid{grid-template-columns:1fr 1fr;gap:16px}
   .hero-stats .stats-grid{grid-template-columns:1fr 1fr;gap:12px}
