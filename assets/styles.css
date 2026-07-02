@@ -387,7 +387,7 @@ a{color:inherit;text-decoration:none}
 .calc-field{margin-bottom:18px}
 .calc-field label{display:block;font-weight:700;font-family:var(--f-head);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:9px;color:var(--navy)}
 .calc-top .calc-field label{color:#a9c4e0}
-.calc-field select,.calc-field input,.f-field input,.f-field select,.f-field textarea{width:100%;padding:14px 16px;border:1.6px solid var(--line);border-radius:13px;font:inherit;color:var(--ink);background:#fff;transition:.15s}
+.calc-field select,.calc-field input,.f-field input,.f-field select,.f-field textarea{width:100%;padding:14px 16px;border:1.6px solid var(--line);border-radius:13px;font:inherit;font-size:max(16px,1rem);color:var(--ink);background:#fff;transition:.15s}
 .calc-top .calc-field select{border:0;box-shadow:0 6px 16px rgba(0,0,0,.18);font-weight:600}
 .calc-field select:focus,.calc-field input:focus,.f-field input:focus,.f-field select:focus,.f-field textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 4px rgba(87,195,173,.16)}
 /* native calendar / clock pickers on the booking date & time fields */
@@ -429,7 +429,7 @@ a{color:inherit;text-decoration:none}
 .pprice-per{display:block;font-family:var(--f-body);font-weight:600;font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
 .tag{display:inline-block;font-size:.7rem;font-weight:700;background:#eaf0f6;color:var(--blue);padding:2px 9px;border-radius:999px;margin-left:4px}
 .tag-soft{background:#fff3e6;color:var(--orange-d)}
-.price-wrap{max-width:900px;margin:0 auto}
+.price-wrap{max-width:900px;margin:0 auto;overflow-x:auto;-webkit-overflow-scrolling:touch}
 @media(max-width:600px){
   .price-table{font-size:.9rem}
   .price-table thead th{padding:13px 14px;font-size:.82rem}
@@ -452,7 +452,7 @@ a{color:inherit;text-decoration:none}
 .ba{position:relative;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3;max-width:620px;margin:0 auto;user-select:none;border:5px solid #fff}
 .ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ba-before{clip-path:inset(0 50% 0 0)}
-.ba-range{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.ba-range{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0;touch-action:none}
 .ba-handle{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#fff;transform:translateX(-50%);pointer-events:none}
 .ba-handle::after{content:"⇆";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--grad-brand);color:#fff;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;box-shadow:var(--shadow);font-weight:800;animation:baPulse 2.2s ease-in-out infinite}
 @keyframes baPulse{0%,100%{box-shadow:var(--shadow),0 0 0 0 rgba(87,195,173,.5)}50%{box-shadow:var(--shadow),0 0 0 9px rgba(87,195,173,0)}}
@@ -684,6 +684,8 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
   .test-grid{grid-template-columns:1fr 1fr}
   .hero-art{max-width:440px;margin:0 auto}
   .doc-photo,.why-art{max-width:420px;margin:0 auto}
+  .fc-1{left:0}
+  .fc-2{right:0}
 }
 @media(max-width:760px){
   .container{padding-left:14px;padding-right:14px;max-width:100%;width:100%}
