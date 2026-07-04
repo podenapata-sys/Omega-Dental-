@@ -314,6 +314,11 @@ a{color:inherit;text-decoration:none}
 .svc-img .svc-static{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:opacity .35s,transform .5s cubic-bezier(.34,1.56,.64,1)}
 .svc-img .svc-anim{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s}
 .svc-has-vid .svc-img img,.svc-has-vid:hover .svc-img img,.svc-has-vid.touch-active .svc-img img{transform:none}
+.svc-gal{position:absolute;top:8px;right:8px;z-index:10;display:flex;flex-direction:column;gap:4px}
+.sgal-thumb{width:44px;height:34px;border-radius:5px;overflow:hidden;border:2px solid rgba(255,255,255,.45);cursor:pointer;padding:0;background:none;transition:border-color .15s,transform .15s;flex-shrink:0}
+.sgal-thumb.active,.sgal-thumb:hover{border-color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35);transform:scale(1.06)}
+.sgal-thumb img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+@media(max-width:480px){.svc-gal{gap:3px}.sgal-thumb{width:36px;height:28px}}
 /* clean light card — large photo on top, then price + time, title and CTA */
 .svc-card:has(.svc-img){overflow:hidden;cursor:pointer}
 .svc-card:has(.svc-img) .svc-img{height:210px;width:100%;border-radius:calc(var(--r) - 2px) calc(var(--r) - 2px) 0 0}
@@ -465,7 +470,7 @@ a{color:inherit;text-decoration:none}
 .doc-photo{border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/4.6;background:linear-gradient(135deg,#dff3ee,#cfe0f7);display:grid;place-items:center;border:6px solid rgba(255,255,255,.6)}
 .doc-photo svg{width:70%}
 .doc-card h3{font-size:var(--fs-h1-sub)}
-.doc-role{color:var(--teal-dd);font-weight:700;font-family:var(--f-head);margin:6px 0 16px}
+.doc-role{color:var(--teal-dd);font-weight:800;font-family:var(--f-head);margin:6px 0 16px}
 .doc-text{color:var(--muted);margin-bottom:22px}
 .doc-creds{list-style:none;display:grid;gap:13px;margin-bottom:26px}
 .doc-creds li{display:flex;gap:13px;align-items:flex-start;font-weight:600}
