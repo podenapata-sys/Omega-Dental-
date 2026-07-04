@@ -87,7 +87,7 @@ const PRICES = [
 /* ---------- Services (homepage grid) ---------- */
 const SERVICES = [
   { icon:"🦷", img:"scaling-polishing", vid:"scaling-animation-sm", slug:"scaling-polishing", pr:"৳1,500–2,500", dur:"30–40 min", durbn:"৩০–৪০ মিনিট", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।", gal:["scaling-ba","scaling-stained","scaling-clean"] },
-  { icon:"💎", img:"veneers-before", img2:"veneers-after", slug:"veneers", pr:"৳3,500–7,500/tooth", dur:"1 Session", durbn:"১ সিটিং", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", cne:"Front-tooth cover", cn:"দাঁতের আবরণ", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।", gal:["veneers","cosmetic-veneers"],
+  { icon:"💎", img:"veneers-before", img2:"veneers-after", slug:"veneers", pr:"৳3,500–7,500/tooth", dur:"1 Session", durbn:"১ সিটিং", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", cne:"Tooth gap treatment", cn:"দাঁতের ফাঁক চিকিৎসা", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।", gal:["veneers","cosmetic-veneers"],
     sub:[{en:"General",bn:"সাধারণ",slug:"veneers"},{en:"Advanced",bn:"অ্যাডভান্স",slug:"veneers"}] },
   { icon:"🌱", img:"root-canal-rct", vid:"root-canal-animation-sm", slug:"root-canal", pr:"৳5,000–8,000", dur:"1–2 Sessions", durbn:"১–২ সিটিং", en:"Root Canal Treatment (RCT)", bn:"রুট ক্যানেল চিকিৎসা (RCT)", cne:"Tooth-root treatment", cn:"দাঁতের শিকড়ের চিকিৎসা", de:"Save an infected tooth with gentle single & multi-visit root canal therapy.", db:"ব্যথা ছাড়াই সংক্রমিত দাঁত না তুলে বাঁচানোর চিকিৎসা।", gal:["root-canal-steps","root-canal-grid","root-canal-xray"] },
   { icon:"🪥", img:"tooth-fillings-before", img2:"tooth-fillings-after", slug:"tooth-fillings", pr:"৳1,000–3,000", dur:"~30 min", durbn:"~৩০ মিনিট", en:"Tooth Filling", bn:"দাঁতের ফিলিং", cne:"Cavity filling", cn:"দাঁত বাঁধাই", de:"Tooth-coloured filling that restores a decayed tooth painlessly.", db:"পোকা ধরা বা ক্ষয়ে যাওয়া দাঁত ব্যথা ছাড়াই ভরাট করে ঠিক করা।", gal:["tooth-fillings","filling-composite","filling-gi"],
@@ -197,7 +197,7 @@ const I18N = {
     steps_eyebrow:"How It Works", steps_title:"Your visit in 4 easy steps",
     steps_text:"From your first message to aftercare, we keep everything simple and stress-free.",
     step1_t:"Book", step1_d:"Request an appointment online, by phone or WhatsApp — same-day slots available.",
-    step2_t:"Consult", step2_d:"Meet Dr. Afsana for a thorough check-up and a clear, honest treatment plan.",
+    step2_t:"Consult", step2_d:"Meet our doctors for a thorough check-up and a clear, honest treatment plan.",
     step3_t:"Treatment", step3_d:"Relax through gentle, painless treatment using modern equipment.",
     step4_t:"Aftercare", step4_d:"Go home with simple care tips and easy follow-up support.",
     tech_eyebrow:"Technology & Safety",
@@ -308,7 +308,7 @@ const I18N = {
     steps_eyebrow:"যেভাবে কাজ করে", steps_title:"৪টি সহজ ধাপে আপনার ভিজিট",
     steps_text:"প্রথম বার্তা থেকে আফটারকেয়ার পর্যন্ত, আমরা সবকিছু সহজ ও চাপমুক্ত রাখি।",
     step1_t:"বুক করুন", step1_d:"অনলাইন, ফোন বা হোয়াটসঅ্যাপে অ্যাপয়েন্টমেন্ট নিন — একই দিনের স্লট আছে।",
-    step2_t:"পরামর্শ", step2_d:"ডা. আফসানার সঙ্গে পূর্ণাঙ্গ চেকআপ ও স্পষ্ট, সৎ চিকিৎসা পরিকল্পনা।",
+    step2_t:"পরামর্শ", step2_d:"আমাদের ডাক্তারের সঙ্গে পূর্ণাঙ্গ চেকআপ ও স্পষ্ট, সৎ চিকিৎসা পরিকল্পনা।",
     step3_t:"চিকিৎসা", step3_d:"আধুনিক যন্ত্রপাতিতে কোমল, ব্যথাহীন চিকিৎসায় নিশ্চিন্ত থাকুন।",
     step4_t:"আফটারকেয়ার", step4_d:"সহজ যত্নের পরামর্শ ও সহজ ফলোআপ সহায়তা নিয়ে বাড়ি ফিরুন।",
     tech_eyebrow:"প্রযুক্তি ও নিরাপত্তা",
