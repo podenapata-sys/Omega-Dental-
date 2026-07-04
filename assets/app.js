@@ -334,10 +334,16 @@ const I18N = {
 };
 
 /* ---------- Testimonials ---------- */
+const GMAPS_REVIEW_URL="https://www.google.com/maps/place/OMEGA+Dental/@23.8018222,90.3680491,17z/data=!4m8!3m7!1s0x3755c144389f4e91:0xf69deedb238d0bb7!8m2!3d23.8018173!4d90.370624!9m1!1b1!16s%2Fg%2F11ms4g6xnd?entry=ttu&g_ep=EgoyMDI2MDYyOS4wIKXMDSoASAFQAw%3D%3D";
 const TESTIMONIALS = [
-  { en:"Truly painless! I was terrified of dentists but Dr. Afsana made my root canal completely comfortable.", bn:"সত্যিই ব্যথাহীন! ডেন্টিস্টকে ভয় পেতাম, কিন্তু ডা. আফসানা আমার রুট ক্যানেল পুরোপুরি আরামদায়ক করে তুলেছেন।", name:"Nusrat J.", role:"Mirpur, Dhaka" },
-  { en:"Got my teeth whitening done and the result is amazing. Clean clinic, friendly staff and fair pricing.", bn:"দাঁত হোয়াইটেনিং করিয়েছি, ফলাফল অসাধারণ। পরিষ্কার ক্লিনিক, বন্ধুত্বপূর্ণ স্টাফ ও ন্যায্য মূল্য।", name:"Tanvir A.", role:"Kazipara" },
-  { en:"My daughter's first dental visit was so gentle. Highly recommend Omega Dental for kids.", bn:"আমার মেয়ের প্রথম ডেন্টাল ভিজিট খুবই কোমল ছিল। শিশুদের জন্য ওমেগা ডেন্টাল অত্যন্ত প্রস্তাবিত।", name:"Shirin S.", role:"Pallabi" },
+  { en:"This is a fantastic dental clinic. The service is excellent. The doctor is very professional, helpful and kind. She was on time for my appointment and everything was explained clearly.", name:"Khandaker Saif Karim", role:"Google Review" },
+  { en:"I have experienced world-class dental care right here. Best services ever! Thank you so much Omega Dental for giving me comfort and good services ♥️ Highly recommended.", name:"Tasmia Nohor", role:"Google Review" },
+  { en:"Very good dental service. The doctor is experienced and caring, and the staff are very cooperative. Clean environment and professional treatment. Highly recommended.", name:"Tanjida Islam", role:"Google Review" },
+  { en:"I had a great experience. The dentist was very professional and provided excellent treatment. Highly recommended. ❣️", name:"Kazi Sabika", role:"Google Review" },
+  { en:"Very good service. The dentist is very cooperative and understanding of my problems. Very responsive whenever I faced any issues, got an immediate solution. Alhamdulillah.", name:"Sharif Ahmed", role:"Google Review" },
+  { en:"She's so good in treatment. Also nice service. Highly recommend! 😊", name:"Mahathir Rudro", role:"Google Review" },
+  { en:"I had a great experience at Omega Dental. Dentist are very professional and caring, highly recommended. 😊", name:"Md Yousuf", role:"Google Review" },
+  { en:"I am truly satisfied with their service. Nice behaviour and very carefully done their treatment with post treatment care.", name:"Tanzin Tamanna", role:"Google Review" },
 ];
 
 /* ---------- Process steps ---------- */
@@ -360,8 +366,8 @@ const TECH = [
 
 /* ---------- FAQs ---------- */
 const FAQS = [
-  { qe:"Is the treatment really painless?", ae:"Yes. Dr. Afsana is specially trained in painless dentistry. We use gentle anaesthesia and modern techniques so most patients feel little to no discomfort.",
-    qb:"চিকিৎসা কি সত্যিই ব্যথাহীন?", ab:"হ্যাঁ। ডা. আফসানা ব্যথাহীন দন্তচিকিৎসায় বিশেষ প্রশিক্ষিত। আমরা কোমল অ্যানেস্থেসিয়া ও আধুনিক কৌশল ব্যবহার করি, তাই বেশিরভাগ রোগী খুব কম বা কোনো অস্বস্তি অনুভব করেন না।" },
+  { qe:"Is the treatment really painless?", ae:"Yes. Our doctors are specially trained in painless dentistry. We use gentle anaesthesia and modern techniques so most patients feel little to no discomfort.",
+    qb:"চিকিৎসা কি সত্যিই ব্যথাহীন?", ab:"হ্যাঁ। আমাদের ডাক্তাররা ব্যথাহীন দন্তচিকিৎসায় বিশেষভাবে প্রশিক্ষিত। আমরা কোমল অ্যানেস্থেসিয়া ও আধুনিক কৌশল ব্যবহার করি, তাই বেশিরভাগ রোগী খুব কম বা কোনো অস্বস্তি অনুভব করেন না।" },
   { qe:"How much will my treatment cost?", ae:"Use our online cost estimator for an instant range, or see the full price list. The exact cost is confirmed after a quick check-up.",
     qb:"আমার চিকিৎসায় কত খরচ হবে?", ab:"তাৎক্ষণিক ধারণার জন্য আমাদের অনলাইন কস্ট এস্টিমেটর ব্যবহার করুন, অথবা সম্পূর্ণ মূল্য তালিকা দেখুন। সঠিক খরচ একটি দ্রুত চেকআপের পর নিশ্চিত হয়।" },
   { qe:"Do you offer same-day or emergency appointments?", ae:"Yes, we keep slots for urgent pain and dental emergencies. Call or WhatsApp us and we'll see you as soon as possible.",
@@ -627,12 +633,12 @@ function renderTestimonials(){
   const wrap = document.getElementById("testGrid");
   if(!wrap) return;
   wrap.innerHTML = TESTIMONIALS.map(x=>`
-    <article class="test-card">
+    <a class="test-card" href="${GMAPS_REVIEW_URL}" target="_blank" rel="noopener noreferrer" aria-label="Read review on Google Maps">
       <div class="stars">★★★★★</div>
-      <p>“${LANG==="bn"?x.bn:x.en}”</p>
+      <p>"${LANG==="bn"&&x.bn?x.bn:x.en}"</p>
       <div class="test-meta"><span class="avatar">${x.name.charAt(0)}</span>
         <div><strong>${x.name}</strong><small>${x.role}</small></div></div>
-    </article>`).join("");
+    </a>`).join("");
 }
 
 /* ----- Process steps ----- */

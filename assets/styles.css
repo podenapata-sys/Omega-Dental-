@@ -489,7 +489,7 @@ a{color:inherit;text-decoration:none}
 
 /* testimonials */
 .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
-.test-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:30px;box-shadow:var(--shadow-sm);transition:.25s}
+.test-card{display:block;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:30px;box-shadow:var(--shadow-sm);transition:.25s;text-decoration:none;color:inherit;cursor:pointer}
 .test-card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
 .test-card .stars{color:var(--orange);letter-spacing:2px;margin-bottom:12px;font-size:1.05rem}
 .test-card p{color:var(--ink);font-style:italic}
