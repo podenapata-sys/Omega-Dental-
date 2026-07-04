@@ -190,6 +190,9 @@ const I18N = {
     cb_success:"Thanks! Opening WhatsApp to confirm your callback…",
     nav_about_us:"About Us", nav_ourservices:"Our Services", nav_branch:"Branch",
     nav_doctors:"Doctors", nav_pricelist:"Price List", nav_blog:"Blog", nav_gallery:"Gallery", nav_careers:"Careers",
+    srch_ph:"Search treatments, prices, FAQs…", srch_hint:"↑↓ navigate · Enter open · Esc close",
+    srch_services:"Services", srch_pricing:"Pricing", srch_faq:"FAQ", srch_blog:"Blog", srch_tech:"Technology",
+    srch_empty:"No results found. Try a different keyword.",
     svc_learn:"Learn more", book_now:"Book Now", view_all:"View All Treatments",
     dd_gapfill:"Teeth Gap Filling", dd_toothfill:"Tooth Filling", dd_implant:"Dental Implant",
     dd_ortho:"Orthodontic Treatment", dd_scaling:"Teeth Scaling & Polishing",
@@ -301,6 +304,9 @@ const I18N = {
     cb_success:"ধন্যবাদ! কলব্যাক নিশ্চিত করতে হোয়াটসঅ্যাপ খোলা হচ্ছে…",
     nav_about_us:"আমাদের সম্পর্কে", nav_ourservices:"আমাদের সেবা", nav_branch:"শাখা",
     nav_doctors:"ডাক্তার", nav_pricelist:"মূল্য তালিকা", nav_blog:"ব্লগ", nav_gallery:"গ্যালারি", nav_careers:"ক্যারিয়ার",
+    srch_ph:"চিকিৎসা, মূল্য, প্রশ্নোত্তর খুঁজুন…", srch_hint:"↑↓ নেভিগেট · Enter খুলুন · Esc বন্ধ করুন",
+    srch_services:"সেবা", srch_pricing:"মূল্য তালিকা", srch_faq:"প্রশ্নোত্তর", srch_blog:"ব্লগ", srch_tech:"প্রযুক্তি",
+    srch_empty:"কোনো ফলাফল পাওয়া যায়নি। অন্য শব্দ চেষ্টা করুন।",
     svc_learn:"বিস্তারিত", book_now:"বুক করুন", view_all:"সব চিকিৎসা দেখুন",
     dd_gapfill:"দাঁতের ফাঁক ফিলিং", dd_toothfill:"দাঁতের ফিলিং", dd_implant:"ডেন্টাল ইমপ্লান্ট",
     dd_ortho:"অর্থোডন্টিক চিকিৎসা", dd_scaling:"স্কেলিং ও পলিশিং",
@@ -976,6 +982,122 @@ document.addEventListener("DOMContentLoaded", ()=>{
         if(start) start.href = "https://wa.me/8801713241670?text=" + encodeURIComponent(msgs[key]||"");
         start?.click();
       });
+    });
+  })();
+
+  // ── Site-wide search ─────────────────────────────────────────────────────
+  (function initSearch(){
+    var srchOverlay = document.getElementById("srch-overlay");
+    var srchInput   = document.getElementById("srch-input");
+    var srchResults = document.getElementById("srch-results");
+    var srchBtn     = document.getElementById("srch-btn");
+    var srchClose   = document.getElementById("srch-close");
+    if(!srchOverlay) return;
+
+    var ROOT = (document.querySelector('meta[name="page-root"]')||{}).content || "";
+    var searchIdx = null;
+    var debTimer  = null;
+    var activeIdx = -1;
+
+    function buildIndex(){
+      var idx = [];
+      SERVICES.forEach(function(s){
+        idx.push({type:"service",icon:s.icon,label:LANG==="bn"?s.bn:s.en,sub:LANG==="bn"?(s.cn||s.cne||""):(s.cne||s.cn||""),price:s.pr,url:ROOT+"services/"+s.slug+".html",kw:[s.en,s.bn,s.cne||"",s.cn||"",s.de,s.db].join(" ")});
+      });
+      PRICES.forEach(function(p){
+        var pr = "৳"+p.min+(p.max&&p.max!==p.min?"–"+p.max:"");
+        idx.push({type:"price",label:LANG==="bn"?p.nb:p.n,price:pr,url:ROOT+"index.html#pricing",kw:[p.n,p.nb,p.note||"",p.noteb||""].join(" ")});
+      });
+      FAQS.forEach(function(f){
+        idx.push({type:"faq",label:LANG==="bn"?f.qb:f.qe,sub:(LANG==="bn"?f.ab:f.ae).substring(0,90)+"…",url:ROOT+"index.html#faq",kw:[f.qe,f.ae,f.qb,f.ab].join(" ")});
+      });
+      POSTS.forEach(function(p){
+        idx.push({type:"blog",label:LANG==="bn"?p.tb:p.te,sub:LANG==="bn"?p.eb:p.ee,url:ROOT+"blog/"+p.slug+".html",kw:[p.te,p.ee,p.tb,p.eb].join(" ")});
+      });
+      TECH.forEach(function(tc){
+        idx.push({type:"tech",label:LANG==="bn"?tc.bn:tc.en,sub:LANG==="bn"?tc.db:tc.de,url:ROOT+"index.html#tech",kw:[tc.en,tc.bn,tc.de,tc.db].join(" ")});
+      });
+      return idx;
+    }
+
+    function runSearch(q){
+      if(!q.trim()) return [];
+      var ql = q.toLowerCase();
+      return searchIdx.filter(function(r){
+        return r.label.toLowerCase().includes(ql) || r.kw.toLowerCase().includes(ql);
+      }).sort(function(a,b){
+        return (a.label.toLowerCase().includes(ql)?0:1)-(b.label.toLowerCase().includes(ql)?0:1);
+      }).slice(0,18);
+    }
+
+    var TYPE_ICONS = {service:"🦷",price:"💰",faq:"❓",blog:"📄",tech:"⚙️"};
+    var TYPE_KEY   = {service:"srch_services",price:"srch_pricing",faq:"srch_faq",blog:"srch_blog",tech:"srch_tech"};
+
+    function renderResults(results){
+      activeIdx = -1;
+      if(!results.length){
+        srchResults.innerHTML = '<div class="srch-empty">'+t("srch_empty")+'</div>';
+        return;
+      }
+      var grouped = {};
+      results.forEach(function(r){ (grouped[r.type]=grouped[r.type]||[]).push(r); });
+      var html = "";
+      Object.keys(grouped).forEach(function(type){
+        html += '<div class="srch-group-label">'+t(TYPE_KEY[type]||type)+'</div>';
+        grouped[type].forEach(function(r,i){
+          var dataIdx = results.indexOf(r);
+          html += '<a class="srch-item" href="'+r.url+'" data-idx="'+dataIdx+'">'
+               +'<span class="srch-item-icon">'+(r.icon||TYPE_ICONS[r.type]||"•")+'</span>'
+               +'<span class="srch-item-body">'
+               +'<span class="srch-item-label">'+r.label+'</span>'
+               +(r.sub?'<span class="srch-item-sub">'+r.sub+'</span>':'')
+               +'</span>'
+               +(r.price?'<span class="srch-item-price">'+r.price+'</span>':'')
+               +'</a>';
+        });
+      });
+      srchResults.innerHTML = html;
+    }
+
+    function openSearch(){
+      if(!searchIdx) searchIdx = buildIndex();
+      srchOverlay.classList.add("open");
+      document.body.style.overflow = "hidden";
+      srchInput.value = "";
+      srchResults.innerHTML = "";
+      srchInput.focus();
+      srchInput.placeholder = t("srch_ph");
+      document.getElementById("srch-hint-txt") && (document.getElementById("srch-hint-txt").textContent = t("srch_hint"));
+    }
+    function closeSearch(){
+      srchOverlay.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    srchBtn && srchBtn.addEventListener("click", openSearch);
+    srchClose && srchClose.addEventListener("click", closeSearch);
+    srchOverlay.addEventListener("click", function(e){ if(e.target===srchOverlay) closeSearch(); });
+
+    srchInput && srchInput.addEventListener("input", function(){
+      clearTimeout(debTimer);
+      debTimer = setTimeout(function(){
+        if(!searchIdx) searchIdx = buildIndex();
+        renderResults(runSearch(srchInput.value));
+      }, 180);
+    });
+
+    // keyboard navigation
+    document.addEventListener("keydown", function(e){
+      if((e.ctrlKey||e.metaKey) && e.key==="k"){ e.preventDefault(); openSearch(); return; }
+      if(!srchOverlay.classList.contains("open")) return;
+      var items = srchResults.querySelectorAll(".srch-item");
+      if(e.key==="Escape"){ closeSearch(); return; }
+      if(e.key==="ArrowDown"){ e.preventDefault(); activeIdx=Math.min(activeIdx+1,items.length-1); }
+      else if(e.key==="ArrowUp"){ e.preventDefault(); activeIdx=Math.max(activeIdx-1,-1); }
+      else if(e.key==="Enter" && activeIdx>=0){ e.preventDefault(); items[activeIdx]?.click(); return; }
+      else return;
+      items.forEach(function(it,i){ it.classList.toggle("srch-active",i===activeIdx); });
+      items[activeIdx]?.scrollIntoView({block:"nearest"});
     });
   })();
 

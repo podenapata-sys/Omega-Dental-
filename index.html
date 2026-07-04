@@ -78,10 +78,12 @@
         <a class="btn btn-primary" href="book.html" data-i18n="book"></a>
       </div>
     </div>
+    <button class="srch-btn" id="srch-btn" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></button>
     <button class="lang-toggle nav-lang" id="langToggle" aria-label="Switch language"><span id="langText">বাংলা</span></button>
     <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
 </header>
+<meta name="page-root" content="">
 
 <!-- hero -->
 <section class="hero" id="home">
@@ -549,5 +551,17 @@
 <script>document.getElementById("year").textContent="2025";</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="assets/app.js?v=20260701s"></script>
+<div class="srch-overlay" id="srch-overlay" role="dialog" aria-modal="true" aria-label="Site search">
+  <div class="srch-modal">
+    <div class="srch-row">
+      <svg class="srch-ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+      <input class="srch-input" id="srch-input" type="search" autocomplete="off" placeholder="Search treatments, prices, FAQs…">
+      <kbd class="srch-esc">Esc</kbd>
+      <button class="srch-close" id="srch-close" aria-label="Close search">✕</button>
+    </div>
+    <div class="srch-results" id="srch-results"></div>
+    <div class="srch-hint" id="srch-hint-txt">↑↓ navigate · Enter open · Esc close</div>
+  </div>
+</div>
 </body>
 </html>

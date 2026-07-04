@@ -29,9 +29,11 @@
       <a class="btn btn-primary" href="book.html" data-en="Book Appointment" data-bn="অ্যাপয়েন্টমেন্ট নিন"></a>
     </div>
   </div>
+  <button class="srch-btn" id="srch-btn" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></button>
   <button class="lang-toggle nav-lang" id="langToggle"><span id="langText">বাংলা</span></button>
   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav></header>
+<meta name="page-root" content="">
 
 <section class="hero"><span class="blob b1"></span><span class="blob b2"></span>
   <div class="container" style="position:relative;z-index:1;padding:56px 0 40px;text-align:center;max-width:780px">
@@ -186,4 +188,5 @@ document.getElementById('langToggle').onclick=function(){setLang(document.docume
 var b=document.getElementById('burger'),n=document.getElementById('navlist');if(b)b.onclick=function(){n.classList.toggle('open');};
 var sb=document.getElementById('scrollbar');addEventListener('scroll',function(){var h=document.documentElement,m=h.scrollHeight-h.clientHeight;sb.style.width=(m>0?h.scrollTop/m*100:0)+'%';},{passive:true});
 </script>
+<div class="srch-overlay" id="srch-overlay" role="dialog" aria-modal="true" aria-label="Site search"><div class="srch-modal"><div class="srch-row"><svg class="srch-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg><input class="srch-input" id="srch-input" type="search" autocomplete="off" placeholder="Search..."><kbd class="srch-esc">Esc</kbd><button class="srch-close" id="srch-close">✕</button></div><div class="srch-results" id="srch-results"></div><div class="srch-hint" id="srch-hint-txt">↑↓ navigate · Enter open · Esc close</div></div></div>
 </body></html>
