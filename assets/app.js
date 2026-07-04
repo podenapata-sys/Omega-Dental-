@@ -27,6 +27,7 @@ const CATS = {
   implant:   { en: "Dental Implant",        bn: "ডেন্টাল ইমপ্লান্ট" },
   surgery:   { en: "Extraction & Oral Surgery", bn: "দাঁত তোলা ও ওরাল সার্জারি" },
   ortho:     { en: "Orthodontic & Aligner", bn: "অর্থোডন্টিক ও অ্যালাইনার" },
+  kids:      { en: "Kids Dentistry",          bn: "শিশু দন্তচিকিৎসা" },
 };
 
 const PRICES = [
@@ -44,7 +45,7 @@ const PRICES = [
   // 2. Composite Veneer  +  9. Teeth Whitening
   { c:"cosmetic", slug:"veneers", n:"Composite Veneer — Advance", nb:"কম্পোজিট ভিনিয়ার — অ্যাডভান্স", note:"Warranty 5 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৫ বছর · ৩ বার", per:true, min:5500, max:7500 },
   { c:"cosmetic", slug:"veneers", n:"Composite Veneer — General", nb:"কম্পোজিট ভিনিয়ার — সাধারণ", note:"Warranty 3 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৩ বছর · ৩ বার", per:true, min:3500, max:4000 },
-  { c:"cosmetic", slug:"teeth-whitening", n:"Teeth Whitening", nb:"দাঁত সাদা করা", min:12000, max:12000 },
+  { c:"cosmetic", slug:"teeth-whitening", n:"Laser Teeth Whitening", nb:"লেজার দাঁত সাদা করা", min:12000, max:12000 },
 
   // 3. Root Canal Treatment (RCT)
   { c:"endo", slug:"root-canal", n:"Root Canal Treatment (RCT)", nb:"রুট ক্যানেল চিকিৎসা (RCT)", per:true, min:5000, max:8000 },
@@ -70,7 +71,8 @@ const PRICES = [
   { c:"denture", slug:"dentures", n:"Complete Denture", nb:"কমপ্লিট ডেনচার", per:true, min:22000, max:22000 },
 
   // 8. Dental Implant
-  { c:"implant", slug:"dental-implants", n:"Dental Implant", nb:"ডেন্টাল ইমপ্লান্ট", min:120000, max:150000 },
+  { c:"implant", slug:"dental-implants", n:"USA Premium Implant", nb:"ইউএসএ প্রিমিয়াম ইমপ্লান্ট", per:true, min:120000, max:120000 },
+  { c:"implant", slug:"dental-implants", n:"German Premium Implant", nb:"জার্মান প্রিমিয়াম ইমপ্লান্ট", per:true, min:140000, max:160000 },
 
   // 10. Painless Extraction & Surgery  (+ 11. Kids: milk-tooth)
   { c:"surgery", slug:"extractions", n:"Deciduous (Milk) Tooth Extraction", nb:"দুধ দাঁত তোলা", min:1000, max:1000 },
@@ -78,10 +80,17 @@ const PRICES = [
   { c:"surgery", slug:"extractions", n:"Surgical Tooth Extraction", nb:"সার্জিক্যাল দাঁত তোলা", min:8000, max:12000 },
   { c:"surgery", slug:"extractions", n:"Frenectomy", nb:"ফ্রেনেকটমি", min:3000, max:3000 },
   { c:"surgery", slug:"extractions", n:"Operculectomy", nb:"অপারকুলেকটমি", min:3000, max:3000 },
+  { c:"surgery", slug:"extractions", n:"Cyst/Tumor Removal", nb:"সিস্ট/টিউমার অপসারণ", per:true, min:10000, max:18000 },
 
   // 13. Orthodontic Treatment  +  14. Aligner
   { c:"ortho", slug:"braces-aligners", n:"Orthodontic Treatment", nb:"অর্থোডন্টিক চিকিৎসা", note:"+ Monthly 6,000", noteb:"+ মাসিক ৬,০০০", min:25000, max:25000 },
   { c:"ortho", slug:"braces-aligners", n:"Aligner Treatment", nb:"অ্যালাইনার চিকিৎসা", min:150000, max:250000 },
+
+  // Kids Dentistry
+  { c:"kids", slug:"kids-dentistry", n:"Kids Check-up & Cleaning", nb:"শিশুর চেকআপ ও পরিষ্কার", min:1000, max:1000 },
+  { c:"kids", slug:"kids-dentistry", n:"Milk Tooth Filling (Premium)", nb:"দুধ দাঁতের ফিলিং (প্রিমিয়াম)", per:true, min:1500, max:1500 },
+  { c:"kids", slug:"kids-dentistry", n:"Milk Tooth Extraction", nb:"দুধ দাঁত তোলা", per:true, min:1500, max:1500 },
+  { c:"kids", slug:"kids-dentistry", n:"Pulpectomy (Advance)", nb:"পালপেক্টমি (অ্যাডভান্স)", per:true, min:5000, max:5000 },
 ];
 
 /* ---------- Services (homepage grid) ---------- */
