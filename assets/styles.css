@@ -680,7 +680,8 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
 .tb-social svg{width:14px;height:14px}
 
 /* right floating sidebar */
-.fixed-sidebar{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:200;display:flex;flex-direction:column;border-radius:12px 0 0 12px;overflow:hidden;box-shadow:0 8px 32px rgba(19,41,78,.22)}
+.fixed-sidebar{position:fixed;right:0;top:60%;transform:translateY(-50%);z-index:200;display:flex;flex-direction:column;border-radius:12px 0 0 12px;overflow:hidden;box-shadow:0 8px 32px rgba(19,41,78,.22);opacity:.4;transition:opacity .25s ease}
+.fixed-sidebar:hover,.fixed-sidebar:focus-within,.fixed-sidebar:active{opacity:1}
 .fsb-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 10px;font-size:.6rem;font-weight:700;text-decoration:none;color:#fff;min-width:62px;letter-spacing:.02em;transition:filter .15s}
 .fsb-btn:hover{filter:brightness(1.12)}
 .fsb-ic{width:34px;height:34px;border-radius:50%;display:grid;place-items:center}
