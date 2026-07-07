@@ -84,7 +84,7 @@ const PRICES = [
 
   // 13. Orthodontic Treatment  +  14. Aligner
   { c:"ortho", slug:"braces-aligners", n:"Orthodontic Treatment", nb:"অর্থোডন্টিক চিকিৎসা", note:"+ Monthly 6,000", noteb:"+ মাসিক ৬,০০০", min:25000, max:25000 },
-  { c:"ortho", slug:"braces-aligners", n:"Aligner Treatment", nb:"অ্যালাইনার চিকিৎসা", min:150000, max:250000 },
+  { c:"ortho", slug:"aligners", n:"Aligner Treatment", nb:"অ্যালাইনার চিকিৎসা", min:150000, max:250000 },
 
   // Kids Dentistry
   { c:"kids", slug:"kids-dentistry", n:"Kids Check-up & Cleaning", nb:"শিশুর চেকআপ ও পরিষ্কার", min:1000, max:1000 },
@@ -113,7 +113,7 @@ const SERVICES = [
   { icon:"💖", img:"cosmetic-dentistry", slug:"cosmetic-dentistry", pr:"৳3,500–9,000", dur:"Varies", durbn:"পরিবর্তনশীল", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", cne:"Smile makeover", cn:"দাঁতের সৌন্দর্য চিকিৎসা", de:"Smile makeovers combining whitening, veneer and reshaping.", db:"হাসি সুন্দর করতে দাঁত সাদা করা, আবরণ ও শেপ ঠিক করা।", gal:["cosmetic-ba","cosmetic-veneers"] },
   { icon:"📏", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳25,000", dur:"12–24 months", durbn:"১২–২৪ মাস", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", cne:"Teeth straightening", cn:"দাঁত সোজা করা (তার/ব্রেস)", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত ও কামড় ঠিক করতে তার (ব্রেস) লাগিয়ে চিকিৎসা।", gal:["aligner-tray"],
     sub:[ {en:"Braces",bn:"ব্রেসেস",slug:"braces-aligners"} ] },
-  { icon:"😁", img:"aligner", slug:"braces-aligners", pr:"From ৳1,50,000", dur:"6–18 months", durbn:"৬–১৮ মাস", en:"Aligner", bn:"অ্যালাইনার", cne:"Invisible aligner", cn:"অদৃশ্য তার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।", gal:["braces-aligners"] },
+  { icon:"😁", img:"aligner", slug:"aligners", pr:"From ৳1,50,000", dur:"6–18 months", durbn:"৬–১৮ মাস", en:"Aligner", bn:"অ্যালাইনার", cne:"Invisible aligner", cn:"অদৃশ্য তার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।", gal:["aligner"] },
 ];
 
 /* ---------- i18n strings ---------- */
