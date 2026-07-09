@@ -66,7 +66,7 @@ const PRICES = [
   { c:"crown", slug:"crowns-bridges", n:"Immediate Crown", nb:"ইমিডিয়েট ক্রাউন", per:true, min:3000, max:3000 },
 
   // 7. Denture
-  { c:"denture", slug:"dentures", n:"Flexible Denture", nb:"ফ্লেক্সিবল ডেনচার", per:true, min:8000, max:8000 },
+  { c:"denture", slug:"dentures", n:"Flexible Denture", nb:"ফ্লেক্সিবল ডেনচার", per:true, min:5000, max:8000 },
   { c:"denture", slug:"dentures", n:"Partial Denture", nb:"পার্শিয়াল ডেনচার", per:true, min:4000, max:5000 },
   { c:"denture", slug:"dentures", n:"Complete Denture", nb:"কমপ্লিট ডেনচার", per:true, min:22000, max:22000 },
 
