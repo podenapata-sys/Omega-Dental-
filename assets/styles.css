@@ -342,6 +342,7 @@ a{color:inherit;text-decoration:none}
 .svc-body .svc-foot{margin-top:auto}
 .svc-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding-top:16px}
 .svc-price{font-family:var(--f-head);font-weight:800;color:var(--teal-dd);font-size:1.2rem;white-space:nowrap}
+.svc-per{display:inline-block;font-family:var(--f-body);font-weight:700;font-size:.55rem;color:#fff;background:linear-gradient(120deg,#FBB04B,#F08A24 55%,#E0760F);text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:5px;vertical-align:middle;white-space:nowrap;margin-left:2px}
 .svc-book{margin-top:auto;align-self:flex-start;padding:11px 22px;font-size:.85rem;border-radius:12px}
 
 /* how it works */
