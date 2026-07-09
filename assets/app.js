@@ -501,7 +501,7 @@ function renderServices(){
     const sub = (s.sub||[]).map(o=>`<a class="svc-sub-chip" href="services/${o.slug}.html">${LANG==="bn"?o.bn:o.en}</a>`).join("");
     const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
     const media = s.vid
-      ? `<img class="svc-static" src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"><video class="svc-anim" muted loop playsinline preload="metadata"><source src="assets/services/${s.vid}.mp4?v=2" type="video/mp4"></video>`
+      ? `<img class="svc-static" src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"><video class="svc-anim" autoplay muted loop playsinline preload="metadata"><source src="assets/services/${s.vid}.mp4?v=2" type="video/mp4"></video>`
       : s.img2
         ? `<img class="svc-static" src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"><img class="svc-anim svc-anim-img" src="assets/services/${s.img2}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img2}.svg?v=3'" alt="${name}" loading="lazy">`
         : `<img src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy">`;
@@ -523,8 +523,17 @@ function renderServices(){
     var img=card.querySelector(".svc-static");
     var vid=card.querySelector(".svc-anim");
     if(!img||!vid) return;
-    function showVid(){img.style.opacity="0";vid.style.opacity="1";if(vid.tagName==="VIDEO")vid.play().catch(function(){});}
-    function showImg(){img.style.opacity="1";vid.style.opacity="0";if(vid.tagName==="VIDEO")vid.pause();}
+    if(vid.tagName==="VIDEO"){
+      // continuous animation — plays non-stop, never pauses
+      var play=function(){var p=vid.play();if(p&&p.catch)p.catch(function(){});};
+      vid.addEventListener("playing",function(){img.style.opacity="0";vid.style.opacity="1";});
+      new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)play();});},{threshold:0.01}).observe(card);
+      play();
+      return;
+    }
+    // before/after image-swap cards — reveal on hover / touch / in-view
+    function showVid(){img.style.opacity="0";vid.style.opacity="1";}
+    function showImg(){img.style.opacity="1";vid.style.opacity="0";}
     card.addEventListener("mouseenter",showVid);
     card.addEventListener("mouseleave",showImg);
     card.addEventListener("touchstart",function(){card.classList.add("touch-active");showVid();},{passive:true});
