@@ -859,17 +859,6 @@ function fmtPickedTime(v){            // v = "14:30" → "2:30 PM"
   const ap=h<12?"AM":"PM"; h=h%12; if(h===0)h=12;
   return `${h}:${m} ${ap}`;
 }
-/* Lazy-load the heavy hero background video so it never blocks first paint.
-   Skipped on reduced-motion and on slow / data-saver connections. */
-function initHeroVideo(){
-  const v = document.querySelector(".hero-video"); if(!v) return;
-  const src = v.querySelector("source[data-src]"); if(!src) return;
-  try{ if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; }catch(e){}
-  try{ const c=navigator.connection; if(c && (c.saveData || /(^|-)(2g|slow-2g)$/.test(c.effectiveType||""))) return; }catch(e){}
-  const load = ()=>{ src.src = src.getAttribute("data-src"); v.load(); const p=v.play(); if(p&&p.catch) p.catch(()=>{}); };
-  if("requestIdleCallback" in window) requestIdleCallback(load, {timeout:3000});
-  else setTimeout(load, 1500);
-}
 function initBookPickers(){
   // native date/time inputs — block past dates on the calendar
   const d=document.getElementById("f_date");
@@ -884,7 +873,6 @@ function initBookPickers(){
 document.addEventListener("DOMContentLoaded", ()=>{
   applyI18n();
   initBookPickers();
-  initHeroVideo();
   // prefill booking-page treatment from ?service=
   try{ const q=new URLSearchParams(location.search).get("service"); const sel=document.getElementById("f_service");
     if(q&&sel&&[...sel.options].some(o=>o.value===q)) sel.value=q; }catch(e){}
