@@ -3,6 +3,14 @@
    Gradient-mesh + glassmorphism on a clean clinical base
    ============================================================ */
 @font-face{
+  font-family:"Kalpurush";
+  src:url("fonts/kalpurush.woff2") format("woff2");
+  font-weight:400 800;
+  font-style:normal;
+  font-display:swap;
+  unicode-range:U+0980-09FF,U+0964-0965,U+200C-200D,U+25CC;
+}
+@font-face{
   font-family:"Noto Sans Bengali";
   src:url("fonts/noto-bengali.woff2") format("woff2");
   font-weight:400 800;
@@ -30,7 +38,7 @@
   --r:20px; --r-lg:30px; --r-xl:38px; --maxw:1200px;
   --f-head:"Sora","Poppins",system-ui,sans-serif;
   --f-body:"Inter",system-ui,sans-serif;
-  --f-bn:"Noto Sans Bengali","Hind Siliguri",system-ui,sans-serif;
+  --f-bn:"Kalpurush","Noto Sans Bengali","Hind Siliguri",system-ui,sans-serif;
   /* fluid type scale — single source of truth for heading hierarchy */
   --fs-h1:clamp(2.1rem,5vw,3.6rem);     /* homepage hero title */
   --fs-h1-sub:clamp(1.8rem,4.2vw,2.7rem);/* sub-page / detail page titles */
