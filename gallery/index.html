@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" href="../assets/mark.png?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/styles.css?v=20260711e">
+<link rel="stylesheet" href="../assets/styles.css?v=20260712a">
 </head>
 <body>
 <header class="header"><nav class="nav container">
@@ -184,7 +184,8 @@ function toggleLike(i,btn){
   if(liked){count=Math.max(0,count-1);try{localStorage.setItem('gal_liked_'+i,'0');localStorage.setItem('gal_like_'+i,count);}catch(e){}}
   else{count+=1;try{localStorage.setItem('gal_liked_'+i,'1');localStorage.setItem('gal_like_'+i,count);}catch(e){}}
   btn.classList.toggle('liked',!liked);
-  btn.innerHTML='&#10084; '+count;
+  var lc=document.querySelector('.gal-likes[data-likes="'+i+'"]');
+  if(lc)lc.textContent=count+' likes';
 }
 function doShare(src,caption){
   var url=location.origin+location.pathname+'?photo='+encodeURIComponent(src);
@@ -214,16 +215,22 @@ function renderGallery(lang){
     var likes=getLikes(i);
     var liked=isLiked(i);
     html+='<div class="gal-item" data-cat="'+p.cat+'">';
+    html+='<div class="gal-head">';
+    html+='<span class="gal-avatar"><img src="../assets/mark.png?v=3" alt="Omega Dental"></span>';
+    html+='<span class="gal-user">omega_dental</span>';
+    html+='<span class="gal-more">&#8943;</span>';
+    html+='</div>';
     html+='<div class="gal-photo" data-idx="'+i+'" title="'+caption+'">';
-    html+='<img src="'+p.src+'" alt="'+caption+'" loading="lazy" onerror="this.parentNode.style.display=\'none\'">';
+    html+='<img src="'+p.src+'" alt="'+caption+'" loading="lazy" onerror="this.closest(\'.gal-item\').style.display=\'none\'">';
     html+='</div>';
-    html+='<div class="gal-meta">';
-    html+='<span class="gal-caption">'+caption+'</span>';
     html+='<div class="gal-actions">';
-    html+='<button class="gal-btn'+(liked?' liked':'')+'" data-like="'+i+'" aria-label="Like">&#10084; '+likes+'</button>';
-    html+='<button class="gal-btn" data-share="'+i+'" aria-label="Share">&#8679; </button>';
+    html+='<button class="gal-act'+(liked?' liked':'')+'" data-like="'+i+'" aria-label="Like">&#10084;</button>';
+    html+='<button class="gal-act" data-comment aria-label="Comment">&#128172;</button>';
+    html+='<button class="gal-act" data-share="'+i+'" aria-label="Share">&#128257;</button>';
+    html+='<button class="gal-act gal-bookmark" data-save="'+i+'" aria-label="Save">&#128278;</button>';
     html+='</div>';
-    html+='</div>';
+    html+='<div class="gal-likes" data-likes="'+i+'">'+likes+' likes</div>';
+    html+='<div class="gal-caption"><b>omega_dental</b>'+caption+'</div>';
     html+='</div>';
   });
   grid.innerHTML=html;
@@ -240,6 +247,19 @@ function renderGallery(lang){
       var idx=parseInt(btn.dataset.share,10);
       var p=visiblePhotos[idx];
       doShare(p.src,lang==='bn'?p.bn:p.en);
+    });
+  });
+  grid.querySelectorAll('[data-comment]').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var d=document.getElementById('disqus_thread');
+      if(d)d.scrollIntoView({behavior:'smooth'});
+    });
+  });
+  grid.querySelectorAll('[data-save]').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      btn.classList.toggle('saved');
     });
   });
 }
