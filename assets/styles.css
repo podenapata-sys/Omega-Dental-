@@ -123,6 +123,10 @@ a{color:inherit;text-decoration:none}
 .pthumb:hover{border-color:var(--teal)}
 .pthumb.active{border-color:var(--teal);box-shadow:0 0 0 3px rgba(87,195,173,.2)}
 .prod-info h1{font-size:var(--fs-h1-sub);margin:8px 0 4px}
+.prod-top-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.gallery-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-head);font-weight:700;font-size:.8rem;color:var(--teal-dd);background:rgba(87,195,173,.12);border:1px solid rgba(87,195,173,.35);padding:7px 14px;border-radius:999px;text-decoration:none;transition:background .15s,transform .15s}
+.gallery-link:hover{background:rgba(87,195,173,.2);transform:translateY(-1px)}
+.gallery-link svg{width:15px;height:15px}
 .prod-price{font-family:var(--f-head);font-weight:800;font-size:2rem;color:var(--navy);margin:6px 0 14px}
 .prod-desc{color:var(--muted);font-size:1.05rem;line-height:1.7}
 .prod-div{border:0;border-top:1px solid var(--line);margin:24px 0}
