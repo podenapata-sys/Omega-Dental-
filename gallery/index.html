@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" href="../assets/mark.png?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/styles.css?v=20260712c">
+<link rel="stylesheet" href="../assets/styles.css?v=20260712d">
 </head>
 <body>
 <header class="header"><nav class="nav container">
@@ -86,6 +86,24 @@
   <button class="gal-lb-nav gal-lb-prev" id="galLbPrev" aria-label="Previous">‹</button>
   <img class="gal-lb-img" id="galLbImg" src="" alt="">
   <button class="gal-lb-nav gal-lb-next" id="galLbNext" aria-label="Next">›</button>
+</div>
+
+<!-- Comments modal -->
+<div class="gal-cm" id="galCm" role="dialog" aria-modal="true" aria-label="Comments">
+  <div class="gal-cm-box">
+    <img class="gal-cm-photo" id="galCmPhoto" src="" alt="">
+    <div class="gal-cm-side">
+      <div class="gal-cm-head">
+        <span class="gal-avatar"><img src="../assets/mark.png?v=3" alt="Omega Dental"></span>
+        <span class="gal-user">omega_dental</span>
+        <button class="gal-cm-close" id="galCmClose" aria-label="Close">✕</button>
+      </div>
+      <div class="gal-cm-cap" id="galCmCap"></div>
+      <div class="gal-cm-title" id="galCmTitle"></div>
+      <div class="gal-cm-list" id="galCmList"></div>
+      <div class="gal-cm-foot"><span class="gal-cm-likes" id="galCmLikes"></span></div>
+    </div>
+  </div>
 </div>
 
 <!-- Footer -->
@@ -226,6 +244,28 @@ function closeLb(){
   document.getElementById('galLb').classList.remove('open');
   document.body.style.overflow='';
 }
+function openComments(gi){
+  var lang=document.documentElement.getAttribute('data-lang')||'en';
+  var p=PHOTOS[gi];if(!p)return;
+  var caption=lang==='bn'?p.bn:p.en;
+  var cmts=commentsFor(gi);
+  document.getElementById('galCmPhoto').src=p.src;
+  document.getElementById('galCmPhoto').alt=caption;
+  document.getElementById('galCmCap').innerHTML='<b>omega_dental</b>'+caption;
+  document.getElementById('galCmLikes').textContent=fmtNum(likeTotal(gi))+' likes';
+  document.getElementById('galCmTitle').textContent=lang==='bn'?(cmts.length+'টি মন্তব্য'):(cmts.length+' comments');
+  var list='';
+  cmts.forEach(function(c){
+    list+='<div class="gal-cm-item"><span class="gal-cm-av"><img src="../assets/mark.png?v=3" alt=""></span><div class="gal-cm-txt"><b>'+c.u+'</b>'+(lang==='bn'?c.bn:c.en)+'</div></div>';
+  });
+  document.getElementById('galCmList').innerHTML=list;
+  document.getElementById('galCm').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeComments(){
+  document.getElementById('galCm').classList.remove('open');
+  document.body.style.overflow='';
+}
 
 function renderGallery(lang){
   var grid=document.getElementById('galGrid');
@@ -249,16 +289,16 @@ function renderGallery(lang){
     html+='</div>';
     html+='<div class="gal-actions">';
     html+='<button class="gal-act'+(liked?' liked':'')+'" data-like="'+gi+'" aria-label="Like">&#10084;</button>';
-    html+='<button class="gal-act" data-comment aria-label="Comment">&#128172;</button>';
+    html+='<button class="gal-act" data-comment="'+gi+'" aria-label="Comment">&#128172;</button>';
     html+='<button class="gal-act" data-share="'+i+'" aria-label="Share">&#128257;</button>';
     html+='<button class="gal-act gal-bookmark" data-save="'+i+'" aria-label="Save">&#128278;</button>';
     html+='</div>';
     html+='<div class="gal-likes" data-likes="'+gi+'">'+fmtNum(likeTotal(gi))+' likes</div>';
     html+='<div class="gal-caption"><b>omega_dental</b>'+caption+'</div>';
-    html+='<div class="gal-comments" data-collapsed="1">';
-    if(cc>2)html+='<button class="gal-viewall" data-viewall="'+viewAll+'" data-hide="'+(lang==='bn'?'মন্তব্য লুকান':'Hide comments')+'">'+viewAll+'</button>';
-    cmts.forEach(function(c,ci){
-      html+='<div class="gal-comment'+(ci>=2?' gal-comment-more':'')+'"><b>'+c.u+'</b>'+(lang==='bn'?c.bn:c.en)+'</div>';
+    html+='<div class="gal-comments">';
+    if(cc>2)html+='<button class="gal-viewall" data-viewall="'+gi+'">'+viewAll+'</button>';
+    cmts.slice(0,2).forEach(function(c){
+      html+='<div class="gal-comment"><b>'+c.u+'</b>'+(lang==='bn'?c.bn:c.en)+'</div>';
     });
     html+='</div>';
     html+='</div>';
@@ -280,20 +320,10 @@ function renderGallery(lang){
     });
   });
   grid.querySelectorAll('[data-comment]').forEach(function(btn){
-    btn.addEventListener('click',function(e){
-      e.stopPropagation();
-      var d=document.getElementById('disqus_thread');
-      if(d)d.scrollIntoView({behavior:'smooth'});
-    });
+    btn.addEventListener('click',function(e){e.stopPropagation();openComments(parseInt(btn.dataset.comment,10));});
   });
   grid.querySelectorAll('[data-viewall]').forEach(function(btn){
-    btn.addEventListener('click',function(e){
-      e.stopPropagation();
-      var box=btn.closest('.gal-comments');
-      var collapsed=box.getAttribute('data-collapsed')==='1';
-      box.setAttribute('data-collapsed',collapsed?'0':'1');
-      btn.textContent=collapsed?btn.dataset.hide:btn.dataset.viewall;
-    });
+    btn.addEventListener('click',function(e){e.stopPropagation();openComments(parseInt(btn.dataset.viewall,10));});
   });
   grid.querySelectorAll('[data-save]').forEach(function(btn){
     btn.addEventListener('click',function(e){
@@ -329,6 +359,13 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape')closeLb();
   if(e.key==='ArrowLeft')document.getElementById('galLbPrev').click();
   if(e.key==='ArrowRight')document.getElementById('galLbNext').click();
+});
+
+/* comments modal */
+document.getElementById('galCmClose').addEventListener('click',closeComments);
+document.getElementById('galCm').addEventListener('click',function(e){if(e.target===this)closeComments();});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&document.getElementById('galCm').classList.contains('open'))closeComments();
 });
 
 /* lang toggle */
