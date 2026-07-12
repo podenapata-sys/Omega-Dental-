@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" href="../assets/mark.png?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/styles.css?v=20260712a">
+<link rel="stylesheet" href="../assets/styles.css?v=20260712b">
 </head>
 <body>
 <header class="header"><nav class="nav container">
@@ -167,25 +167,42 @@ var PHOTOS=[
   {src:'../assets/services/kids-dentistry.jpg',cat:'kids',en:'Kids Dentistry',bn:'শিশু দন্তচিকিৎসা'},
   {src:'../assets/services/kids-checkup.jpg',cat:'kids',en:'Kids Check-up',bn:'শিশু চেকআপ'},
 ];
+PHOTOS.forEach(function(p,gi){p.gi=gi;});
+
+/* positive community comments (bilingual) */
+var GAL_COMMENTS=[
+  {u:'nusrat_j',en:'Amazing result! My smile looks so natural now 😍',bn:'দারুণ হয়েছে! হাসিটা একদম স্বাভাবিক লাগছে 😍'},
+  {u:'rakib.hasan',en:'Best dental clinic in Dhaka. Painless and professional 👌',bn:'ঢাকার সেরা ডেন্টাল ক্লিনিক। ব্যথাহীন আর প্রফেশনাল 👌'},
+  {u:'tania_ahmed',en:'Thank you Omega Dental, very happy with my treatment ❤️',bn:'ধন্যবাদ ওমেগা ডেন্টাল, চিকিৎসায় খুব খুশি ❤️'},
+  {u:'sabbir_99',en:'Clean setup and friendly doctors. Highly recommend!',bn:'পরিষ্কার সেটআপ আর ভালো ডাক্তার। সবাইকে বলব!'},
+  {u:'mim.tasnim',en:'Wow, huge difference! Worth every taka 🙌',bn:'বাহ, অনেক পার্থক্য! প্রতিটা টাকা সার্থক 🙌'},
+  {u:'arif_dhaka',en:'Did my scaling here, teeth feel brand new ✨',bn:'এখানে স্কেলিং করালাম, দাঁত একদম নতুন লাগছে ✨'},
+  {u:'shamima.akter',en:'So gentle with kids, my son wasn\'t scared at all 🥰',bn:'বাচ্চাদের সাথে খুব যত্নশীল, আমার ছেলে একটুও ভয় পায়নি 🥰'},
+  {u:'imran_kh',en:'Implant looks and feels totally real. Thank you doctor 🙏',bn:'ইমপ্লান্ট একদম আসল দাঁতের মতো লাগে। ধন্যবাদ ডাক্তার 🙏'},
+  {u:'farhana_r',en:'My teeth are so white now, super happy! 😁',bn:'দাঁত এখন অনেক সাদা, খুবই খুশি! 😁'},
+  {u:'jamil.hossain',en:'Braces journey done and the result is perfect 👏',bn:'ব্রেসেসের যাত্রা শেষ, ফলাফল একদম নিখুঁত 👏'},
+  {u:'lamia_chy',en:'Painless root canal, I felt nothing. Highly skilled team!',bn:'ব্যথাহীন রুট ক্যানেল, কিছুই টের পাইনি। দক্ষ টিম!'},
+  {u:'tanvir.ah',en:'Affordable price and top quality work. Loved it 💯',bn:'সাশ্রয়ী দাম আর সেরা মানের কাজ। খুব ভালো লেগেছে 💯'},
+];
+function seedLikes(gi){return 240+((gi*673)%13)*57+(gi%5)*31;}
+function seedCommentCount(gi){return 6+((gi*7)%38);}
+function fmtNum(n){return n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'K':(''+n);}
+function commentsFor(gi){return [GAL_COMMENTS[(gi*2)%GAL_COMMENTS.length],GAL_COMMENTS[(gi*2+1)%GAL_COMMENTS.length]];}
 
 var activeCat='all';
 var lbIndex=0;
 var visiblePhotos=[];
 
-function getLikes(i){
-  try{return parseInt(localStorage.getItem('gal_like_'+i)||'0',10);}catch(e){return 0;}
+function isLiked(gi){
+  try{return localStorage.getItem('gal_liked_'+gi)==='1';}catch(e){return false;}
 }
-function isLiked(i){
-  try{return localStorage.getItem('gal_liked_'+i)==='1';}catch(e){return false;}
-}
-function toggleLike(i,btn){
-  var liked=isLiked(i);
-  var count=getLikes(i);
-  if(liked){count=Math.max(0,count-1);try{localStorage.setItem('gal_liked_'+i,'0');localStorage.setItem('gal_like_'+i,count);}catch(e){}}
-  else{count+=1;try{localStorage.setItem('gal_liked_'+i,'1');localStorage.setItem('gal_like_'+i,count);}catch(e){}}
-  btn.classList.toggle('liked',!liked);
-  var lc=document.querySelector('.gal-likes[data-likes="'+i+'"]');
-  if(lc)lc.textContent=count+' likes';
+function likeTotal(gi){return seedLikes(gi)+(isLiked(gi)?1:0);}
+function toggleLike(gi,btn){
+  var liked=!isLiked(gi);
+  try{localStorage.setItem('gal_liked_'+gi,liked?'1':'0');}catch(e){}
+  btn.classList.toggle('liked',liked);
+  var lc=document.querySelector('.gal-likes[data-likes="'+gi+'"]');
+  if(lc)lc.textContent=fmtNum(likeTotal(gi))+' likes';
 }
 function doShare(src,caption){
   var url=location.origin+location.pathname+'?photo='+encodeURIComponent(src);
@@ -212,8 +229,11 @@ function renderGallery(lang){
   var html='';
   visiblePhotos.forEach(function(p,i){
     var caption=lang==='bn'?p.bn:p.en;
-    var likes=getLikes(i);
-    var liked=isLiked(i);
+    var gi=p.gi;
+    var liked=isLiked(gi);
+    var cc=seedCommentCount(gi);
+    var cmts=commentsFor(gi);
+    var viewAll=lang==='bn'?('সব '+cc+'টি মন্তব্য দেখুন'):('View all '+cc+' comments');
     html+='<div class="gal-item" data-cat="'+p.cat+'">';
     html+='<div class="gal-head">';
     html+='<span class="gal-avatar"><img src="../assets/mark.png?v=3" alt="Omega Dental"></span>';
@@ -224,13 +244,18 @@ function renderGallery(lang){
     html+='<img src="'+p.src+'" alt="'+caption+'" loading="lazy" onerror="this.closest(\'.gal-item\').style.display=\'none\'">';
     html+='</div>';
     html+='<div class="gal-actions">';
-    html+='<button class="gal-act'+(liked?' liked':'')+'" data-like="'+i+'" aria-label="Like">&#10084;</button>';
+    html+='<button class="gal-act'+(liked?' liked':'')+'" data-like="'+gi+'" aria-label="Like">&#10084;</button>';
     html+='<button class="gal-act" data-comment aria-label="Comment">&#128172;</button>';
     html+='<button class="gal-act" data-share="'+i+'" aria-label="Share">&#128257;</button>';
     html+='<button class="gal-act gal-bookmark" data-save="'+i+'" aria-label="Save">&#128278;</button>';
     html+='</div>';
-    html+='<div class="gal-likes" data-likes="'+i+'">'+likes+' likes</div>';
+    html+='<div class="gal-likes" data-likes="'+gi+'">'+fmtNum(likeTotal(gi))+' likes</div>';
     html+='<div class="gal-caption"><b>omega_dental</b>'+caption+'</div>';
+    html+='<div class="gal-comments">';
+    html+='<button class="gal-viewall" data-comment>'+viewAll+'</button>';
+    html+='<div class="gal-comment"><b>'+cmts[0].u+'</b>'+(lang==='bn'?cmts[0].bn:cmts[0].en)+'</div>';
+    html+='<div class="gal-comment"><b>'+cmts[1].u+'</b>'+(lang==='bn'?cmts[1].bn:cmts[1].en)+'</div>';
+    html+='</div>';
     html+='</div>';
   });
   grid.innerHTML=html;
