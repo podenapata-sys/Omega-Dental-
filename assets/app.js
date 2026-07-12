@@ -623,7 +623,7 @@ function updateCalc(){
   if(!sel||!out) return;
   const p = PRICES[+sel.value] || PRICES[0];
   const per = !!p.per;
-  if(qtyWrap) qtyWrap.style.display = per ? "" : "none";
+  if(qtyWrap) qtyWrap.style.visibility = per ? "visible" : "hidden";  // keep space so card height stays fixed
   const qty = per ? Math.max(1, parseInt((qtyEl&&qtyEl.value)||"1",10)) : 1;
   const min = p.min*qty, max = p.max*qty;
   cancelAnimationFrame(_calcAnim);
