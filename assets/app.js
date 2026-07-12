@@ -124,7 +124,7 @@ const I18N = {
     book:"Book Appointment", call:"Call Now",
     topbar:"Painless & Cosmetic Dental Care · Sat–Thu 10:00 AM–9:30 PM · Fri 11:00 AM–9:30 PM",
     hero_eyebrow:"Trusted Dental Clinic in Dhaka",
-    hero_title:"Keep your smile <span>healthy</span> & bright",
+    hero_title:"Discover your smile <span>healthy</span> & bright",
     hero_text:"Modern, painless and affordable dental care at Omega Dental. From routine check-ups to implants and smile makeovers — your comfort comes first.",
     hero_b1:"Painless Treatment", hero_b2:"Modern Technology", hero_b3:"Affordable Pricing", hero_b4:"Expert Surgeon",
     g_reviews:"Google Reviews",
