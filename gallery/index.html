@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" href="../assets/mark.png?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/styles.css?v=20260712d">
+<link rel="stylesheet" href="../assets/styles.css?v=20260712e">
 </head>
 <body>
 <header class="header"><nav class="nav container">
@@ -91,7 +91,6 @@
 <!-- Comments modal -->
 <div class="gal-cm" id="galCm" role="dialog" aria-modal="true" aria-label="Comments">
   <div class="gal-cm-box">
-    <img class="gal-cm-photo" id="galCmPhoto" src="" alt="">
     <div class="gal-cm-side">
       <div class="gal-cm-head">
         <span class="gal-avatar"><img src="../assets/mark.png?v=3" alt="Omega Dental"></span>
@@ -249,14 +248,12 @@ function openComments(gi){
   var p=PHOTOS[gi];if(!p)return;
   var caption=lang==='bn'?p.bn:p.en;
   var cmts=commentsFor(gi);
-  document.getElementById('galCmPhoto').src=p.src;
-  document.getElementById('galCmPhoto').alt=caption;
   document.getElementById('galCmCap').innerHTML='<b>omega_dental</b>'+caption;
   document.getElementById('galCmLikes').textContent=fmtNum(likeTotal(gi))+' likes';
   document.getElementById('galCmTitle').textContent=lang==='bn'?(cmts.length+'টি মন্তব্য'):(cmts.length+' comments');
   var list='';
-  cmts.forEach(function(c){
-    list+='<div class="gal-cm-item"><span class="gal-cm-av"><img src="../assets/mark.png?v=3" alt=""></span><div class="gal-cm-txt"><b>'+c.u+'</b>'+(lang==='bn'?c.bn:c.en)+'</div></div>';
+  cmts.forEach(function(c,ci){
+    list+='<div class="gal-cm-item" style="animation-delay:'+(ci*70)+'ms"><span class="gal-cm-av"><img src="../assets/mark.png?v=3" alt=""></span><div class="gal-cm-txt"><b>'+c.u+'</b>'+(lang==='bn'?c.bn:c.en)+'</div></div>';
   });
   document.getElementById('galCmList').innerHTML=list;
   document.getElementById('galCm').classList.add('open');
