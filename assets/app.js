@@ -615,6 +615,13 @@ let _calcAnim;
 const USD_RATE = 123;                    // 1 USD ≈ 123 BDT (update here if it changes)
 function fmtBdt(bdt){ return "৳ " + fmt(bdt); }
 function fmtUsd(bdt){ return "$" + Math.round(bdt/USD_RATE).toLocaleString("en-US"); }
+function fitCalcLine(el, avail){          // shrink font so the number fits one line without growing the box
+  if(!el || !avail) return;
+  el.style.fontSize = "";                 // reset to the CSS size, then measure
+  const base = parseFloat(getComputedStyle(el).fontSize) || 16;
+  const w = el.scrollWidth;
+  if(w > avail) el.style.fontSize = (base * avail / w) + "px";
+}
 function updateCalc(){
   const sel = document.getElementById("calcService");
   const qtyWrap = document.getElementById("calcQtyWrap");
@@ -626,14 +633,25 @@ function updateCalc(){
   if(qtyWrap) qtyWrap.style.visibility = per ? "visible" : "hidden";  // keep space so card height stays fixed
   const qty = per ? Math.max(1, parseInt((qtyEl&&qtyEl.value)||"1",10)) : 1;
   const min = p.min*qty, max = p.max*qty;
+  // build the result structure once; update text in-place each frame so we can size the font to fit
+  out.innerHTML = `<span class="calc-amt"></span><span class="calc-usd"></span>${p.note?`<span class="calc-sub">${p.note}</span>`:""}`;
+  const amtEl = out.querySelector(".calc-amt");
+  const usdEl = out.querySelector(".calc-usd");
+  const bdtOf = (a,b)=> a===b ? fmtBdt(b) : `${fmtBdt(a)} – ${fmtBdt(b)}`;
+  const usdOf = (a,b)=> "≈ " + (a===b ? fmtUsd(b) : `${fmtUsd(a)} – ${fmtUsd(b)}`);
+  // size the font to the FINAL (widest) values so nothing wraps or expands during the count-up
+  const avail = out.clientWidth;
+  amtEl.textContent = bdtOf(min,max);
+  usdEl.textContent = usdOf(min,max);
+  fitCalcLine(amtEl, avail);
+  fitCalcLine(usdEl, avail);
   cancelAnimationFrame(_calcAnim);
   const dur = 650, t0 = performance.now();
   const step = (now)=>{
     const k = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-k,3);
     const cMin = Math.round(min*e), cMax = Math.round(max*e);
-    const bdt = min===max ? fmtBdt(cMax) : `${fmtBdt(cMin)} – ${fmtBdt(cMax)}`;
-    const usd = min===max ? fmtUsd(cMax) : `${fmtUsd(cMin)} – ${fmtUsd(cMax)}`;
-    out.innerHTML = `<span class="calc-amt">${bdt}</span><span class="calc-usd">≈ ${usd}</span>${p.note?`<span class="calc-sub">${p.note}</span>`:""}`;
+    amtEl.textContent = bdtOf(cMin,cMax);
+    usdEl.textContent = usdOf(cMin,cMax);
     if(k<1) _calcAnim = requestAnimationFrame(step);
   };
   out.classList.remove("pop"); void out.offsetWidth; out.classList.add("pop");
