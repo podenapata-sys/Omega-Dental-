@@ -151,6 +151,8 @@ const I18N = {
     calc_category:"Treatment Category", calc_serviceopt:"Service Option",
     calc_head1:"Treatment", calc_head2:"Price Calculator",
     calc_note:"This is an indicative estimate in BDT. Book a check-up for an exact quote.",
+    calc_note_usd:"This is an approximate estimate in USD (converted from BDT). Book a check-up for an exact quote.",
+    cur_bdt:"৳ Taka", cur_usd:"$ Dollar",
     calc_book:"Book this treatment",
     pricing_eyebrow:"Transparent Pricing",
     pricing_title:"Treatment price list",
@@ -265,6 +267,8 @@ const I18N = {
     calc_category:"চিকিৎসার ধরন", calc_serviceopt:"সেবা নির্বাচন",
     calc_head1:"চিকিৎসা", calc_head2:"খরচের হিসাব",
     calc_note:"এটি টাকায় আনুমানিক হিসাব। সঠিক দাম জানতে চেকআপ বুক করুন।",
+    calc_note_usd:"এটি ডলারে আনুমানিক হিসাব (টাকা থেকে রূপান্তরিত)। সঠিক দাম জানতে চেকআপ বুক করুন।",
+    cur_bdt:"৳ টাকা", cur_usd:"$ ডলার",
     calc_book:"এই চিকিৎসা বুক করুন",
     pricing_eyebrow:"স্বচ্ছ মূল্য",
     pricing_title:"চিকিৎসার মূল্য তালিকা",
@@ -612,6 +616,12 @@ function renderCalcServices(){
   updateCalc();
 }
 let _calcAnim;
+let calcCurrency = "bdt";
+const USD_RATE = 123;                    // 1 USD ≈ 123 BDT (update here if it changes)
+function calcMoney(bdt){
+  if(calcCurrency==="usd") return "$" + Math.round(bdt/USD_RATE).toLocaleString("en-US");
+  return "৳ " + fmt(bdt);
+}
 function updateCalc(){
   const sel = document.getElementById("calcService");
   const qtyWrap = document.getElementById("calcQtyWrap");
@@ -628,12 +638,14 @@ function updateCalc(){
   const step = (now)=>{
     const k = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-k,3);
     const cMin = Math.round(min*e), cMax = Math.round(max*e);
-    const amt = min===max ? `৳ ${fmt(cMax)}` : `৳ ${fmt(cMin)} – ${fmt(cMax)}`;
+    const amt = min===max ? calcMoney(cMax) : `${calcMoney(cMin)} – ${calcMoney(cMax)}`;
     out.innerHTML = `<span class="calc-amt">${amt}</span>${p.note?`<span class="calc-sub">${p.note}</span>`:""}`;
     if(k<1) _calcAnim = requestAnimationFrame(step);
   };
   out.classList.remove("pop"); void out.offsetWidth; out.classList.add("pop");
   _calcAnim = requestAnimationFrame(step);
+  const note = document.querySelector("#calc .calc-note");
+  if(note) note.textContent = t(calcCurrency==="usd" ? "calc_note_usd" : "calc_note");
   const btn = document.getElementById("calcBook");
   if(btn) btn.dataset.service = p.n;
 }
@@ -899,6 +911,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("calcCategory")?.addEventListener("change", renderCalcServices);
   document.getElementById("calcService")?.addEventListener("change", updateCalc);
   document.getElementById("calcQty")?.addEventListener("change", updateCalc);
+  document.getElementById("calcCur")?.addEventListener("click", function(e){
+    const b = e.target.closest(".calc-cur-btn"); if(!b) return;
+    calcCurrency = b.dataset.cur;
+    document.querySelectorAll("#calcCur .calc-cur-btn").forEach(x=>x.classList.toggle("active", x===b));
+    updateCalc();
+  });
   document.getElementById("calcBook")?.addEventListener("click", function(){
     const svc = this.dataset.service ? "?service="+encodeURIComponent(this.dataset.service) : "";
     window.location.href = "book.html"+svc;
