@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" href="../assets/mark.png?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/styles.css?v=20260712b">
+<link rel="stylesheet" href="../assets/styles.css?v=20260712c">
 </head>
 <body>
 <header class="header"><nav class="nav container">
@@ -185,9 +185,13 @@ var GAL_COMMENTS=[
   {u:'tanvir.ah',en:'Affordable price and top quality work. Loved it 💯',bn:'সাশ্রয়ী দাম আর সেরা মানের কাজ। খুব ভালো লেগেছে 💯'},
 ];
 function seedLikes(gi){return 240+((gi*673)%13)*57+(gi%5)*31;}
-function seedCommentCount(gi){return 6+((gi*7)%38);}
+function seedCommentCount(gi){return 4+((gi*3)%8);}
 function fmtNum(n){return n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'K':(''+n);}
-function commentsFor(gi){return [GAL_COMMENTS[(gi*2)%GAL_COMMENTS.length],GAL_COMMENTS[(gi*2+1)%GAL_COMMENTS.length]];}
+function commentsFor(gi){
+  var n=seedCommentCount(gi),out=[],L=GAL_COMMENTS.length;
+  for(var k=0;k<n;k++){out.push(GAL_COMMENTS[(gi*2+k)%L]);}
+  return out;
+}
 
 var activeCat='all';
 var lbIndex=0;
@@ -231,8 +235,8 @@ function renderGallery(lang){
     var caption=lang==='bn'?p.bn:p.en;
     var gi=p.gi;
     var liked=isLiked(gi);
-    var cc=seedCommentCount(gi);
     var cmts=commentsFor(gi);
+    var cc=cmts.length;
     var viewAll=lang==='bn'?('সব '+cc+'টি মন্তব্য দেখুন'):('View all '+cc+' comments');
     html+='<div class="gal-item" data-cat="'+p.cat+'">';
     html+='<div class="gal-head">';
@@ -251,10 +255,11 @@ function renderGallery(lang){
     html+='</div>';
     html+='<div class="gal-likes" data-likes="'+gi+'">'+fmtNum(likeTotal(gi))+' likes</div>';
     html+='<div class="gal-caption"><b>omega_dental</b>'+caption+'</div>';
-    html+='<div class="gal-comments">';
-    html+='<button class="gal-viewall" data-comment>'+viewAll+'</button>';
-    html+='<div class="gal-comment"><b>'+cmts[0].u+'</b>'+(lang==='bn'?cmts[0].bn:cmts[0].en)+'</div>';
-    html+='<div class="gal-comment"><b>'+cmts[1].u+'</b>'+(lang==='bn'?cmts[1].bn:cmts[1].en)+'</div>';
+    html+='<div class="gal-comments" data-collapsed="1">';
+    if(cc>2)html+='<button class="gal-viewall" data-viewall="'+viewAll+'" data-hide="'+(lang==='bn'?'মন্তব্য লুকান':'Hide comments')+'">'+viewAll+'</button>';
+    cmts.forEach(function(c,ci){
+      html+='<div class="gal-comment'+(ci>=2?' gal-comment-more':'')+'"><b>'+c.u+'</b>'+(lang==='bn'?c.bn:c.en)+'</div>';
+    });
     html+='</div>';
     html+='</div>';
   });
@@ -279,6 +284,15 @@ function renderGallery(lang){
       e.stopPropagation();
       var d=document.getElementById('disqus_thread');
       if(d)d.scrollIntoView({behavior:'smooth'});
+    });
+  });
+  grid.querySelectorAll('[data-viewall]').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var box=btn.closest('.gal-comments');
+      var collapsed=box.getAttribute('data-collapsed')==='1';
+      box.setAttribute('data-collapsed',collapsed?'0':'1');
+      btn.textContent=collapsed?btn.dataset.hide:btn.dataset.viewall;
     });
   });
   grid.querySelectorAll('[data-save]').forEach(function(btn){
