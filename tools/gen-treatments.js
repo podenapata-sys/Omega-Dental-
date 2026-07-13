@@ -14,7 +14,7 @@ const T = [
   ["Root Canal (RCT)","রুট ক্যানেল","From ৳5,000","root-canal-rct","root-canal","Gentle single & multi-visit root canal.","ব্যথা ছাড়াই সংক্রমিত দাঁত না তুলে বাঁচানো।","Tooth-root treatment","দাঁতের শিকড়ের চিকিৎসা"],
   ["Crowns & Bridges","ক্রাউন ও ব্রিজ","From ৳5,000","crowns-bridges","crowns-bridges","Zirconia, PFM & composite crowns.","দুর্বল দাঁতে ক্যাপ ও হারানো দাঁতে নকল দাঁত।","Caps & bridges","দাঁতের ক্যাপ ও নকল দাঁত"],
   ["Teeth Whitening","দাঁত সাদা করা","৳12,000","teeth-whitening","teeth-whitening","Brighten your smile several shades.","দাঁতের হলদে ভাব দূর করে উজ্জ্বল হাসি।","Teeth whitening","দাঁত সাদা করা"],
-  ["Veneers","ভিনিয়ার","৳3,500–7,500","veneers","veneers","Composite veneers to perfect front teeth.","সামনের দাঁত সুন্দর করতে পাতলা আবরণ।","Front-tooth cover","দাঁতের আবরণ"],
+  ["Veneers","ভিনেয়ার","৳3,500–7,500","veneers","veneers","Composite veneers to perfect front teeth.","সামনের দাঁত সুন্দর করতে পাতলা আবরণ।","Front-tooth cover","দাঁতের আবরণ"],
   ["Dentures","ডেনচার","৳4,000–22,000","dentures","dentures","Partial, flexible & complete dentures.","খুলে-লাগানো যায় এমন নকল দাঁতের সেট।","Removable teeth set","বাঁধানো দাঁত"],
   ["Orthodontic Treatment","অর্থোডন্টিক চিকিৎসা","From ৳25,000","braces-aligners","braces-aligners","Braces to straighten misaligned teeth and correct your bite.","আঁকাবাঁকা দাঁত ও কামড় ঠিক করতে তার (ব্রেস) লাগিয়ে চিকিৎসা।","Teeth straightening","দাঁত সোজা করা"],
   ["Aligner","অ্যালাইনার","From ৳1,50,000","aligner","aligners","Near-invisible clear aligners to straighten teeth discreetly.","প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।","Invisible aligner","অদৃশ্য অ্যালাইনার"],

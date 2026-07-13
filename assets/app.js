@@ -20,7 +20,7 @@ const OMEGA = {
 // Ordered to mirror the homepage service-menu serial.
 const CATS = {
   general:   { en: "Scaling, Polishing & Filling", bn: "স্কেলিং, পলিশিং ও ফিলিং" },
-  cosmetic:  { en: "Veneer & Cosmetic",     bn: "ভিনিয়ার ও কসমেটিক" },
+  cosmetic:  { en: "Veneer & Cosmetic",     bn: "ভিনেয়ার ও কসমেটিক" },
   endo:      { en: "Root Canal (Endodontics)", bn: "রুট ক্যানেল (এন্ডোডন্টিক্স)" },
   crown:     { en: "Bridge & Crown",        bn: "ব্রিজ ও ক্রাউন" },
   denture:   { en: "Denture",               bn: "ডেনচার" },
@@ -43,8 +43,8 @@ const PRICES = [
   { c:"general", slug:"tooth-fillings", n:"Dressing / Abscess Drainage", nb:"ড্রেসিং / পুঁজ বের করা", min:1000, max:1500 },
 
   // 2. Composite Veneer  +  9. Teeth Whitening
-  { c:"cosmetic", slug:"veneers", n:"Composite Veneer — Advance", nb:"কম্পোজিট ভিনিয়ার — অ্যাডভান্স", note:"Warranty 5 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৫ বছর · ৩ বার", per:true, min:5500, max:7500 },
-  { c:"cosmetic", slug:"veneers", n:"Composite Veneer — General", nb:"কম্পোজিট ভিনিয়ার — সাধারণ", note:"Warranty 3 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৩ বছর · ৩ বার", per:true, min:3500, max:4000 },
+  { c:"cosmetic", slug:"veneers", n:"Composite Veneer — Advance", nb:"কম্পোজিট ভিনেয়ার — অ্যাডভান্স", note:"Warranty 5 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৫ বছর · ৩ বার", per:true, min:5500, max:7500 },
+  { c:"cosmetic", slug:"veneers", n:"Composite Veneer — General", nb:"কম্পোজিট ভিনেয়ার — সাধারণ", note:"Warranty 3 Yrs · 3 Times", noteb:"ওয়ারেন্টি ৩ বছর · ৩ বার", per:true, min:3500, max:4000 },
   { c:"cosmetic", slug:"teeth-whitening", n:"Laser Teeth Whitening", nb:"লেজার দাঁত সাদা করা", min:12000, max:12000 },
 
   // 3. Root Canal Treatment (RCT)
@@ -96,7 +96,7 @@ const PRICES = [
 /* ---------- Services (homepage grid) ---------- */
 const SERVICES = [
   { icon:"🦷", img:"scaling-polishing", vid:"scaling-animation-sm", slug:"scaling-polishing", pr:"৳1,500–2,500", dur:"30–40 min", durbn:"৩০–৪০ মিনিট", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।", gal:["scaling-ba","scaling-stained","scaling-clean"] },
-  { icon:"💎", img:"veneers-before", img2:"veneers-after", slug:"veneers", pr:"৳3,500–7,500", per:true, dur:"1 Session", durbn:"১ সিটিং", en:"Composite Veneer", bn:"কম্পোজিট ভিনিয়ার", cne:"Tooth gap treatment", cn:"দাঁতের ফাঁক চিকিৎসা", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।", gal:["veneers","cosmetic-veneers"],
+  { icon:"💎", img:"veneers-before", img2:"veneers-after", slug:"veneers", pr:"৳3,500–7,500", per:true, dur:"1 Session", durbn:"১ সিটিং", en:"Composite Veneer", bn:"কম্পোজিট ভিনেয়ার", cne:"Tooth gap treatment", cn:"দাঁতের ফাঁক চিকিৎসা", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।", gal:["veneers","cosmetic-veneers"],
     sub:[{en:"General",bn:"সাধারণ",slug:"veneers"},{en:"Advanced",bn:"অ্যাডভান্স",slug:"veneers"}] },
   { icon:"🌱", img:"root-canal-rct", vid:"root-canal-animation-sm", slug:"root-canal", pr:"৳5,000–8,000", per:true, dur:"1–2 Sessions", durbn:"১–২ সিটিং", en:"Root Canal Treatment (RCT)", bn:"রুট ক্যানেল চিকিৎসা (RCT)", cne:"Tooth-root treatment", cn:"দাঁতের শিকড়ের চিকিৎসা", de:"Save an infected tooth with gentle single & multi-visit root canal therapy.", db:"ব্যথা ছাড়াই পোকা ধরা দাঁত না তুলে বাঁচানোর চিকিৎসা।", gal:["root-canal-steps","root-canal-grid","root-canal-xray"] },
   { icon:"🪥", img:"tooth-fillings-before", img2:"tooth-fillings-after", slug:"tooth-fillings", pr:"৳1,000–3,000", per:true, dur:"~30 min", durbn:"~৩০ মিনিট", en:"Advance Tooth Filling", bn:"অ্যাডভান্স দাঁতের ফিলিং", cne:"Cavity filling", cn:"দাঁত বাঁধাই", de:"Tooth-coloured filling that restores a decayed tooth painlessly.", db:"পোকা ধরা বা ক্ষয়ে যাওয়া দাঁত ব্যথা ছাড়াই ভরাট করে ঠিক করা।", gal:["tooth-fillings","filling-composite","filling-gi"],
@@ -274,7 +274,7 @@ const I18N = {
     ba_title:"আগে ও পরের হাসি",
     ba_text:"পরিবর্তন দেখতে স্লাইডারটি টেনে দেখুন।",
     ba_before:"আগে", ba_after:"পরে",
-    ba_f_all:"সব", ba_f_whitening:"হোয়াইটেনিং", ba_f_braces:"ব্রেসেস", ba_f_veneers:"ভিনিয়ার", ba_f_implants:"ইমপ্লান্ট",
+    ba_f_all:"সব", ba_f_whitening:"হোয়াইটেনিং", ba_f_braces:"ব্রেসেস", ba_f_veneers:"ভিনেয়ার", ba_f_implants:"ইমপ্লান্ট",
     doc_eyebrow:"আমাদের চিকিৎসক",
     doc_name:"ডা. আফসানা হক",
     doc_role:"চিফ ডেন্টাল সার্জন, ওমেগা ডেন্টাল",

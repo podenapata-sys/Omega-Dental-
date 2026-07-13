@@ -149,11 +149,11 @@ const SERVICES = [
       facts:[["Procedure","Fully Painless"],["Visits","1 Session"],["Warranty","Up to 5 years"],["Hygiene","100% sterile tools"]],
       overview:"Composite veneers are thin, tooth-coloured layers bonded to the front of your teeth to fix gaps, chips, stains and shape — giving you a natural, even smile in just one or two visits, without removing much of your natural tooth.",
       process:["Smile assessment","Shade & shape planning","Bonding the veneer","Sculpting & polish"] },
-    bn:{ name:"কম্পোজিট ভিনিয়ার", tag:"হাসি নতুন আকৃতি ও নিখুঁত করুন", price:"৳ ৩,৫০০ / দাঁত",
-      desc:"প্রাকৃতিক, দাঁতের রঙের কম্পোজিট ভিনিয়ার দিয়ে সামনের দাঁতের ফাঁক বন্ধ করুন, আকৃতি ও সৌন্দর্য নিখুঁত করুন।",
+    bn:{ name:"কম্পোজিট ভিনেয়ার", tag:"হাসি নতুন আকৃতি ও নিখুঁত করুন", price:"৳ ৩,৫০০ / দাঁত",
+      desc:"প্রাকৃতিক, দাঁতের রঙের কম্পোজিট ভিনেয়ার দিয়ে সামনের দাঁতের ফাঁক বন্ধ করুন, আকৃতি ও সৌন্দর্য নিখুঁত করুন।",
       facts:[["পদ্ধতি","সম্পূর্ণ ব্যথাহীন"],["ভিজিট","১ সেশন"],["ওয়ারেন্টি","৫ বছর পর্যন্ত"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
-      overview:"কম্পোজিট ভিনিয়ার হলো দাঁতের রঙের পাতলা স্তর যা সামনের দাঁতে বসিয়ে ফাঁক, ভাঙা, দাগ ও আকৃতি ঠিক করা হয় — মাত্র এক-দুই ভিজিটেই প্রাকৃতিক, সমান হাসি দেয়, আসল দাঁত বেশি না কেটে।",
-      process:["স্মাইল মূল্যায়ন","শেড ও আকৃতি পরিকল্পনা","ভিনিয়ার বন্ডিং","স্কাল্পটিং ও পলিশ"] } },
+      overview:"কম্পোজিট ভিনেয়ার হলো দাঁতের রঙের পাতলা স্তর যা সামনের দাঁতে বসিয়ে ফাঁক, ভাঙা, দাগ ও আকৃতি ঠিক করা হয় — মাত্র এক-দুই ভিজিটেই প্রাকৃতিক, সমান হাসি দেয়, আসল দাঁত বেশি না কেটে।",
+      process:["স্মাইল মূল্যায়ন","শেড ও আকৃতি পরিকল্পনা","ভিনেয়ার বন্ডিং","স্কাল্পটিং ও পলিশ"] } },
 
   { slug:"extractions", icon:"🩺", img:"extractions-surgery", gallery:["extractions-surgery","extraction-front","frenectomy","frenectomy-steps"],
     en:{ name:"Tooth Extraction & Surgery", tag:"Painless removal, including wisdom teeth", price:"৳ 1,000",
@@ -189,9 +189,9 @@ const SERVICES = [
       overview:"A smile makeover combines treatments — whitening, composite veneers, bonding and reshaping — into one personalised plan to give you a brighter, more even and confident smile that still looks completely natural.",
       process:["Smile consultation","Custom makeover plan","Step-by-step treatment","Final reveal & care"] },
     bn:{ name:"কসমেটিক ডেন্টিস্ট্রি", tag:"আপনার নিখুঁত হাসি ডিজাইন করুন", price:"৳ ৩,৫০০",
-      desc:"হোয়াইটেনিং, ভিনিয়ার, বন্ডিং ও রিশেপিং-এর উপযোগী সমন্বয়ে আপনার হাসি বদলে ফেলুন।",
+      desc:"হোয়াইটেনিং, ভিনেয়ার, বন্ডিং ও রিশেপিং-এর উপযোগী সমন্বয়ে আপনার হাসি বদলে ফেলুন।",
       facts:[["পদ্ধতি","সম্পূর্ণ ব্যথাহীন"],["ভিজিট","উপযোগী পরিকল্পনা"],["ফলাফল","প্রাকৃতিক দেখতে"],["পরিচ্ছন্নতা","১০০% জীবাণুমুক্ত যন্ত্র"]],
-      overview:"স্মাইল মেকওভার একাধিক চিকিৎসা — হোয়াইটেনিং, কম্পোজিট ভিনিয়ার, বন্ডিং ও রিশেপিং — একটি ব্যক্তিগত পরিকল্পনায় মিলিয়ে আপনাকে উজ্জ্বল, সমান ও আত্মবিশ্বাসী হাসি দেয় যা সম্পূর্ণ প্রাকৃতিক দেখায়।",
+      overview:"স্মাইল মেকওভার একাধিক চিকিৎসা — হোয়াইটেনিং, কম্পোজিট ভিনেয়ার, বন্ডিং ও রিশেপিং — একটি ব্যক্তিগত পরিকল্পনায় মিলিয়ে আপনাকে উজ্জ্বল, সমান ও আত্মবিশ্বাসী হাসি দেয় যা সম্পূর্ণ প্রাকৃতিক দেখায়।",
       process:["স্মাইল পরামর্শ","কাস্টম মেকওভার পরিকল্পনা","ধাপে ধাপে চিকিৎসা","চূড়ান্ত ফল ও যত্ন"] } },
 ];
 
@@ -221,8 +221,8 @@ const COSTS = {
   "teeth-whitening":[
     ["Professional Teeth Whitening","পেশাদার দাঁত সাদা করা","৳15,000–18,000","৳12,000"]],
   "veneers":[
-    ["Composite Veneer (General)","কম্পোজিট ভিনিয়ার (জেনারেল)","৳4,500–5,500","৳3,500–4,000"],
-    ["Composite Veneer (Advance)","কম্পোজিট ভিনিয়ার (অ্যাডভান্স)","৳8,000–10,000","৳5,500–7,500"]],
+    ["Composite Veneer (General)","কম্পোজিট ভিনেয়ার (জেনারেল)","৳4,500–5,500","৳3,500–4,000"],
+    ["Composite Veneer (Advance)","কম্পোজিট ভিনেয়ার (অ্যাডভান্স)","৳8,000–10,000","৳5,500–7,500"]],
   "dentures":[
     ["Partial Denture (per tooth)","পার্শিয়াল ডেনচার (প্রতি দাঁত)","৳5,000–6,500","৳4,000–5,000"],
     ["Flexible Denture","ফ্লেক্সিবল ডেনচার","৳10,000–12,000","৳8,000"],
@@ -243,7 +243,7 @@ const COSTS = {
     ["Milk Tooth Extraction","দুধ দাঁত তোলা","৳1,200–1,500","৳1,000"]],
   "cosmetic-dentistry":[
     ["Teeth Whitening","দাঁত সাদা করা","৳15,000–18,000","৳12,000"],
-    ["Composite Veneer","কম্পোজিট ভিনিয়ার","৳4,500–10,000","৳3,500–7,500"],
+    ["Composite Veneer","কম্পোজিট ভিনেয়ার","৳4,500–10,000","৳3,500–7,500"],
     ["Tooth Shaping","টুথ শেপিং","৳800–1,000","৳500"]],
 };
 
