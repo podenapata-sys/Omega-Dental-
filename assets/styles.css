@@ -116,7 +116,7 @@ a{color:inherit;text-decoration:none}
 .prod-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:34px}
 .prod-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:start}
 .prod-main{border-radius:var(--r);overflow:hidden;background:var(--bg-soft);box-shadow:var(--shadow-sm);aspect-ratio:1/.82}
-.prod-main img{width:100%;height:100%;object-fit:cover;display:block}
+.prod-main img{width:100%;height:100%;object-fit:contain;display:block}
 .prod-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
 .pthumb{padding:0;border:2px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;background:var(--bg-soft);aspect-ratio:1/.82;transition:.15s}
 .pthumb img{width:100%;height:100%;object-fit:cover;display:block}
