@@ -263,9 +263,11 @@ a{color:inherit;text-decoration:none}
 .callback-head h2{color:#fff;font-size:clamp(1.3rem,3vw,1.8rem);margin:0}
 .callback-body{padding:30px;display:flex;flex-direction:column;align-items:center;gap:18px}
 .callback-form{display:flex;gap:12px;width:100%;max-width:560px}
-.cb-input{flex:1;display:flex;align-items:center;gap:10px;border:1.6px solid var(--line);border-radius:13px;padding:0 14px;background:#fff;color:var(--muted)}
+.cb-input{flex:1;min-width:0;display:flex;align-items:center;gap:10px;border:1.6px solid var(--line);border-radius:13px;padding:0 14px;background:#fff;color:var(--muted)}
 .cb-input:focus-within{border-color:var(--teal);box-shadow:0 0 0 4px rgba(87,195,173,.15)}
-.cb-input input{flex:1;border:0;outline:0;padding:15px 0;font:inherit;color:var(--ink);background:transparent}
+.cb-input input{flex:1;min-width:0;border:0;outline:0;padding:15px 0;font:inherit;color:var(--ink);background:transparent}
+/* hide the phone icon once the user starts typing */
+.cb-input:has(input:not(:placeholder-shown)) .ic-svg{display:none}
 .cb-submit{flex:0 0 52px;height:52px;border:1.6px solid var(--line);background:#fff;border-radius:13px;cursor:pointer;display:grid;place-items:center;color:var(--navy);transition:.2s}
 .cb-submit:hover{background:var(--grad-brand);color:#fff;border-color:transparent}
 .cb-submit svg{width:22px;height:22px}
