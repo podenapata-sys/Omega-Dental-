@@ -953,6 +953,7 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
 
 /* brand name highlight */
 .brand-hl{font-weight:800;color:#F5851F;font-size:1.12em;text-shadow:0 0 10px rgba(245,133,31,.5)}
+.cmp-table th .brand-hl{color:#fff;text-shadow:none}
 /* callback mobile perfect */
 @media(max-width:560px){
   .callback-sec{padding:18px 0 36px}
