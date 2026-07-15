@@ -603,7 +603,7 @@ a{color:inherit;text-decoration:none}
 /* header */
 .gal-head{display:flex;align-items:center;gap:10px;padding:10px 12px}
 .gal-avatar{width:34px;height:34px;border-radius:50%;padding:2px;background:linear-gradient(45deg,#feda75,#d62976,#4f5bd5);flex-shrink:0}
-.gal-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#fff;border:2px solid #fff;display:block}
+.gal-avatar img{width:100%;height:100%;border-radius:50%;object-fit:contain;padding:3px;background:#fff;border:2px solid #fff;display:block;box-sizing:border-box}
 .gal-user{font-weight:700;font-size:.86rem;color:var(--ink);flex:1}
 .gal-more{color:var(--ink);font-size:1.1rem;letter-spacing:1px;line-height:1;cursor:default}
 /* square photo */
