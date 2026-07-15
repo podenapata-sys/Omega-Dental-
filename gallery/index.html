@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" href="../assets/mark.png?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/styles.css?v=20260712u">
+<link rel="stylesheet" href="../assets/styles.css?v=20260712v">
 </head>
 <body>
 <header class="header"><nav class="nav container">
@@ -58,6 +58,9 @@
     <button class="gal-tag" data-cat="braces" data-en="Braces" data-bn="ব্রেসেস">Braces</button>
     <button class="gal-tag" data-cat="whitening" data-en="Whitening" data-bn="হোয়াইটেনিং">Whitening</button>
     <button class="gal-tag" data-cat="rct" data-en="Root Canal" data-bn="রুট ক্যানেল">Root Canal</button>
+    <button class="gal-tag" data-cat="filling" data-en="Filling" data-bn="ফিলিং">Filling</button>
+    <button class="gal-tag" data-cat="denture" data-en="Denture" data-bn="ডেনচার">Denture</button>
+    <button class="gal-tag" data-cat="extraction" data-en="Extraction" data-bn="দাঁত তোলা">Extraction</button>
     <button class="gal-tag" data-cat="kids" data-en="Kids" data-bn="শিশু">Kids</button>
   </div>
 
@@ -283,6 +286,7 @@ function renderGallery(lang){
     html+='</div>';
     html+='<div class="gal-photo" data-idx="'+i+'" title="'+caption+'">';
     html+='<img src="'+p.src+'" alt="'+caption+'" loading="lazy" onerror="this.closest(\'.gal-item\').style.display=\'none\'">';
+    html+='<span class="gal-wm" aria-hidden="true"><img src="../assets/mark.png?v=3" alt=""><span class="gal-wm-tx">OMEGA<b>DENTAL</b></span></span>';
     html+='</div>';
     html+='<div class="gal-actions">';
     html+='<button class="gal-act'+(liked?' liked':'')+'" data-like="'+gi+'" aria-label="Like">&#10084;</button>';
@@ -364,6 +368,12 @@ document.getElementById('galCm').addEventListener('click',function(e){if(e.targe
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'&&document.getElementById('galCm').classList.contains('open'))closeComments();
 });
+
+/* pre-select filter from ?cat= (service → its gallery) */
+var qc=new URLSearchParams(location.search).get('cat');
+if(qc){var tb=document.querySelector('.gal-tag[data-cat="'+qc+'"]');
+  if(tb){document.querySelectorAll('.gal-tag').forEach(function(b){b.classList.remove('active');});
+    tb.classList.add('active');activeCat=qc;}}
 
 /* lang toggle */
 setLang(L);
