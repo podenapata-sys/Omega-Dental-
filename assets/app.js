@@ -227,8 +227,9 @@ const I18N = {
     wa_chip_book:"📅 Book Appointment", wa_chip_price:"💰 Treatment Price?", wa_chip_q:"❓ Ask a Question",
     wa_start:"Start Chat on WhatsApp →",
     google_reviews_label:"Based on 230+ Google Reviews",
-    qr_scan_label:"Scan to Review Us on Google",
+    qr_scan_label:"Scan to review us on Google",
     see_reviews:"See All Reviews →",
+    share_experience:"★ Share Your Experience",
     hero_wa:"WhatsApp Us",
     lang_label:"বাংলা",
   },
@@ -343,6 +344,7 @@ const I18N = {
     google_reviews_label:"২৩০+ গুগল রিভিউ এর ভিত্তিতে",
     qr_scan_label:"গুগলে রিভিউ দিতে স্ক্যান করুন",
     see_reviews:"সব রিভিউ দেখুন →",
+    share_experience:"★ আপনার অভিজ্ঞতা শেয়ার করুন",
     hero_wa:"WhatsApp করুন",
     lang_label:"EN",
   }
@@ -1134,7 +1136,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const qrEl = document.getElementById("reviewQRCode");
     if(qrEl && window.QRCode){
       new QRCode(qrEl, {
-        text:"https://www.google.com/maps/place/OMEGA+Dental/@23.8018173,90.370624,16z",
+        text:"https://search.google.com/local/writereview?placeid=ChIJkU6fOETBVTcRtwuNI9vunfY",
         width:128, height:128,
         colorDark:"#13294e", colorLight:"#ffffff"
       });
