@@ -1,7 +1,10 @@
 /* Highlight the brand name "Omega Dental" / "ওমেগা ডেন্টাল" in running text.
    Runs on load and re-applies after language toggle (setLang rewrites textContent). */
 (function () {
-  var RXG = /(Omega Dental|ওমেগা ডেন্টাল)/g;
+  // For Bangla, also consume any trailing vowel-signs / case-ending letters that
+  // attach to "ডেন্টাল" (e.g. ডেন্টালে, ডেন্টালের) so the word is never split —
+  // splitting would orphan a combining mark and render a broken glyph.
+  var RXG = /(Omega Dental|ওমেগা ডেন্টাল[ঀ-৿]*)/g;
   var RXT = /(Omega Dental|ওমেগা ডেন্টাল)/;
   var SKIP_TAG = { SCRIPT: 1, STYLE: 1, INPUT: 1, TEXTAREA: 1, NOSCRIPT: 1, IFRAME: 1, OPTION: 1 };
   var busy = false;
