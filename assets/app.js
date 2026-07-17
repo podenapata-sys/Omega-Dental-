@@ -939,8 +939,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("bookForm")?.addEventListener("submit", submitBooking);
   document.getElementById("callbackForm")?.addEventListener("submit", (e)=>{
     e.preventDefault();
-    const cc = document.getElementById("cb_consent");
-    if (cc && !cc.checked){ alert(t("consent_alert")); return; }
     const num = document.getElementById("cbNumber").value.trim();
     const msg = `📞 Omega Dental — Callback request\nPlease call me back at: ${num}`;
     const note = document.getElementById("cbSuccess");
