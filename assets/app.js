@@ -233,7 +233,7 @@ const I18N = {
     google_reviews_label:"Based on 230+ Google Reviews",
     qr_scan_label:"Scan to review us on Google",
     see_reviews:"See All Reviews →",
-    share_experience:"★ Share Your Experience",
+    share_experience:"Share Your Experience",
     hero_wa:"WhatsApp Us",
     lang_label:"বাংলা",
   },
@@ -352,7 +352,7 @@ const I18N = {
     google_reviews_label:"২৩০+ গুগল রিভিউয়ের ভিত্তিতে",
     qr_scan_label:"গুগলে রিভিউ দিতে স্ক্যান করুন",
     see_reviews:"সব রিভিউ দেখুন →",
-    share_experience:"★ আপনার অভিজ্ঞতা শেয়ার করুন",
+    share_experience:"আপনার অভিজ্ঞতা শেয়ার করুন",
     hero_wa:"WhatsApp করুন",
     lang_label:"EN",
   }
@@ -727,7 +727,7 @@ function renderFaqs(){
   if(!wrap) return;
   wrap.innerHTML = FAQS.map((f,i)=>`
     <div class="faq-item">
-      <button class="faq-q" aria-expanded="false">${LANG==="bn"?f.qb:f.qe}<span class="faq-ic">+</span></button>
+      <button class="faq-q" aria-expanded="false"><span class="faq-qt">${LANG==="bn"?f.qb:f.qe}</span><span class="faq-ic">+</span></button>
       <div class="faq-a"><p>${LANG==="bn"?f.ab:f.ae}</p></div>
     </div>`).join("");
   wrap.querySelectorAll(".faq-q").forEach(btn=>{

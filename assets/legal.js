@@ -90,7 +90,7 @@
 
   function init() {
     buildFooter();
-    buildBanner();
+    loadGated();       // no cookie banner — load consent-gated third parties (Disqus) directly
     translate();
     var tg = document.getElementById("langToggle");
     if (tg) tg.addEventListener("click", function () { setTimeout(translate, 0); });
