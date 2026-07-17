@@ -188,6 +188,9 @@ const I18N = {
     f_name:"Full name", f_phone:"Phone number", f_service:"Treatment needed",
     f_date:"Preferred date", f_time:"Preferred time", f_date_ph:"Type or pick a date", f_time_ph:"Type or pick a time", f_today:"Today", f_tomorrow:"Tomorrow", f_msg:"Where are you coming from? (optional)", f_msg_ph:"e.g. Mirpur, Kazipara, Uttara…",
     f_emerg:"This is an emergency / I need same-day care",
+    f_consent:'I agree that my details will be sent to Omega Dental via WhatsApp, as described in the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.',
+    cb_consent:'I agree to be contacted about my request, as described in the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.',
+    consent_alert:"Please tick the consent box so we can contact you.",
     f_select:"Select a treatment", f_submit:"Send via WhatsApp", f_wa:"Quick WhatsApp",
     f_success:"Opening WhatsApp with your appointment details…",
     foot_about:"Modern, painless and affordable dental care in Dhaka. Healthy smiles for the whole family.",
@@ -303,6 +306,9 @@ const I18N = {
     f_name:"পুরো নাম", f_phone:"ফোন নম্বর", f_service:"প্রয়োজনীয় চিকিৎসা",
     f_date:"পছন্দের তারিখ", f_time:"পছন্দের সময়", f_date_ph:"তারিখ লিখুন বা বেছে নিন", f_time_ph:"সময় লিখুন বা বেছে নিন", f_today:"আজ", f_tomorrow:"আগামীকাল", f_msg:"আপনি কোথা থেকে আসছেন? (ঐচ্ছিক)", f_msg_ph:"যেমন: মিরপুর, কাজীপাড়া, উত্তরা…",
     f_emerg:"এটি জরুরি / আমার একই দিনে সেবা দরকার",
+    f_consent:'আমি সম্মত যে আমার তথ্য <a href="privacy-policy.html" target="_blank" rel="noopener">প্রাইভেসি পলিসি</a> অনুযায়ী হোয়াটসঅ্যাপে ওমেগা ডেন্টালে পাঠানো হবে।',
+    cb_consent:'আমি <a href="privacy-policy.html" target="_blank" rel="noopener">প্রাইভেসি পলিসি</a> অনুযায়ী আমার অনুরোধ নিয়ে যোগাযোগে সম্মত।',
+    consent_alert:"যোগাযোগ করতে অনুগ্রহ করে সম্মতির ঘরটি টিক দিন।",
     f_select:"একটি চিকিৎসা নির্বাচন করুন", f_submit:"হোয়াটসঅ্যাপে পাঠান", f_wa:"দ্রুত হোয়াটসঅ্যাপ",
     f_success:"আপনার অ্যাপয়েন্টমেন্টের তথ্যসহ হোয়াটসঅ্যাপ খোলা হচ্ছে…",
     foot_about:"ঢাকায় আধুনিক, ব্যথাহীন ও সাশ্রয়ী খরচে দাঁতের চিকিৎসা। পুরো পরিবারের সুস্থ হাসি।",
@@ -837,6 +843,7 @@ function renderBookSlots(){
 function submitBooking(e){
   e.preventDefault();
   const f = e.target;
+  if (f.f_consent && !f.f_consent.checked){ alert(t("consent_alert")); return; }
   const data = {
     name: f.f_name.value.trim(),
     phone: f.f_phone.value.trim(),
@@ -930,6 +937,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("bookForm")?.addEventListener("submit", submitBooking);
   document.getElementById("callbackForm")?.addEventListener("submit", (e)=>{
     e.preventDefault();
+    const cc = document.getElementById("cb_consent");
+    if (cc && !cc.checked){ alert(t("consent_alert")); return; }
     const num = document.getElementById("cbNumber").value.trim();
     const msg = `📞 Omega Dental — Callback request\nPlease call me back at: ${num}`;
     const note = document.getElementById("cbSuccess");
