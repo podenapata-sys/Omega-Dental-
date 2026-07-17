@@ -1018,3 +1018,7 @@ body.bn .legal-doc p,body.bn .legal-doc li{font-size:1.05rem;line-height:1.9}
 .cb-consent{margin-top:10px;align-items:flex-start}
 .careers-privacy{font-size:.85rem;color:var(--muted);margin-top:10px}
 .careers-privacy a{color:var(--teal-dd);font-weight:600}
+
+/* Booking WhatsApp transparency note */
+.book-wa-note{margin-top:12px;font-size:.82rem;color:var(--muted);text-align:center;line-height:1.5}
+.book-wa-note a{color:var(--teal-dd);font-weight:600}
