@@ -317,7 +317,7 @@ function buildTabs(s){
   <div class="tab-panel" data-tab="branches">
     <div class="ci-row"><div class="ci-ic">${ico("pin")}</div><div><strong ${bl("Address","ঠিকানা")}></strong><span ${bl("1252/3, East Monipur, Metro Pillar-267 (W), West Kazipara, Begum Rokeya Soroni, Dhaka","১২৫২/৩, পূর্ব মনিপুর, মেট্রো পিলার-২৬৭(ওয়াই), পশ্চিম কাজীপাড়া, বেগম রোকেয়া সরণি, ঢাকা")}></span></div></div>
     <div class="ci-row"><div class="ci-ic">${ico("clockw")}</div><div><strong ${bl("Hours","সময়")}></strong><span ${bl("Saturday – Thursday: 10:00 AM – 9:30 PM · Friday: 11:00 AM – 9:30 PM","শনিবার – বৃহস্পতিবার: সকাল ১০টা – রাত ৯:৩০ · শুক্রবার: দুপুর ১১টা – রাত ৯:৩০")}></span></div></div>
-    <div class="ci-row"><div class="ci-ic">${ico("phone")}</div><div><strong ${bl("Phone","ফোন")}></strong><span>01706-516868 · WhatsApp 01713-241670</span></div></div>
+    <div class="ci-row"><div class="ci-ic">${ico("phone")}</div><div><strong ${bl("Phone","ফোন")}></strong><span>01706-516868 · WhatsApp 01706-516868</span></div></div>
     <a class="btn btn-primary" style="margin-top:14px" href="https://www.google.com/maps/dir/?api=1&destination=23.8018173%2C90.370624" target="_blank" rel="noopener" ${bl("Get Directions","দিকনির্দেশ নিন")}></a>
   </div>
 
@@ -395,7 +395,7 @@ function page(s){
         <div class="prod-facts">${facts}</div>
         <div class="prod-cta">
           <a class="btn btn-red" href="../book.html" ${bl("Book Appointment","অ্যাপয়েন্টমেন্ট নিন")}></a>
-          <a class="btn btn-wa" href="https://wa.me/8801713241670?text=${encodeURIComponent("I want to book: "+s.en.name)}" target="_blank" rel="noopener" ${bl("WhatsApp","হোয়াটসঅ্যাপ")}></a>
+          <a class="btn btn-wa" href="https://wa.me/8801706516868?text=${encodeURIComponent("I want to book: "+s.en.name)}" target="_blank" rel="noopener" ${bl("WhatsApp","হোয়াটসঅ্যাপ")}></a>
         </div>
       </div>
     </div>
@@ -409,7 +409,7 @@ ${buildTabs(s)}
     <p ${bl("Same-day appointments available. Call us or message on WhatsApp and our team will help you right away.","একই দিনের অ্যাপয়েন্টমেন্ট আছে। কল করুন বা হোয়াটসঅ্যাপে মেসেজ দিন, আমাদের টিম সাথে সাথে সাহায্য করবে।")}></p></div>
   <div class="emerg-cta">
     <a class="btn btn-call" href="tel:+8801706516868">${ico("phone",18)} <span ${bl("Call Now","কল করুন")}></span></a>
-    <a class="btn btn-wa" href="https://wa.me/8801713241670" target="_blank" rel="noopener">${ico("chat",18)} <span ${bl("WhatsApp","হোয়াটসঅ্যাপ")}></span></a>
+    <a class="btn btn-wa" href="https://wa.me/8801706516868" target="_blank" rel="noopener">${ico("chat",18)} <span ${bl("WhatsApp","হোয়াটসঅ্যাপ")}></span></a>
   </div>
 </div></section>
 
@@ -419,7 +419,7 @@ ${buildTabs(s)}
   <a class="btn btn-primary" href="../treatments.html" ${bl("← All treatments","← সব চিকিৎসা")}></a>
   <div class="foot-bottom">© <span id="yr"></span> OMEGA DENTAL</div>
 </div></footer>
-<a class="fab" href="https://wa.me/8801713241670" target="_blank" rel="noopener" aria-label="WhatsApp">${ico("chat",28)}</a>
+<a class="fab" href="https://wa.me/8801706516868" target="_blank" rel="noopener" aria-label="WhatsApp">${ico("chat",28)}</a>
 <script>
 document.getElementById('yr').textContent='2025';
 function setLang(l){document.documentElement.setAttribute('data-lang',l);document.body.classList.toggle('bn',l==='bn');try{localStorage.setItem('omega_lang',l)}catch(e){}

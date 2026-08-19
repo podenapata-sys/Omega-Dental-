@@ -160,7 +160,7 @@ const footer = `
   <a class="btn btn-primary" href="../index.html" ${bl("← Back to home","← হোমে ফিরুন")}></a>
   <div class="foot-bottom">© <span id="yr"></span> OMEGA DENTAL</div>
 </div></footer>
-<a class="fab" href="https://wa.me/8801713241670" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+<a class="fab" href="https://wa.me/8801706516868" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
 <script>
 document.getElementById('yr').textContent='2025';
 function setLang(l){document.documentElement.setAttribute('data-lang',l);document.body.classList.toggle('bn',l==='bn');try{localStorage.setItem('omega_lang',l)}catch(e){}

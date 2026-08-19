@@ -6,7 +6,7 @@
 const OMEGA = {
   phone: "01706-516868",
   phoneIntl: "+8801706516868",
-  whatsapp: "8801713241670",
+  whatsapp: "8801706516868",
   email: "omegadental@gmail.com",
   facebook: "https://www.facebook.com/profile.php?id=61586889212076",
   maps: "https://www.google.com/maps/place/OMEGA+Dental/@23.8018173,90.370624,16z/data=!3m1!4b1!4m7!3m6!1s0x3755c144389f4e91:0xf69deedb238d0bb7!8m2!3d23.8018173!4d90.370624!16s%2Fg%2F11ms4g6xnd",
@@ -1114,7 +1114,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
       chip.addEventListener("click", ()=>{
         const key = chip.dataset.msg;
         const msgs = LANG==="bn" ? WA_MSGS_BN : WA_MSGS;
-        if(start) start.href = "https://wa.me/8801713241670?text=" + encodeURIComponent(msgs[key]||"");
+        if(start) start.href = "https://wa.me/8801706516868?text=" + encodeURIComponent(msgs[key]||"");
         start?.click();
       });
     });
