@@ -91,22 +91,6 @@
   <button class="gal-lb-nav gal-lb-next" id="galLbNext" aria-label="Next">›</button>
 </div>
 
-<!-- Comments modal -->
-<div class="gal-cm" id="galCm" role="dialog" aria-modal="true" aria-label="Comments">
-  <div class="gal-cm-box">
-    <div class="gal-cm-side">
-      <div class="gal-cm-head">
-        <span class="gal-avatar"><img src="../assets/mark-square.png?v=1" alt="Omega Dental"></span>
-        <span class="gal-user">omega_dental</span>
-        <button class="gal-cm-close" id="galCmClose" aria-label="Close">✕</button>
-      </div>
-      <div class="gal-cm-cap" id="galCmCap"></div>
-      <div class="gal-cm-title" id="galCmTitle"></div>
-      <div class="gal-cm-list" id="galCmList"></div>
-      <div class="gal-cm-foot"><span class="gal-cm-likes" id="galCmLikes"></span></div>
-    </div>
-  </div>
-</div>
 
 <!-- Footer -->
 <footer class="footer">
@@ -190,44 +174,11 @@ var PHOTOS=[
 PHOTOS.forEach(function(p,gi){p.gi=gi;});
 
 /* positive community comments (bilingual) */
-var GAL_COMMENTS=[
-  {u:'nusrat_j',en:'Amazing result! My smile looks so natural now 😍',bn:'দারুণ হয়েছে! হাসিটা একদম স্বাভাবিক লাগছে 😍'},
-  {u:'rakib.hasan',en:'Best dental clinic in Dhaka. Painless and professional 👌',bn:'ঢাকার সেরা ডেন্টাল ক্লিনিক। ব্যথাহীন আর প্রফেশনাল 👌'},
-  {u:'tania_ahmed',en:'Thank you Omega Dental, very happy with my treatment ❤️',bn:'ধন্যবাদ ওমেগা ডেন্টাল, চিকিৎসায় খুব খুশি ❤️'},
-  {u:'sabbir_99',en:'Clean setup and friendly doctors. Highly recommend!',bn:'পরিষ্কার সেটআপ আর ভালো ডাক্তার। সবাইকে বলব!'},
-  {u:'mim.tasnim',en:'Wow, huge difference! Worth every taka 🙌',bn:'বাহ, অনেক পার্থক্য! প্রতিটা টাকা সার্থক 🙌'},
-  {u:'arif_dhaka',en:'Did my scaling here, teeth feel brand new ✨',bn:'এখানে স্কেলিং করালাম, দাঁত একদম নতুন লাগছে ✨'},
-  {u:'shamima.akter',en:'So gentle with kids, my son wasn\'t scared at all 🥰',bn:'বাচ্চাদের সাথে খুব যত্নশীল, আমার ছেলে একটুও ভয় পায়নি 🥰'},
-  {u:'imran_kh',en:'Implant looks and feels totally real. Thank you doctor 🙏',bn:'ইমপ্লান্ট একদম আসল দাঁতের মতো লাগে। ধন্যবাদ ডাক্তার 🙏'},
-  {u:'farhana_r',en:'My teeth are so white now, super happy! 😁',bn:'দাঁত এখন অনেক সাদা, খুবই খুশি! 😁'},
-  {u:'jamil.hossain',en:'Braces journey done and the result is perfect 👏',bn:'ব্রেসেসের যাত্রা শেষ, ফলাফল একদম নিখুঁত 👏'},
-  {u:'lamia_chy',en:'Painless root canal, I felt nothing. Highly skilled team!',bn:'ব্যথাহীন রুট ক্যানেল, কিছুই টের পাইনি। দক্ষ টিম!'},
-  {u:'tanvir.ah',en:'Affordable price and top quality work. Loved it 💯',bn:'সাশ্রয়ী দাম আর সেরা মানের কাজ। খুব ভালো লেগেছে 💯'},
-];
-function seedLikes(gi){return 240+((gi*673)%13)*57+(gi%5)*31;}
-function seedCommentCount(gi){return 4+((gi*3)%8);}
-function fmtNum(n){return n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'K':(''+n);}
-function commentsFor(gi){
-  var n=seedCommentCount(gi),out=[],L=GAL_COMMENTS.length;
-  for(var k=0;k<n;k++){out.push(GAL_COMMENTS[(gi*2+k)%L]);}
-  return out;
-}
 
 var activeCat='all';
 var lbIndex=0;
 var visiblePhotos=[];
 
-function isLiked(gi){
-  try{return localStorage.getItem('gal_liked_'+gi)==='1';}catch(e){return false;}
-}
-function likeTotal(gi){return seedLikes(gi)+(isLiked(gi)?1:0);}
-function toggleLike(gi,btn){
-  var liked=!isLiked(gi);
-  try{localStorage.setItem('gal_liked_'+gi,liked?'1':'0');}catch(e){}
-  btn.classList.toggle('liked',liked);
-  var lc=document.querySelector('.gal-likes[data-likes="'+gi+'"]');
-  if(lc)lc.textContent=fmtNum(likeTotal(gi))+' likes';
-}
 function doShare(src,caption){
   var url=location.origin+location.pathname+'?photo='+encodeURIComponent(src);
   if(navigator.share){navigator.share({title:'Omega Dental — '+caption,url:url}).catch(function(){});}
@@ -246,26 +197,6 @@ function closeLb(){
   document.getElementById('galLb').classList.remove('open');
   document.body.style.overflow='';
 }
-function openComments(gi){
-  var lang=document.documentElement.getAttribute('data-lang')||'en';
-  var p=PHOTOS[gi];if(!p)return;
-  var caption=lang==='bn'?p.bn:p.en;
-  var cmts=commentsFor(gi);
-  document.getElementById('galCmCap').innerHTML='<b>omega_dental</b>'+caption;
-  document.getElementById('galCmLikes').textContent=fmtNum(likeTotal(gi))+' likes';
-  document.getElementById('galCmTitle').textContent=lang==='bn'?(cmts.length+'টি মন্তব্য'):(cmts.length+' comments');
-  var list='';
-  cmts.forEach(function(c,ci){
-    list+='<div class="gal-cm-item" style="animation-delay:'+(ci*70)+'ms"><span class="gal-cm-av"><img src="../assets/mark.png?v=3" alt=""></span><div class="gal-cm-txt"><b>'+c.u+'</b>'+(lang==='bn'?c.bn:c.en)+'</div></div>';
-  });
-  document.getElementById('galCmList').innerHTML=list;
-  document.getElementById('galCm').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeComments(){
-  document.getElementById('galCm').classList.remove('open');
-  document.body.style.overflow='';
-}
 
 function renderGallery(lang){
   var grid=document.getElementById('galGrid');
@@ -273,11 +204,6 @@ function renderGallery(lang){
   var html='';
   visiblePhotos.forEach(function(p,i){
     var caption=lang==='bn'?p.bn:p.en;
-    var gi=p.gi;
-    var liked=isLiked(gi);
-    var cmts=commentsFor(gi);
-    var cc=cmts.length;
-    var viewAll=lang==='bn'?('সব '+cc+'টি মন্তব্য দেখুন'):('View all '+cc+' comments');
     html+='<div class="gal-item" data-cat="'+p.cat+'">';
     html+='<div class="gal-head">';
     html+='<span class="gal-avatar"><img src="../assets/mark-square.png?v=1" alt="Omega Dental"></span>';
@@ -289,28 +215,16 @@ function renderGallery(lang){
     html+='<span class="gal-wm" aria-hidden="true"><img src="../assets/mark-square.png?v=1" alt=""><span class="gal-wm-tx">OMEGA<b>DENTAL</b></span></span>';
     html+='</div>';
     html+='<div class="gal-actions">';
-    html+='<button class="gal-act'+(liked?' liked':'')+'" data-like="'+gi+'" aria-label="Like">&#10084;</button>';
-    html+='<button class="gal-act" data-comment="'+gi+'" aria-label="Comment">&#128172;</button>';
     html+='<button class="gal-act" data-share="'+i+'" aria-label="Share">&#128257;</button>';
     html+='<button class="gal-act gal-bookmark" data-save="'+i+'" aria-label="Save">&#128278;</button>';
     html+='</div>';
-    html+='<div class="gal-likes" data-likes="'+gi+'">'+fmtNum(likeTotal(gi))+' likes</div>';
     html+='<div class="gal-caption"><b>omega_dental</b>'+caption+'</div>';
-    html+='<div class="gal-comments">';
-    if(cc>2)html+='<button class="gal-viewall" data-viewall="'+gi+'">'+viewAll+'</button>';
-    cmts.slice(0,2).forEach(function(c){
-      html+='<div class="gal-comment"><b>'+c.u+'</b>'+(lang==='bn'?c.bn:c.en)+'</div>';
-    });
-    html+='</div>';
     html+='</div>';
   });
   grid.innerHTML=html;
 
   grid.querySelectorAll('.gal-photo').forEach(function(el){
     el.addEventListener('click',function(){openLb(parseInt(el.dataset.idx,10));});
-  });
-  grid.querySelectorAll('[data-like]').forEach(function(btn){
-    btn.addEventListener('click',function(e){e.stopPropagation();toggleLike(parseInt(btn.dataset.like,10),btn);});
   });
   grid.querySelectorAll('[data-share]').forEach(function(btn){
     btn.addEventListener('click',function(e){
@@ -319,12 +233,6 @@ function renderGallery(lang){
       var p=visiblePhotos[idx];
       doShare(p.src,lang==='bn'?p.bn:p.en);
     });
-  });
-  grid.querySelectorAll('[data-comment]').forEach(function(btn){
-    btn.addEventListener('click',function(e){e.stopPropagation();openComments(parseInt(btn.dataset.comment,10));});
-  });
-  grid.querySelectorAll('[data-viewall]').forEach(function(btn){
-    btn.addEventListener('click',function(e){e.stopPropagation();openComments(parseInt(btn.dataset.viewall,10));});
   });
   grid.querySelectorAll('[data-save]').forEach(function(btn){
     btn.addEventListener('click',function(e){
@@ -360,13 +268,6 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape')closeLb();
   if(e.key==='ArrowLeft')document.getElementById('galLbPrev').click();
   if(e.key==='ArrowRight')document.getElementById('galLbNext').click();
-});
-
-/* comments modal */
-document.getElementById('galCmClose').addEventListener('click',closeComments);
-document.getElementById('galCm').addEventListener('click',function(e){if(e.target===this)closeComments();});
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'&&document.getElementById('galCm').classList.contains('open'))closeComments();
 });
 
 /* pre-select filter from ?cat= (service → its gallery) */

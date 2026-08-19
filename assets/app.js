@@ -230,7 +230,7 @@ const I18N = {
     wa_online:"● Online now", wa_greeting:"Hi! 👋 How can we help you today? We typically reply within minutes.",
     wa_chip_book:"📅 Book Appointment", wa_chip_price:"💰 Treatment Price?", wa_chip_q:"❓ Ask a Question",
     wa_start:"Start Chat on WhatsApp →",
-    google_reviews_label:"Based on 230+ Google Reviews",
+    google_reviews_label:"Based on our Google reviews",
     qr_scan_label:"Scan to review us on Google",
     see_reviews:"See All Reviews →",
     share_experience:"Share Your Experience",
@@ -349,7 +349,7 @@ const I18N = {
     wa_online:"● এখন অনলাইন", wa_greeting:"হ্যালো! 👋 আপনাকে কীভাবে সাহায্য করতে পারি? আমরা কয়েক মিনিটের মধ্যে উত্তর দিই।",
     wa_chip_book:"📅 অ্যাপয়েন্টমেন্ট নিন", wa_chip_price:"💰 চিকিৎসার খরচ?", wa_chip_q:"❓ প্রশ্ন করুন",
     wa_start:"WhatsApp-এ চ্যাট শুরু করুন →",
-    google_reviews_label:"২৩০+ গুগল রিভিউয়ের ভিত্তিতে",
+    google_reviews_label:"আমাদের গুগল রিভিউয়ের ভিত্তিতে",
     qr_scan_label:"গুগলে রিভিউ দিতে স্ক্যান করুন",
     see_reviews:"সব রিভিউ দেখুন →",
     share_experience:"আপনার অভিজ্ঞতা শেয়ার করুন",
@@ -460,6 +460,7 @@ function applyI18n(){
   renderSteps(); renderTech(); renderFaqs(); renderCalcBA(); renderMarquee();
   const tgl = document.getElementById("langText");
   if (tgl) tgl.textContent = t("lang_label");
+  applyGoogleReviews(); // re-overlay live Google data (if loaded) in the current language
 }
 
 function setLang(l){ LANG = l; localStorage.setItem("omega_lang", l); applyI18n(); }
@@ -697,6 +698,100 @@ function renderTestimonials(){
     </a>`).join("");
 }
 
+/* ---------- Live Google reviews (Featurable free JSON API) ----------
+   Paste your Featurable widget ID below to go live. Featurable reads the
+   clinic's Google Business Profile and refreshes ~daily. While the ID is
+   empty (or if the fetch fails) the static reviews above stay as a fallback,
+   so the section never looks broken. */
+const FEATURABLE_WIDGET_ID = "";
+let GOOGLE_REVIEWS = null; // { rating, count, reviews:[{name,text,rating,url}] }
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+async function loadGoogleReviews(){
+  if(!FEATURABLE_WIDGET_ID) return; // no ID yet → keep static fallback
+  try{
+    const ctrl = new AbortController();
+    const timer = setTimeout(()=>ctrl.abort(), 8000);
+    const res = await fetch("https://featurable.com/api/v1/widgets/"+FEATURABLE_WIDGET_ID, {signal:ctrl.signal});
+    clearTimeout(timer);
+    if(!res.ok) return;
+    const data = await res.json();
+    // Featurable's JSON shape can vary; accept the common field names defensively.
+    const arr = data.reviews || data.data || [];
+    const WORD2NUM = {ONE:1,TWO:2,THREE:3,FOUR:4,FIVE:5};
+    const toStars = v => {
+      if(typeof v==="string" && WORD2NUM[v.toUpperCase()]) return WORD2NUM[v.toUpperCase()];
+      const n = Number(v); return (n>=1 && n<=5) ? n : 5;
+    };
+    const reviews = arr.map(r=>({
+      name:   r.reviewerName || r.author || r.name || (r.reviewer && (r.reviewer.displayName || r.reviewer.name)) || "Google user",
+      text:   r.reviewText || r.text || r.comment || r.content || "",
+      rating: toStars(r.starRating || r.rating || r.stars || 5),
+      url:    r.reviewUrl || r.url || (r.reviewer && r.reviewer.profileUrl) || GMAPS_REVIEW_URL
+    })).filter(r => r.text.trim());
+    let rating = Number(data.averageRating || data.rating || (data.summary && data.summary.averageRating));
+    let count  = Number(data.totalReviewCount || data.totalReviews || data.reviewCount || (data.summary && data.summary.totalReviewCount));
+    if(!(rating>0) && reviews.length) rating = reviews.reduce((s,r)=>s+r.rating,0) / reviews.length;
+    if(!(count>0)  && reviews.length) count = reviews.length;
+    if(!reviews.length && !(rating>0)) return;
+    GOOGLE_REVIEWS = {
+      rating: rating>0 ? rating : null,
+      count:  count>0  ? count  : null,
+      reviews: reviews
+    };
+    applyGoogleReviews();
+  }catch(e){ /* offline / blocked / bad JSON → silent, static fallback stays */ }
+}
+
+/* Overlay live data onto the existing badges + testimonial grid. Called at the
+   end of applyI18n() too, so a language toggle re-applies it in the right language. */
+function applyGoogleReviews(){
+  if(!GOOGLE_REVIEWS) return;
+  const g = GOOGLE_REVIEWS;
+
+  if(g.rating != null){
+    const rt = g.rating.toFixed(1);
+    document.querySelectorAll(".g-score").forEach(el => el.textContent = rt);
+    document.querySelectorAll(".rs-score").forEach(el => {
+      const stars = el.querySelector(".rs-stars");
+      el.textContent = rt + " ";
+      if(stars) el.appendChild(stars);
+    });
+  }
+
+  if(g.count != null){
+    document.querySelectorAll(".rs-label").forEach(el =>
+      el.textContent = LANG==="bn"
+        ? (g.count + "+ গুগল রিভিউয়ের ভিত্তিতে")
+        : ("Based on " + g.count + "+ Google reviews"));
+    document.querySelectorAll(".g-label").forEach(el =>
+      el.textContent = LANG==="bn"
+        ? (g.count + "+ গুগল রিভিউ")
+        : (g.count + "+ Google Reviews"));
+  }
+
+  const wrap = document.getElementById("testGrid");
+  if(wrap && g.reviews.length){
+    const roleTxt = LANG==="bn" ? "গুগল রিভিউ" : "Google Review";
+    const list = g.reviews.slice()
+      .sort((a,b)=> (b.rating - a.rating) || (b.text.length - a.text.length))
+      .slice(0, 9);
+    wrap.innerHTML = list.map(x=>{
+      const stars = "★".repeat(Math.max(1, Math.min(5, Math.round(x.rating))));
+      return `
+    <a class="test-card" href="${escapeHtml(x.url)}" target="_blank" rel="noopener noreferrer" aria-label="Read review on Google Maps">
+      <div class="stars">${stars}</div>
+      <p>"${escapeHtml(x.text)}"</p>
+      <div class="test-meta"><span class="avatar">${escapeHtml(x.name.charAt(0))}</span>
+        <div><strong>${escapeHtml(x.name)}</strong><small>${roleTxt}</small></div></div>
+    </a>`;
+    }).join("");
+  }
+}
+
 /* ----- Process steps ----- */
 function renderSteps(){
   const wrap = document.getElementById("stepsGrid");
@@ -914,6 +1009,7 @@ function initBookPickers(){
 /* ----- Wire up ----- */
 document.addEventListener("DOMContentLoaded", ()=>{
   applyI18n();
+  loadGoogleReviews(); // fetch real Google reviews (Featurable) → overlays when it resolves
   initBookPickers();
   // prefill booking-page treatment from ?service=
   try{ const q=new URLSearchParams(location.search).get("service"); const sel=document.getElementById("f_service");
