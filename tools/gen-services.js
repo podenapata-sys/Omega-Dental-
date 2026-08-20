@@ -339,7 +339,7 @@ function page(s){
         <div class="fact"><span class="fact-ic">${ico(FACT_KEYS[i])}</span>
           <div><strong ${bl(f[0],s.bn.facts[i][0])}></strong><span ${bl(f[1],s.bn.facts[i][1])}></span></div></div>`).join("");
   const steps = s.en.process.map((_,i)=>`<article class="step-card"><span class="step-num">${i+1}</span><h3 ${bl(s.en.process[i],s.bn.process[i])}></h3></article>`).join("");
-  const jsonld=`{"@context":"https://schema.org","@type":"MedicalProcedure","name":"${esc(s.en.name)}","procedureType":"Dentistry","description":"${esc(s.en.meta)}","url":"${url}","provider":{"@type":"Dentist","name":"Omega Dental","telephone":"+8801713241670","address":{"@type":"PostalAddress","streetAddress":"1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni","addressLocality":"Dhaka","addressCountry":"BD"},"geo":{"@type":"GeoCoordinates","latitude":23.8018173,"longitude":90.370624}}}`;
+  const jsonld=`{"@context":"https://schema.org","@type":"MedicalProcedure","name":"${esc(s.en.name)}","procedureType":"Dentistry","description":"${esc(s.en.meta)}","url":"${url}","provider":{"@type":"Dentist","name":"Omega Dental","telephone":"+8801706516868","address":{"@type":"PostalAddress","streetAddress":"1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni","addressLocality":"Dhaka","addressCountry":"BD"},"geo":{"@type":"GeoCoordinates","latitude":23.8018173,"longitude":90.370624}}}`;
   return `<!DOCTYPE html>
 <html lang="en" data-lang="en">
 <head>
