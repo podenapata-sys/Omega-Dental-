@@ -512,7 +512,7 @@ function renderServices(){
     const sub = (s.sub||[]).map(o=>`<a class="svc-sub-chip" href="services/${o.slug}.html">${LANG==="bn"?o.bn:o.en}</a>`).join("");
     const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
     const media = s.vid
-      ? `<img class="svc-static" src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"><video class="svc-anim" autoplay muted loop playsinline preload="metadata"><source src="assets/services/${s.vid}.mp4?v=2" type="video/mp4"></video>`
+      ? `<img class="svc-static" src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"><video class="svc-anim" autoplay muted loop playsinline preload="none"><source src="assets/services/${s.vid}.mp4?v=2" type="video/mp4"></video>`
       : s.img2
         ? `<img class="svc-static" src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"><img class="svc-anim svc-anim-img" src="assets/services/${s.img2}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img2}.svg?v=3'" alt="${name}" loading="lazy">`
         : `<img src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy">`;

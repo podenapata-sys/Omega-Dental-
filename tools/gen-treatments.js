@@ -52,7 +52,7 @@ const html = `<!DOCTYPE html>
 <meta name="theme-color" content="#57C3AD">
 <link rel="icon" type="image/png" href="assets/mark.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="assets/styles.css?v=${VER}">
 </head>
 <body>
