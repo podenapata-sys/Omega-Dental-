@@ -245,6 +245,19 @@ a{color:inherit;text-decoration:none}
 .hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(244,251,249,.12),rgba(255,255,255,.34) 82%)}
 @media(max-width:760px){.hero-media::after{background:linear-gradient(180deg,rgba(244,251,249,.22),rgba(255,255,255,.45) 82%)}}
 @media(prefers-reduced-motion:reduce){.hero-video{display:none}}
+/* full-bleed hero background photo + readability scrim (subject sits on the right) */
+.hero-bg{position:absolute;inset:0;z-index:0;background:url(hero-portrait.jpg?v=1) no-repeat center right/cover}
+.hero-bg::after{content:"";position:absolute;inset:0;background:
+  linear-gradient(90deg,rgba(248,252,251,.97) 0%,rgba(248,252,251,.9) 30%,rgba(248,252,251,.5) 56%,rgba(248,252,251,.12) 80%,rgba(248,252,251,0) 100%),
+  linear-gradient(180deg,rgba(248,252,251,.28),rgba(255,255,255,.12) 40%,rgba(255,255,255,.34))}
+/* background photo carries the image, so hide the standalone right-column card */
+.hero-art{display:none}
+@media(max-width:980px){
+  .hero-bg{background-position:center right}
+  .hero-bg::after{background:
+    linear-gradient(180deg,rgba(248,252,251,.9),rgba(248,252,251,.72) 46%,rgba(248,252,251,.62) 72%,rgba(248,252,251,.9)),
+    linear-gradient(90deg,rgba(248,252,251,.55),rgba(248,252,251,0) 85%)}
+}
 .hero .blob{position:absolute;border-radius:50%;filter:blur(20px);opacity:.55;z-index:0}
 .hero .b1{width:360px;height:360px;background:radial-gradient(circle,#bfeee4,transparent 70%);top:-90px;right:-40px}
 .hero .b2{width:300px;height:300px;background:radial-gradient(circle,#c7d9f7,transparent 70%);bottom:-80px;left:-60px}
