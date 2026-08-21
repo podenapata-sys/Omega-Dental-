@@ -110,10 +110,10 @@ const SERVICES = [
   { icon:"✨", img:"laser-whitening-card", img2:"whitening-compare", slug:"teeth-whitening", pr:"৳12,000", dur:"1 Session", durbn:"১ সিটিং", en:"Laser Teeth Whitening", bn:"লেজার দাঁত সাদা করা", cne:"Laser teeth whitening", cn:"লেজার দাঁত সাদা করা", de:"Brighten your smile several shades with safe professional whitening.", db:"নিরাপদে দাঁতের হলদে ভাব দূর করে কয়েক শেড উজ্জ্বল হাসি।", gal:["whitening-compare","cosmetic-ba"] },
   { icon:"🩺", img:"extractions-surgery", img2:"extraction-front", slug:"extractions", pr:"৳5,000–8,000", per:true, dur:"20–30 min", durbn:"২০–৩০ মিনিট", en:"Painless Extraction & Surgery", bn:"ব্যথাহীন দাঁত তোলা ও সার্জারি", cne:"Tooth removal", cn:"দাঁত ফেলা", de:"Painless simple and surgical extraction including wisdom teeth.", db:"আক্কেল দাঁতসহ যেকোনো দাঁত ব্যথা ছাড়াই তুলে ফেলা।", gal:["extraction-front","frenectomy"] },
   { icon:"🧒", img:"kids-dentistry", img2:"kids-checkup", slug:"kids-dentistry", pr:"৳1,000–1,500", dur:"20–30 min", durbn:"২০–৩০ মিনিট", en:"Kids Dentistry", bn:"শিশুদের দাঁতের চিকিৎসা", cne:"Children's dental care", cn:"শিশুদের দাঁতের যত্ন", de:"Gentle paediatric care, milk-tooth treatment and check-ups for children.", db:"শিশুদের দুধ দাঁতের চিকিৎসা, কোমল যত্ন ও নিয়মিত চেকআপ।", gal:["kids-checkup","kids-extraction"] },
-  { icon:"💖", img:"cosmetic-tooth-jewelry", slug:"cosmetic-dentistry", pr:"৳3,500–9,000", dur:"Varies", durbn:"পরিবর্তনশীল", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", cne:"Smile makeover", cn:"দাঁতের সৌন্দর্য চিকিৎসা", de:"Smile makeovers combining whitening, veneer and reshaping.", db:"হাসি সুন্দর করতে দাঁত সাদা করা, আবরণ ও শেপ ঠিক করা।", gal:["cosmetic-ba","cosmetic-veneers"] },
-  { icon:"📏", img:"braces-aligners", slug:"braces-aligners", pr:"From ৳25,000", dur:"12–24 months", durbn:"১২–২৪ মাস", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", cne:"Teeth straightening", cn:"দাঁত সোজা করা (তার/ব্রেস)", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত ও কামড় ঠিক করতে তার (ব্রেস) লাগিয়ে চিকিৎসা।", gal:["braces-aligners"],
+  { icon:"💖", img:"cosmetic-tooth-jewelry", img2:"cosmetic-hollywood-smile", slug:"cosmetic-dentistry", pr:"৳3,500–9,000", dur:"Varies", durbn:"পরিবর্তনশীল", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", cne:"Smile makeover", cn:"দাঁতের সৌন্দর্য চিকিৎসা", de:"Smile makeovers combining whitening, veneer and reshaping.", db:"হাসি সুন্দর করতে দাঁত সাদা করা, আবরণ ও শেপ ঠিক করা।", gal:["cosmetic-ba","cosmetic-veneers"] },
+  { icon:"📏", img:"braces-aligners", img2:"braces-treatment", slug:"braces-aligners", pr:"From ৳25,000", dur:"12–24 months", durbn:"১২–২৪ মাস", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", cne:"Teeth straightening", cn:"দাঁত সোজা করা (তার/ব্রেস)", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত ও কামড় ঠিক করতে তার (ব্রেস) লাগিয়ে চিকিৎসা।", gal:["braces-aligners"],
     sub:[ {en:"Braces",bn:"ব্রেসেস",slug:"braces-aligners"} ] },
-  { icon:"😁", img:"aligner", slug:"aligners", pr:"From ৳1,50,000", dur:"6–18 months", durbn:"৬–১৮ মাস", en:"Aligner", bn:"অ্যালাইনার", cne:"Invisible aligner", cn:"অদৃশ্য তার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।", gal:["aligner"] },
+  { icon:"😁", img:"aligner", img2:"aligner-tray", slug:"aligners", pr:"From ৳1,50,000", dur:"6–18 months", durbn:"৬–১৮ মাস", en:"Aligner", bn:"অ্যালাইনার", cne:"Invisible aligner", cn:"অদৃশ্য তার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।", gal:["aligner"] },
 ];
 
 /* ---------- i18n strings ---------- */
@@ -542,15 +542,20 @@ function renderServices(){
       play();
       return;
     }
-    // before/after image-swap cards — reveal on hover / touch / in-view
-    function showVid(){img.style.opacity="0";vid.style.opacity="1";}
-    function showImg(){img.style.opacity="1";vid.style.opacity="0";}
-    card.addEventListener("mouseenter",showVid);
-    card.addEventListener("mouseleave",showImg);
-    card.addEventListener("touchstart",function(){card.classList.add("touch-active");showVid();},{passive:true});
-    card.addEventListener("touchend",function(){card.classList.remove("touch-active");showImg();},{passive:true});
-    var svcIO=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)showVid();else showImg();});},{threshold:0.3});
+    // image-swap cards — continuously cross-fade between the two photos while
+    // in view (hover/touch forces the second photo). Respects reduced-motion.
+    var second=false, hovering=false, timer=null;
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function paint(){ var s=hovering||second; img.style.opacity=s?"0":"1"; vid.style.opacity=s?"1":"0"; }
+    function start(){ if(reduceMotion||timer) return; timer=setInterval(function(){ second=!second; paint(); }, 2800); }
+    function stop(){ if(timer){ clearInterval(timer); timer=null; } second=false; paint(); }
+    card.addEventListener("mouseenter",function(){hovering=true;paint();});
+    card.addEventListener("mouseleave",function(){hovering=false;paint();});
+    card.addEventListener("touchstart",function(){card.classList.add("touch-active");hovering=true;paint();},{passive:true});
+    card.addEventListener("touchend",function(){card.classList.remove("touch-active");hovering=false;paint();},{passive:true});
+    var svcIO=new IntersectionObserver(function(entries){entries.forEach(function(e){ e.isIntersecting?start():stop(); });},{threshold:0.3});
     svcIO.observe(card);
+    paint();
   });
   wrap.querySelectorAll(".svc-gal").forEach(function(gal){
     var card=gal.closest(".svc-card");
