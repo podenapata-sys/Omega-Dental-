@@ -1248,3 +1248,21 @@ document.addEventListener("DOMContentLoaded", ()=>{
     }
   }, 600);
 });
+
+/* ---------- Private admin: 5 taps on the logo opens the dashboard ---------- */
+(function(){
+  var taps=0, last=0;
+  document.addEventListener("click", function(e){
+    var brand = e.target.closest(".brand");
+    if(!brand) return;
+    var now = Date.now();
+    if(now - last > 1600) taps = 0;   // reset if taps are too far apart
+    last = now; taps++;
+    if(taps >= 5){
+      taps = 0;
+      e.preventDefault();
+      var root = (document.querySelector('meta[name="page-root"]')||{}).content || "";
+      window.location.href = root + "dashboard.html";
+    }
+  }, true);
+})();
