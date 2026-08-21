@@ -217,23 +217,17 @@ tbody tr:hover{background:#f8fcfb}
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
 
   /* ---------- PIN gate ---------- */
-  function hasPin(){ return !!localStorage.getItem(LS_PIN); }
-  function setPin(p){ localStorage.setItem(LS_PIN, btoa("od:"+p)); }
-  function checkPin(p){ return localStorage.getItem(LS_PIN)===btoa("od:"+p); }
-  var settingPin=false;
+  var DEFAULT_PIN="2518";
+  function checkPin(p){ return p===DEFAULT_PIN || localStorage.getItem(LS_PIN)===btoa("od:"+p); }
   function initLock(){
-    if(!hasPin()){
-      settingPin=true;
-      $("lockTitle").textContent="Create a PIN";
-      $("lockSub").textContent="Set a PIN to protect this dashboard";
-      $("pinBtn").textContent="Set PIN & open";
-    }
+    $("lockTitle").textContent="Enter PIN";
+    $("lockSub").textContent="Admin access — Omega Dental";
+    $("pinBtn").textContent="Unlock";
     $("pinInput").focus();
   }
   function tryUnlock(){
     var p=digits($("pinInput").value);
-    if(p.length<4){ $("lockMsg").textContent="Use at least 4 digits."; return; }
-    if(settingPin){ setPin(p); unlock(); return; }
+    if(!p){ $("lockMsg").textContent="Enter your PIN."; return; }
     if(checkPin(p)){ unlock(); }
     else{ $("lockMsg").textContent="Wrong PIN."; $("pinInput").value=""; $("pinInput").focus(); }
   }
