@@ -139,20 +139,32 @@ tbody tr:hover{background:#f8fcfb}
       <div class="fld"><label>Mobile Number</label><input id="f_mobile" type="tel" inputmode="numeric" placeholder="01XXXXXXXXX"></div>
       <div class="fld"><label>Customer ID (auto)</label><input id="f_id" class="ro" readonly placeholder="OD-####"></div>
       <div class="fld"><label>Patient Name (optional)</label><input id="f_name" type="text" placeholder="Name"></div>
-      <div class="fld"><label>Service Taken</label><input id="f_service" list="serviceList" placeholder="e.g. Scaling"></div>
+      <div class="fld"><label>Service Taken</label>
+        <select id="f_service">
+          <option value="">Select a service…</option>
+          <option>Scaling &amp; Polishing</option>
+          <option>Composite Veneer</option>
+          <option>Root Canal Treatment</option>
+          <option>Tooth Filling</option>
+          <option>Fiber Bridge</option>
+          <option>Zirconia / PFM Crown</option>
+          <option>Flexible Denture</option>
+          <option>Dental Implant</option>
+          <option>Laser Teeth Whitening</option>
+          <option>Extraction / Surgery</option>
+          <option>Kids Dentistry</option>
+          <option>Braces / Aligners</option>
+          <option>Check-up / Consultation</option>
+          <option value="__other__">Other (type below)…</option>
+        </select>
+        <input id="f_service_other" type="text" placeholder="Type the service name" style="display:none;margin-top:8px">
+      </div>
       <div class="fld"><label>Total Amount (৳)</label><input id="f_total" type="number" min="0" step="1" placeholder="0"></div>
       <div class="fld"><label>Paid Amount (৳)</label><input id="f_paid" type="number" min="0" step="1" placeholder="0"></div>
       <div class="fld"><label>Due (auto)</label><input id="f_due" class="ro" readonly placeholder="৳0"></div>
       <div class="fld"><label>Visit Date</label><input id="f_date" type="date"></div>
       <div class="fld"><label>Next Appointment</label><input id="f_next" type="date"></div>
     </div>
-    <datalist id="serviceList">
-      <option>Scaling &amp; Polishing</option><option>Composite Veneer</option><option>Root Canal Treatment</option>
-      <option>Tooth Filling</option><option>Fiber Bridge</option><option>Zirconia / PFM Crown</option>
-      <option>Flexible Denture</option><option>Dental Implant</option><option>Laser Teeth Whitening</option>
-      <option>Extraction / Surgery</option><option>Kids Dentistry</option><option>Braces / Aligners</option>
-      <option>Check-up / Consultation</option>
-    </datalist>
     <div class="form-actions">
       <button class="btn btn-p" id="saveBtn" style="width:auto">Add record</button>
       <button class="btn btn-g" id="cancelBtn" style="display:none">Cancel</button>
@@ -240,8 +252,22 @@ tbody tr:hover{background:#f8fcfb}
     var due=(Number($("f_total").value)||0)-(Number($("f_paid").value)||0);
     $("f_due").value=money(due);
   }
+  function onServiceChange(){
+    var o=$("f_service_other");
+    if($("f_service").value==="__other__"){ o.style.display="block"; o.focus(); }
+    else { o.style.display="none"; }
+  }
+  function getService(){ return $("f_service").value==="__other__" ? $("f_service_other").value.trim() : $("f_service").value; }
+  function setService(name){
+    var sel=$("f_service"), o=$("f_service_other"), found=false;
+    for(var i=0;i<sel.options.length;i++){ if(sel.options[i].value!=="__other__" && sel.options[i].value===name){ found=true; break; } }
+    if(name && found){ sel.value=name; o.style.display="none"; o.value=""; }
+    else if(name){ sel.value="__other__"; o.value=name; o.style.display="block"; }
+    else { sel.value=""; o.style.display="none"; o.value=""; }
+  }
   function clearForm(){
-    ["f_mobile","f_name","f_service","f_total","f_paid","f_next"].forEach(function(k){$(k).value="";});
+    ["f_mobile","f_name","f_total","f_paid","f_next"].forEach(function(k){$(k).value="";});
+    $("f_service").value=""; $("f_service_other").value=""; $("f_service_other").style.display="none";
     $("f_date").value=todayStr(); recalc();
     editId=null; $("saveBtn").textContent="Add record"; $("formTitle").textContent="➕ Add a patient record";
     $("cancelBtn").style.display="none";
@@ -254,7 +280,7 @@ tbody tr:hover{background:#f8fcfb}
       date: $("f_date").value || todayStr(),
       mobile: mobile, id: cid(mobile),
       name: $("f_name").value.trim(),
-      service: $("f_service").value.trim(),
+      service: getService(),
       total: Number($("f_total").value)||0,
       paid: Number($("f_paid").value)||0,
       next: $("f_next").value || ""
@@ -266,7 +292,7 @@ tbody tr:hover{background:#f8fcfb}
   function flash(msg,err){ var el=$("formMsg"); el.textContent=msg; el.style.color=err?"#d94848":"#2c8a78"; setTimeout(function(){el.textContent="";},2600); }
   function editRow(id){
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
-    editId=id; $("f_mobile").value=r.mobile; $("f_name").value=r.name||""; $("f_service").value=r.service||"";
+    editId=id; $("f_mobile").value=r.mobile; $("f_name").value=r.name||""; setService(r.service||"");
     $("f_total").value=r.total; $("f_paid").value=r.paid; $("f_date").value=r.date; $("f_next").value=r.next||"";
     recalc(); $("saveBtn").textContent="Update record"; $("formTitle").textContent="✏️ Edit record"; $("cancelBtn").style.display="inline-block";
     window.scrollTo({top:0,behavior:"smooth"});
@@ -398,6 +424,7 @@ tbody tr:hover{background:#f8fcfb}
     $("pinBtn").addEventListener("click",tryUnlock);
     $("pinInput").addEventListener("keydown",function(e){ if(e.key==="Enter")tryUnlock(); });
     ["f_mobile","f_total","f_paid"].forEach(function(k){ $(k).addEventListener("input",recalc); });
+    $("f_service").addEventListener("change",onServiceChange);
     $("saveBtn").addEventListener("click",saveRecord);
     $("cancelBtn").addEventListener("click",clearForm);
     $("lockBtn").addEventListener("click",lock);
