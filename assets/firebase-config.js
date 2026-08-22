@@ -10,3 +10,8 @@ window.OMEGA_FB = {
   messagingSenderId: "1086374684130",
   appId: "1:1086374684130:web:49b1f449211609b273c5bb"
 };
+
+/* Google OAuth Web client ID for the "Backup to Drive" button (drive.file scope only —
+   the app can only touch files it creates). Leave empty to hide the Drive button. */
+window.OMEGA_GOOGLE_CLIENT_ID = "1086374684130-lbbk3nm75ekp9alubf211lvb162m0i3l.apps.googleusercontent.com";
+

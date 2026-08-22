@@ -127,6 +127,7 @@ tbody tr:hover{background:#f8fcfb}
     <span class="spacer"></span>
     <button class="btn btn-g btn-sm" id="importBtn">⬆ Import backup</button>
     <button class="btn btn-o btn-sm" id="backupBtn">⬇ Backup all (Excel)</button>
+    <button class="btn btn-g btn-sm" id="driveBtn" style="display:none">☁ Backup to Drive</button>
     <button class="btn btn-g btn-sm" id="lockBtn">🔒 Lock</button>
   </div>
 
@@ -405,17 +406,25 @@ tbody tr:hover{background:#f8fcfb}
     var tag=view==="today"?($("dayPick").value||todayStr()):view==="month"?($("monthPick").value||todayStr().slice(0,7)):view;
     download(rs,"omega-dental-"+tag+".xlsx","Records "+tag);
   }
-  function backupAll(){
-    if(!records.length){ alert("No records to back up yet."); return; }
+  function buildBackupWorkbook(){
     var wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, makeSheetWithTotals(records.slice().sort(function(a,b){return a.date.localeCompare(b.date);})), "All records");
-    // monthly summary sheet
     var byMonth={};
     records.forEach(function(r){ var m=(r.date||"").slice(0,7); if(!m)return; byMonth[m]=byMonth[m]||{Month:m,Patients:0,Total:0,Paid:0}; byMonth[m].Patients++; byMonth[m].Total+=Number(r.total)||0; byMonth[m].Paid+=Number(r.paid)||0; });
     var ms=Object.keys(byMonth).sort().map(function(m){ var o=byMonth[m]; o.Due=o.Total-o.Paid; return o; });
     if(ms.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(ms,{header:["Month","Patients","Total","Paid","Due"]}), "Monthly summary");
-    XLSX.writeFile(wb, "omega-dental-backup-"+todayStr()+".xlsx");
+    return wb;
   }
+  function backupAll(){
+    if(!records.length){ alert("No records to back up yet."); return; }
+    XLSX.writeFile(buildBackupWorkbook(), "omega-dental-backup-"+todayStr()+".xlsx");
+  }
+  /* expose the .xlsx bytes so the "Backup to Drive" module can upload them */
+  window.__odBackupBlob = function(){
+    if(!records.length) return null;
+    var out = XLSX.write(buildBackupWorkbook(), {type:"array", bookType:"xlsx"});
+    return new Blob([out], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+  };
   function importFile(file){
     var reader=new FileReader();
     reader.onload=function(e){
@@ -597,6 +606,89 @@ tbody tr:hover{background:#f8fcfb}
     try{ await authMod.signInWithEmailAndPassword(auth, em, pw); $("fbPass").value=""; }
     catch(e){ $("fbMsg").textContent = "Sign-in failed: " + (e.code||e.message||""); }
   };
+})();
+</script>
+<!-- Backup to Google Drive (GIS token flow + Drive REST; drive.file scope only) -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script>
+(function(){
+  var CLIENT_ID = (window.OMEGA_GOOGLE_CLIENT_ID||"").trim();
+  var btn = document.getElementById("driveBtn");
+  if(!CLIENT_ID || !btn) return;
+  var tokenClient=null, accessToken=null, tokenExpiry=0, busy=false;
+  var FOLDER = "Omega Dental Backups";
+  function setBtn(t){ btn.textContent=t; }
+  function p2(n){ return String(n).padStart(2,"0"); }
+  function blobToBase64(blob){ return new Promise(function(res,rej){ var r=new FileReader(); r.onload=function(){ res(String(r.result).split(",")[1]); }; r.onerror=rej; r.readAsDataURL(blob); }); }
+  function gisReady(){ return window.google && google.accounts && google.accounts.oauth2; }
+
+  function init(){
+    if(!gisReady()){ setTimeout(init, 400); return; }
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: CLIENT_ID,
+      scope: "https://www.googleapis.com/auth/drive.file",
+      callback: function(resp){
+        if(resp && resp.access_token){
+          accessToken = resp.access_token;
+          tokenExpiry = Date.now() + ((resp.expires_in?resp.expires_in:3300)*1000) - 60000;
+          doUpload();
+        } else { busy=false; setBtn("☁ Backup to Drive"); alert("Google sign-in was cancelled."); }
+      },
+      error_callback: function(err){ busy=false; setBtn("☁ Backup to Drive"); alert("Google sign-in error: "+((err&&err.type)||err||"")); }
+    });
+    btn.style.display = "inline-block";
+    btn.onclick = function(){
+      if(busy) return;
+      if(!(window.__odBackupBlob && window.__odBackupBlob())){ alert("No records to back up yet."); return; }
+      busy = true; setBtn("☁ Connecting…");
+      if(accessToken && Date.now() < tokenExpiry) doUpload();
+      else tokenClient.requestAccessToken({ prompt: accessToken ? "" : "consent" });
+    };
+  }
+
+  async function driveFetch(url, opts){
+    opts = opts || {}; opts.headers = opts.headers || {};
+    opts.headers["Authorization"] = "Bearer " + accessToken;
+    var r = await fetch(url, opts);
+    if(!r.ok){ var t = await r.text().catch(function(){return "";}); throw new Error(r.status + " " + t.slice(0,180)); }
+    return r;
+  }
+  async function ensureFolder(){
+    var q = "name='"+FOLDER+"' and mimeType='application/vnd.google-apps.folder' and trashed=false";
+    var r = await driveFetch("https://www.googleapis.com/drive/v3/files?spaces=drive&fields=files(id)&q="+encodeURIComponent(q));
+    var j = await r.json();
+    if(j.files && j.files.length) return j.files[0].id;
+    var cr = await driveFetch("https://www.googleapis.com/drive/v3/files?fields=id", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ name:FOLDER, mimeType:"application/vnd.google-apps.folder" })
+    });
+    return (await cr.json()).id;
+  }
+  async function doUpload(){
+    try{
+      setBtn("☁ Uploading…");
+      var blob = window.__odBackupBlob(); if(!blob) throw new Error("No records to back up");
+      var folderId = await ensureFolder();
+      var b64 = await blobToBase64(blob);
+      var d = new Date();
+      var stamp = d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate())+"-"+p2(d.getHours())+p2(d.getMinutes());
+      var meta = { name: "omega-dental-backup-"+stamp+".xlsx", parents:[folderId] };
+      var boundary = "omega"+Math.random().toString(16).slice(2);
+      var body =
+        "--"+boundary+"\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n"+JSON.stringify(meta)+
+        "\r\n--"+boundary+"\r\nContent-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\r\nContent-Transfer-Encoding: base64\r\n\r\n"+b64+
+        "\r\n--"+boundary+"--";
+      await driveFetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name",
+        { method:"POST", headers:{ "Content-Type":"multipart/related; boundary="+boundary }, body: body });
+      setBtn("✓ Saved to Drive");
+      setTimeout(function(){ setBtn("☁ Backup to Drive"); }, 3500);
+    }catch(e){
+      setBtn("☁ Backup to Drive");
+      alert("Drive backup failed: " + (e.message||e) +
+        "\n\nChecklist: (1) enable the Drive API, (2) add https://podenapata-sys.github.io to the OAuth client's Authorized JavaScript origins, (3) add yourself as an OAuth test user.");
+    }finally{ busy = false; }
+  }
+  init();
 })();
 </script>
 </body>
