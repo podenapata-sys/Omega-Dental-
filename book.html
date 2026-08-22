@@ -143,7 +143,19 @@
       const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js");
       const { getFirestore, collection, addDoc, serverTimestamp } =
         await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js");
-      const db = getFirestore(initializeApp(cfg));
+      const fbApp = initializeApp(cfg);
+      // App Check (only if a reCAPTCHA v3 site key is configured) — must come before Firestore
+      const acKey = (window.OMEGA_APPCHECK_KEY || "").trim();
+      if (acKey) {
+        try {
+          const acMod = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app-check.js");
+          acMod.initializeAppCheck(fbApp, {
+            provider: new acMod.ReCaptchaV3Provider(acKey),
+            isTokenAutoRefreshEnabled: true
+          });
+        } catch (e) { /* App Check unavailable — enforcement must be off */ }
+      }
+      const db = getFirestore(fbApp);
       window.omegaSaveBooking = async (data) => {
         try {
           await addDoc(collection(db, "bookings"), {

@@ -521,6 +521,19 @@ tbody tr:hover{background:#f8fcfb}
     return;
   }
   const app = appMod.initializeApp(cfg);
+  /* App Check must be initialised BEFORE Auth/Firestore. Only runs when a
+     reCAPTCHA v3 site key is configured; otherwise App Check must be set to
+     "Unenforce" in the Firebase console. Never blocks the dashboard. */
+  const acKey = (window.OMEGA_APPCHECK_KEY || "").trim();
+  if (acKey) {
+    try {
+      const acMod = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app-check.js");
+      acMod.initializeAppCheck(app, {
+        provider: new acMod.ReCaptchaV3Provider(acKey),
+        isTokenAutoRefreshEnabled: true
+      });
+    } catch (e) { /* App Check unavailable — enforcement must be off */ }
+  }
   db = fsMod.getFirestore(app);
   auth = authMod.getAuth(app);
 
@@ -604,7 +617,21 @@ tbody tr:hover{background:#f8fcfb}
     const em=$("fbEmail").value.trim(), pw=$("fbPass").value; $("fbMsg").textContent="";
     if(!em||!pw){ $("fbMsg").textContent="Enter email and password."; return; }
     try{ await authMod.signInWithEmailAndPassword(auth, em, pw); $("fbPass").value=""; }
-    catch(e){ $("fbMsg").textContent = "Sign-in failed: " + (e.code||e.message||""); }
+    catch(e){
+      var code = String(e.code||e.message||"");
+      if(code.indexOf("app-check") > -1){
+        $("fbMsg").innerHTML = "App Check is blocking sign-in (your password was never checked).<br>"
+          + "Fix: Firebase Console → Build → <b>App Check</b> → <b>APIs</b> tab → set "
+          + "<b>Authentication</b> and <b>Cloud Firestore</b> to <b>Unenforce</b>, wait a few minutes, then reload.";
+      } else if(code.indexOf("configuration-not-found") > -1){
+        $("fbMsg").innerHTML = "Email/Password sign-in isn't enabled yet.<br>"
+          + "Fix: Firebase Console → Build → <b>Authentication</b> → <b>Sign-in method</b> → enable <b>Email/Password</b>, then add your user under <b>Users</b>.";
+      } else if(code.indexOf("invalid-credential") > -1 || code.indexOf("wrong-password") > -1 || code.indexOf("user-not-found") > -1){
+        $("fbMsg").textContent = "Wrong email or password — check the user you created in Firebase → Authentication → Users.";
+      } else {
+        $("fbMsg").textContent = "Sign-in failed: " + code;
+      }
+    }
   };
 })();
 </script>

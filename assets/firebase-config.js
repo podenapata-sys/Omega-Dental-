@@ -11,6 +11,13 @@ window.OMEGA_FB = {
   appId: "1:1086374684130:web:49b1f449211609b273c5bb"
 };
 
+/* App Check reCAPTCHA v3 SITE KEY — only needed if App Check enforcement is ON.
+   This is NOT part of the Firebase config block above: get it from
+   Firebase Console -> Build -> App Check -> Apps -> register the web app with
+   reCAPTCHA v3. It looks like "6LcAbCdEf...". Leave empty to skip App Check
+   entirely (then App Check must be set to "Unenforce" in the console). */
+window.OMEGA_APPCHECK_KEY = "";
+
 /* Google OAuth Web client ID for the "Backup to Drive" button (drive.file scope only —
    the app can only touch files it creates). Leave empty to hide the Drive button. */
 window.OMEGA_GOOGLE_CLIENT_ID = "1086374684130-lbbk3nm75ekp9alubf211lvb162m0i3l.apps.googleusercontent.com";
