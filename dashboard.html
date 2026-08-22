@@ -209,6 +209,7 @@ tbody tr:hover{background:#f8fcfb}
     </div>
     <input type="date" id="dayPick">
     <input type="month" id="monthPick" style="display:none">
+    <input type="search" id="searchBox" placeholder="🔍 Search name, mobile or ID…" style="flex:1;min-width:150px;max-width:280px;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:var(--f);font-size:.88rem">
     <span class="spacer"></span>
     <button class="btn btn-o btn-sm" id="exportBtn">⬇ Download this view (Excel)</button>
   </div>
@@ -237,7 +238,7 @@ tbody tr:hover{background:#f8fcfb}
   "use strict";
   var LS_REC="od_records", LS_PIN="od_pin";
   var $=function(id){return document.getElementById(id);};
-  var records=[], editId=null, view="today";
+  var records=[], editId=null, view="today", searchTerm="";
 
   /* ---------- helpers ---------- */
   function load(){ try{records=JSON.parse(localStorage.getItem(LS_REC)||"[]");}catch(e){records=[];} if(!Array.isArray(records))records=[]; }
@@ -332,8 +333,17 @@ tbody tr:hover{background:#f8fcfb}
     if(view==="month"){ return (r.date||"").slice(0,7)===($("monthPick").value||todayStr().slice(0,7)); }
     return true;
   }
-  function filtered(){ return records.filter(inView).sort(function(a,b){ return (b.date+b._id).localeCompare(a.date+a._id); }); }
+  function filtered(){
+    var q=(searchTerm||"").trim().toLowerCase();
+    var base = q ? records.slice() : records.filter(inView);  // searching spans all dates
+    if(q) base = base.filter(function(r){
+      return [r.name, r.mobile, r.id, r.service].join(" ").toLowerCase().indexOf(q) > -1;
+    });
+    return base.sort(function(a,b){ return (b.date+b._id).localeCompare(a.date+a._id); });
+  }
   function viewText(){
+    var q=(searchTerm||"").trim();
+    if(q) return 'search "'+q+'" (all dates)';
     if(view==="all") return "all records";
     if(view==="today") return ($("dayPick").value||todayStr());
     if(view==="week") return "this week (last 7 days)";
@@ -465,6 +475,7 @@ tbody tr:hover{background:#f8fcfb}
     $("importFile").addEventListener("change",function(){ if(this.files[0])importFile(this.files[0]); this.value=""; });
     $("dayPick").addEventListener("change",render);
     $("monthPick").addEventListener("change",render);
+    $("searchBox").addEventListener("input",function(){ searchTerm=this.value; render(); });
     document.querySelectorAll(".tab").forEach(function(t){
       t.addEventListener("click",function(){
         document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("active");});
