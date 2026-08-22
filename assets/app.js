@@ -968,6 +968,7 @@ function submitBooking(e){
   const url = `https://wa.me/${OMEGA.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`;
   const note = document.getElementById("bookSuccess");
   if(note){ note.textContent = t("f_success"); note.style.display="block"; }
+  try{ if(window.omegaSaveBooking) window.omegaSaveBooking(data); }catch(e){}
   window.open(url, "_blank");
 }
 

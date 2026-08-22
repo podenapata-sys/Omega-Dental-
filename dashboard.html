@@ -180,6 +180,25 @@ tbody tr:hover{background:#f8fcfb}
     <div class="stat due"><div class="n" id="s_due">৳0</div><div class="l">Outstanding due</div></div>
   </div>
 
+  <!-- WEBSITE BOOKINGS (live from Firebase) -->
+  <div class="panel" id="wbPanel" style="display:none">
+    <h3>🔔 Website Bookings <span class="badge" id="wbBadge" style="display:none">0</span>
+      <span class="spacer"></span>
+      <button class="btn btn-g btn-sm" id="wbNotify" style="display:none;width:auto">🔔 Enable phone alerts</button>
+    </h3>
+    <div id="wbConnect" style="display:none">
+      <p style="color:var(--muted);font-size:.86rem;margin:0 0 10px">Sign in with your Firebase owner login to load live website bookings.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <input id="fbEmail" type="email" placeholder="Owner email" autocomplete="username" style="flex:1;min-width:160px;padding:10px;border:1.5px solid var(--line);border-radius:10px;font-family:var(--f)">
+        <input id="fbPass" type="password" placeholder="Password" autocomplete="current-password" style="flex:1;min-width:140px;padding:10px;border:1.5px solid var(--line);border-radius:10px;font-family:var(--f)">
+        <button class="btn btn-p" id="fbLogin" style="width:auto">Connect</button>
+      </div>
+      <div id="fbMsg" style="color:var(--danger);font-size:.82rem;margin-top:6px"></div>
+    </div>
+    <div id="wbList"></div>
+    <div id="wbEmpty" style="color:var(--muted);font-size:.9rem;padding:6px 2px">No new website bookings right now.</div>
+  </div>
+
   <!-- TOOLBAR -->
   <div class="tools">
     <div class="tabs">
@@ -211,6 +230,7 @@ tbody tr:hover{background:#f8fcfb}
 </div>
 
 <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display:none">
+<script src="assets/firebase-config.js?v=1"></script>
 <script src="assets/vendor/xlsx.full.min.js" defer></script>
 <script>
 (function(){
@@ -425,6 +445,17 @@ tbody tr:hover{background:#f8fcfb}
     $("pinInput").addEventListener("keydown",function(e){ if(e.key==="Enter")tryUnlock(); });
     ["f_mobile","f_total","f_paid"].forEach(function(k){ $(k).addEventListener("input",recalc); });
     $("f_service").addEventListener("change",onServiceChange);
+    // let the Firebase module add a website booking straight into local records
+    window.__odImportBooking = function(b){
+      var rec = {
+        _id: Date.now()+"-"+Math.floor(Math.random()*1e6),
+        date: (b.date||todayStr()), mobile: (b.phone||""), id: cid(b.phone||""),
+        name: (b.name||""), service: (b.service||""),
+        total: 0, paid: 0, next: (b.date||"")
+      };
+      records.push(rec); save(); render();
+      return rec.id;
+    };
     $("saveBtn").addEventListener("click",saveRecord);
     $("cancelBtn").addEventListener("click",clearForm);
     $("lockBtn").addEventListener("click",lock);
@@ -448,6 +479,113 @@ tbody tr:hover{background:#f8fcfb}
       if(b.dataset.edit)editRow(b.dataset.edit); else delRow(b.dataset.del);
     });
   });
+})();
+</script>
+<script type="module">
+/* Live website bookings + alerts (Firebase). Isolated from the classic script above:
+   if Firebase is unconfigured or blocked, the panel stays hidden and the rest of the
+   dashboard is unaffected. */
+(async () => {
+  const cfg = window.OMEGA_FB;
+  if (!cfg || !cfg.apiKey) return;                 // not configured → keep panel hidden
+  const $ = (id) => document.getElementById(id);
+  const panel = $("wbPanel"); if (panel) panel.style.display = "block";
+
+  let appMod, fsMod, authMod, db, auth;
+  try {
+    appMod  = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js");
+    fsMod   = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js");
+    authMod = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js");
+  } catch (e) {
+    $("wbEmpty").textContent = "Couldn't load Firebase (offline?). New bookings still arrive by WhatsApp.";
+    return;
+  }
+  const app = appMod.initializeApp(cfg);
+  db = fsMod.getFirestore(app);
+  auth = authMod.getAuth(app);
+
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+  function beep(){
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+      const ac = new AC(), o = ac.createOscillator(), g = ac.createGain();
+      o.type="sine"; o.frequency.value=880; o.connect(g); g.connect(ac.destination);
+      g.gain.setValueAtTime(0.001, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.25, ac.currentTime+0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+0.4);
+      o.start(); o.stop(ac.currentTime+0.42);
+    }catch(e){}
+  }
+  function notify(title, body){
+    try{ if("Notification" in window && Notification.permission==="granted")
+      new Notification(title, { body: body, icon: "assets/mark-square.png?v=1" }); }catch(e){}
+  }
+  const notifyBtn = $("wbNotify");
+  if("Notification" in window && Notification.permission!=="granted"){
+    notifyBtn.style.display="inline-block";
+    notifyBtn.onclick = () => Notification.requestPermission().then(p=>{ if(p==="granted") notifyBtn.style.display="none"; });
+  }
+
+  const current = new Map();
+  let seeded = false;
+
+  async function markDone(id){
+    try{ await fsMod.updateDoc(fsMod.doc(db,"bookings",id), {status:"done"}); }
+    catch(e){ alert("Couldn't update — check your connection."); }
+  }
+  function render(docs){
+    const list = $("wbList"); let html="", open=0;
+    docs.forEach(d => {
+      const b = d.data(); if(b.status==="done") return; open++;
+      html += "<div style='border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:#fff'>"
+        + "<div style='display:flex;gap:8px;flex-wrap:wrap;align-items:center'>"
+          + "<b style='color:var(--navy)'>"+esc(b.name||"—")+"</b>"
+          + "<span class='badge'>"+esc(b.phone||"")+"</span>"
+          + (b.emergency?"<span class='badge' style='background:#fde8e8;color:#c0392b'>EMERGENCY</span>":"")
+          + "<span class='spacer'></span>"
+          + "<button class='btn btn-p btn-sm' data-add='"+d.id+"' style='width:auto'>➕ Add to records</button>"
+          + "<button class='btn btn-g btn-sm' data-done='"+d.id+"' style='width:auto'>✓ Handled</button>"
+        + "</div>"
+        + "<div style='color:var(--muted);font-size:.85rem;margin-top:6px'>"
+          + esc(b.service||"—") + (b.date?(" · "+esc(b.date)):"") + (b.time?(" "+esc(b.time)):"")
+          + (b.note?(" · “"+esc(b.note)+"”"):"")
+        + "</div></div>";
+    });
+    list.innerHTML = html;
+    $("wbEmpty").style.display = open?"none":"block";
+    $("wbBadge").textContent = open; $("wbBadge").style.display = open?"inline-block":"none";
+    list.querySelectorAll("[data-add]").forEach(btn=>btn.onclick=async()=>{
+      const snap = current.get(btn.dataset.add); if(!snap) return;
+      if(window.__odImportBooking) window.__odImportBooking(snap);
+      await markDone(btn.dataset.add);
+    });
+    list.querySelectorAll("[data-done]").forEach(btn=>btn.onclick=()=>markDone(btn.dataset.done));
+  }
+
+  function subscribe(){
+    const q = fsMod.query(fsMod.collection(db,"bookings"), fsMod.orderBy("createdAt","desc"), fsMod.limit(50));
+    fsMod.onSnapshot(q, (snap)=>{
+      if(seeded){
+        snap.docChanges().forEach(ch=>{
+          if(ch.type==="added"){ const b=ch.doc.data(); if(b.status!=="done"){ beep(); notify("New appointment booked", (b.name||"")+" · "+(b.service||"")); } }
+        });
+      }
+      current.clear(); const docs=[];
+      snap.forEach(d=>{ const b=d.data(); current.set(d.id, {name:b.name,phone:b.phone,service:b.service,date:b.date,time:b.time}); docs.push(d); });
+      render(docs); seeded = true;
+    }, ()=>{ $("wbEmpty").textContent = "Can't read bookings yet — make sure Email/Password sign-in is enabled and the Firestore rules are applied."; $("wbEmpty").style.display="block"; });
+  }
+
+  authMod.onAuthStateChanged(auth, (user)=>{
+    if(user){ $("wbConnect").style.display="none"; subscribe(); }
+    else { $("wbConnect").style.display="block"; $("wbList").innerHTML=""; $("wbEmpty").style.display="none"; }
+  });
+  $("fbLogin").onclick = async ()=>{
+    const em=$("fbEmail").value.trim(), pw=$("fbPass").value; $("fbMsg").textContent="";
+    if(!em||!pw){ $("fbMsg").textContent="Enter email and password."; return; }
+    try{ await authMod.signInWithEmailAndPassword(auth, em, pw); $("fbPass").value=""; }
+    catch(e){ $("fbMsg").textContent = "Sign-in failed: " + (e.code||e.message||""); }
+  };
 })();
 </script>
 </body>
