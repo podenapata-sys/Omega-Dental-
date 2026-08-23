@@ -211,7 +211,10 @@ function renderGallery(lang){
     html+='<span class="gal-more">&#8943;</span>';
     html+='</div>';
     html+='<div class="gal-photo" data-idx="'+i+'" title="'+caption+'">';
-    html+='<img src="'+p.src+'" alt="'+caption+'" loading="lazy" onerror="this.closest(\'.gal-item\').style.display=\'none\'">';
+    /* grid cells are ~300px, so load the 640px copy; the lightbox still opens the
+       full-size image. Falls back to the full file if no copy exists. */
+    var thumbSrc=p.src.replace('/assets/services/','/assets/services/cards/');
+    html+='<img src="'+thumbSrc+'" alt="'+caption+'" loading="lazy" decoding="async" data-full="'+p.src+'" onerror="if(this.dataset.fb){this.closest(\'.gal-item\').style.display=\'none\'}else{this.dataset.fb=1;this.src=this.dataset.full}">';
     html+='<span class="gal-wm" aria-hidden="true"><img src="../assets/mark-square.png?v=1" alt=""><span class="gal-wm-tx">OMEGA<b>DENTAL</b></span></span>';
     html+='</div>';
     html+='<div class="gal-actions">';

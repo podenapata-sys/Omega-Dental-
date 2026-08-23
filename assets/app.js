@@ -515,13 +515,19 @@ function renderServices(){
     const common = LANG==="bn"?s.cn:s.cne;
     const sub = (s.sub||[]).map(o=>`<a class="svc-sub-chip" href="services/${o.slug}.html">${LANG==="bn"?o.bn:o.en}</a>`).join("");
     const dur = s.dur ? `<span class="svc-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${LANG==="bn"?s.durbn:s.dur}</span>` : "";
+    /* Cards show a 640px copy (art box is ~330px) and the thumb strip a 132px copy
+       (it renders at 44x34) — a fraction of the full-size files, which are still
+       used for the lightbox and when a thumb is clicked. Each falls back to the
+       full-size image, then to the SVG, so nothing breaks if a copy is missing. */
+    const card = (n) => `assets/services/cards/${n}.jpg?v=2`;
+    const fbFull = (n) => `this.onerror=null;this.src='assets/services/${n}.jpg?v=2'`;
     const media = s.vid
-      ? `<img class="svc-static" src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"><video class="svc-anim" autoplay muted loop playsinline preload="none"><source src="assets/services/${s.vid}.mp4?v=2" type="video/mp4"></video>`
+      ? `<img class="svc-static" src="${card(s.img)}" onerror="${fbFull(s.img)}" alt="${name}" loading="lazy" decoding="async"><video class="svc-anim" autoplay muted loop playsinline preload="none"><source src="assets/services/${s.vid}.mp4?v=2" type="video/mp4"></video>`
       : s.img2
-        ? `<img class="svc-static" src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy"><img class="svc-anim svc-anim-img" src="assets/services/${s.img2}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img2}.svg?v=3'" alt="${name}" loading="lazy">`
-        : `<img src="assets/services/${s.img}.jpg?v=2" onerror="this.onerror=null;this.src='assets/services/${s.img}.svg?v=3'" alt="${name}" loading="lazy">`;
+        ? `<img class="svc-static" src="${card(s.img)}" onerror="${fbFull(s.img)}" alt="${name}" loading="lazy" decoding="async"><img class="svc-anim svc-anim-img" src="${card(s.img2)}" onerror="${fbFull(s.img2)}" alt="${name}" loading="lazy" decoding="async">`
+        : `<img src="${card(s.img)}" onerror="${fbFull(s.img)}" alt="${name}" loading="lazy" decoding="async">`;
     const galSrcs=[s.img,...(s.img2?[s.img2]:[]),...(s.gal||[])];
-    const galHtml=galSrcs.length>1?`<div class="svc-gal">${galSrcs.map((t,i)=>`<button class="sgal-thumb${i===0?' active':''}" type="button" data-src="assets/services/${t}.jpg?v=2"><img src="assets/services/${t}.jpg?v=2" alt="" loading="lazy" onerror="this.parentNode.style.display='none'"></button>`).join('')}</div>`:'';
+    const galHtml=galSrcs.length>1?`<div class="svc-gal">${galSrcs.map((t,i)=>`<button class="sgal-thumb${i===0?' active':''}" type="button" data-src="assets/services/${t}.jpg?v=2"><img src="assets/services/thumbs/${t}.jpg?v=2" alt="" loading="lazy" decoding="async" onerror="if(this.dataset.fb){this.parentNode.style.display='none'}else{this.dataset.fb=1;this.src='assets/services/${t}.jpg?v=2'}"></button>`).join('')}</div>`:'';
     return `
     <article class="svc-card${s.vid||s.img2?' svc-has-vid':''}">
       <a class="svc-img" href="${href}" aria-label="${name}">${media}</a>${galHtml}
