@@ -317,7 +317,7 @@ function buildTabs(s){
   <div class="tab-panel" data-tab="branches">
     <div class="ci-row"><div class="ci-ic">${ico("pin")}</div><div><strong ${bl("Address","ঠিকানা")}></strong><span ${bl("1252/3, East Monipur, Metro Pillar-267 (W), West Kazipara, Begum Rokeya Soroni, Dhaka","১২৫২/৩, পূর্ব মনিপুর, মেট্রো পিলার-২৬৭(ওয়াই), পশ্চিম কাজীপাড়া, বেগম রোকেয়া সরণি, ঢাকা")}></span></div></div>
     <div class="ci-row"><div class="ci-ic">${ico("clockw")}</div><div><strong ${bl("Hours","সময়")}></strong><span ${bl("Saturday – Thursday: 10:00 AM – 9:30 PM · Friday: 11:00 AM – 9:30 PM","শনিবার – বৃহস্পতিবার: সকাল ১০টা – রাত ৯:৩০ · শুক্রবার: দুপুর ১১টা – রাত ৯:৩০")}></span></div></div>
-    <div class="ci-row"><div class="ci-ic">${ico("phone")}</div><div><strong ${bl("Phone","ফোন")}></strong><span>01706-516868 · WhatsApp 01706-516868</span></div></div>
+    <div class="ci-row"><div class="ci-ic">${ico("phone")}</div><div><strong ${bl("Phone","ফোন")}></strong><span>01713-241670 · WhatsApp 01706-516868</span></div></div>
     <a class="btn btn-primary" style="margin-top:14px" href="https://www.google.com/maps/dir/?api=1&destination=23.8018173%2C90.370624" target="_blank" rel="noopener" ${bl("Get Directions","দিকনির্দেশ নিন")}></a>
   </div>
 
@@ -339,7 +339,7 @@ function page(s){
         <div class="fact"><span class="fact-ic">${ico(FACT_KEYS[i])}</span>
           <div><strong ${bl(f[0],s.bn.facts[i][0])}></strong><span ${bl(f[1],s.bn.facts[i][1])}></span></div></div>`).join("");
   const steps = s.en.process.map((_,i)=>`<article class="step-card"><span class="step-num">${i+1}</span><h3 ${bl(s.en.process[i],s.bn.process[i])}></h3></article>`).join("");
-  const jsonld=`{"@context":"https://schema.org","@type":"MedicalProcedure","name":"${esc(s.en.name)}","procedureType":"Dentistry","description":"${esc(s.en.meta)}","url":"${url}","provider":{"@type":"Dentist","name":"Omega Dental","telephone":"+8801706516868","address":{"@type":"PostalAddress","streetAddress":"1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni","addressLocality":"Dhaka","addressCountry":"BD"},"geo":{"@type":"GeoCoordinates","latitude":23.8018173,"longitude":90.370624}}}`;
+  const jsonld=`{"@context":"https://schema.org","@type":"MedicalProcedure","name":"${esc(s.en.name)}","procedureType":"Dentistry","description":"${esc(s.en.meta)}","url":"${url}","provider":{"@type":"Dentist","name":"Omega Dental","telephone":"+8801713241670","address":{"@type":"PostalAddress","streetAddress":"1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni","addressLocality":"Dhaka","addressCountry":"BD"},"geo":{"@type":"GeoCoordinates","latitude":23.8018173,"longitude":90.370624}}}`;
   return `<!DOCTYPE html>
 <html lang="en" data-lang="en">
 <head>
@@ -408,14 +408,14 @@ ${buildTabs(s)}
   <div><h2 ${bl("Ready to book your "+s.en.name+"?","আপনার "+s.bn.name+" বুক করতে প্রস্তুত?")}></h2>
     <p ${bl("Same-day appointments available. Call us or message on WhatsApp and our team will help you right away.","একই দিনের অ্যাপয়েন্টমেন্ট আছে। কল করুন বা হোয়াটসঅ্যাপে মেসেজ দিন, আমাদের টিম সাথে সাথে সাহায্য করবে।")}></p></div>
   <div class="emerg-cta">
-    <a class="btn btn-call" href="tel:+8801706516868">${ico("phone",18)} <span ${bl("Call Now","কল করুন")}></span></a>
+    <a class="btn btn-call" href="tel:+8801713241670">${ico("phone",18)} <span ${bl("Call Now","কল করুন")}></span></a>
     <a class="btn btn-wa" href="https://wa.me/8801706516868" target="_blank" rel="noopener">${ico("chat",18)} <span ${bl("WhatsApp","হোয়াটসঅ্যাপ")}></span></a>
   </div>
 </div></section>
 
 <footer class="footer"><div class="container" style="text-align:center">
   <div class="foot-logo" style="justify-content:center"><span class="logo-anim"><img src="../assets/mark.png?v=2" alt="Omega Dental" style="height:50px"></span><span style="font-family:var(--f-head);font-weight:800;color:#fff;font-size:1.25rem">OMEGA<small style="display:block;font-size:.62rem;letter-spacing:.34em;color:var(--orange)">DENTAL</small></span></div>
-  <p style="color:#a9c2cd;margin:14px 0">1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni, Dhaka · 01706-516868</p>
+  <p style="color:#a9c2cd;margin:14px 0">1252/3, East Monipur, West Kazipara, Begum Rokeya Soroni, Dhaka · 01713-241670</p>
   <a class="btn btn-primary" href="../treatments.html" ${bl("← All treatments","← সব চিকিৎসা")}></a>
   <div class="foot-bottom">© <span id="yr"></span> OMEGA DENTAL</div>
 </div></footer>

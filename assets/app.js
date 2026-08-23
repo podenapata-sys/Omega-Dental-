@@ -19,6 +19,7 @@ const OMEGA = {
    perTooth => quantity selector shown.                       */
 // Ordered to mirror the homepage service-menu serial.
 const CATS = {
+  consult:   { en: "Consultation",                 bn: "কনসালটেশন" },
   general:   { en: "Scaling, Polishing & Filling", bn: "স্কেলিং, পলিশিং ও ফিলিং" },
   cosmetic:  { en: "Veneer & Cosmetic",     bn: "ভিনেয়ার ও কসমেটিক" },
   endo:      { en: "Root Canal (Endodontics)", bn: "রুট ক্যানেল (এন্ডোডন্টিক্স)" },
@@ -31,6 +32,8 @@ const CATS = {
 };
 
 const PRICES = [
+  // 0. Consultation
+  { c:"consult", n:"Consultation", nb:"কনসালটেশন", note:"per consultation", noteb:"প্রতি কনসালটেশন", min:500, max:500 },
   // 1. Scaling & Polishing  +  4. Tooth Filling
   { c:"general", slug:"scaling-polishing", n:"Scaling", nb:"স্কেলিং", min:1500, max:2500 },
   { c:"general", slug:"scaling-polishing", n:"Polishing", nb:"পলিশিং", min:1000, max:1000 },
@@ -95,6 +98,7 @@ const PRICES = [
 
 /* ---------- Services (homepage grid) ---------- */
 const SERVICES = [
+  { icon:"🩺", img:"consultation", img2:"consultation-2", pr:"৳500", dur:"15–20 min", durbn:"১৫–২০ মিনিট", en:"Consultation", bn:"কনসালটেশন", cne:"Doctor visit", cn:"ডাক্তার দেখানো", de:"Full check-up with the dentist and a clear treatment plan — ৳500 per consultation.", db:"ডাক্তারের সম্পূর্ণ চেকআপ ও পরিষ্কার চিকিৎসা পরিকল্পনা — প্রতি কনসালটেশন ৫০০ টাকা।" },
   { icon:"🦷", img:"scaling-polishing", vid:"scaling-animation-wm", slug:"scaling-polishing", pr:"৳1,500–2,500", dur:"30–40 min", durbn:"৩০–৪০ মিনিট", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।", gal:["scaling-ba","scaling-stained","scaling-clean"] },
   { icon:"💎", img:"veneers-before", img2:"veneers-after", slug:"veneers", pr:"৳3,500–7,500", per:true, dur:"1 Session", durbn:"১ সিটিং", en:"Composite Veneer", bn:"কম্পোজিট ভিনেয়ার", cne:"Tooth gap treatment", cn:"দাঁতের ফাঁক চিকিৎসা", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।", gal:["veneers","cosmetic-veneers"],
     sub:[{en:"General",bn:"সাধারণ",slug:"veneers"},{en:"Advanced",bn:"অ্যাডভান্স",slug:"veneers"}] },
