@@ -98,7 +98,6 @@ const PRICES = [
 
 /* ---------- Services (homepage grid) ---------- */
 const SERVICES = [
-  { icon:"🩺", img:"consultation", img2:"consultation-2", pr:"৳500", dur:"15–20 min", durbn:"১৫–২০ মিনিট", en:"Consultation", bn:"কনসালটেশন", cne:"Doctor visit", cn:"ডাক্তার দেখানো", de:"Full check-up with the dentist and a clear treatment plan — ৳500 per consultation.", db:"ডাক্তারের সম্পূর্ণ চেকআপ ও পরিষ্কার চিকিৎসা পরিকল্পনা — প্রতি কনসালটেশন ৫০০ টাকা।" },
   { icon:"🦷", img:"scaling-polishing", vid:"scaling-animation-wm", slug:"scaling-polishing", pr:"৳1,500–2,500", dur:"30–40 min", durbn:"৩০–৪০ মিনিট", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং", cne:"Teeth cleaning", cn:"দাঁত পরিষ্কার", de:"Professional cleaning to remove plaque, tartar and stains for healthy gums.", db:"দাঁতের ময়লা, পাথর ও দাগ তুলে মাড়ি সুস্থ রাখার পরিষ্কার।", gal:["scaling-ba","scaling-stained","scaling-clean"] },
   { icon:"💎", img:"veneers-before", img2:"veneers-after", slug:"veneers", pr:"৳3,500–7,500", per:true, dur:"1 Session", durbn:"১ সিটিং", en:"Composite Veneer", bn:"কম্পোজিট ভিনেয়ার", cne:"Tooth gap treatment", cn:"দাঁতের ফাঁক চিকিৎসা", de:"Composite veneer to reshape and perfect your front teeth.", db:"সামনের দাঁত সুন্দর ও নিখুঁত করতে পাতলা আবরণ।", gal:["veneers","cosmetic-veneers"],
     sub:[{en:"General",bn:"সাধারণ",slug:"veneers"},{en:"Advanced",bn:"অ্যাডভান্স",slug:"veneers"}] },
@@ -118,6 +117,7 @@ const SERVICES = [
   { icon:"📏", img:"braces-aligners", img2:"braces-treatment", slug:"braces-aligners", pr:"From ৳25,000", dur:"12–24 months", durbn:"১২–২৪ মাস", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", cne:"Teeth straightening", cn:"দাঁত সোজা করা (তার/ব্রেস)", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত ও কামড় ঠিক করতে তার (ব্রেস) লাগিয়ে চিকিৎসা।", gal:["braces-aligners"],
     sub:[ {en:"Braces",bn:"ব্রেসেস",slug:"braces-aligners"} ] },
   { icon:"😁", img:"aligner", img2:"aligner-tray", slug:"aligners", pr:"From ৳1,50,000", dur:"6–18 months", durbn:"৬–১৮ মাস", en:"Aligner", bn:"অ্যালাইনার", cne:"Invisible aligner", cn:"অদৃশ্য তার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।", gal:["aligner"] },
+  { icon:"🩺", img:"consultation", img2:"consultation-2", pr:"৳500", dur:"15–20 min", durbn:"১৫–২০ মিনিট", en:"Consultation", bn:"কনসালটেশন", cne:"Doctor visit", cn:"ডাক্তার দেখানো", de:"Full check-up with the dentist and a clear treatment plan — ৳500 per consultation.", db:"ডাক্তারের সম্পূর্ণ চেকআপ ও পরিষ্কার চিকিৎসা পরিকল্পনা — প্রতি কনসালটেশন ৫০০ টাকা।" },
 ];
 
 /* ---------- i18n strings ---------- */
