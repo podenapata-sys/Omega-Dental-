@@ -66,10 +66,10 @@ h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
 .fld .ro{background:#f2f7f6;font-weight:700;color:var(--teal-dd);font-family:var(--fh)}
 .form-actions{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
 /* ---- stats ---- */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;
   box-shadow:0 12px 30px -18px rgba(19,41,78,.28)}
-.stat .n{font-family:var(--fh);font-weight:800;font-size:1.8rem;line-height:1.1}
+.stat .n{font-family:var(--fh);font-weight:800;font-size:1.8rem;line-height:1.1;overflow-wrap:anywhere}
 .stat .l{font-size:.78rem;color:var(--muted);margin-top:4px;font-weight:600}
 .stat.blue .n{color:var(--blue)} .stat.teal .n{color:var(--teal-dd)}
 .stat.ok .n{color:var(--ok)} .stat.due .n{color:var(--due)}
@@ -86,6 +86,10 @@ h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
   box-shadow:0 12px 30px -18px rgba(19,41,78,.28)}
 table{border-collapse:collapse;width:100%;min-width:820px}
 th,td{padding:11px 12px;text-align:left;font-size:.86rem;border-bottom:1px solid var(--line);white-space:nowrap}
+/* Name + Service are the long columns; letting just those wrap keeps the 10-column
+   table inside its container instead of forcing a horizontal scrollbar that clipped
+   the Delete button at ~1280px. */
+th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5){white-space:normal;min-width:9ch}
 th{background:#f6faf9;font-family:var(--fh);font-weight:700;color:var(--navy);font-size:.74rem;
   text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
@@ -98,8 +102,37 @@ tbody tr:hover{background:#f8fcfb}
 .empty{padding:40px;text-align:center;color:var(--muted)}
 .badge{display:inline-block;background:#eaf6f2;color:var(--teal-dd);font-weight:700;font-size:.78rem;
   padding:3px 9px;border-radius:999px}
-@media(max-width:820px){.form-grid{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:820px){.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.form-grid{grid-template-columns:1fr}.top h1{display:none}}
+
+/* ---- phones: the 10-column table becomes one card per patient, so the Edit/Delete
+   buttons are reachable without scrolling 9 columns sideways ---- */
+@media(max-width:620px){
+  .tablewrap{overflow-x:visible;background:none;border:none;box-shadow:none;border-radius:0}
+  table{min-width:0}
+  thead{display:none}
+  tbody tr{display:block;position:relative;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r);box-shadow:0 10px 24px -18px rgba(19,41,78,.28);
+    padding:52px 13px 6px;margin-bottom:12px}
+  tbody tr:hover{background:var(--card)}
+  tbody td{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+    padding:8px 0;white-space:normal;font-size:.95rem;text-align:right;
+    border-bottom:1px dashed var(--line)}
+  tbody td:last-child{border-bottom:none}
+  tbody td::before{content:attr(data-label);flex:0 0 auto;text-align:left;
+    font-family:var(--fh);font-weight:700;font-size:.71rem;text-transform:uppercase;
+    letter-spacing:.04em;color:var(--muted)}
+  tbody td.actions{position:absolute;top:8px;right:10px;left:10px;padding:0;border:none;
+    display:flex;justify-content:flex-end;gap:8px}
+  tbody td.actions::before{content:none}
+  .rowbtn{min-width:44px;min-height:44px;display:inline-flex;align-items:center;
+    justify-content:center;font-size:1.15rem;background:#f2f7f9}
+  .stat{padding:14px}
+  .stat .n{font-size:1.45rem}
+  .top{flex-wrap:wrap;gap:8px}
+  .tools{flex-wrap:wrap;gap:8px}
+  #searchBox{flex:1 1 100%;min-width:0}
+}
 </style>
 </head>
 <body>
@@ -247,7 +280,8 @@ tbody tr:hover{background:#f8fcfb}
   function digits(s){ return (s||"").replace(/\D/g,""); }
   function cid(mobile){ var d=digits(mobile); return d.length>=4 ? "OD-"+d.slice(-4) : (d?"OD-"+d:"OD-????"); }
   function money(n){ n=Number(n)||0; return "৳"+n.toLocaleString("en-IN"); }
-  function todayStr(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function fmtLocal(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function todayStr(){ return fmtLocal(new Date()); }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
 
   /* ---------- PIN gate ---------- */
@@ -297,6 +331,11 @@ tbody tr:hover{background:#f8fcfb}
   function saveRecord(){
     var mobile=$("f_mobile").value.trim();
     if(digits(mobile).length<4){ flash("Enter a valid mobile number (for the Customer ID).",true); $("f_mobile").focus(); return; }
+    var totalV=Number($("f_total").value)||0, paidV=Number($("f_paid").value)||0;
+    if(totalV<0 || paidV<0){ flash("Amounts cannot be negative.",true); $("f_total").focus(); return; }
+    /* A negative due would render as paid-up and cancel out other patients' dues
+       in the Due stat, so block it rather than storing it. */
+    if(paidV>totalV){ flash("Paid ("+money(paidV)+") is more than Total ("+money(totalV)+").",true); $("f_paid").focus(); return; }
     var rec={
       _id: editId || (Date.now()+"-"+Math.floor(performance.now()%100000)),
       date: $("f_date").value || todayStr(),
@@ -326,7 +365,10 @@ tbody tr:hover{background:#f8fcfb}
   }
 
   /* ---------- filtering + render ---------- */
-  function weekStart(){ var d=new Date(); var day=d.getDay(); /* 0=Sun..6=Sat; clinic week ~ last 7 days */ d.setDate(d.getDate()-6); return d.toISOString().slice(0,10); }
+  /* Last 7 days ending today, inclusive. Must be built with the SAME local-date
+     formatter as todayStr() and the stored r.date - toISOString() is UTC and in
+     Dhaka (UTC+6) slipped the boundary a day back before 06:00, giving 8 days. */
+  function weekStart(){ var d=new Date(); d.setDate(d.getDate()-6); return fmtLocal(d); }
   function inView(r){
     if(view==="all") return true;
     if(view==="today") return r.date===($("dayPick").value||todayStr());
@@ -342,13 +384,14 @@ tbody tr:hover{background:#f8fcfb}
     });
     return base.sort(function(a,b){ return (b.date+b._id).localeCompare(a.date+a._id); });
   }
-  function viewText(){
+  function viewText(){ /* every branch returns; final return is the safety net */
     var q=(searchTerm||"").trim();
     if(q) return 'search "'+q+'" (all dates)';
     if(view==="all") return "all records";
     if(view==="today") return ($("dayPick").value||todayStr());
     if(view==="week") return "this week (last 7 days)";
     if(view==="month") return ($("monthPick").value||todayStr().slice(0,7));
+    return "all records";
   }
   function render(){
     var rows=filtered(), tb=$("tbody"), html="";
@@ -357,18 +400,18 @@ tbody tr:hover{background:#f8fcfb}
       tot+=Number(r.total)||0; paid+=Number(r.paid)||0;
       var due=(Number(r.total)||0)-(Number(r.paid)||0);
       html+="<tr>"+
-        "<td>"+esc(r.date)+"</td>"+
-        "<td class='cid'>"+esc(r.id)+"</td>"+
-        "<td>"+esc(r.mobile)+"</td>"+
-        "<td>"+esc(r.name||"—")+"</td>"+
-        "<td>"+esc(r.service||"—")+"</td>"+
-        "<td class='num'>"+money(r.total)+"</td>"+
-        "<td class='num'>"+money(r.paid)+"</td>"+
-        "<td class='num "+(due>0?"due-pos":"due-zero")+"'>"+money(due)+"</td>"+
-        "<td>"+(r.next?esc(r.next):"—")+"</td>"+
-        "<td style='text-align:right;white-space:nowrap'>"+
-          "<button class='rowbtn' data-edit='"+r._id+"' title='Edit'>✏️</button>"+
-          "<button class='rowbtn' data-del='"+r._id+"' title='Delete'>🗑️</button></td>"+
+        "<td data-label='Date'>"+esc(r.date)+"</td>"+
+        "<td data-label='Customer ID' class='cid'>"+esc(r.id)+"</td>"+
+        "<td data-label='Mobile'>"+esc(r.mobile)+"</td>"+
+        "<td data-label='Name'>"+esc(r.name||"—")+"</td>"+
+        "<td data-label='Service'>"+esc(r.service||"—")+"</td>"+
+        "<td data-label='Total' class='num'>"+money(r.total)+"</td>"+
+        "<td data-label='Paid' class='num'>"+money(r.paid)+"</td>"+
+        "<td data-label='Due' class='num "+(due>0?"due-pos":"due-zero")+"'>"+money(due)+"</td>"+
+        "<td data-label='Next Appt.'>"+(r.next?esc(r.next):"—")+"</td>"+
+        "<td class='actions' style='text-align:right;white-space:nowrap'>"+
+          "<button class='rowbtn' data-edit='"+r._id+"' title='Edit' aria-label='Edit record'>✏️</button>"+
+          "<button class='rowbtn' data-del='"+r._id+"' title='Delete' aria-label='Delete record'>🗑️</button></td>"+
       "</tr>";
     });
     tb.innerHTML=html;
@@ -394,8 +437,13 @@ tbody tr:hover{background:#f8fcfb}
     data.push({}); data.push({"Service":"TOTAL","Total":t,"Paid":p,"Due":t-p});
     return XLSX.utils.json_to_sheet(data,{header:["Date","Customer ID","Mobile","Name","Service","Total","Paid","Due","Next Appointment"]});
   }
+  /* The SheetJS vendor script is deferred; if it fails to load the identifier is
+     undeclared, so a bare `!XLSX` throws ReferenceError instead of warning. */
+  var XLSX_MSG="Excel engine is not loaded — check your connection and reload the page.";
+  function xlsxReady(){ return typeof XLSX !== "undefined" && XLSX; }
+
   function download(rs,name,sheetName){
-    if(!XLSX){ alert("Excel engine still loading — try again in a moment."); return; }
+    if(!xlsxReady()){ alert(XLSX_MSG); return; }
     if(!rs.length){ alert("Nothing to export in this view."); return; }
     var wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, makeSheetWithTotals(rs), (sheetName||"Records").slice(0,31));
@@ -407,6 +455,7 @@ tbody tr:hover{background:#f8fcfb}
     download(rs,"omega-dental-"+tag+".xlsx","Records "+tag);
   }
   function buildBackupWorkbook(){
+    if(!xlsxReady()) return null;
     var wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, makeSheetWithTotals(records.slice().sort(function(a,b){return a.date.localeCompare(b.date);})), "All records");
     var byMonth={};
@@ -416,38 +465,73 @@ tbody tr:hover{background:#f8fcfb}
     return wb;
   }
   function backupAll(){
+    if(!xlsxReady()){ alert(XLSX_MSG); return; }
     if(!records.length){ alert("No records to back up yet."); return; }
     XLSX.writeFile(buildBackupWorkbook(), "omega-dental-backup-"+todayStr()+".xlsx");
   }
   /* expose the .xlsx bytes so the "Backup to Drive" module can upload them */
   window.__odBackupBlob = function(){
+    if(!xlsxReady()) return null;
     if(!records.length) return null;
     var out = XLSX.write(buildBackupWorkbook(), {type:"array", bookType:"xlsx"});
     return new Blob([out], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
   };
+  /* Identity of a visit, used to skip rows already present so re-importing the
+     same backup does not duplicate every record. */
+  function rowKey(r){
+    return [String(r.date||"").trim(), digits(r.mobile||""),
+            Number(r.total)||0, Number(r.paid)||0].join("|");
+  }
+
   function importFile(file){
+    if(!xlsxReady()){ alert(XLSX_MSG); return; }
     var reader=new FileReader();
     reader.onload=function(e){
       try{
         var wb=XLSX.read(e.target.result,{type:"array"});
         var ws=wb.Sheets[wb.SheetNames[0]];
         var rows=XLSX.utils.sheet_to_json(ws,{defval:""});
-        var added=0;
+
+        var incoming=[], seq=0;
         rows.forEach(function(row){
           var mobile=String(row["Mobile"]||row["mobile"]||"").trim();
           var date=String(row["Date"]||row["date"]||"").trim();
           if(!mobile && !date) return; // skip totals/blank rows
           if(String(row["Service"]||"").toUpperCase()==="TOTAL") return;
-          records.push({
-            _id: Date.now()+"-"+Math.floor(Math.random()*1e6),
+          incoming.push({
+            _id: Date.now()+"-"+(seq++)+"-"+Math.floor(Math.random()*1e6),
             date: date||todayStr(), mobile:mobile, id: cid(mobile),
             name:String(row["Name"]||"").trim(), service:String(row["Service"]||"").trim(),
             total:Number(row["Total"])||0, paid:Number(row["Paid"])||0,
             next:String(row["Next Appointment"]||row["Next Appt."]||"").trim()
           });
-          added++;
         });
-        save(); render(); alert("Imported "+added+" record(s).");
+
+        if(!incoming.length){ alert("No records found in that file."); return; }
+
+        var replace=false;
+        if(records.length){
+          replace = confirm(
+            "Import "+incoming.length+" record(s).\n\n"+
+            "OK = REPLACE — delete the "+records.length+" record(s) on this device first.\n"+
+            "Cancel = MERGE — keep them and add only records that are not already here."
+          );
+        }
+
+        var added=0, skipped=0;
+        if(replace){
+          records = incoming; added = incoming.length;
+        }else{
+          var seen={};
+          records.forEach(function(r){ seen[rowKey(r)]=1; });
+          incoming.forEach(function(r){
+            var k=rowKey(r);
+            if(seen[k]){ skipped++; return; }
+            seen[k]=1; records.push(r); added++;
+          });
+        }
+        save(); render();
+        alert("Imported "+added+" record(s)."+(skipped?" Skipped "+skipped+" already on this device.":""));
       }catch(err){ alert("Could not read that file. Use an Excel/CSV backup exported from this dashboard."); }
     };
     reader.readAsArrayBuffer(file);
@@ -468,7 +552,9 @@ tbody tr:hover{background:#f8fcfb}
     window.__odImportBooking = function(b){
       var rec = {
         _id: Date.now()+"-"+Math.floor(Math.random()*1e6),
-        date: (b.date||todayStr()), mobile: (b.phone||""), id: cid(b.phone||""),
+        /* b.date is the date the patient REQUESTED, so it is the upcoming
+           appointment - not the day this record was taken. */
+        date: todayStr(), mobile: (b.phone||""), id: cid(b.phone||""),
         name: (b.name||""), service: (b.service||""),
         total: 0, paid: 0, next: (b.date||"")
       };

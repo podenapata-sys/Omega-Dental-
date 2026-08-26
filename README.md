@@ -39,3 +39,9 @@ assets/logo.svg     # placeholder logo (replace with real PNG/SVG)
 - **Logo:** replace `assets/logo.svg` with the real Omega Dental logo.
 - **Before/After & clinic photos:** swap the SVG placeholders for real images.
 - **Contact details:** the `OMEGA` constant at the top of `assets/app.js`.
+
+## Admin dashboard
+
+A private page for recording visits, tracking payments and exporting to Excel — opened by
+tapping the logo 5 times. See **[DASHBOARD.md](DASHBOARD.md)** for how to use it, the
+backup routine, and the Firebase / Google Drive setup.
