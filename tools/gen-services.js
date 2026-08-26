@@ -38,7 +38,7 @@ const FACT_KEYS = ["checkc","clock","award","shield"]; // procedure, visits, suc
 const THUMB_POOL = ["teeth-whitening","scaling-polishing","tooth-fillings","crowns-bridges","dental-implants","braces-aligners","dentures","root-canal-rct"];
 
 const SERVICES = [
-  { slug:"root-canal", icon:"🌱", img:"root-canal-rct", gallery:["root-canal-rct","root-canal-steps","root-canal-grid","root-canal-xray"],
+  { slug:"root-canal", icon:"🌱", img:"root-canal-rct", gallery:["root-canal-rct","root-canal-steps","root-canal-grid","root-canal-xray","root-canal-case-1"],
     en:{ name:"Root Canal Treatment (RCT)", tag:"Save your natural tooth, pain-free", price:"৳ 5,000",
       meta:"Painless root canal treatment (RCT) in Dhaka at Omega Dental. Single & multi-visit RCT from ৳5,000. Book with Dr. Afsana Haque.",
       desc:"Save your natural tooth with our painless, fully sterile treatment. Get fast relief from pain and return to your daily routine quickly.",
@@ -77,7 +77,7 @@ const SERVICES = [
       overview:"ব্রেসেস ও ক্লিয়ার অ্যালাইনার ধীরে ধীরে আঁকাবাঁকা দাঁত সোজা ও সুস্থ অবস্থানে নিয়ে আসে। আমরা সাধারণ অর্থোডন্টিক ব্রেসেসের পাশাপাশি প্রায় অদৃশ্য ক্লিয়ার অ্যালাইনারও দিই।",
       process:["অর্থোডন্টিক মূল্যায়ন","কাস্টম চিকিৎসা পরিকল্পনা","ব্রেসেস বা অ্যালাইনার লাগানো","নিয়মিত সমন্বয়ে চূড়ান্ত ফল"] } },
 
-  { slug:"teeth-whitening", icon:"✨", img:"teeth-whitening", gallery:["teeth-whitening","whitening-compare","whitening-stained"],
+  { slug:"teeth-whitening", icon:"✨", img:"teeth-whitening", gallery:["teeth-whitening","whitening-compare","whitening-stained","whitening-case-1","whitening-case-2"],
     en:{ name:"Teeth Whitening", tag:"A brighter smile in one visit", price:"৳ 12,000",
       meta:"Professional teeth whitening in Dhaka at Omega Dental for ৳12,000. Safe, fast and effective. Book with Dr. Afsana Haque.",
       desc:"Safely lighten years of stains and brighten your smile several shades in a single, comfortable visit.",
@@ -90,7 +90,7 @@ const SERVICES = [
       overview:"পেশাদার হোয়াইটেনিং চা, কফি, ধূমপান ও বয়সজনিত দাগ নিরাপদে দূর করে — দোকানের কিটের চেয়ে অনেক বেশি কার্যকর ও নিরাপদ, একই দিনে দৃশ্যমান ফল।",
       process:["পরিষ্কার ও শেড পরীক্ষা","মাড়ি সুরক্ষা","হোয়াইটেনিং জেল + লাইট","তাৎক্ষণিক উজ্জ্বল ফল"] } },
 
-  { slug:"crowns-bridges", icon:"👑", img:"crowns-diagram", gallery:["crowns-diagram","crowns-bridges","crowns-implant-bridge"],
+  { slug:"crowns-bridges", icon:"👑", img:"crowns-diagram", gallery:["crowns-diagram","crowns-bridges","crowns-implant-bridge","crown-case-1","crown-case-2"],
     en:{ name:"Crowns & Bridges", tag:"Rebuild strength and beauty", price:"৳ 5,000",
       meta:"Dental crowns & bridges in Dhaka at Omega Dental — Zirconia, PFM & composite crowns from ৳5,000. Book with Dr. Afsana Haque.",
       desc:"Restore the strength, shape and beauty of damaged or missing teeth with durable, natural-looking crowns and bridges.",
@@ -103,7 +103,7 @@ const SERVICES = [
       overview:"ক্রাউন ক্ষতিগ্রস্ত বা রুট-ক্যানেল করা দাঁত ঢেকে শক্তি ও আকৃতি ফেরায়, আর ব্রিজ এক বা একাধিক হারানো দাঁত প্রতিস্থাপন করে। আমরা টেকসই জিরকোনিয়া, পিএফএম ও কম্পোজিট অপশন দিই।",
       process:["দাঁত প্রস্তুত করা","নিখুঁত ডিজিটাল ছাপ","কাস্টম ক্রাউন/ব্রিজ তৈরি","ফিটিং ও চূড়ান্ত পলিশ"] } },
 
-  { slug:"dentures", icon:"🦿", img:"dentures", gallery:["dentures","dentures-partial","dentures-flexible"],
+  { slug:"dentures", icon:"🦿", img:"dentures", gallery:["dentures","dentures-partial","dentures-flexible","denture-case-1","denture-case-2"],
     en:{ name:"Dentures", tag:"Comfortable, natural-looking replacements", price:"৳ 4,000",
       meta:"Partial, flexible & complete dentures in Dhaka at Omega Dental from ৳4,000. Book with Dr. Afsana Haque.",
       desc:"Chew, speak and smile with confidence again with custom partial, flexible and complete dentures.",
@@ -116,7 +116,7 @@ const SERVICES = [
       overview:"ডেনচার হারানো দাঁত প্রতিস্থাপন করে যাতে আপনি আবার আত্মবিশ্বাসে চিবাতে, কথা বলতে ও হাসতে পারেন। আমরা আরামদায়ক, প্রাকৃতিক ফিটের ডেনচার তৈরি করি।",
       process:["মুখ পরীক্ষা","ছাপ ও পরিমাপ","কাস্টম ডেনচার তৈরি","ফিটিং ও আরাম সমন্বয়"] } },
 
-  { slug:"scaling-polishing", icon:"🦷", img:"scaling-polishing", gallery:["scaling-polishing","scaling-ba","scaling-stained","scaling-clean"],
+  { slug:"scaling-polishing", icon:"🦷", img:"scaling-polishing", gallery:["scaling-polishing","scaling-ba","scaling-stained","scaling-clean","scaling-case-1"],
     en:{ name:"Scaling & Polishing", tag:"Healthy gums, fresh clean smile", price:"৳ 1,500",
       meta:"Professional teeth scaling & polishing in Dhaka at Omega Dental from ৳1,000. Book a cleaning with Dr. Afsana Haque.",
       desc:"Remove plaque and tartar and polish your teeth for healthy gums, fresh breath and a brighter smile.",
@@ -129,7 +129,7 @@ const SERVICES = [
       overview:"স্কেলিং প্লাক ও শক্ত টার্টার দূর করে যা ব্রাশে যায় না, আর পলিশিং দাঁত মসৃণ ও উজ্জ্বল করে। নিয়মিত পরিষ্কার মাড়ির রোগ, দুর্গন্ধ ও দাঁত পড়া রোধ করে।",
       process:["মাড়ি ও দাঁত পরীক্ষা","আল্ট্রাসনিক স্কেলিং","পলিশিং","যত্ন ও প্রতিরোধের পরামর্শ"] } },
 
-  { slug:"tooth-fillings", icon:"🪥", img:"tooth-fillings", gallery:["tooth-fillings","filling-composite","filling-gi","filling-temporary"],
+  { slug:"tooth-fillings", icon:"🪥", img:"tooth-fillings", gallery:["tooth-fillings","filling-composite","filling-gi","filling-temporary","filling-case-1","filling-case-2","filling-case-3"],
     en:{ name:"Tooth Fillings", tag:"Restore decayed teeth, painlessly", price:"৳ 1,000",
       meta:"Tooth-coloured composite & GI fillings in Dhaka at Omega Dental from ৳1,000. Book with Dr. Afsana Haque.",
       desc:"Repair decayed teeth with natural, tooth-coloured fillings that stop pain and prevent further damage.",
@@ -142,7 +142,7 @@ const SERVICES = [
       overview:"ফিলিং ক্ষয়ে ক্ষতিগ্রস্ত দাঁত মেরামত করে, ব্যথা বন্ধ করে ও আরও ক্ষতি রোধ করে। আমরা দাঁতের রঙের কম্পোজিট ও জিআই ফিলিং ব্যবহার করি যা প্রাকৃতিকভাবে মিশে যায়।",
       process:["ক্যাভিটি পরীক্ষা","কোমল পরিষ্কার","দাঁতের রঙের ফিলিং","আকৃতি ও পলিশ"] } },
 
-  { slug:"veneers", icon:"💎", img:"veneers", gallery:["veneers","veneers-before","veneers-after"],
+  { slug:"veneers", icon:"💎", img:"veneers", gallery:["veneers","veneers-before","veneers-after","veneer-case-1","veneer-case-2"],
     en:{ name:"Composite Veneer", tag:"Reshape and perfect your smile", price:"৳ 3,500 / tooth",
       meta:"Composite veneers in Dhaka at Omega Dental from ৳3,500 — close gaps, fix chips and perfect your front teeth. Book with Dr. Afsana Haque.",
       desc:"Reshape, close gaps and perfect the look of your front teeth with natural, tooth-coloured composite veneers.",
@@ -155,7 +155,7 @@ const SERVICES = [
       overview:"কম্পোজিট ভিনেয়ার হলো দাঁতের রঙের পাতলা স্তর যা সামনের দাঁতে বসিয়ে ফাঁক, ভাঙা, দাগ ও আকৃতি ঠিক করা হয় — মাত্র এক-দুই ভিজিটেই প্রাকৃতিক, সমান হাসি দেয়, আসল দাঁত বেশি না কেটে।",
       process:["স্মাইল মূল্যায়ন","শেড ও আকৃতি পরিকল্পনা","ভিনেয়ার বন্ডিং","স্কাল্পটিং ও পলিশ"] } },
 
-  { slug:"extractions", icon:"🩺", img:"extractions-surgery", gallery:["extractions-surgery","extraction-front","frenectomy","frenectomy-steps"],
+  { slug:"extractions", icon:"🩺", img:"extractions-surgery", gallery:["extractions-surgery","extraction-front","frenectomy","frenectomy-steps","extraction-case-1","extraction-case-2"],
     en:{ name:"Tooth Extraction & Surgery", tag:"Painless removal, including wisdom teeth", price:"৳ 1,000",
       meta:"Painless tooth extraction & minor oral surgery in Dhaka at Omega Dental from ৳1,000, including wisdom teeth. Book with Dr. Afsana Haque.",
       desc:"Safe, painless removal of badly damaged or wisdom teeth, with gentle care before, during and after.",
@@ -168,7 +168,7 @@ const SERVICES = [
       overview:"যখন কোনো দাঁত বাঁচানোর অযোগ্য হয়, বা আক্কেল দাঁত ব্যথা ও ভিড় তৈরি করে, তখন কোমল এক্সট্রাকশন সমস্যা দূর করে ও অন্য দাঁত রক্ষা করে। আমরা আধুনিক, ব্যথাহীন কৌশলে সাধারণ ও সার্জিক্যাল এক্সট্রাকশন করি ও স্পষ্ট আফটারকেয়ার দিই।",
       process:["এক্স-রে ও মূল্যায়ন","কোমলভাবে অবশ করা","ব্যথাহীন অপসারণ","আফটারকেয়ার পরামর্শ"] } },
 
-  { slug:"kids-dentistry", icon:"🧒", img:"kids-dentistry", gallery:["kids-dentistry","kids-checkup","kids-extraction"],
+  { slug:"kids-dentistry", icon:"🧒", img:"kids-dentistry", gallery:["kids-dentistry","kids-checkup","kids-extraction","kids-case-1"],
     en:{ name:"Kids Dentistry", tag:"Gentle, friendly care for children", price:"৳ 1,000",
       meta:"Gentle children's dentistry in Dhaka at Omega Dental from ৳1,000 — check-ups, cleaning, fillings and milk-tooth care. Book with Dr. Afsana Haque.",
       desc:"Gentle, friendly dental care for children — from check-ups and cleaning to fillings and milk-tooth treatment.",
@@ -333,7 +333,7 @@ function buildTabs(s){
 
 function page(s){
   const url = `${SITE}/services/${s.slug}.html`;
-  const thumbs = (s.gallery || [s.img, ...THUMB_POOL.filter(x=>x!==s.img)]).slice(0,4);
+  const thumbs = (s.gallery || [s.img, ...THUMB_POOL.filter(x=>x!==s.img)]).slice(0,8);
   const thumbHtml = thumbs.map((tg,i)=>`<button class="pthumb${i===0?' active':''}" type="button" data-src="../assets/services/cards/${tg}.jpg?v=1" data-fallback="../assets/services/${tg}.svg?v=3"><img src="../assets/services/thumbs/${tg}.jpg?v=1" onerror="this.onerror=null;this.src='../assets/services/${tg}.svg?v=3'" alt=""></button>`).join("");
   const facts = s.en.facts.map((f,i)=>`
         <div class="fact"><span class="fact-ic">${ico(FACT_KEYS[i])}</span>
