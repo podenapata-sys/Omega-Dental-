@@ -77,15 +77,25 @@ otherwise the negative balance would quietly cancel out other patients' dues in 
 Every row has ✏️ (edit) and 🗑️ (delete). On a phone each patient shows as a card with
 those buttons at the top.
 
-Deleting asks for confirmation and **cannot be undone**. While signed in it deletes the
-record **everywhere**, not just on the device you pressed it on — so a delete on your
-phone also removes it from the clinic PC. Excel backups are your only undo.
+Deleting moves the record to the **🗑 Bin**, where it can be restored for **30 days**;
+after that it is removed for good. The Bin tab only appears when something is in it.
+
+While signed in, both the delete and the restore apply **everywhere** — a delete on your
+phone also removes it from the clinic PC, and restoring puts it back on both.
+
+Records in the Bin are excluded from the table, the totals and every Excel export, so a
+deleted patient never quietly inflates your figures.
 
 ### Views and search
 - **Day** — one date, chosen with the date picker.
 - **This Week** — the last 7 days, ending today.
 - **Month** — one calendar month, chosen with the month picker.
 - **All** — everything.
+- **📅 Upcoming** — everyone with a future appointment, soonest first, each showing
+  "today" / "tomorrow" / "in N days". Built from the Next Appointment field you already fill in.
+- **💰 Dues** — only patients who still owe money, largest balance first. Each row has a
+  💬 button that opens WhatsApp with a polite reminder naming the amount, treatment and date.
+- **🗑 Bin** — deleted records awaiting restore (appears only when it has something).
 
 The **search box ignores the date filter on purpose** and searches all your records by
 name, mobile, Customer ID or service — so you can find a patient without remembering when
@@ -93,6 +103,19 @@ they came. Clear the box to return to the selected view.
 
 The four stat cards always reflect what is currently on screen. "Patients (in view)"
 counts **visits**, so a patient who came three times counts three times.
+
+---
+
+## Income report
+
+Press **📊 Report** in the top bar for:
+
+- **Collected per month** — the last 12 months as a bar chart, so you can see the trend.
+- **Top services by income** — which treatments actually bring the money in.
+- An all-time line: visits, total billed, total collected and outstanding.
+
+It counts **collected** money (what patients actually paid), not what was billed, and it
+ignores anything in the Bin. Press the button again to hide it.
 
 ---
 
@@ -113,9 +136,9 @@ counts **visits**, so a patient who came three times counts three times.
   Re-importing the same backup twice will **not** create duplicates. This is the safe
   choice.
 
-With cloud sync on, Excel backups are no longer your only safety net — but they are still
-worth taking, because they are the only thing that survives an accidental delete, and the
-only copy you can open without the internet. **Once a month is plenty now.**
+With cloud sync on and a 30-day Bin behind every delete, Excel backups are no longer your
+only safety net — but they are still worth taking, as the only copy you can open without
+the internet and the only one that outlives the 30-day window. **Once a month is plenty now.**
 
 ---
 
@@ -133,6 +156,15 @@ has:
 - **✓ Handled** — clears it from the list.
 
 Notifications only arrive while the dashboard is open in a browser tab.
+
+### Lock vs Sign out — they are different
+- **🔒 Lock** returns you to the PIN screen. It is a quick privacy screen for stepping away;
+  your cloud session stays active underneath.
+- **Sign out** (in the Website Bookings panel) ends the cloud session properly. Records stay
+  in this browser but stop syncing until you sign in again.
+
+Use **Sign out** on any device you do not fully control, or before handing a phone to someone.
+Lock alone does not stop someone who knows the PIN from reaching your cloud records.
 
 ---
 
@@ -181,6 +213,9 @@ so it can **only see files it created** — it cannot read the rest of your Driv
 | Records vanished | If the strip says ☁ synced, press Connect and sign in — they will come back. If you were never signed in, browsing data was cleared; restore from your last Excel backup via Import. |
 | Strip says ⚠ could not sync | Usually the Firestore rules are missing the `records` block — see setup. Records are still safe in this browser meanwhile. |
 | Records differ between two devices | One of them is not signed in. Check the strip says ☁ on both. |
+| Deleted something by mistake | Open the 🗑 Bin tab and press ↩️ Restore. You have 30 days. |
+| A patient is missing from the totals | Check the Bin — if it was deleted, restore it. |
+| Bin tab is not visible | It only appears when something is in it. |
 | Sign-in error mentioning app-check | App Check enforcement is on — see the App Check section above. |
 | "Couldn't load Firebase (offline?)" | No internet, or a network blocking Google. Bookings still arrive by WhatsApp. |
 | Drive backup fails | Usually the Authorized JavaScript origin, the Drive API not being enabled, or the account not being a Test user. |
