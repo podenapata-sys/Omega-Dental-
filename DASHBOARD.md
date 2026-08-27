@@ -24,21 +24,41 @@ it on a shared screen. "Lock" returns you to the PIN screen.
 
 ---
 
-## Where your data lives — read this once
+## Where your data lives
 
-Patient records are saved in **your browser's own storage on the device you added them
-on**. They are not uploaded anywhere.
+Records are saved in **two places at once**:
 
-That means:
+1. **This browser** — instantly, always, even offline.
+2. **Your Firebase account (the cloud)** — as soon as you are signed in.
 
-- Records added on the clinic PC are **not** visible on your phone, and vice versa.
-- **Clearing your browsing data, or "clear cookies and site data", erases the records.**
-- A different browser on the same computer is a different, empty dashboard.
+The strip under the toolbar always tells you which is active:
 
-**So back up regularly.** Use "Backup all (Excel)" or "Backup to Drive" — see below.
-Website bookings are the exception: those live in Firebase and appear on every device.
+| Shows | Meaning |
+|---|---|
+| ☁ Records are synced to your account | Safe in the cloud and on every signed-in device |
+| 💾 Records are saved in this browser | Working locally — sign in to start syncing |
+| ⏳ Syncing / Uploading… | Working on it |
+| ⚠ Offline / could not sync | Saved locally; will sync when the connection returns |
 
----
+**Once you sign in, this is what you get:**
+
+- Records added on the clinic PC appear on your phone within a second, and vice versa.
+- Clearing your browsing data no longer loses anything — sign in again and everything
+  comes back.
+- Records added *before* you signed in are uploaded automatically the first time you do.
+
+**If you never sign in**, the dashboard still works exactly as before — fully usable,
+local to that browser. Nothing nags you. But then clearing browsing data *does* erase the
+records, so keep taking Excel backups.
+
+> Cloud sync is free at clinic volume. The Firestore free tier covers 20,000 writes and
+> 50,000 reads per day; recording 30 patients uses about 30 writes.
+
+### A note on privacy
+Records are patient data, so the cloud copy is readable **only** by your signed-in
+account — the security rules deny everyone else, including anonymous visitors. This is
+stricter than website bookings, which anyone can *create* (that is the booking form) but
+only you can read.
 
 ## Day-to-day use
 
@@ -55,8 +75,11 @@ otherwise the negative balance would quietly cancel out other patients' dues in 
 
 ### Editing and deleting
 Every row has ✏️ (edit) and 🗑️ (delete). On a phone each patient shows as a card with
-those buttons at the top. Deleting asks for confirmation and **cannot be undone** — so
-keep backups.
+those buttons at the top.
+
+Deleting asks for confirmation and **cannot be undone**. While signed in it deletes the
+record **everywhere**, not just on the device you pressed it on — so a delete on your
+phone also removes it from the clinic PC. Excel backups are your only undo.
 
 ### Views and search
 - **Day** — one date, chosen with the date picker.
@@ -83,13 +106,16 @@ counts **visits**, so a patient who came three times counts three times.
 | **Import** | Restores an Excel/CSV backup. |
 
 **Importing asks you to choose:**
-- **OK / Replace** — deletes the records on this device first, then loads the file. Use
-  this when moving to a new computer.
+- **OK / Replace** — clears the existing records first, then loads the file. While signed
+  in this clears them **in the cloud too**, so it affects every device. Use it only when
+  you genuinely want the file to become the whole record set.
 - **Cancel / Merge** — keeps what is there and adds only records not already present.
-  Re-importing the same backup twice will **not** create duplicates.
+  Re-importing the same backup twice will **not** create duplicates. This is the safe
+  choice.
 
-A practical routine: **Backup all (Excel) once a week**, and keep the file somewhere other
-than the clinic PC.
+With cloud sync on, Excel backups are no longer your only safety net — but they are still
+worth taking, because they are the only thing that survives an accidental delete, and the
+only copy you can open without the internet. **Once a month is plenty now.**
 
 ---
 
@@ -117,7 +143,8 @@ Notifications only arrive while the dashboard is open in a browser tab.
 2. **Authentication** → Sign-in method → enable **Email/Password**, then add one user
    (the clinic's account).
 3. **Firestore → Rules** → paste the contents of [`firestore.rules`](firestore.rules)
-   and Publish.
+   and Publish. This covers both `bookings` (public create, owner read) and `records`
+   (owner only, in both directions) — **records will not sync without it**.
 4. Web config lives in `assets/firebase-config.js` (`window.OMEGA_FB`). These keys are
    safe to be public — the rules above are what protect the data.
 
@@ -151,7 +178,9 @@ so it can **only see files it created** — it cannot read the rest of your Driv
 | Symptom | Cause / fix |
 |---|---|
 | "Excel engine is not loaded" | The SheetJS file did not download. Check the connection and reload. |
-| Records vanished | Browsing data was cleared, or you are on a different device/browser. Restore from your last Excel backup via Import. |
+| Records vanished | If the strip says ☁ synced, press Connect and sign in — they will come back. If you were never signed in, browsing data was cleared; restore from your last Excel backup via Import. |
+| Strip says ⚠ could not sync | Usually the Firestore rules are missing the `records` block — see setup. Records are still safe in this browser meanwhile. |
+| Records differ between two devices | One of them is not signed in. Check the strip says ☁ on both. |
 | Sign-in error mentioning app-check | App Check enforcement is on — see the App Check section above. |
 | "Couldn't load Firebase (offline?)" | No internet, or a network blocking Google. Bookings still arrive by WhatsApp. |
 | Drive backup fails | Usually the Authorized JavaScript origin, the Drive API not being enabled, or the account not being a Test user. |
@@ -163,13 +192,21 @@ so it can **only see files it created** — it cannot read the rest of your Driv
 
 Everything is in `dashboard.html` — three scripts, no build step:
 
-1. **Records app** (classic script) — localStorage under the key `od_records`, rendering,
-   filtering, Excel import/export.
+1. **Records app** (classic script) — the `records[]` array, rendering, filtering, Excel
+   import/export. Persists to localStorage under `od_records` (offline cache) and mirrors
+   to the cloud through `window.__odCloud` when the module installs it.
 2. **Website bookings** (ES module) — Firebase Auth + Firestore `onSnapshot`.
 3. **Drive backup** (classic script) — Google Identity Services + Drive REST.
 
-They communicate only through two globals: `window.__odBackupBlob()` and
-`window.__odImportBooking()`.
+They communicate only through globals, so neither script imports the other:
+`window.__odBackupBlob()`, `window.__odImportBooking()`, plus the sync bridge —
+`window.__odCloud` (installed by the module: `save`/`saveMany`/`remove`),
+`window.__odApplyCloud()` and `window.__odLocalRecords()` (exposed by the records app),
+and `window.__odSyncStatus()` for the status strip.
+
+Records sync to the `records` collection keyed by the record's own `_id`. On the first
+snapshot after sign-in, any local record missing from the cloud is uploaded rather than
+overwritten, so signing in never loses work done offline.
 
 The 5-tap logo handler lives in `assets/app.js` (search for "Private admin"). Sub-pages
 need `<meta name="page-root">` set correctly for the redirect to resolve.

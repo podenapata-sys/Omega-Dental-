@@ -26,6 +26,14 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Patient visit records created in the dashboard (walk-ins and website
+    // bookings that were added to records). Unlike bookings there is NO public
+    // create here — this is patient history, readable and writable only by the
+    // signed-in clinic account.
+    match /records/{recordId} {
+      allow read, write: if request.auth != null;
+    }
+
     // Nothing else in the project is reachable from the web client.
     match /{document=**} {
       allow read, write: if false;

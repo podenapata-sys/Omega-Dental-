@@ -164,7 +164,7 @@ tbody tr:hover{background:#f8fcfb}
     <button class="btn btn-g btn-sm" id="lockBtn">🔒 Lock</button>
   </div>
 
-  <div class="hint">💾 <span>Your data is saved <b>in this browser only</b> (nothing leaves your device). Use <b>Backup all (Excel)</b> regularly, and <b>Import</b> to restore or move to another device.</span></div>
+  <div class="hint" id="syncNote"><span id="syncIcon">💾</span> <span id="syncText">Records are saved in this browser. Sign in below to sync them across your devices.</span></div>
 
   <!-- ADD / EDIT -->
   <div class="panel">
@@ -278,6 +278,32 @@ tbody tr:hover{background:#f8fcfb}
   function load(){ try{records=JSON.parse(localStorage.getItem(LS_REC)||"[]");}catch(e){records=[];} if(!Array.isArray(records))records=[]; }
   function save(){ try{localStorage.setItem(LS_REC,JSON.stringify(records));}catch(e){alert("Could not save — storage may be full or blocked.");} }
   function digits(s){ return (s||"").replace(/\D/g,""); }
+
+  /* ---------- cloud sync bridge ----------
+     Firebase lives in a separate ES module on this page, so it hands us
+     window.__odCloud when it is ready and signed in. Every call here is a
+     no-op when that is absent (not signed in, offline, Firebase blocked),
+     which keeps the dashboard fully usable in local-only mode. */
+  function cloudSave(rec){ try{ if(window.__odCloud) window.__odCloud.save(rec); }catch(e){} }
+  function cloudRemove(id){ try{ if(window.__odCloud) window.__odCloud.remove(id); }catch(e){} }
+  function cloudSaveMany(list){ try{ if(window.__odCloud) window.__odCloud.saveMany(list); }catch(e){} }
+
+  /* Called by the Firebase module on every snapshot: the cloud is the source of
+     truth once signed in, so replace the array, refresh the local cache and redraw. */
+  window.__odApplyCloud = function(list){
+    if(!Array.isArray(list)) return;
+    records = list; save(); render();
+  };
+  /* Used by the module to find records added before sign-in, so they can be migrated up. */
+  window.__odLocalRecords = function(){ return records.slice(); };
+
+  window.__odSyncStatus = function(state, detail){
+    var ic=$("syncIcon"), tx=$("syncText"); if(!ic||!tx) return;
+    if(state==="synced"){ ic.textContent="☁"; tx.innerHTML="Records are <b>synced to your account</b> — they are safe on this and your other devices."; }
+    else if(state==="syncing"){ ic.textContent="⏳"; tx.textContent=detail||"Syncing records…"; }
+    else if(state==="error"){ ic.textContent="⚠"; tx.textContent=detail||"Could not sync — records are still saved in this browser."; }
+    else { ic.textContent="💾"; tx.innerHTML="Records are saved in this browser. <b>Sign in below</b> to sync them across your devices."; }
+  };
   function cid(mobile){ var d=digits(mobile); return d.length>=4 ? "OD-"+d.slice(-4) : (d?"OD-"+d:"OD-????"); }
   function money(n){ n=Number(n)||0; return "৳"+n.toLocaleString("en-IN"); }
   function fmtLocal(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
@@ -348,7 +374,7 @@ tbody tr:hover{background:#f8fcfb}
     };
     if(editId){ var i=records.findIndex(function(r){return r._id===editId;}); if(i>-1)records[i]=rec; }
     else records.push(rec);
-    save(); clearForm(); render(); flash("Saved ✓",false);
+    save(); cloudSave(rec); clearForm(); render(); flash("Saved ✓",false);
   }
   function flash(msg,err){ var el=$("formMsg"); el.textContent=msg; el.style.color=err?"#d94848":"#2c8a78"; setTimeout(function(){el.textContent="";},2600); }
   function editRow(id){
@@ -361,7 +387,7 @@ tbody tr:hover{background:#f8fcfb}
   function delRow(id){
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
     if(!confirm("Delete record "+r.id+" ("+(r.name||r.mobile)+") on "+r.date+"?"))return;
-    records=records.filter(function(x){return x._id!==id;}); save(); render();
+    records=records.filter(function(x){return x._id!==id;}); save(); cloudRemove(id); render();
   }
 
   /* ---------- filtering + render ---------- */
@@ -518,8 +544,9 @@ tbody tr:hover{background:#f8fcfb}
           );
         }
 
-        var added=0, skipped=0;
+        var added=0, skipped=0, removedIds=[];
         if(replace){
+          removedIds = records.map(function(r){return r._id;});
           records = incoming; added = incoming.length;
         }else{
           var seen={};
@@ -530,7 +557,13 @@ tbody tr:hover{background:#f8fcfb}
             seen[k]=1; records.push(r); added++;
           });
         }
-        save(); render();
+        save();
+        /* mirror the same outcome to the cloud so other devices match */
+        removedIds.forEach(cloudRemove);
+        cloudSaveMany(replace ? incoming : incoming.filter(function(r){
+          return records.indexOf(r) > -1;   // only the ones actually kept
+        }));
+        render();
         alert("Imported "+added+" record(s)."+(skipped?" Skipped "+skipped+" already on this device.":""));
       }catch(err){ alert("Could not read that file. Use an Excel/CSV backup exported from this dashboard."); }
     };
@@ -593,7 +626,11 @@ tbody tr:hover{background:#f8fcfb}
    dashboard is unaffected. */
 (async () => {
   const cfg = window.OMEGA_FB;
-  if (!cfg || !cfg.apiKey) return;                 // not configured → keep panel hidden
+  if (!cfg || !cfg.apiKey) {                       // not configured → keep panel hidden
+    if (window.__odSyncStatus) window.__odSyncStatus("error",
+      "Records are saved in this browser only. Back up to Excel regularly.");
+    return;
+  }
   const $ = (id) => document.getElementById(id);
   const panel = $("wbPanel"); if (panel) panel.style.display = "block";
 
@@ -604,6 +641,8 @@ tbody tr:hover{background:#f8fcfb}
     authMod = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js");
   } catch (e) {
     $("wbEmpty").textContent = "Couldn't load Firebase (offline?). New bookings still arrive by WhatsApp.";
+    if (window.__odSyncStatus) window.__odSyncStatus("error",
+      "Offline — records are saved in this browser and will sync when you are back online.");
     return;
   }
   const app = appMod.initializeApp(cfg);
@@ -695,9 +734,76 @@ tbody tr:hover{background:#f8fcfb}
     }, ()=>{ $("wbEmpty").textContent = "Can't read bookings yet — make sure Email/Password sign-in is enabled and the Firestore rules are applied."; $("wbEmpty").style.display="block"; });
   }
 
+  /* ---------- patient records: cloud sync ----------
+     Records used to live only in localStorage, so clearing browsing data destroyed
+     them and a second device saw nothing. They now mirror into Firestore under the
+     owner's account. localStorage stays as the offline cache and the never-signed-in
+     fallback, so nothing here is required for the dashboard to work. */
+  let recUnsub = null, recSeeded = false;
+
+  function recDoc(id){ return fsMod.doc(db, "records", String(id)); }
+  function toDoc(r){
+    return { date:r.date||"", mobile:r.mobile||"", id:r.id||"", name:r.name||"",
+             service:r.service||"", total:Number(r.total)||0, paid:Number(r.paid)||0,
+             next:r.next||"", updatedAt: fsMod.serverTimestamp() };
+  }
+  function fromDoc(d){ const v=d.data()||{}; return {
+    _id:d.id, date:v.date||"", mobile:v.mobile||"", id:v.id||"", name:v.name||"",
+    service:v.service||"", total:Number(v.total)||0, paid:Number(v.paid)||0, next:v.next||"" }; }
+
+  /* Handed to the records script; every method is fire-and-forget so a slow or
+     failed write never blocks the UI - the local save already happened. */
+  function installCloudApi(){
+    window.__odCloud = {
+      save(rec){ fsMod.setDoc(recDoc(rec._id), toDoc(rec)).catch(cloudErr); },
+      saveMany(list){ (list||[]).forEach(r=>fsMod.setDoc(recDoc(r._id), toDoc(r)).catch(cloudErr)); },
+      remove(id){ fsMod.deleteDoc(recDoc(id)).catch(cloudErr); }
+    };
+  }
+  function cloudErr(e){
+    if(window.__odSyncStatus) window.__odSyncStatus("error",
+      "Could not sync to the cloud — records are still saved in this browser.");
+  }
+
+  function subscribeRecords(){
+    if(recUnsub) return;
+    if(window.__odSyncStatus) window.__odSyncStatus("syncing","Loading your records…");
+    recUnsub = fsMod.onSnapshot(fsMod.collection(db,"records"), (snap)=>{
+      const cloud = snap.docs.map(fromDoc);
+      if(!recSeeded){
+        recSeeded = true;
+        /* First snapshot after sign-in: anything added locally before signing in
+           (or on another offline device) is not in the cloud yet. Upload it rather
+           than letting the cloud snapshot overwrite and lose it. */
+        const have = new Set(cloud.map(r=>r._id));
+        const localOnly = (window.__odLocalRecords ? window.__odLocalRecords() : [])
+                            .filter(r=>!have.has(r._id));
+        installCloudApi();
+        if(localOnly.length){
+          window.__odCloud.saveMany(localOnly);
+          if(window.__odApplyCloud) window.__odApplyCloud(cloud.concat(localOnly));
+          if(window.__odSyncStatus) window.__odSyncStatus("syncing",
+            "Uploading "+localOnly.length+" record(s) from this device…");
+          return;   // the write refires this listener with the merged set
+        }
+      }
+      installCloudApi();
+      if(window.__odApplyCloud) window.__odApplyCloud(cloud);
+      if(window.__odSyncStatus) window.__odSyncStatus("synced");
+    }, ()=>{
+      if(window.__odSyncStatus) window.__odSyncStatus("error",
+        "Can't read your records from the cloud — check the Firestore rules. They are still saved in this browser.");
+    });
+  }
+  function unsubscribeRecords(){
+    if(recUnsub){ recUnsub(); recUnsub=null; }
+    recSeeded = false; delete window.__odCloud;
+    if(window.__odSyncStatus) window.__odSyncStatus("local");
+  }
+
   authMod.onAuthStateChanged(auth, (user)=>{
-    if(user){ $("wbConnect").style.display="none"; subscribe(); }
-    else { $("wbConnect").style.display="block"; $("wbList").innerHTML=""; $("wbEmpty").style.display="none"; }
+    if(user){ $("wbConnect").style.display="none"; subscribe(); subscribeRecords(); }
+    else { $("wbConnect").style.display="block"; $("wbList").innerHTML=""; $("wbEmpty").style.display="none"; unsubscribeRecords(); }
   });
   $("fbLogin").onclick = async ()=>{
     const em=$("fbEmail").value.trim(), pw=$("fbPass").value; $("fbMsg").textContent="";
