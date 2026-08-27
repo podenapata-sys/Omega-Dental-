@@ -88,6 +88,7 @@ const PRICES = [
   // 13. Orthodontic Treatment  +  14. Aligner
   { c:"ortho", slug:"braces-aligners", n:"Orthodontic Treatment", nb:"অর্থোডন্টিক চিকিৎসা", note:"+ Monthly 6,000", noteb:"+ মাসিক ৬,০০০", min:25000, max:25000 },
   { c:"ortho", slug:"aligners", n:"Aligner Treatment", nb:"অ্যালাইনার চিকিৎসা", min:150000, max:250000 },
+  { c:"ortho", slug:"braces-aligners", n:"Night Guard", nb:"নাইট গার্ড", min:8000, max:10000 },
 
   // Kids Dentistry
   { c:"kids", slug:"kids-dentistry", n:"Kids Check-up & Cleaning", nb:"শিশুর চেকআপ ও পরিষ্কার", min:1000, max:1000 },
@@ -115,7 +116,7 @@ const SERVICES = [
   { icon:"🧒", img:"kids-dentistry", img2:"kids-checkup", slug:"kids-dentistry", pr:"৳1,000–1,500", dur:"20–30 min", durbn:"২০–৩০ মিনিট", en:"Kids Dentistry", bn:"শিশুদের দাঁতের চিকিৎসা", cne:"Children's dental care", cn:"শিশুদের দাঁতের যত্ন", de:"Gentle paediatric care, milk-tooth treatment and check-ups for children.", db:"শিশুদের দুধ দাঁতের চিকিৎসা, কোমল যত্ন ও নিয়মিত চেকআপ।", gal:["kids-checkup","kids-extraction","kids-case-1"] },
   { icon:"💖", img:"cosmetic-tooth-jewelry", img2:"cosmetic-hollywood-smile", slug:"cosmetic-dentistry", pr:"৳3,500–9,000", dur:"Varies", durbn:"পরিবর্তনশীল", en:"Cosmetic Dentistry", bn:"কসমেটিক ডেন্টিস্ট্রি", cne:"Smile makeover", cn:"দাঁতের সৌন্দর্য চিকিৎসা", de:"Smile makeovers combining whitening, veneer and reshaping.", db:"হাসি সুন্দর করতে দাঁত সাদা করা, আবরণ ও শেপ ঠিক করা।", gal:["cosmetic-ba","cosmetic-veneers"] },
   { icon:"📏", img:"braces-aligners", img2:"braces-treatment", slug:"braces-aligners", pr:"From ৳25,000", dur:"12–24 months", durbn:"১২–২৪ মাস", en:"Orthodontic Treatment", bn:"অর্থোডন্টিক চিকিৎসা", cne:"Teeth straightening", cn:"দাঁত সোজা করা (তার/ব্রেস)", de:"Straighten misaligned teeth and correct your bite with orthodontic care.", db:"আঁকাবাঁকা দাঁত ও কামড় ঠিক করতে তার (ব্রেস) লাগিয়ে চিকিৎসা।", gal:["braces-aligners"],
-    sub:[ {en:"Braces",bn:"ব্রেসেস",slug:"braces-aligners"} ] },
+    sub:[ {en:"Braces",bn:"ব্রেসেস",slug:"braces-aligners"}, {en:"Night Guard",bn:"নাইট গার্ড",slug:"braces-aligners"} ] },
   { icon:"😁", img:"aligner", img2:"aligner-tray", slug:"aligners", pr:"From ৳1,50,000", dur:"6–18 months", durbn:"৬–১৮ মাস", en:"Aligner", bn:"অ্যালাইনার", cne:"Invisible aligner", cn:"অদৃশ্য তার", de:"Near-invisible clear aligner to straighten teeth discreetly.", db:"প্রায় অদৃশ্য স্বচ্ছ কভারে দাঁত গোপনে সোজা করা।", gal:["aligner","aligner-case-1","aligner-case-2"] },
   { icon:"🩺", img:"consultation", img2:"consultation-2", pr:"৳500", dur:"15–20 min", durbn:"১৫–২০ মিনিট", en:"Consultation", bn:"কনসালটেশন", cne:"Doctor visit", cn:"ডাক্তার দেখানো", de:"Full check-up with the dentist and a clear treatment plan — ৳500 per consultation.", db:"ডাক্তারের সম্পূর্ণ চেকআপ ও পরিষ্কার চিকিৎসা পরিকল্পনা — প্রতি কনসালটেশন ৫০০ টাকা।" },
 ];
