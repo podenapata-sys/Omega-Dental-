@@ -8,8 +8,11 @@ from search engines (`noindex, nofollow`).
 
 ## Opening it
 
-**Tap the Omega Dental logo 5 times, quickly** (within about 1.5 seconds between taps),
-from any page on the site. Then enter the PIN.
+**Tap the Omega Dental logo in the page FOOTER 3 times, quickly** (within about 1.5
+seconds between taps), from any page on the site. Then enter the PIN.
+
+It is the logo at the very **bottom** of the page, not the one in the top bar — the top
+one is a link to the homepage, so tapping it repeatedly just navigates.
 
 ```
 PIN: 2518
@@ -18,6 +21,7 @@ PIN: 2518
 The direct address is `/dashboard.html`, but the 5-tap route means you never have to type
 it on a shared screen. "Lock" returns you to the PIN screen.
 
+> To change how many taps are needed, edit `TAPS_NEEDED` in `assets/admin-gate.js`.
 > To change the PIN, edit `DEFAULT_PIN` near the top of the records script in
 > `dashboard.html`. It is stored in the page itself, so treat it as a *privacy* screen
 > that keeps casual eyes out — not as bank-grade security.
@@ -243,8 +247,14 @@ Records sync to the `records` collection keyed by the record's own `_id`. On the
 snapshot after sign-in, any local record missing from the cloud is uploaded rather than
 overwritten, so signing in never loses work done offline.
 
-The 5-tap logo handler lives in `assets/app.js` (search for "Private admin"). Sub-pages
-need `<meta name="page-root">` set correctly for the redirect to resolve.
+The tap handler lives in `assets/admin-gate.js`, loaded on all 28 public pages beside
+`brand-highlight.js`. It is deliberately NOT in `assets/app.js`, which only 3 pages load —
+that is why the gateway used to work on the homepage only. Every page needs
+`<meta name="page-root">` set correctly for the redirect to resolve (`../` in `services/`,
+`blog/` and `gallery/`; empty at the root).
+
+Do not load the gateway twice on one page: two listeners would both count the same click
+and the dashboard would open in fewer taps than intended.
 
 Record shape:
 

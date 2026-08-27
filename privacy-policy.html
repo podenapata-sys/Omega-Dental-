@@ -29,6 +29,7 @@
   <button class="lang-toggle nav-lang" id="langToggle"><span id="langText">বাংলা</span></button>
   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav></header>
+<meta name="page-root" content="">
 
 <section class="hero"><span class="blob b1"></span><span class="blob b2"></span>
   <div class="container" style="position:relative;z-index:1;padding:56px 0 34px;max-width:820px;text-align:center">
@@ -112,6 +113,6 @@ setLang(L);
 document.getElementById('langToggle').onclick=function(){setLang(document.documentElement.getAttribute('data-lang')==='en'?'bn':'en');};
 var b=document.getElementById('burger'),n=document.getElementById('navlist');if(b)b.onclick=function(){n.classList.toggle('open');};
 </script>
-<script src="assets/brand-highlight.js?v=2" defer></script>
+<script src="assets/brand-highlight.js?v=2" defer></script><script src="assets/admin-gate.js?v=1" defer></script>
 <script src="assets/legal.js?v=2" defer></script>
 </body></html>
