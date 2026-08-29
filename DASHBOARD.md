@@ -115,9 +115,23 @@ counts **visits**, so a patient who came three times counts three times.
 Press **🌐 Website** in the top bar (next to Report) to switch to the content editor;
 **📋 Records** brings you back. Same PIN.
 
-Two tabs:
-- **Services** — the 15 cards: name, tagline, description, card price, duration
-- **Prices** — the 45 price-table rows: name, minimum, maximum, note
+Three tabs:
+- **Services** — the 15 cards: name, short line, description, price, how long it takes
+- **Prices** — the 45 price-list rows: name, cheapest, most expensive, note
+- **Photos** — each service's main photo, the second photo it fades to, and the small
+  strip of extra photos on the card
+
+### Photos
+Tap **Change** to pick from the photos already on your site, or **Upload a photo** inside the
+picker to add your own. An uploaded photo is resized automatically to the three sizes the site
+uses, so you can send one straight from your phone camera.
+
+The **main photo** cannot be removed — every card needs one. The second photo and the extra
+photos each have a red **×**.
+
+Uploaded photos are marked **NEW** and are stored in your draft until you publish; the footer
+tells you how many are waiting. Browsers only allow a few megabytes of draft storage, so add
+a handful of photos, publish, then add more.
 
 Every text field shows **English and Bangla side by side**, so nothing gets half-translated.
 Beside each card price you also see that service's price-table range, to catch a real mistake.

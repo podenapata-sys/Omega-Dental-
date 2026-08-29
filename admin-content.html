@@ -167,6 +167,41 @@ tbody tr:hover{background:#f8fcfb}
   .ed-row{grid-template-columns:1fr;gap:4px}
   .ed-row>label{padding-top:6px}
 }
+
+/* ---- images ---- */
+.im-slots{display:flex;gap:14px;flex-wrap:wrap}
+.im-slot{width:132px}
+.im-slot .cap{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:5px}
+.im-box{width:132px;height:99px;border:1.5px dashed var(--line);border-radius:10px;overflow:hidden;
+  background:#f6faf9;display:flex;align-items:center;justify-content:center;position:relative}
+.im-box img{width:100%;height:100%;object-fit:cover;display:block}
+.im-box .none{color:var(--muted);font-size:.76rem;text-align:center;padding:6px}
+.im-acts{display:flex;gap:5px;margin-top:6px}
+.im-acts button{flex:1;font-size:.74rem;padding:6px 4px;border:1px solid var(--line);background:#fff;
+  border-radius:7px;cursor:pointer;font-family:var(--f);color:var(--ink)}
+.im-acts button:hover{background:#eef4f6}
+.im-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.im-chip{width:92px}
+.im-chip .im-box{width:92px;height:69px}
+.im-chip .im-acts button{padding:6px 2px}
+.im-chip .im-acts button.x{flex:0 0 26px;color:var(--danger);font-weight:700}
+.im-new{position:absolute;top:3px;left:3px;background:var(--orange);color:#fff;font-size:.62rem;
+  font-weight:700;padding:1px 5px;border-radius:5px}
+/* picker */
+.pk-back{position:fixed;inset:0;background:rgba(19,41,78,.55);z-index:200;display:none;
+  align-items:center;justify-content:center;padding:16px}
+.pk-back.open{display:flex}
+.pk{background:var(--card);border-radius:var(--r);max-width:900px;width:100%;max-height:88vh;
+  display:flex;flex-direction:column;box-shadow:0 30px 70px -20px rgba(19,41,78,.5)}
+.pk-top{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pk-top h3{margin:0;color:var(--navy);font-family:var(--fh)}
+.pk-grid{padding:14px 16px;overflow:auto;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.pk-item{cursor:pointer;border:2px solid transparent;border-radius:9px;overflow:hidden;background:#f6faf9}
+.pk-item img{width:100%;height:78px;object-fit:cover;display:block}
+.pk-item span{display:block;font-size:.64rem;padding:3px 5px;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pk-item:hover,.pk-item.sel{border-color:var(--teal)}
 </style>
 </head>
 <body>
@@ -200,6 +235,7 @@ tbody tr:hover{background:#f8fcfb}
     <div class="tabs">
       <button class="tab active" data-view="services">Services</button>
       <button class="tab" data-view="prices">Prices</button>
+      <button class="tab" data-view="images">Photos</button>
     </div>
     <span class="spacer"></span>
     <button class="btn btn-g btn-sm" id="previewBtn">&#128065; Preview</button>
@@ -221,6 +257,20 @@ tbody tr:hover{background:#f8fcfb}
   </div>
 
   <div class="foot" id="edFoot"></div>
+
+<div class="pk-back" id="pkBack">
+  <div class="pk">
+    <div class="pk-top">
+      <h3 id="pkTitle">Choose a photo</h3>
+      <span class="spacer"></span>
+      <label class="btn btn-g btn-sm" style="width:auto;cursor:pointer">&#11014; Upload a photo
+        <input type="file" id="pkFile" accept="image/*" style="display:none">
+      </label>
+      <button class="btn btn-g btn-sm" id="pkClose" style="width:auto">Close</button>
+    </div>
+    <div class="pk-grid" id="pkGrid"></div>
+  </div>
+</div>
 </div>
 
 <script src="assets/content.js?v=1"></script>
@@ -296,6 +346,141 @@ tbody tr:hover{background:#f8fcfb}
     return lo===hi ? ("&#2547;"+fmt(lo)) : ("&#2547;"+fmt(lo)+"&ndash;"+fmt(hi));
   }
 
+
+  /* ================= PHOTOS =================
+     A service points at photos by name only (img = the card photo, img2 = the
+     one it fades to, gal = the little strip). The files themselves live in
+     assets/services/ in three sizes. So changing a photo is just changing a
+     name — and a newly uploaded photo is held in the draft until it is
+     published, because only publishing can write real files. */
+
+  function photoList(){
+    var base = (window.OMEGA_CONTENT && window.OMEGA_CONTENT.photos) || [];
+    var added = Object.keys(draft.newPhotos || {});
+    return added.concat(base.filter(function(n){ return added.indexOf(n) < 0; }));
+  }
+  function isNew(name){ return !!(draft.newPhotos && draft.newPhotos[name]); }
+  function thumbSrc(name){
+    if(isNew(name)) return draft.newPhotos[name].thumb;
+    return "assets/services/thumbs/" + name + ".jpg";
+  }
+
+  function slot(caption, name, kind, idx, pos){
+    var inner = name
+      ? "<img src=\"" + thumbSrc(name) + "\" alt=\"\" onerror=\"this.style.display='none'\">"
+        + (isNew(name) ? "<span class='im-new'>NEW</span>" : "")
+      : "<span class='none'>No photo</span>";
+    var tight = kind === "gal";
+    var acts = "<button data-pick='" + kind + "' data-i='" + idx + "' data-pos='" + (pos==null?"":pos) + "'>"
+             + (name ? "Change" : "Choose") + "</button>"
+             + (name && kind !== "img"
+                 ? "<button class='" + (tight ? "x" : "") + "' title='Remove' data-drop='" + kind
+                   + "' data-i='" + idx + "' data-pos='" + (pos==null?"":pos) + "'>"
+                   + (tight ? "&times;" : "Remove") + "</button>"
+                 : "");
+    return "<div class='" + (kind==="gal" ? "im-chip" : "im-slot") + "'>"
+         + (caption ? "<div class='cap'>" + caption + "</div>" : "")
+         + "<div class='im-box'>" + inner + "</div>"
+         + "<div class='im-acts'>" + acts + "</div></div>";
+  }
+
+  function renderImages(){
+    var html = "<div class='ed-note' style='margin-bottom:12px'>"
+      + "Every service shows a <b>main photo</b> on its card. The <b>second photo</b> is what the card "
+      + "fades to when someone points at it, and the <b>extra photos</b> are the small strip in the corner "
+      + "of the card. Tap Change to pick a different one, or Upload a photo to add your own.</div>";
+
+    draft.services.forEach(function(sv, i){
+      var gal = sv.gal || [];
+      html += "<div class='ed-item'>"
+        + "<div class='ed-head'>" + (sv.icon||"") + " <b>" + esc(sv.en||"(unnamed)") + "</b></div>"
+        + "<div class='im-slots'>"
+        +   slot("Main photo", sv.img, "img", i)
+        +   slot("Second photo", sv.img2, "img2", i)
+        + "</div>"
+        + "<div class='cap' style='margin-top:14px;font-size:.7rem;font-weight:700;"
+        +   "text-transform:uppercase;letter-spacing:.04em;color:var(--muted)'>Extra photos on the card</div>"
+        + "<div class='im-strip'>"
+        +   gal.map(function(g,j){ return slot("", g, "gal", i, j); }).join("")
+        +   "<div class='im-chip'><div class='im-box' style='border-style:dashed'>"
+        +     "<span class='none'>Add</span></div>"
+        +     "<div class='im-acts'><button data-pick='galnew' data-i='" + i + "'>Add photo</button></div></div>"
+        + "</div></div>";
+    });
+    return html;
+  }
+
+  /* ---------- the picker ---------- */
+  var pkTarget = null;
+  function openPicker(kind, i, pos){
+    pkTarget = {kind:kind, i:i, pos:pos};
+    var cur = kind==="img" ? draft.services[i].img
+            : kind==="img2" ? draft.services[i].img2
+            : (kind==="gal" ? (draft.services[i].gal||[])[pos] : null);
+    $("pkTitle").textContent = "Choose a photo for " + (draft.services[i].en || "this service");
+    $("pkGrid").innerHTML = photoList().map(function(n){
+      return "<div class='pk-item" + (n===cur ? " sel" : "") + "' data-name=\"" + esc(n) + "\">"
+        + "<img src=\"" + thumbSrc(n) + "\" alt=\"\" loading='lazy' onerror=\"this.parentNode.style.display='none'\">"
+        + "<span>" + esc(n) + (isNew(n) ? " (new)" : "") + "</span></div>";
+    }).join("");
+    $("pkBack").classList.add("open");
+  }
+  function closePicker(){ $("pkBack").classList.remove("open"); pkTarget=null; }
+
+  function applyPick(name){
+    if(!pkTarget) return;
+    var sv = draft.services[pkTarget.i];
+    if(pkTarget.kind==="img")  sv.img = name;
+    if(pkTarget.kind==="img2") sv.img2 = name;
+    if(pkTarget.kind==="gal"){ sv.gal = sv.gal||[]; sv.gal[pkTarget.pos] = name; }
+    if(pkTarget.kind==="galnew"){ sv.gal = sv.gal||[]; sv.gal.push(name); }
+    saveDraft(); closePicker(); render();
+  }
+  function dropPhoto(kind, i, pos){
+    var sv = draft.services[i];
+    if(kind==="img2") delete sv.img2;
+    if(kind==="gal" && sv.gal) sv.gal.splice(pos,1);
+    saveDraft(); render();
+  }
+
+  /* ---------- upload: resize in the browser to the three sizes the site uses ---------- */
+  function resize(img, width){
+    var w = Math.min(width, img.naturalWidth);
+    var h = Math.round(img.naturalHeight * w / img.naturalWidth);
+    var c = document.createElement("canvas"); c.width=w; c.height=h;
+    c.getContext("2d").drawImage(img,0,0,w,h);
+    return c.toDataURL("image/jpeg", 0.82);
+  }
+  function safeName(f){
+    return (f.name||"photo").replace(/\.[^.]+$/,"").toLowerCase()
+      .replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40) || "photo";
+  }
+  function handleUpload(file){
+    if(!file) return;
+    if(!/^image\//.test(file.type)){ alert("That is not an image file."); return; }
+    var fr = new FileReader();
+    fr.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var name = safeName(file), base = name, n = 2;
+        while(photoList().indexOf(name) > -1){ name = base + "-" + (n++); }
+        draft.newPhotos = draft.newPhotos || {};
+        draft.newPhotos[name] = { full: resize(img,1200), card: resize(img,640), thumb: resize(img,132) };
+        try{
+          saveDraft();
+        }catch(err){
+          delete draft.newPhotos[name];
+          alert("Could not store that photo — the browser ran out of room for drafts.\n\nPublish the photos you have already added, then add more.");
+          return;
+        }
+        applyPick(name);
+      };
+      img.onerror = function(){ alert("Could not read that image."); };
+      img.src = e.target.result;
+    };
+    fr.readAsDataURL(file);
+  }
+
   /* ---------- rendering the forms ---------- */
   function field(label, key, idx, kind, enVal, bnVal){
     var tag = kind==="area" ? "textarea" : "input";
@@ -315,25 +500,30 @@ tbody tr:hover{background:#f8fcfb}
   }
 
   function renderServices(){
-    var html="";
+    var html="<div class='ed-note' style='margin-bottom:12px'>"
+      + "These are the treatment cards on your home page. Fill in both English and Bangla &mdash; "
+      + "visitors see whichever language they have chosen.</div>";
     draft.services.forEach(function(s,i){
       var rng=tableRange(s.slug);
       html += "<div class='ed-item' data-svc='"+i+"'>"
         + "<div class='ed-head'>"+ (s.icon||"") +" <b>"+esc(s.en||"(unnamed)")+"</b>"
         + (s.slug?"<span class='badge'>"+esc(s.slug)+"</span>":"<span class='badge'>no page</span>")+"</div>"
-        + field("Name","{\"en\":\"en\",\"bn\":\"bn\"}".length?{en:"en",bn:"bn"}:null,i,"input",s.en,s.bn)
-        + field("Tagline",{en:"cne",bn:"cn"},i,"input",s.cne,s.cn)
-        + field("Description",{en:"de",bn:"db"},i,"area",s.de,s.db)
-        + single("Card price","pr",i,s.pr,"text",
-            rng ? ("Price table for this service: <b>"+rng+"</b>") : "No price-table rows.")
-        + field("Duration",{en:"dur",bn:"durbn"},i,"input",s.dur,s.durbn)
+        + field("Service name",{en:"en",bn:"bn"},i,"input",s.en,s.bn)
+        + field("Short line under it",{en:"cne",bn:"cn"},i,"input",s.cne,s.cn)
+        + field("What it is",{en:"de",bn:"db"},i,"area",s.de,s.db)
+        + single("Price on the card","pr",i,s.pr,"text",
+            rng ? ("In your price list this service runs <b>"+rng+"</b>") : "This service has no rows in the price list.")
+        + field("How long it takes",{en:"dur",bn:"durbn"},i,"input",s.dur,s.durbn)
         + "</div>";
     });
     return html;
   }
 
   function renderPrices(){
-    var html="", cats=draft.cats;
+    var html="<div class='ed-note' style='margin-bottom:12px'>"
+      + "This is your price list, also used by the cost calculator and the booking form. "
+      + "If a treatment has one fixed price, put the same number in both boxes.</div>";
+    var cats=draft.cats;
     Object.keys(cats).forEach(function(c){
       var rows=[];
       draft.prices.forEach(function(p,i){ if(p.c===c) rows.push([p,i]); });
@@ -342,12 +532,12 @@ tbody tr:hover{background:#f8fcfb}
       rows.forEach(function(pair){
         var p=pair[0], i=pair[1];
         html += "<div class='ed-item' data-price='"+i+"'>"
-          + field("Name",{en:"n",bn:"nb"},i,"input",p.n,p.nb)
-          + "<div class='ed-row'><label>Amount &#2547;</label>"
-            + "<div><span class='ed-lang'>Minimum</span><input data-idx='"+i+"' data-key='min' type='number' min='0' value='"+(+p.min||0)+"'></div>"
-            + "<div><span class='ed-lang'>Maximum</span><input data-idx='"+i+"' data-key='max' type='number' min='0' value='"+(+p.max||0)+"'></div>"
+          + field("Treatment name",{en:"n",bn:"nb"},i,"input",p.n,p.nb)
+          + "<div class='ed-row'><label>Price &#2547;</label>"
+            + "<div><span class='ed-lang'>Cheapest</span><input data-idx='"+i+"' data-key='min' type='number' min='0' value='"+(+p.min||0)+"'></div>"
+            + "<div><span class='ed-lang'>Most expensive</span><input data-idx='"+i+"' data-key='max' type='number' min='0' value='"+(+p.max||0)+"'></div>"
           + "</div>"
-          + field("Note",{en:"note",bn:"noteb"},i,"input",p.note||"",p.noteb||"")
+          + field("Small note beside it",{en:"note",bn:"noteb"},i,"input",p.note||"",p.noteb||"")
           + "</div>";
       });
     });
@@ -355,10 +545,14 @@ tbody tr:hover{background:#f8fcfb}
   }
 
   function render(){
-    $("editor").innerHTML = view==="services" ? renderServices() : renderPrices();
-    $("edFoot").innerHTML = view==="services"
-      ? ("Showing <b>"+draft.services.length+"</b> service cards")
-      : ("Showing <b>"+draft.prices.length+"</b> price rows");
+    $("editor").innerHTML = view==="services" ? renderServices()
+                       : view==="prices"   ? renderPrices()
+                       : renderImages();
+    $("edFoot").innerHTML = view==="services" ? ("Showing <b>"+draft.services.length+"</b> service cards")
+      : view==="prices" ? ("Showing <b>"+draft.prices.length+"</b> price rows")
+      : ("<b>"+photoList().length+"</b> photos available"
+         + (draft.newPhotos && Object.keys(draft.newPhotos).length
+            ? (" &middot; <b>"+Object.keys(draft.newPhotos).length+"</b> added, not published yet") : ""));
     updateDraftNote();
   }
 
@@ -367,6 +561,7 @@ tbody tr:hover{background:#f8fcfb}
     var el=e.target;
     if(!el.dataset || el.dataset.idx===undefined) return;
     var i=+el.dataset.idx, k=el.dataset.key;
+    if(view==="images") return;
     var target = view==="services" ? draft.services[i] : draft.prices[i];
     if(!target) return;
     target[k] = (k==="min"||k==="max") ? (el.value===""?0:Number(el.value)) : el.value;
@@ -455,6 +650,22 @@ tbody tr:hover{background:#f8fcfb}
         t.classList.add("active"); view=t.dataset.view; clearMsg(); render();
       });
     });
+
+    /* photo slots and the picker */
+    document.addEventListener("click", function(e){
+      var b = e.target.closest("[data-pick]");
+      if(b){ openPicker(b.dataset.pick, +b.dataset.i, b.dataset.pos===""?null:+b.dataset.pos); return; }
+      var d = e.target.closest("[data-drop]");
+      if(d){ dropPhoto(d.dataset.drop, +d.dataset.i, d.dataset.pos===""?null:+d.dataset.pos); return; }
+      var it = e.target.closest(".pk-item");
+      if(it){ applyPick(it.dataset.name); return; }
+    });
+    $("pkClose").addEventListener("click", closePicker);
+    $("pkBack").addEventListener("click", function(e){ if(e.target===$("pkBack")) closePicker(); });
+    $("pkFile").addEventListener("change", function(e){
+      handleUpload(e.target.files && e.target.files[0]); e.target.value="";
+    });
+    document.addEventListener("keydown", function(e){ if(e.key==="Escape") closePicker(); });
 
     $("checkBtn").addEventListener("click", function(){
       var r=validate();
