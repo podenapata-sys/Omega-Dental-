@@ -110,6 +110,32 @@ counts **visits**, so a patient who came three times counts three times.
 
 ---
 
+## Website content editor
+
+Press **🌐 Website** in the top bar (next to Report) to switch to the content editor;
+**📋 Records** brings you back. Same PIN.
+
+Two tabs:
+- **Services** — the 15 cards: name, tagline, description, card price, duration
+- **Prices** — the 45 price-table rows: name, minimum, maximum, note
+
+Every text field shows **English and Bangla side by side**, so nothing gets half-translated.
+Beside each card price you also see that service's price-table range, to catch a real mistake.
+They are separate on purpose — the card is a headline figure, the table lists each
+sub-procedure — so most of them differ legitimately.
+
+| Button | What it does |
+|---|---|
+| **👁 Preview** | Shows how the cards and price table will look, from your draft |
+| **✓ Check** | Flags empty fields, bad amounts and duplicates before you publish |
+| **↺ Revert draft** | Throws your draft away and goes back to the live content |
+
+**Your edits are a draft on this device until published.** The strip at the top says whether
+you have unpublished changes. Publishing to the live site is not built yet — for now the
+editor cannot change the website at all, so it is safe to explore.
+
+---
+
 ## Income report
 
 Press **📊 Report** in the top bar for:

@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Omega Dental — Website Content</title>
+<link rel="icon" href="assets/mark-square.png">
+<style>
+:root{--navy:#13294e;--navy2:#1c3a63;--teal:#57C3AD;--teal-dd:#2c8a78;--blue:#2B6CB0;
+  --orange:#F08A24;--ink:#16323c;--muted:#5b7682;--line:#e7eef1;--bg:#eef4f6;--card:#fff;
+  --ok:#1c9c6b;--due:#d9760f;--danger:#d94848;--r:16px;
+  --f:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  --fh:'Sora','Inter',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--f);color:var(--ink);background:
+  radial-gradient(900px 500px at 100% -10%,rgba(87,195,173,.16),transparent 60%),
+  radial-gradient(700px 400px at -10% 110%,rgba(43,108,176,.12),transparent 60%),var(--bg);
+  min-height:100vh;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding:18px}
+/* ---- lock screen ---- */
+#lock{position:fixed;inset:0;z-index:50;display:grid;place-items:center;
+  background:linear-gradient(160deg,#0f2444,#183a67);padding:20px}
+.lockcard{background:#fff;border-radius:22px;box-shadow:0 30px 70px -20px rgba(0,0,0,.5);
+  width:100%;max-width:360px;padding:30px 26px;text-align:center}
+.lockcard img{height:52px;margin-bottom:10px}
+.lockcard h2{font-size:1.25rem;margin-bottom:4px}
+.lockcard p{color:var(--muted);font-size:.9rem;margin:0 0 18px}
+.pin{width:100%;text-align:center;font-size:1.5rem;letter-spacing:.4em;padding:12px;
+  border:2px solid var(--line);border-radius:12px;font-family:var(--fh);font-weight:700}
+.pin:focus{outline:none;border-color:var(--teal)}
+.lockmsg{color:var(--danger);font-size:.85rem;min-height:1.1em;margin-top:8px}
+.btn{border:none;cursor:pointer;font-family:var(--fh);font-weight:700;border-radius:12px;
+  padding:12px 18px;font-size:.95rem;transition:transform .12s,box-shadow .12s,background .15s}
+.btn:active{transform:translateY(1px)}
+.btn-p{background:linear-gradient(120deg,var(--teal),var(--blue));color:#fff;
+  box-shadow:0 10px 22px -8px rgba(43,108,176,.6);width:100%;margin-top:14px}
+.btn-g{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
+.btn-g:hover{border-color:var(--teal);color:var(--teal-dd)}
+.btn-sm{padding:8px 12px;font-size:.82rem}
+.btn-o{background:linear-gradient(120deg,#F5A94C,var(--orange));color:#fff}
+/* ---- topbar ---- */
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:6px 0 18px}
+.top .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.top .brand img{height:40px}
+.top .brand b{font-family:var(--fh);font-weight:800;color:var(--navy);font-size:1.15rem;line-height:1}
+.top .brand small{display:block;font-size:.6rem;letter-spacing:.32em;color:var(--orange);font-weight:700}
+.top h1{font-size:1.05rem}
+.spacer{flex:1}
+.top .btn{white-space:nowrap}
+.hint{background:#fff6e9;border:1px solid #f6d9b0;color:#8a5a12;border-radius:12px;
+  padding:10px 14px;font-size:.82rem;margin-bottom:16px;display:flex;gap:8px;align-items:flex-start}
+/* ---- panels ---- */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:0 12px 30px -18px rgba(19,41,78,.28);padding:18px;margin-bottom:18px}
+.panel h3{font-size:1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.fld input,.fld select{padding:10px 11px;border:1.5px solid var(--line);border-radius:10px;
+  font-family:var(--f);font-size:.92rem;color:var(--ink);background:#fff;width:100%}
+.fld input:focus,.fld select:focus{outline:none;border-color:var(--teal)}
+.fld .ro{background:#f2f7f6;font-weight:700;color:var(--teal-dd);font-family:var(--fh)}
+.form-actions{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+/* ---- stats ---- */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;
+  box-shadow:0 12px 30px -18px rgba(19,41,78,.28)}
+.stat .n{font-family:var(--fh);font-weight:800;font-size:1.8rem;line-height:1.1;overflow-wrap:anywhere}
+.stat .l{font-size:.78rem;color:var(--muted);margin-top:4px;font-weight:600}
+.stat.blue .n{color:var(--blue)} .stat.teal .n{color:var(--teal-dd)}
+.stat.ok .n{color:var(--ok)} .stat.due .n{color:var(--due)}
+/* ---- toolbar ---- */
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.tabs{display:inline-flex;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px;gap:2px;max-width:100%}
+.tab{border:none;background:none;cursor:pointer;font-family:var(--fh);font-weight:700;font-size:.85rem;
+  color:var(--muted);padding:7px 15px;border-radius:999px}
+.tab.active{background:linear-gradient(120deg,var(--teal),var(--blue));color:#fff}
+.tools input[type=date],.tools input[type=month]{padding:8px 10px;border:1.5px solid var(--line);
+  border-radius:10px;font-family:var(--f);font-size:.88rem}
+/* ---- table ---- */
+.tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:0 12px 30px -18px rgba(19,41,78,.28)}
+table{border-collapse:collapse;width:100%;min-width:820px}
+th,td{padding:11px 12px;text-align:left;font-size:.86rem;border-bottom:1px solid var(--line);white-space:nowrap}
+/* Name + Service are the long columns; letting just those wrap keeps the 10-column
+   table inside its container instead of forcing a horizontal scrollbar that clipped
+   the Delete button at ~1280px. */
+th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5){white-space:normal;min-width:9ch}
+th{background:#f6faf9;font-family:var(--fh);font-weight:700;color:var(--navy);font-size:.74rem;
+  text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#f8fcfb}
+.cid{font-family:var(--fh);font-weight:700;color:var(--blue)}
+.due-pos{color:var(--due);font-weight:700} .due-zero{color:var(--ok);font-weight:700}
+.rowbtn{border:none;background:none;cursor:pointer;font-size:1rem;padding:4px 6px;border-radius:6px}
+.rowbtn:hover{background:#eef4f6}
+.rowbtn{text-decoration:none}
+.when{color:var(--muted);font-weight:600;font-size:.82em}
+.tab-bin{margin-left:6px}
+/* ---- report ---- */
+.rep{margin-bottom:18px;display:none}
+.rep h3{margin-bottom:12px}
+.rep-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+@media(max-width:820px){.rep-grid{grid-template-columns:1fr}}
+.bar-row{display:grid;grid-template-columns:74px 1fr auto;gap:10px;align-items:center;margin-bottom:7px;font-size:.85rem}
+.bar-track{background:#eef4f6;border-radius:6px;overflow:hidden;height:20px}
+.bar-fill{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--blue));border-radius:6px;min-width:2px}
+.bar-val{font-variant-numeric:tabular-nums;font-weight:700;color:var(--navy);white-space:nowrap}
+.rep-mut{color:var(--muted);font-size:.85rem}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+.badge{display:inline-block;background:#eaf6f2;color:var(--teal-dd);font-weight:700;font-size:.78rem;
+  padding:3px 9px;border-radius:999px}
+@media(max-width:820px){.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.form-grid{grid-template-columns:1fr}.top h1{display:none}}
+
+/* ---- phones: the 10-column table becomes one card per patient, so the Edit/Delete
+   buttons are reachable without scrolling 9 columns sideways ---- */
+@media(max-width:620px){
+  .tablewrap{overflow-x:visible;background:none;border:none;box-shadow:none;border-radius:0}
+  table{min-width:0}
+  thead{display:none}
+  tbody tr{display:block;position:relative;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r);box-shadow:0 10px 24px -18px rgba(19,41,78,.28);
+    padding:52px 13px 6px;margin-bottom:12px}
+  tbody tr:hover{background:var(--card)}
+  tbody td{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+    padding:8px 0;white-space:normal;font-size:.95rem;text-align:right;
+    border-bottom:1px dashed var(--line)}
+  tbody td:last-child{border-bottom:none}
+  tbody td::before{content:attr(data-label);flex:0 0 auto;text-align:left;
+    font-family:var(--fh);font-weight:700;font-size:.71rem;text-transform:uppercase;
+    letter-spacing:.04em;color:var(--muted)}
+  tbody td.actions{position:absolute;top:8px;right:10px;left:10px;padding:0;border:none;
+    display:flex;justify-content:flex-end;gap:8px}
+  tbody td.actions::before{content:none}
+  .rowbtn{min-width:44px;min-height:44px;display:inline-flex;align-items:center;
+    justify-content:center;font-size:1.15rem;background:#f2f7f9}
+  .stat{padding:14px}
+  .stat .n{font-size:1.45rem}
+  .top{flex-wrap:wrap;gap:8px}
+  .tools{flex-wrap:wrap;gap:8px}
+  #searchBox{flex:1 1 100%;min-width:0}
+}
+
+/* ---- content editor ---- */
+.ed-item{border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px;background:var(--card)}
+.ed-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.ed-head b{color:var(--navy);font-family:var(--fh)}
+.ed-row{display:grid;grid-template-columns:120px 1fr 1fr;gap:10px;align-items:start;margin-bottom:9px}
+.ed-row>label{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--muted);padding-top:10px}
+.ed-row input,.ed-row textarea,.ed-row select{width:100%;padding:9px 10px;border:1.5px solid var(--line);
+  border-radius:9px;font-family:var(--f);font-size:.9rem;background:#fff;color:var(--ink)}
+.ed-row textarea{min-height:62px;resize:vertical}
+.ed-row .bn{font-family:var(--f)}
+.ed-lang{font-size:.66rem;font-weight:700;color:var(--muted);margin-bottom:3px;display:block}
+.ed-note{font-size:.78rem;color:var(--muted)}
+.ed-warn{color:var(--orange);font-weight:600}
+.ed-err{color:var(--danger);font-weight:600}
+.dirty{background:#fff8e6}
+.ed-bar{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0;margin-bottom:12px;
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--line)}
+@media(max-width:760px){
+  .ed-row{grid-template-columns:1fr;gap:4px}
+  .ed-row>label{padding-top:6px}
+}
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <div class="lockcard">
+    <img src="assets/mark.png?v=3" alt="Omega Dental">
+    <h2 id="lockTitle">Enter PIN</h2>
+    <p id="lockSub">Website content — Omega Dental</p>
+    <input class="pin" id="pinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="&bull;&bull;&bull;&bull;">
+    <div class="lockmsg" id="lockMsg"></div>
+    <button class="btn btn-p" id="pinBtn">Unlock</button>
+  </div>
+</div>
+
+<div id="dash" style="display:none">
+  <div class="top">
+    <a class="brand" href="index.html">
+      <img src="assets/mark.png?v=3" alt="Omega Dental">
+      <span><b>OMEGA<small>DENTAL</small></b></span>
+    </a>
+    <h1>Website Content</h1>
+    <span class="spacer"></span>
+    <a class="btn btn-p btn-sm" id="recordsBtn" href="dashboard.html" style="width:auto;text-decoration:none;display:inline-flex;align-items:center">&#128203; Records</a>
+    <button class="btn btn-g btn-sm" id="lockBtn">&#128274; Lock</button>
+  </div>
+
+  <div class="hint" id="draftNote"><span id="draftIcon">&#128221;</span> <span id="draftText">Loaded from the live website.</span></div>
+
+  <div class="ed-bar">
+    <div class="tabs">
+      <button class="tab active" data-view="services">Services</button>
+      <button class="tab" data-view="prices">Prices</button>
+    </div>
+    <span class="spacer"></span>
+    <button class="btn btn-g btn-sm" id="previewBtn">&#128065; Preview</button>
+    <button class="btn btn-g btn-sm" id="revertBtn">&#8634; Revert draft</button>
+    <button class="btn btn-o btn-sm" id="checkBtn">&#10003; Check</button>
+  </div>
+
+  <div class="panel" id="msgPanel" style="display:none"><div id="msgBody"></div></div>
+
+  <div id="editor"></div>
+
+  <div class="panel" id="previewPanel" style="display:none">
+    <h3>&#128065; Preview &mdash; how the website will look</h3>
+    <div class="ed-note" style="margin-bottom:12px">Rendered from your draft, not from the live site.</div>
+    <h4 style="margin:14px 0 8px;color:var(--navy)">Service cards</h4>
+    <div id="pvServices"></div>
+    <h4 style="margin:18px 0 8px;color:var(--navy)">Price table</h4>
+    <div id="pvPrices"></div>
+  </div>
+
+  <div class="foot" id="edFoot"></div>
+</div>
+
+<script src="assets/content.js?v=1"></script>
+<script>
+(function(){
+  "use strict";
+  var $=function(id){return document.getElementById(id);};
+  var LS_DRAFT="od_content_draft";
+  var DEFAULT_PIN="2518";
+  var LS_PIN="od_pin";
+
+  /* ---------- PIN lock (same rules as the records dashboard) ---------- */
+  function digits(s){ return (s||"").replace(/\D/g,""); }
+  function checkPin(p){ return p===DEFAULT_PIN || localStorage.getItem(LS_PIN)===btoa("od:"+p); }
+  function tryUnlock(){
+    var p=digits($("pinInput").value);
+    if(checkPin(p)){ $("lock").style.display="none"; $("dash").style.display="block"; render(); }
+    else { $("lockMsg").textContent="Wrong PIN."; $("pinInput").value=""; $("pinInput").focus(); }
+  }
+
+  /* ---------- draft state ----------
+     The editor never touches the live site in this step: it edits a copy held in
+     localStorage. `shipped` is what assets/content.js currently contains, so
+     Revert always has something truthful to go back to. */
+  var shipped=null, draft=null, view="services";
+
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  function loadShipped(){
+    var C=window.OMEGA_CONTENT;
+    if(!C||!C.services){ return {cats:{},prices:[],services:[]}; }
+    return clone({cats:C.cats,prices:C.prices,services:C.services});
+  }
+  function loadDraft(){
+    try{ var raw=localStorage.getItem(LS_DRAFT); if(raw) return JSON.parse(raw); }catch(e){}
+    return null;
+  }
+  function saveDraft(){
+    try{ localStorage.setItem(LS_DRAFT, JSON.stringify(draft)); }
+    catch(e){ msg("Could not save your draft &mdash; browser storage may be full.", true); }
+    updateDraftNote();
+  }
+  function isDirty(){ return JSON.stringify(draft)!==JSON.stringify(shipped); }
+  function updateDraftNote(){
+    if(isDirty()){
+      $("draftIcon").innerHTML="&#128221;";
+      $("draftText").innerHTML="<b>Unpublished draft</b> &mdash; saved on this device only. The live website still shows the old content.";
+      $("draftNote").style.background="#fff8e6";
+    }else{
+      $("draftIcon").innerHTML="&#9989;";
+      $("draftText").textContent="Matches the live website. No unpublished changes.";
+      $("draftNote").style.background="";
+    }
+  }
+
+  function msg(html, isErr){
+    $("msgPanel").style.display="block";
+    $("msgBody").innerHTML="<div class='"+(isErr?"ed-err":"")+"'>"+html+"</div>";
+    $("msgPanel").scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
+  function clearMsg(){ $("msgPanel").style.display="none"; }
+
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function fmt(n){ return Number(n||0).toLocaleString("en-IN"); }
+
+  /* price-table range for a service, shown beside the card price so a real
+     mistake is visible without the editor deriving one from the other */
+  function tableRange(slug){
+    var rows=draft.prices.filter(function(p){ return p.slug===slug; });
+    if(!rows.length) return null;
+    var lo=Math.min.apply(null,rows.map(function(r){return +r.min||0;}));
+    var hi=Math.max.apply(null,rows.map(function(r){return +r.max||+r.min||0;}));
+    return lo===hi ? ("&#2547;"+fmt(lo)) : ("&#2547;"+fmt(lo)+"&ndash;"+fmt(hi));
+  }
+
+  /* ---------- rendering the forms ---------- */
+  function field(label, key, idx, kind, enVal, bnVal){
+    var tag = kind==="area" ? "textarea" : "input";
+    var close = kind==="area" ? "</textarea>" : "";
+    function box(lang,val){
+      return "<div><span class='ed-lang'>"+(lang==="en"?"English":"&#2476;&#2494;&#2434;&#2482;&#2494;")+"</span>"
+        + "<"+tag+" data-idx='"+idx+"' data-key='"+key[lang]+"'"
+        + (kind==="area" ? ">"+esc(val)+close : " value=\""+esc(val)+"\">")
+        + "</div>";
+    }
+    return "<div class='ed-row'><label>"+label+"</label>"+box("en",enVal)+box("bn",bnVal)+"</div>";
+  }
+  function single(label, key, idx, val, type, hint){
+    return "<div class='ed-row'><label>"+label+"</label>"
+      + "<div><input data-idx='"+idx+"' data-key='"+key+"' type='"+(type||"text")+"' value=\""+esc(val)+"\"></div>"
+      + "<div class='ed-note' style='padding-top:9px'>"+(hint||"")+"</div></div>";
+  }
+
+  function renderServices(){
+    var html="";
+    draft.services.forEach(function(s,i){
+      var rng=tableRange(s.slug);
+      html += "<div class='ed-item' data-svc='"+i+"'>"
+        + "<div class='ed-head'>"+ (s.icon||"") +" <b>"+esc(s.en||"(unnamed)")+"</b>"
+        + (s.slug?"<span class='badge'>"+esc(s.slug)+"</span>":"<span class='badge'>no page</span>")+"</div>"
+        + field("Name","{\"en\":\"en\",\"bn\":\"bn\"}".length?{en:"en",bn:"bn"}:null,i,"input",s.en,s.bn)
+        + field("Tagline",{en:"cne",bn:"cn"},i,"input",s.cne,s.cn)
+        + field("Description",{en:"de",bn:"db"},i,"area",s.de,s.db)
+        + single("Card price","pr",i,s.pr,"text",
+            rng ? ("Price table for this service: <b>"+rng+"</b>") : "No price-table rows.")
+        + field("Duration",{en:"dur",bn:"durbn"},i,"input",s.dur,s.durbn)
+        + "</div>";
+    });
+    return html;
+  }
+
+  function renderPrices(){
+    var html="", cats=draft.cats;
+    Object.keys(cats).forEach(function(c){
+      var rows=[];
+      draft.prices.forEach(function(p,i){ if(p.c===c) rows.push([p,i]); });
+      if(!rows.length) return;
+      html += "<h3 style='margin:16px 0 8px;color:var(--navy)'>"+esc(cats[c].en)+" &middot; "+esc(cats[c].bn)+"</h3>";
+      rows.forEach(function(pair){
+        var p=pair[0], i=pair[1];
+        html += "<div class='ed-item' data-price='"+i+"'>"
+          + field("Name",{en:"n",bn:"nb"},i,"input",p.n,p.nb)
+          + "<div class='ed-row'><label>Amount &#2547;</label>"
+            + "<div><span class='ed-lang'>Minimum</span><input data-idx='"+i+"' data-key='min' type='number' min='0' value='"+(+p.min||0)+"'></div>"
+            + "<div><span class='ed-lang'>Maximum</span><input data-idx='"+i+"' data-key='max' type='number' min='0' value='"+(+p.max||0)+"'></div>"
+          + "</div>"
+          + field("Note",{en:"note",bn:"noteb"},i,"input",p.note||"",p.noteb||"")
+          + "</div>";
+      });
+    });
+    return html;
+  }
+
+  function render(){
+    $("editor").innerHTML = view==="services" ? renderServices() : renderPrices();
+    $("edFoot").innerHTML = view==="services"
+      ? ("Showing <b>"+draft.services.length+"</b> service cards")
+      : ("Showing <b>"+draft.prices.length+"</b> price rows");
+    updateDraftNote();
+  }
+
+  /* ---------- edits ---------- */
+  document.addEventListener("input", function(e){
+    var el=e.target;
+    if(!el.dataset || el.dataset.idx===undefined) return;
+    var i=+el.dataset.idx, k=el.dataset.key;
+    var target = view==="services" ? draft.services[i] : draft.prices[i];
+    if(!target) return;
+    target[k] = (k==="min"||k==="max") ? (el.value===""?0:Number(el.value)) : el.value;
+    el.closest(".ed-item").classList.add("dirty");
+    saveDraft();
+  });
+
+  /* ---------- validation ---------- */
+  function validate(){
+    var errs=[], warns=[];
+    draft.services.forEach(function(s,i){
+      var who="Service "+(i+1)+" ("+(s.en||s.slug||"unnamed")+")";
+      if(!String(s.en||"").trim()) errs.push(who+": English name is empty.");
+      if(!String(s.bn||"").trim()) errs.push(who+": Bangla name is empty.");
+      if(!String(s.de||"").trim()) errs.push(who+": English description is empty.");
+      if(!String(s.db||"").trim()) errs.push(who+": Bangla description is empty.");
+      if(!String(s.pr||"").trim()) errs.push(who+": card price is empty.");
+    });
+    var seen={};
+    draft.services.forEach(function(s){
+      if(!s.slug) return;
+      if(seen[s.slug]) errs.push("Two services share the page name \""+s.slug+"\".");
+      seen[s.slug]=1;
+    });
+    draft.prices.forEach(function(p,i){
+      var who="Price row "+(i+1)+" ("+(p.n||"unnamed")+")";
+      if(!String(p.n||"").trim()) errs.push(who+": English name is empty.");
+      if(!String(p.nb||"").trim()) errs.push(who+": Bangla name is empty.");
+      if(isNaN(+p.min)) errs.push(who+": minimum is not a number.");
+      if(isNaN(+p.max)) errs.push(who+": maximum is not a number.");
+      if(+p.min > +p.max) errs.push(who+": minimum ("+fmt(p.min)+") is more than the maximum ("+fmt(p.max)+").");
+    });
+    /* a card price outside its own table range is usually deliberate, so warn only */
+    draft.services.forEach(function(s){
+      if(!s.slug) return;
+      var rows=draft.prices.filter(function(p){return p.slug===s.slug;});
+      if(!rows.length) return;
+      var nums=(String(s.pr).match(/[\d,]+/g)||[]).map(function(x){return +x.replace(/,/g,"");});
+      if(!nums.length) return;
+      var lo=Math.min.apply(null,rows.map(function(r){return +r.min||0;}));
+      var hi=Math.max.apply(null,rows.map(function(r){return +r.max||+r.min||0;}));
+      if(Math.min.apply(null,nums)<lo || Math.max.apply(null,nums)>hi)
+        warns.push(s.en+": card price \""+s.pr+"\" falls outside its price-table range (&#2547;"+fmt(lo)+"&ndash;"+fmt(hi)+"). This is often intentional.");
+    });
+    return {errs:errs, warns:warns};
+  }
+
+  /* ---------- preview ---------- */
+  function previewServices(){
+    return "<div style='display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px'>"
+      + draft.services.map(function(s){
+          return "<div class='ed-item' style='margin:0'>"
+            + "<div style='font-family:var(--fh);font-weight:800;color:var(--teal-dd);font-size:1.05rem'>"+esc(s.pr)+"</div>"
+            + "<div style='font-family:var(--fh);font-weight:700;color:var(--navy);margin:4px 0 2px'>"+esc(s.en)+"</div>"
+            + "<div style='color:var(--muted);font-size:.82rem'>"+esc(s.bn)+"</div>"
+            + "<div style='font-size:.84rem;margin-top:6px'>"+esc(s.de)+"</div></div>";
+        }).join("") + "</div>";
+  }
+  function previewPrices(){
+    var html="<table style='width:100%;min-width:0'><tbody>";
+    Object.keys(draft.cats).forEach(function(c){
+      var rows=draft.prices.filter(function(p){return p.c===c;});
+      if(!rows.length) return;
+      html+="<tr><td colspan='2' style='background:#f6faf9;font-weight:700;color:var(--navy)'>"+esc(draft.cats[c].en)+"</td></tr>";
+      rows.forEach(function(p){
+        var price = (+p.min===+p.max) ? ("&#2547; "+fmt(p.min)) : ("&#2547; "+fmt(p.min)+" &ndash; "+fmt(p.max));
+        html+="<tr><td>"+esc(p.n)+"</td><td class='num'>"+price+"</td></tr>";
+      });
+    });
+    return html+"</tbody></table>";
+  }
+
+  /* ---------- wire up ---------- */
+  document.addEventListener("DOMContentLoaded", function(){
+    shipped = loadShipped();
+    draft = loadDraft() || clone(shipped);
+
+    $("pinBtn").addEventListener("click", tryUnlock);
+    $("pinInput").addEventListener("keydown", function(e){ if(e.key==="Enter") tryUnlock(); });
+    $("pinInput").focus();
+    $("lockBtn").addEventListener("click", function(){ location.reload(); });
+
+    document.querySelectorAll(".tab").forEach(function(t){
+      t.addEventListener("click", function(){
+        document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("active");});
+        t.classList.add("active"); view=t.dataset.view; clearMsg(); render();
+      });
+    });
+
+    $("checkBtn").addEventListener("click", function(){
+      var r=validate();
+      if(r.errs.length){
+        msg("<b>"+r.errs.length+" problem(s) to fix:</b><ul><li>"+r.errs.join("</li><li>")+"</li></ul>", true);
+      }else if(r.warns.length){
+        msg("<b>Looks good.</b> "+r.warns.length+" thing(s) worth a glance:<ul class='ed-warn'><li>"
+            + r.warns.join("</li><li>")+"</li></ul>");
+      }else{
+        msg("<b>All good.</b> Every field is filled in both languages and the amounts make sense.");
+      }
+    });
+
+    $("previewBtn").addEventListener("click", function(){
+      var pn=$("previewPanel"), open=pn.style.display==="block";
+      pn.style.display = open ? "none" : "block";
+      $("previewBtn").innerHTML = open ? "&#128065; Preview" : "&#128065; Hide preview";
+      if(!open){
+        $("pvServices").innerHTML=previewServices();
+        $("pvPrices").innerHTML=previewPrices();
+        pn.scrollIntoView({behavior:"smooth",block:"nearest"});
+      }
+    });
+
+    $("revertBtn").addEventListener("click", function(){
+      if(!isDirty()){ msg("There is nothing to revert &mdash; your draft already matches the live website."); return; }
+      if(!confirm("Discard your draft and go back to what the live website shows?\n\nThis cannot be undone.")) return;
+      draft = clone(shipped);
+      try{ localStorage.removeItem(LS_DRAFT); }catch(e){}
+      clearMsg(); render();
+      msg("Draft discarded. You are back to the live website content.");
+    });
+  });
+})();
+</script>
+</body>
+</html>
