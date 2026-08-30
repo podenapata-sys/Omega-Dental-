@@ -1059,7 +1059,13 @@ tbody tr:hover{background:#f8fcfb}
     }catch(e){
       setBtn("☁ Backup to Drive");
       alert("Drive backup failed: " + (e.message||e) +
-        "\n\nChecklist: (1) enable the Drive API, (2) add https://podenapata-sys.github.io to the OAuth client's Authorized JavaScript origins, (3) add yourself as an OAuth test user.");
+        "\n\nIn Google Cloud Console, for the project that owns this OAuth client:" +
+        "\n1. APIs & Services \u2192 Library \u2192 enable Google Drive API." +
+        "\n2. OAuth consent screen \u2192 Audience \u2192 Publish app. This app asks only for" +
+        "\n   drive.file (files it created), a non-sensitive scope, so publishing needs no" +
+        "\n   Google review. Leaving it in Testing blocks every account not listed as a tester." +
+        "\n3. Credentials \u2192 the Web client \u2192 Authorized JavaScript origins must list" +
+        "\n   " + location.origin);
     }finally{ busy = false; }
   }
   init();

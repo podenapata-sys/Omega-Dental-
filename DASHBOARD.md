@@ -297,9 +297,20 @@ automatically when that value is filled in.
 ### Google Drive backup
 1. Google Cloud Console → APIs & Services → Library → enable the **Google Drive API**.
 2. Credentials → the Web OAuth client → **Authorized JavaScript origins** → add
-   `https://podenapata-sys.github.io` (no redirect URI needed).
-3. OAuth consent screen → if it is in "Testing", add the clinic's Google account under
-   **Test users**.
+   `https://podenapata-sys.github.io` (no redirect URI needed). Add the custom domain
+   here too once the clinic has one, or backup breaks the day the domain changes.
+3. OAuth consent screen → **Audience** → **Publish app**.
+
+**Publish it — do not leave it in Testing.** While the app is in Testing, Google blocks
+every account that is not on the Test users list with *"has not completed the Google
+verification process"*. Publishing normally means a Google review, but not here: the
+dashboard asks only for `drive.file`, which lets it see **files it created itself** and
+nothing else in your Drive. Google classes that as non-sensitive, so a `drive.file`-only
+app can be published straight away with no review, no video, and no security assessment.
+
+If you would rather not publish, the alternative is OAuth consent screen → **Test users**
+→ add every Google account that will press *Backup to Drive*. That works, but you must
+remember to add each new account, and nobody else can use the button.
 
 The client ID lives in `assets/firebase-config.js` as `window.OMEGA_GOOGLE_CLIENT_ID`.
 Leave it empty to hide the Drive button. The app requests the `drive.file` scope only,
