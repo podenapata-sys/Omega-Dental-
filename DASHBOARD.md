@@ -221,6 +221,55 @@ Lock alone does not stop someone who knows the PIN from reaching your cloud reco
 
 ---
 
+## Email alerts for new bookings
+
+The dashboard beeps only while it is open. To be told about a booking even when nobody is
+at the computer, the site can email the clinic every time someone books. It is free —
+a Google account may send about 100 of these a day, far more than a clinic receives.
+
+**This is off until it is set up.** With no address configured the booking form behaves
+exactly as before.
+
+### Setting it up (about five minutes, once)
+
+1. Sign in to the Google account that should receive the alerts and open
+   [script.google.com](https://script.google.com) → **New project**.
+2. Delete whatever is in the editor and paste in the whole of
+   [`tools/booking-alert.gs`](tools/booking-alert.gs).
+3. At the top of the file change two lines:
+   - `TO_EMAIL` — the address to alert (it can be the same account, or the manager's).
+   - `SHARED_TOKEN` — any word you invent, e.g. `omega-2518-alert`. Write it down.
+4. **Deploy** → **New deployment** → type **Web app**.
+   - *Execute as*: **Me**
+   - *Who has access*: **Anyone**
+   Press Deploy, allow the permissions it asks for, and copy the **Web app URL**
+   (it starts `https://script.google.com/macros/s/…/exec`).
+5. Open `assets/firebase-config.js` and fill in the two empty lines:
+
+   ```js
+   window.OMEGA_ALERT_URL   = "https://script.google.com/macros/s/…/exec";
+   window.OMEGA_ALERT_TOKEN = "omega-2518-alert";
+   ```
+
+6. Save and publish the site, then make one test booking on the website and check the inbox.
+
+The email carries the patient's name, a tappable phone number, the treatment, the date and
+time they asked for, their note, and a **Reply on WhatsApp** button. Emergency requests are
+flagged at the top.
+
+### A caveat worth knowing
+The token sits in the website's page source, so a determined person could read it and send
+fake alerts. The script only ever emails your one fixed address, so the worst case is junk
+in that inbox — never a leak of patient data. It is a speed bump against random bots, not a
+secret. If the inbox ever does get spammed, change `SHARED_TOKEN` in both places and
+redeploy.
+
+### Turning it off
+Empty `OMEGA_ALERT_URL` in `assets/firebase-config.js`. Bookings keep working and keep
+reaching the dashboard; only the emails stop.
+
+---
+
 ## One-time setup (already done — for reference)
 
 ### Firebase

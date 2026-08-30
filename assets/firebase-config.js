@@ -22,3 +22,8 @@ window.OMEGA_APPCHECK_KEY = "";
    the app can only touch files it creates). Leave empty to hide the Drive button. */
 window.OMEGA_GOOGLE_CLIENT_ID = "1086374684130-lbbk3nm75ekp9alubf211lvb162m0i3l.apps.googleusercontent.com";
 
+/* Booking alerts by email. Paste the Web app URL from tools/booking-alert.gs, and
+   the same token you set inside that script. Leave OMEGA_ALERT_URL empty to turn
+   alerts off — bookings still save to the dashboard and still open WhatsApp. */
+window.OMEGA_ALERT_URL   = "";
+window.OMEGA_ALERT_TOKEN = "";

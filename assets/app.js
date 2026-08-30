@@ -104,7 +104,8 @@ const I18N = {
     consent_alert:"Please tick the consent box so we can contact you.",
     book_wa_note:'🔒 Your details are sent to us via WhatsApp. See our <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.',
     f_select:"Select a treatment", f_submit:"Send via WhatsApp", f_wa:"Quick WhatsApp",
-    f_success:"Opening WhatsApp with your appointment details…",
+    f_success:"Your request is saved. Send it on WhatsApp so we can confirm quickly.",
+    f_send_wa:"Send on WhatsApp",
     foot_about:"Modern, painless and affordable dental care in Dhaka. Healthy smiles for the whole family.",
     foot_links:"Quick Links", foot_services:"Services", foot_contact:"Contact",
     foot_rights:"All rights reserved.",
@@ -223,7 +224,8 @@ const I18N = {
     consent_alert:"যোগাযোগ করতে অনুগ্রহ করে সম্মতির ঘরটি টিক দিন।",
     book_wa_note:'🔒 আপনার তথ্য হোয়াটসঅ্যাপে আমাদের কাছে পাঠানো হয়। দেখুন আমাদের <a href="privacy-policy.html" target="_blank" rel="noopener">প্রাইভেসি পলিসি</a>।',
     f_select:"একটি চিকিৎসা নির্বাচন করুন", f_submit:"হোয়াটসঅ্যাপে পাঠান", f_wa:"দ্রুত হোয়াটসঅ্যাপ",
-    f_success:"আপনার অ্যাপয়েন্টমেন্টের তথ্যসহ হোয়াটসঅ্যাপ খোলা হচ্ছে…",
+    f_success:"আপনার অনুরোধ সংরক্ষিত হয়েছে। দ্রুত নিশ্চিত করতে হোয়াটসঅ্যাপে পাঠান।",
+    f_send_wa:"হোয়াটসঅ্যাপে পাঠান",
     foot_about:"ঢাকায় আধুনিক, ব্যথাহীন ও সাশ্রয়ী খরচে দাঁতের চিকিৎসা। পুরো পরিবারের সুস্থ হাসি।",
     foot_links:"দ্রুত লিংক", foot_services:"সেবা", foot_contact:"যোগাযোগ",
     foot_rights:"সর্বস্বত্ব সংরক্ষিত।",
@@ -888,9 +890,45 @@ function submitBooking(e){
   ].filter(Boolean);
   const url = `https://wa.me/${OMEGA.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`;
   const note = document.getElementById("bookSuccess");
-  if(note){ note.textContent = t("f_success"); note.style.display="block"; }
+  if(note){
+    /* Always offer a tappable WhatsApp link as well as opening it automatically:
+       phone browsers frequently block the popup, and until now that left the
+       patient with nothing to press and the clinic with no message. */
+    note.innerHTML = `<div>${escapeHtml(t("f_success"))}</div>`
+      + `<a class="btn btn-wa" href="${url}" target="_blank" rel="noopener"`
+      + ` style="display:inline-flex;align-items:center;gap:8px;margin-top:10px;width:auto;text-decoration:none">`
+      + `${escapeHtml(t("f_send_wa"))}</a>`;
+    note.style.display="block";
+  }
   try{ if(window.omegaSaveBooking) window.omegaSaveBooking(data); }catch(e){}
+  sendBookingAlert(data);
   window.open(url, "_blank");
+}
+
+/* Email the clinic about a new booking, via the owner's own Google Apps Script
+   (see tools/booking-alert.gs). Off entirely when OMEGA_ALERT_URL is empty.
+
+   Uses sendBeacon rather than fetch: window.open() runs immediately after this,
+   so the page may go to the background or navigate, which cancels a normal
+   request. A beacon is queued by the browser and delivered regardless. Apps
+   Script sends no CORS headers, so this is a fire-and-forget text/plain post -
+   there is no reply to read, and a failure must never disturb the booking. */
+function sendBookingAlert(data){
+  try{
+    const url = (window.OMEGA_ALERT_URL || "").trim();
+    if(!url) return;
+    const payload = JSON.stringify({
+      token: window.OMEGA_ALERT_TOKEN || "",
+      name: data.name, phone: data.phone, service: data.service,
+      date: data.date, time: data.time, msg: data.msg, emerg: !!data.emerg
+    });
+    if(navigator.sendBeacon){
+      navigator.sendBeacon(url, new Blob([payload], {type:"text/plain;charset=UTF-8"}));
+    }else{
+      fetch(url, {method:"POST", mode:"no-cors", keepalive:true,
+                  headers:{"Content-Type":"text/plain;charset=UTF-8"}, body:payload});
+    }
+  }catch(e){ /* an alert failing must not break the booking */ }
 }
 
 /* ----- Marquee ----- */
