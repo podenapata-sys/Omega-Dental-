@@ -26,4 +26,4 @@ window.OMEGA_GOOGLE_CLIENT_ID = "1086374684130-lbbk3nm75ekp9alubf211lvb162m0i3l.
    the same token you set inside that script. Leave OMEGA_ALERT_URL empty to turn
    alerts off — bookings still save to the dashboard and still open WhatsApp. */
 window.OMEGA_ALERT_URL   = "https://script.google.com/macros/s/AKfycbzvljB_AMWHtE6-EP8fw1Rbtj7hNnvqf3MRTzs27Oe6kfwjCMHRZnKowVbB2X2reN8e/exec";
-window.OMEGA_ALERT_TOKEN = "omega-dental-2026-alert";
+window.OMEGA_ALERT_TOKEN = "Omega.JS";
