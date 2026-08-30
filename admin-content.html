@@ -236,6 +236,7 @@ tbody tr:hover{background:#f8fcfb}
       <button class="tab active" data-view="services">Services</button>
       <button class="tab" data-view="prices">Prices</button>
       <button class="tab" data-view="images">Photos</button>
+      <button class="tab" data-view="gallery">Gallery</button>
     </div>
     <span class="spacer"></span>
     <button class="btn btn-g btn-sm" id="previewBtn">&#128065; Preview</button>
@@ -254,6 +255,8 @@ tbody tr:hover{background:#f8fcfb}
     <div id="pvServices"></div>
     <h4 style="margin:18px 0 8px;color:var(--navy)">Price table</h4>
     <div id="pvPrices"></div>
+    <h4 style="margin:18px 0 8px;color:var(--navy)">Gallery</h4>
+    <div id="pvGallery"></div>
   </div>
 
   <div class="foot" id="edFoot"></div>
@@ -301,7 +304,8 @@ tbody tr:hover{background:#f8fcfb}
   function loadShipped(){
     var C=window.OMEGA_CONTENT;
     if(!C||!C.services){ return {cats:{},prices:[],services:[]}; }
-    return clone({cats:C.cats,prices:C.prices,services:C.services});
+    return clone({cats:C.cats, prices:C.prices, services:C.services,
+                  gallery:C.gallery||[], galleryCats:C.galleryCats||{}});
   }
   function loadDraft(){
     try{ var raw=localStorage.getItem(LS_DRAFT); if(raw) return JSON.parse(raw); }catch(e){}
@@ -410,14 +414,73 @@ tbody tr:hover{background:#f8fcfb}
     return html;
   }
 
+
+  /* ================= GALLERY =================
+     The public gallery page builds its grid and its category tabs from this
+     list, so a photo added here shows up there once published. Reuses the same
+     picker and upload as the Photos tab - a gallery photo is just a photo name
+     plus a category and a caption. */
+  function renderGallery(){
+    var cats = draft.galleryCats || {};
+    var html = "<div class='ed-note' style='margin-bottom:12px'>"
+      + "These are the photos on your Gallery page. Each one needs a <b>category</b>, so it shows "
+      + "under the right tab, and a caption in both languages.</div>"
+      + "<div class='ed-item' style='display:flex;align-items:center;gap:12px;flex-wrap:wrap'>"
+      + "<b style='color:var(--navy);font-family:var(--fh)'>Add a photo to the gallery</b>"
+      + "<span class='spacer'></span>"
+      + "<button class='btn btn-p btn-sm' style='width:auto' data-pick='gnew' data-i='0'>&#10133; Add photo</button>"
+      + "</div>";
+
+    (draft.gallery || []).forEach(function(g, i){
+      var opts = Object.keys(cats).map(function(k){
+        return "<option value='" + k + "'" + (g.cat===k ? " selected" : "") + ">"
+             + esc(cats[k].en) + "</option>";
+      }).join("");
+      var unknown = !cats[g.cat];
+      html += "<div class='ed-item'>"
+        + "<div style='display:flex;gap:14px;flex-wrap:wrap'>"
+        +   "<div class='im-slot'>"
+        +     "<div class='im-box'>"
+        +       (g.photo ? "<img src=\"" + thumbSrc(g.photo) + "\" alt=\"\" onerror=\"this.style.display='none'\">"
+                          + (isNew(g.photo) ? "<span class='im-new'>NEW</span>" : "")
+                        : "<span class='none'>No photo</span>")
+        +     "</div>"
+        +     "<div class='im-acts'>"
+        +       "<button data-pick='gphoto' data-i='" + i + "'>Change</button>"
+        +       "<button class='x' title='Remove from gallery' data-gdrop='" + i + "'>&times;</button>"
+        +     "</div>"
+        +   "</div>"
+        +   "<div style='flex:1;min-width:260px'>"
+        +     "<div class='ed-row' style='grid-template-columns:110px 1fr'>"
+        +       "<label>Shows under</label>"
+        +       "<div><select data-gidx='" + i + "' data-key='cat'>" + opts
+        +         (unknown ? "<option value='" + esc(g.cat) + "' selected>" + esc(g.cat) + " (unknown)</option>" : "")
+        +       "</select></div></div>"
+        +     "<div class='ed-row' style='grid-template-columns:110px 1fr 1fr'>"
+        +       "<label>Caption</label>"
+        +       "<div><span class='ed-lang'>English</span>"
+        +         "<input data-gidx='" + i + "' data-key='en' value=\"" + esc(g.en) + "\"></div>"
+        +       "<div><span class='ed-lang'>&#2476;&#2494;&#2434;&#2482;&#2494;</span>"
+        +         "<input data-gidx='" + i + "' data-key='bn' value=\"" + esc(g.bn) + "\"></div>"
+        +     "</div>"
+        +   "</div>"
+        + "</div></div>";
+    });
+    return html;
+  }
+
   /* ---------- the picker ---------- */
   var pkTarget = null;
   function openPicker(kind, i, pos){
     pkTarget = {kind:kind, i:i, pos:pos};
     var cur = kind==="img" ? draft.services[i].img
             : kind==="img2" ? draft.services[i].img2
-            : (kind==="gal" ? (draft.services[i].gal||[])[pos] : null);
-    $("pkTitle").textContent = "Choose a photo for " + (draft.services[i].en || "this service");
+            : kind==="gal" ? (draft.services[i].gal||[])[pos]
+            : kind==="gphoto" ? (draft.gallery[i]||{}).photo
+            : null;
+    $("pkTitle").textContent = (kind==="gphoto"||kind==="gnew")
+      ? "Choose a photo for the gallery"
+      : ("Choose a photo for " + (draft.services[i].en || "this service"));
     $("pkGrid").innerHTML = photoList().map(function(n){
       return "<div class='pk-item" + (n===cur ? " sel" : "") + "' data-name=\"" + esc(n) + "\">"
         + "<img src=\"" + thumbSrc(n) + "\" alt=\"\" loading='lazy' onerror=\"this.parentNode.style.display='none'\">"
@@ -429,6 +492,18 @@ tbody tr:hover{background:#f8fcfb}
 
   function applyPick(name){
     if(!pkTarget) return;
+    if(pkTarget.kind==="gphoto"){
+      draft.gallery[pkTarget.i].photo = name;
+      saveDraft(); closePicker(); render(); return;
+    }
+    if(pkTarget.kind==="gnew"){
+      draft.gallery = draft.gallery || [];
+      var firstCat = Object.keys(draft.galleryCats||{})[0] || "";
+      draft.gallery.unshift({photo:name, cat:firstCat, en:"", bn:""});
+      saveDraft(); closePicker(); render();
+      msg("Photo added to the gallery. Give it a caption in both languages, and check it is under the right tab.");
+      return;
+    }
     var sv = draft.services[pkTarget.i];
     if(pkTarget.kind==="img")  sv.img = name;
     if(pkTarget.kind==="img2") sv.img2 = name;
@@ -547,9 +622,11 @@ tbody tr:hover{background:#f8fcfb}
   function render(){
     $("editor").innerHTML = view==="services" ? renderServices()
                        : view==="prices"   ? renderPrices()
+                       : view==="gallery"  ? renderGallery()
                        : renderImages();
     $("edFoot").innerHTML = view==="services" ? ("Showing <b>"+draft.services.length+"</b> service cards")
       : view==="prices" ? ("Showing <b>"+draft.prices.length+"</b> price rows")
+      : view==="gallery" ? ("Showing <b>"+(draft.gallery||[]).length+"</b> gallery photos")
       : ("<b>"+photoList().length+"</b> photos available"
          + (draft.newPhotos && Object.keys(draft.newPhotos).length
             ? (" &middot; <b>"+Object.keys(draft.newPhotos).length+"</b> added, not published yet") : ""));
@@ -557,17 +634,27 @@ tbody tr:hover{background:#f8fcfb}
   }
 
   /* ---------- edits ---------- */
-  document.addEventListener("input", function(e){
+  /* select elements fire change; inputs fire input - handle both with one function */
+  function onFieldEdit(e){
     var el=e.target;
-    if(!el.dataset || el.dataset.idx===undefined) return;
+    if(!el.dataset) return;
+    /* gallery fields carry data-gidx, so this must come before the data-idx guard */
+    if(el.dataset.gidx !== undefined){
+      var gi = +el.dataset.gidx, g = (draft.gallery||[])[gi];
+      if(g){ g[el.dataset.key] = el.value; el.closest(".ed-item").classList.add("dirty"); saveDraft(); }
+      return;
+    }
+    if(el.dataset.idx===undefined) return;
     var i=+el.dataset.idx, k=el.dataset.key;
-    if(view==="images") return;
+    if(view==="images" || view==="gallery") return;
     var target = view==="services" ? draft.services[i] : draft.prices[i];
     if(!target) return;
     target[k] = (k==="min"||k==="max") ? (el.value===""?0:Number(el.value)) : el.value;
     el.closest(".ed-item").classList.add("dirty");
     saveDraft();
-  });
+  }
+  document.addEventListener("input", onFieldEdit);
+  document.addEventListener("change", onFieldEdit);
 
   /* ---------- validation ---------- */
   function validate(){
@@ -594,6 +681,15 @@ tbody tr:hover{background:#f8fcfb}
       if(isNaN(+p.max)) errs.push(who+": maximum is not a number.");
       if(+p.min > +p.max) errs.push(who+": minimum ("+fmt(p.min)+") is more than the maximum ("+fmt(p.max)+").");
     });
+    (draft.gallery||[]).forEach(function(g,i){
+      var who = "Gallery photo " + (i+1) + (g.en ? " (" + g.en + ")" : "");
+      if(!g.photo) errs.push(who + ": no photo chosen.");
+      if(!String(g.en||"").trim()) errs.push(who + ": English caption is empty.");
+      if(!String(g.bn||"").trim()) errs.push(who + ": Bangla caption is empty.");
+      if(!g.cat || !(draft.galleryCats||{})[g.cat])
+        errs.push(who + ": category \"" + (g.cat||"none") + "\" is not one of the gallery tabs.");
+    });
+
     /* a card price outside its own table range is usually deliberate, so warn only */
     draft.services.forEach(function(s){
       if(!s.slug) return;
@@ -634,6 +730,19 @@ tbody tr:hover{background:#f8fcfb}
     return html+"</tbody></table>";
   }
 
+  function previewGallery(){
+    var cats=draft.galleryCats||{};
+    return "<div style='display:flex;gap:10px;flex-wrap:wrap'>"
+      + (draft.gallery||[]).map(function(g){
+          return "<div style='width:110px'>"
+            + "<div class='im-box' style='width:110px;height:82px'>"
+            + (g.photo ? "<img src=\"" + thumbSrc(g.photo) + "\" alt=\"\">" : "<span class='none'>?</span>")
+            + "</div><div style='font-size:.7rem;color:var(--muted);margin-top:3px'>"
+            + esc((cats[g.cat]||{}).en || g.cat) + "</div>"
+            + "<div style='font-size:.76rem'>" + esc(g.en) + "</div></div>";
+        }).join("") + "</div>";
+  }
+
   /* ---------- wire up ---------- */
   document.addEventListener("DOMContentLoaded", function(){
     shipped = loadShipped();
@@ -655,6 +764,15 @@ tbody tr:hover{background:#f8fcfb}
     document.addEventListener("click", function(e){
       var b = e.target.closest("[data-pick]");
       if(b){ openPicker(b.dataset.pick, +b.dataset.i, b.dataset.pos===""?null:+b.dataset.pos); return; }
+      var gd = e.target.closest("[data-gdrop]");
+      if(gd){
+        var gi = +gd.dataset.gdrop, g = draft.gallery[gi];
+        if(confirm("Remove this photo from the gallery?\n\n" + (g && g.en ? g.en : "") +
+                   "\n\nThe photo file stays on your site and can be added back.")){
+          draft.gallery.splice(gi,1); saveDraft(); render();
+        }
+        return;
+      }
       var d = e.target.closest("[data-drop]");
       if(d){ dropPhoto(d.dataset.drop, +d.dataset.i, d.dataset.pos===""?null:+d.dataset.pos); return; }
       var it = e.target.closest(".pk-item");
@@ -686,6 +804,7 @@ tbody tr:hover{background:#f8fcfb}
       if(!open){
         $("pvServices").innerHTML=previewServices();
         $("pvPrices").innerHTML=previewPrices();
+        $("pvGallery").innerHTML=previewGallery();
         pn.scrollIntoView({behavior:"smooth",block:"nearest"});
       }
     });

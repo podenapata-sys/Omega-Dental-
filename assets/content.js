@@ -103,6 +103,78 @@ window.OMEGA_CONTENT = (function () {
     "zirconia-crown",
   ];
 
+  /* The gallery page (gallery/index.html) builds its grid and its category tabs
+     from these. Photos are stored by name only, like everywhere else. */
+  const GALLERY_CATS = {
+    scaling:    { en: "Scaling", bn: "স্কেলিং" },
+    veneer:     { en: "Veneer", bn: "ভিনেয়ার" },
+    implant:    { en: "Implant", bn: "ইমপ্লান্ট" },
+    crown:      { en: "Crown", bn: "ক্রাউন" },
+    braces:     { en: "Braces", bn: "ব্রেসেস" },
+    whitening:  { en: "Whitening", bn: "হোয়াইটেনিং" },
+    rct:        { en: "Root Canal", bn: "রুট ক্যানেল" },
+    filling:    { en: "Filling", bn: "ফিলিং" },
+    denture:    { en: "Denture", bn: "ডেনচার" },
+    extraction: { en: "Extraction", bn: "দাঁত তোলা" },
+    kids:       { en: "Kids", bn: "শিশু" },
+  };
+
+  const GALLERY = [
+    { photo:"scaling-polishing", cat:"scaling", en:"Scaling & Polishing", bn:"স্কেলিং ও পলিশিং" },
+    { photo:"scaling-ba", cat:"scaling", en:"Scaling — Before & After", bn:"স্কেলিং — আগে ও পরে" },
+    { photo:"scaling-clean", cat:"scaling", en:"Clean Healthy Teeth", bn:"পরিষ্কার সুস্থ দাঁত" },
+    { photo:"veneers-before", cat:"veneer", en:"Veneer — Before", bn:"ভিনেয়ার — আগে" },
+    { photo:"veneers-after", cat:"veneer", en:"Veneer — After", bn:"ভিনেয়ার — পরে" },
+    { photo:"veneers", cat:"veneer", en:"Composite Veneer", bn:"কম্পোজিট ভিনেয়ার" },
+    { photo:"cosmetic-veneers", cat:"veneer", en:"Smile Makeover", bn:"স্মাইল মেকওভার" },
+    { photo:"cosmetic-ba", cat:"veneer", en:"Cosmetic — Before & After", bn:"কসমেটিক — আগে ও পরে" },
+    { photo:"dental-implants", cat:"implant", en:"Dental Implant", bn:"ডেন্টাল ইমপ্লান্ট" },
+    { photo:"implant-single", cat:"implant", en:"Single Implant", bn:"একক ইমপ্লান্ট" },
+    { photo:"implant-double", cat:"implant", en:"Double Implant", bn:"দ্বৈত ইমপ্লান্ট" },
+    { photo:"crowns-bridges", cat:"crown", en:"Crowns & Bridges", bn:"ক্রাউন ও ব্রিজ" },
+    { photo:"zirconia-crown", cat:"crown", en:"Zirconia Crown", bn:"জিরকোনিয়া ক্রাউন" },
+    { photo:"pfm-crown", cat:"crown", en:"PFM Crown", bn:"পিএফএম ক্রাউন" },
+    { photo:"crown-bridge-overview", cat:"crown", en:"Crown Overview", bn:"ক্রাউন ওভারভিউ" },
+    { photo:"fiber-bridge-2", cat:"crown", en:"Fiber Bridge", bn:"ফাইবার ব্রিজ" },
+    { photo:"braces-aligners", cat:"braces", en:"Braces & Aligners", bn:"ব্রেসেস ও অ্যালাইনার" },
+    { photo:"aligner", cat:"braces", en:"Clear Aligner", bn:"ক্লিয়ার অ্যালাইনার" },
+    { photo:"aligner-tray", cat:"braces", en:"Aligner Tray", bn:"অ্যালাইনার ট্রে" },
+    { photo:"teeth-whitening", cat:"whitening", en:"Teeth Whitening", bn:"দাঁত সাদা করা" },
+    { photo:"whitening-compare", cat:"whitening", en:"Whitening — Before & After", bn:"হোয়াইটেনিং — আগে ও পরে" },
+    { photo:"whitening-stained", cat:"whitening", en:"Stained vs Bright", bn:"দাগ বনাম উজ্জ্বল" },
+    { photo:"root-canal-rct", cat:"rct", en:"Root Canal Treatment", bn:"রুট ক্যানেল চিকিৎসা" },
+    { photo:"root-canal-steps", cat:"rct", en:"RCT Steps", bn:"আরসিটি ধাপ" },
+    { photo:"root-canal-xray", cat:"rct", en:"RCT X-Ray", bn:"আরসিটি এক্স-রে" },
+    { photo:"dentures", cat:"denture", en:"Dentures", bn:"ডেনচার" },
+    { photo:"dentures-flexible", cat:"denture", en:"Flexible Denture", bn:"ফ্লেক্সিবল ডেনচার" },
+    { photo:"tooth-fillings", cat:"filling", en:"Tooth Fillings", bn:"দাঁতের ফিলিং" },
+    { photo:"filling-composite", cat:"filling", en:"Composite Filling", bn:"কম্পোজিট ফিলিং" },
+    { photo:"extractions-surgery", cat:"extraction", en:"Painless Extraction", bn:"ব্যথাহীন দাঁত তোলা" },
+    { photo:"kids-dentistry", cat:"kids", en:"Kids Dentistry", bn:"শিশু দন্তচিকিৎসা" },
+    { photo:"kids-checkup", cat:"kids", en:"Kids Check-up", bn:"শিশু চেকআপ" },
+    { photo:"filling-case-1", cat:"filling", en:"Tooth Filling — Before & After", bn:"দাঁতের ফিলিং — আগে ও পরে" },
+    { photo:"filling-case-2", cat:"filling", en:"Decayed Tooth Filling — Before & After", bn:"পোকা দাঁতের ফিলিং — আগে ও পরে" },
+    { photo:"filling-case-3", cat:"filling", en:"Cavity Filling — Before & After", bn:"ক্যাভিটি ফিলিং — আগে ও পরে" },
+    { photo:"aligner-case-1", cat:"braces", en:"Clear Aligner Treatment", bn:"ক্লিয়ার অ্যালাইনার চিকিৎসা" },
+    { photo:"aligner-case-2", cat:"braces", en:"Clear Aligner Fitting", bn:"ক্লিয়ার অ্যালাইনার লাগানো" },
+    { photo:"veneer-case-1", cat:"veneer", en:"Composite Veneer — Before & After", bn:"কম্পোজিট ভিনেয়ার — আগে ও পরে" },
+    { photo:"veneer-case-2", cat:"veneer", en:"Teeth Gap Filling", bn:"দাঁতের ফাঁক পূরণ" },
+    { photo:"fiber-bridge-case-1", cat:"crown", en:"Fiber Bridge — Before & After", bn:"ফাইবার ব্রিজ — আগে ও পরে" },
+    { photo:"fiber-bridge-case-2", cat:"crown", en:"Fiber Bridge Fitting", bn:"ফাইবার ব্রিজ লাগানো" },
+    { photo:"fiber-bridge-case-3", cat:"crown", en:"Fiber Bridge Result", bn:"ফাইবার ব্রিজের ফলাফল" },
+    { photo:"crown-case-1", cat:"crown", en:"Zirconia Crown — Before & After", bn:"জিরকোনিয়া ক্রাউন — আগে ও পরে" },
+    { photo:"crown-case-2", cat:"crown", en:"PFM Crown — Before & After", bn:"পিএফএম ক্রাউন — আগে ও পরে" },
+    { photo:"denture-case-1", cat:"denture", en:"Flexible Denture", bn:"ফ্লেক্সিবল ডেনচার" },
+    { photo:"denture-case-2", cat:"denture", en:"Flexible Denture Fitting", bn:"ফ্লেক্সিবল ডেনচার লাগানো" },
+    { photo:"kids-case-1", cat:"kids", en:"Kids Dental Check-up", bn:"শিশুদের দাঁতের চেকআপ" },
+    { photo:"whitening-case-1", cat:"whitening", en:"Laser Whitening — Before & After", bn:"লেজার হোয়াইটেনিং — আগে ও পরে" },
+    { photo:"whitening-case-2", cat:"whitening", en:"Teeth Whitening — Before & After", bn:"দাঁত সাদা করা — আগে ও পরে" },
+    { photo:"extraction-case-1", cat:"extraction", en:"Painless Tooth Extraction", bn:"ব্যথাহীন দাঁত তোলা" },
+    { photo:"extraction-case-2", cat:"extraction", en:"Dental Surgery Procedure", bn:"ডেন্টাল সার্জারি প্রক্রিয়া" },
+    { photo:"root-canal-case-1", cat:"rct", en:"Root Canal Treatment", bn:"রুট ক্যানেল চিকিৎসা" },
+    { photo:"scaling-case-1", cat:"scaling", en:"Scaling and Polishing", bn:"স্কেলিং ও পলিশিং" },
+  ];
+
   const CATS = {
     consult:   { en: "Consultation",                 bn: "কনসালটেশন" },
     general:   { en: "Scaling, Polishing & Filling", bn: "স্কেলিং, পলিশিং ও ফিলিং" },
@@ -205,5 +277,6 @@ window.OMEGA_CONTENT = (function () {
     { icon:"🩺", img:"consultation", img2:"consultation-2", pr:"৳500", dur:"15–20 min", durbn:"১৫–২০ মিনিট", en:"Consultation", bn:"কনসালটেশন", cne:"Doctor visit", cn:"ডাক্তার দেখানো", de:"Full check-up with the dentist and a clear treatment plan — ৳500 per consultation.", db:"ডাক্তারের সম্পূর্ণ চেকআপ ও পরিষ্কার চিকিৎসা পরিকল্পনা — প্রতি কনসালটেশন ৫০০ টাকা।" },
   ];
 
-  return { cats: CATS, prices: PRICES, services: SERVICES, photos: PHOTOS };
+  return { cats: CATS, prices: PRICES, services: SERVICES, photos: PHOTOS,
+           gallery: GALLERY, galleryCats: GALLERY_CATS };
 })();

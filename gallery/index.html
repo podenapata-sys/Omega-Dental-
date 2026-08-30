@@ -49,20 +49,7 @@
 <section class="section" style="padding-top:20px"><div class="container">
 
   <!-- Filter tabs -->
-  <div class="gal-filter" id="galFilter">
-    <button class="gal-tag active" data-cat="all" data-en="All" data-bn="সব">All</button>
-    <button class="gal-tag" data-cat="scaling" data-en="Scaling" data-bn="স্কেলিং">Scaling</button>
-    <button class="gal-tag" data-cat="veneer" data-en="Veneer" data-bn="ভিনেয়ার">Veneer</button>
-    <button class="gal-tag" data-cat="implant" data-en="Implant" data-bn="ইমপ্লান্ট">Implant</button>
-    <button class="gal-tag" data-cat="crown" data-en="Crown" data-bn="ক্রাউন">Crown</button>
-    <button class="gal-tag" data-cat="braces" data-en="Braces" data-bn="ব্রেসেস">Braces</button>
-    <button class="gal-tag" data-cat="whitening" data-en="Whitening" data-bn="হোয়াইটেনিং">Whitening</button>
-    <button class="gal-tag" data-cat="rct" data-en="Root Canal" data-bn="রুট ক্যানেল">Root Canal</button>
-    <button class="gal-tag" data-cat="filling" data-en="Filling" data-bn="ফিলিং">Filling</button>
-    <button class="gal-tag" data-cat="denture" data-en="Denture" data-bn="ডেনচার">Denture</button>
-    <button class="gal-tag" data-cat="extraction" data-en="Extraction" data-bn="দাঁত তোলা">Extraction</button>
-    <button class="gal-tag" data-cat="kids" data-en="Kids" data-bn="শিশু">Kids</button>
-  </div>
+  <div class="gal-filter" id="galFilter"></div>
 
   <!-- Photo grid -->
   <div class="gal-grid" id="galGrid"></div>
@@ -122,6 +109,7 @@
 
 <a class="fab" href="https://wa.me/8801706516868" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:1em;height:1em;vertical-align:-.15em;flex-shrink:0"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.15c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.24-8.24s8.24 3.7 8.24 8.24-3.7 8.25-8.24 8.25zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.98-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.16 0-.43.06-.66.31-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.56.12.16 1.75 2.67 4.25 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z"/></svg></a>
 
+<script src="../assets/content.js?v=1"></script>
 <script>
 /* ---- i18n ---- */
 function setLang(l){
@@ -137,62 +125,23 @@ function setLang(l){
 var L='bn';try{L=localStorage.getItem('omega_lang')||'bn'}catch(e){}
 
 /* ---- gallery data ---- */
-var PHOTOS=[
-  {src:'../assets/services/scaling-polishing.jpg',cat:'scaling',en:'Scaling & Polishing',bn:'স্কেলিং ও পলিশিং'},
-  {src:'../assets/services/scaling-ba.jpg',cat:'scaling',en:'Scaling — Before & After',bn:'স্কেলিং — আগে ও পরে'},
-  {src:'../assets/services/scaling-clean.jpg',cat:'scaling',en:'Clean Healthy Teeth',bn:'পরিষ্কার সুস্থ দাঁত'},
-  {src:'../assets/services/veneers-before.jpg',cat:'veneer',en:'Veneer — Before',bn:'ভিনেয়ার — আগে'},
-  {src:'../assets/services/veneers-after.jpg',cat:'veneer',en:'Veneer — After',bn:'ভিনেয়ার — পরে'},
-  {src:'../assets/services/veneers.jpg',cat:'veneer',en:'Composite Veneer',bn:'কম্পোজিট ভিনেয়ার'},
-  {src:'../assets/services/cosmetic-veneers.jpg',cat:'veneer',en:'Smile Makeover',bn:'স্মাইল মেকওভার'},
-  {src:'../assets/services/cosmetic-ba.jpg',cat:'veneer',en:'Cosmetic — Before & After',bn:'কসমেটিক — আগে ও পরে'},
-  {src:'../assets/services/dental-implants.jpg',cat:'implant',en:'Dental Implant',bn:'ডেন্টাল ইমপ্লান্ট'},
-  {src:'../assets/services/implant-single.jpg',cat:'implant',en:'Single Implant',bn:'একক ইমপ্লান্ট'},
-  {src:'../assets/services/implant-double.jpg',cat:'implant',en:'Double Implant',bn:'দ্বৈত ইমপ্লান্ট'},
-  {src:'../assets/services/crowns-bridges.jpg',cat:'crown',en:'Crowns & Bridges',bn:'ক্রাউন ও ব্রিজ'},
-  {src:'../assets/services/zirconia-crown.jpg',cat:'crown',en:'Zirconia Crown',bn:'জিরকোনিয়া ক্রাউন'},
-  {src:'../assets/services/pfm-crown.jpg',cat:'crown',en:'PFM Crown',bn:'পিএফএম ক্রাউন'},
-  {src:'../assets/services/crown-bridge-overview.jpg',cat:'crown',en:'Crown Overview',bn:'ক্রাউন ওভারভিউ'},
-  {src:'../assets/services/fiber-bridge-2.jpg',cat:'crown',en:'Fiber Bridge',bn:'ফাইবার ব্রিজ'},
-  {src:'../assets/services/braces-aligners.jpg',cat:'braces',en:'Braces & Aligners',bn:'ব্রেসেস ও অ্যালাইনার'},
-  {src:'../assets/services/aligner.jpg',cat:'braces',en:'Clear Aligner',bn:'ক্লিয়ার অ্যালাইনার'},
-  {src:'../assets/services/aligner-tray.jpg',cat:'braces',en:'Aligner Tray',bn:'অ্যালাইনার ট্রে'},
-  {src:'../assets/services/teeth-whitening.jpg',cat:'whitening',en:'Teeth Whitening',bn:'দাঁত সাদা করা'},
-  {src:'../assets/services/whitening-compare.jpg',cat:'whitening',en:'Whitening — Before & After',bn:'হোয়াইটেনিং — আগে ও পরে'},
-  {src:'../assets/services/whitening-stained.jpg',cat:'whitening',en:'Stained vs Bright',bn:'দাগ বনাম উজ্জ্বল'},
-  {src:'../assets/services/root-canal-rct.jpg',cat:'rct',en:'Root Canal Treatment',bn:'রুট ক্যানেল চিকিৎসা'},
-  {src:'../assets/services/root-canal-steps.jpg',cat:'rct',en:'RCT Steps',bn:'আরসিটি ধাপ'},
-  {src:'../assets/services/root-canal-xray.jpg',cat:'rct',en:'RCT X-Ray',bn:'আরসিটি এক্স-রে'},
-  {src:'../assets/services/dentures.jpg',cat:'denture',en:'Dentures',bn:'ডেনচার'},
-  {src:'../assets/services/dentures-flexible.jpg',cat:'denture',en:'Flexible Denture',bn:'ফ্লেক্সিবল ডেনচার'},
-  {src:'../assets/services/tooth-fillings.jpg',cat:'filling',en:'Tooth Fillings',bn:'দাঁতের ফিলিং'},
-  {src:'../assets/services/filling-composite.jpg',cat:'filling',en:'Composite Filling',bn:'কম্পোজিট ফিলিং'},
-  {src:'../assets/services/extractions-surgery.jpg',cat:'extraction',en:'Painless Extraction',bn:'ব্যথাহীন দাঁত তোলা'},
-  {src:'../assets/services/kids-dentistry.jpg',cat:'kids',en:'Kids Dentistry',bn:'শিশু দন্তচিকিৎসা'},
-  {src:'../assets/services/kids-checkup.jpg',cat:'kids',en:'Kids Check-up',bn:'শিশু চেকআপ'},
-  /* --- case photos: folder no.2 (2026) --- */
-  {src:'../assets/services/filling-case-1.jpg',cat:'filling',en:'Tooth Filling — Before & After',bn:'দাঁতের ফিলিং — আগে ও পরে'},
-  {src:'../assets/services/filling-case-2.jpg',cat:'filling',en:'Decayed Tooth Filling — Before & After',bn:'পোকা দাঁতের ফিলিং — আগে ও পরে'},
-  {src:'../assets/services/filling-case-3.jpg',cat:'filling',en:'Cavity Filling — Before & After',bn:'ক্যাভিটি ফিলিং — আগে ও পরে'},
-  {src:'../assets/services/aligner-case-1.jpg',cat:'braces',en:'Clear Aligner Treatment',bn:'ক্লিয়ার অ্যালাইনার চিকিৎসা'},
-  {src:'../assets/services/aligner-case-2.jpg',cat:'braces',en:'Clear Aligner Fitting',bn:'ক্লিয়ার অ্যালাইনার লাগানো'},
-  {src:'../assets/services/veneer-case-1.jpg',cat:'veneer',en:'Composite Veneer — Before & After',bn:'কম্পোজিট ভিনেয়ার — আগে ও পরে'},
-  {src:'../assets/services/veneer-case-2.jpg',cat:'veneer',en:'Teeth Gap Filling',bn:'দাঁতের ফাঁক পূরণ'},
-  {src:'../assets/services/fiber-bridge-case-1.jpg',cat:'crown',en:'Fiber Bridge — Before & After',bn:'ফাইবার ব্রিজ — আগে ও পরে'},
-  {src:'../assets/services/fiber-bridge-case-2.jpg',cat:'crown',en:'Fiber Bridge Fitting',bn:'ফাইবার ব্রিজ লাগানো'},
-  {src:'../assets/services/fiber-bridge-case-3.jpg',cat:'crown',en:'Fiber Bridge Result',bn:'ফাইবার ব্রিজের ফলাফল'},
-  {src:'../assets/services/crown-case-1.jpg',cat:'crown',en:'Zirconia Crown — Before & After',bn:'জিরকোনিয়া ক্রাউন — আগে ও পরে'},
-  {src:'../assets/services/crown-case-2.jpg',cat:'crown',en:'PFM Crown — Before & After',bn:'পিএফএম ক্রাউন — আগে ও পরে'},
-  {src:'../assets/services/denture-case-1.jpg',cat:'denture',en:'Flexible Denture',bn:'ফ্লেক্সিবল ডেনচার'},
-  {src:'../assets/services/denture-case-2.jpg',cat:'denture',en:'Flexible Denture Fitting',bn:'ফ্লেক্সিবল ডেনচার লাগানো'},
-  {src:'../assets/services/kids-case-1.jpg',cat:'kids',en:'Kids Dental Check-up',bn:'শিশুদের দাঁতের চেকআপ'},
-  {src:'../assets/services/whitening-case-1.jpg',cat:'whitening',en:'Laser Whitening — Before & After',bn:'লেজার হোয়াইটেনিং — আগে ও পরে'},
-  {src:'../assets/services/whitening-case-2.jpg',cat:'whitening',en:'Teeth Whitening — Before & After',bn:'দাঁত সাদা করা — আগে ও পরে'},
-  {src:'../assets/services/extraction-case-1.jpg',cat:'extraction',en:'Painless Tooth Extraction',bn:'ব্যথাহীন দাঁত তোলা'},
-  {src:'../assets/services/extraction-case-2.jpg',cat:'extraction',en:'Dental Surgery Procedure',bn:'ডেন্টাল সার্জারি প্রক্রিয়া'},
-  {src:'../assets/services/root-canal-case-1.jpg',cat:'rct',en:'Root Canal Treatment',bn:'রুট ক্যানেল চিকিৎসা'},
-  {src:'../assets/services/scaling-case-1.jpg',cat:'scaling',en:'Scaling and Polishing',bn:'স্কেলিং ও পলিশিং'},
-];
+/* Photos and category tabs come from assets/content.js so the admin content
+   editor can change them. Photos are stored by name; the paths are built here,
+   keeping the cards/ thumbnail swap and the full-size lightbox exactly as before. */
+var OC = window.OMEGA_CONTENT || {};
+var GAL_CATS = OC.galleryCats || {};
+var PHOTOS = (OC.gallery || []).map(function(g){
+  return { src:'../assets/services/'+g.photo+'.jpg', cat:g.cat, en:g.en, bn:g.bn };
+});
+(function(){
+  var f=document.getElementById('galFilter'); if(!f) return;
+  var html='<button class="gal-tag active" data-cat="all" data-en="All" data-bn="সব">All</button>';
+  Object.keys(GAL_CATS).forEach(function(k){
+    var c=GAL_CATS[k];
+    html+='<button class="gal-tag" data-cat="'+k+'" data-en="'+c.en+'" data-bn="'+c.bn+'">'+c.en+'</button>';
+  });
+  f.innerHTML=html;
+})();
 PHOTOS.forEach(function(p,gi){p.gi=gi;});
 
 /* positive community comments (bilingual) */

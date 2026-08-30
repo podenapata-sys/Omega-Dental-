@@ -115,11 +115,20 @@ counts **visits**, so a patient who came three times counts three times.
 Press **🌐 Website** in the top bar (next to Report) to switch to the content editor;
 **📋 Records** brings you back. Same PIN.
 
-Three tabs:
+Four tabs:
 - **Services** — the 15 cards: name, short line, description, price, how long it takes
 - **Prices** — the 45 price-list rows: name, cheapest, most expensive, note
 - **Photos** — each service's main photo, the second photo it fades to, and the small
   strip of extra photos on the card
+- **Gallery** — the 53 photos on your Gallery page
+
+### Gallery
+Each photo has a **category** (which tab it shows under) and a caption in both languages.
+**Add photo** puts a new one at the top of the list — give it a caption and pick its category.
+The **×** takes a photo out of the gallery; the file stays on your site, so you can add it back.
+
+The category tabs on the gallery page are built from this list, so a photo can only sit under
+a tab that exists.
 
 ### Photos
 Tap **Change** to pick from the photos already on your site, or **Upload a photo** inside the
