@@ -848,7 +848,7 @@ function renderBookSlots(){
     let opts = "";
     for(let i=0;i<14;i++){
       const d = new Date(); d.setDate(d.getDate()+i);
-      const label = d.toLocaleDateString(loc,{weekday:"short",day:"numeric",month:"short",year:"numeric"});
+      const label = `${String(d.getDate()).padStart(2,"0")}-${String(d.getMonth()+1).padStart(2,"0")}-${d.getFullYear()}`;
       const prefix = i===0 ? t("f_today")+" — " : i===1 ? t("f_tomorrow")+" — " : "";
       opts += `<option value="${prefix}${label}"></option>`;
     }
@@ -874,6 +874,9 @@ function submitBooking(e){
     phone: f.f_phone.value.trim(),
     service: f.f_service.value,
     date: f.f_date.value ? fmtPickedDate(f.f_date.value) : "",
+    /* the raw YYYY-MM-DD as well: the dashboard needs a sortable date to file the
+       booking as an upcoming appointment, and cannot parse the display form. */
+    dateISO: f.f_date.value || "",
     time: f.f_time.value ? fmtPickedTime(f.f_time.value) : "",
     msg: f.f_msg.value.trim(),
     emerg: f.f_emerg.checked,
@@ -951,10 +954,9 @@ function animateCounters(){
 }
 
 /* ----- Calendar + clock pickers on the booking date/time fields ----- */
-function fmtPickedDate(v){            // v = "2026-06-28"
-  try{ const d = new Date(v+"T00:00:00");
-    return d.toLocaleDateString(LANG==="bn"?"bn-BD":"en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"});
-  }catch(e){ return v; }
+function fmtPickedDate(v){            // v = "2026-06-28" -> "28-06-2026"
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v||"").trim());
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : v;
 }
 function fmtPickedTime(v){            // v = "14:30" → "2:30 PM"
   const p=v.split(":"); let h=+p[0]; const m=p[1]||"00";

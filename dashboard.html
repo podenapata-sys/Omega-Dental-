@@ -357,6 +357,26 @@ tbody tr:hover{background:#f8fcfb}
   function money(n){ n=Number(n)||0; return "৳"+n.toLocaleString("en-IN"); }
   function fmtLocal(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
   function todayStr(){ return fmtLocal(new Date()); }
+  /* Dates are STORED as ISO "YYYY-MM-DD" — <input type="date"> requires it, and
+     every filter and sort here compares the strings directly (r.date>=weekStart(),
+     (r.date||"").slice(0,7), .localeCompare). Only the display is DD-MM-YYYY. */
+  function dmy(iso){
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||"").trim());
+    return m ? m[3]+"-"+m[2]+"-"+m[1] : String(iso||"");
+  }
+  function my(ym){                       // "2026-08" -> "08-2026" for the report
+    var m = /^(\d{4})-(\d{2})$/.exec(String(ym||"").trim());
+    return m ? m[2]+"-"+m[1] : String(ym||"");
+  }
+  /* Accepts either format and returns ISO. Needed because exported .xlsx files now
+     carry DD-MM-YYYY, and re-importing one must not poison the stored dates. */
+  function toIso(v){
+    v = String(v||"").trim(); if(!v) return "";
+    var m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(v);
+    if(m) return m[3]+"-"+m[2]+"-"+m[1];
+    m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+    return m ? v : v;
+  }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
 
   /* ---------- PIN gate ---------- */
@@ -435,7 +455,7 @@ tbody tr:hover{background:#f8fcfb}
   }
   function delRow(id){
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
-    if(!confirm("Delete record "+r.id+" ("+(r.name||r.mobile)+") on "+r.date+"?\n\nIt moves to the Bin and can be restored for "+TRASH_DAYS+" days."))return;
+    if(!confirm("Delete record "+r.id+" ("+(r.name||r.mobile)+") on "+dmy(r.date)+"?\n\nIt moves to the Bin and can be restored for "+TRASH_DAYS+" days."))return;
     r.deletedAt = new Date().toISOString();
     save(); cloudSave(r); render();
     flash("Moved to Bin — restore it from 🗑 Bin.",false);
@@ -514,7 +534,7 @@ tbody tr:hover{background:#f8fcfb}
     var d=digits(r.mobile); if(d.length<10) return "";
     var msg="Assalamu alaikum"+(r.name?" "+r.name:"")+", this is Omega Dental. "
       + "You have an outstanding balance of Tk "+(due).toLocaleString("en-IN")
-      + " for "+(r.service||"your treatment")+" on "+r.date+". Please contact us to settle it. Thank you.";
+      + " for "+(r.service||"your treatment")+" on "+dmy(r.date)+". Please contact us to settle it. Thank you.";
     return "<a class='rowbtn' target='_blank' rel='noopener' title='Send payment reminder' "
       + "aria-label='Send WhatsApp payment reminder' href='https://wa.me/88"+d
       + "?text="+encodeURIComponent(msg)+"'>💬</a>";
@@ -537,7 +557,7 @@ tbody tr:hover{background:#f8fcfb}
       byService[sv]=(byService[sv]||0)+(Number(r.paid)||0);
       tot+=Number(r.total)||0; paid+=Number(r.paid)||0;
     });
-    var months=Object.keys(byMonth).sort().slice(-12).map(function(k){ return {k:k, v:byMonth[k]}; });
+    var months=Object.keys(byMonth).sort().slice(-12).map(function(k){ return {k:my(k), v:byMonth[k]}; });
     var svcs=Object.keys(byService).map(function(k){ return {k:k, v:byService[k]}; })
                    .sort(function(a,b){ return b.v-a.v; }).slice(0,8);
     bars(months, $("repMonths"));
@@ -555,7 +575,7 @@ tbody tr:hover{background:#f8fcfb}
       tot+=Number(r.total)||0; paid+=Number(r.paid)||0;
       var due=(Number(r.total)||0)-(Number(r.paid)||0);
       html+="<tr>"+
-        "<td data-label='Date'>"+esc(r.date)+"</td>"+
+        "<td data-label='Date'>"+esc(dmy(r.date))+"</td>"+
         "<td data-label='Customer ID' class='cid'>"+esc(r.id)+"</td>"+
         "<td data-label='Mobile'>"+esc(r.mobile)+"</td>"+
         "<td data-label='Name'>"+esc(r.name||"—")+"</td>"+
@@ -563,7 +583,7 @@ tbody tr:hover{background:#f8fcfb}
         "<td data-label='Total' class='num'>"+money(r.total)+"</td>"+
         "<td data-label='Paid' class='num'>"+money(r.paid)+"</td>"+
         "<td data-label='Due' class='num "+(due>0?"due-pos":"due-zero")+"'>"+money(due)+"</td>"+
-        "<td data-label='Next Appt.'>"+(r.next?(esc(r.next)+whenHint(r.next)):"—")+"</td>"+
+        "<td data-label='Next Appt.'>"+(r.next?(esc(dmy(r.next))+whenHint(r.next)):"—")+"</td>"+
         "<td class='actions' style='text-align:right;white-space:nowrap'>"+
           (view==="bin"
             ? "<button class='rowbtn' data-restore='"+r._id+"' title='Restore' aria-label='Restore record'>↩️</button>"+
@@ -589,9 +609,9 @@ tbody tr:hover{background:#f8fcfb}
   /* ---------- export / import (SheetJS) ---------- */
   function rowsForSheet(rs){
     return rs.map(function(r){ return {
-      "Date":r.date,"Customer ID":r.id,"Mobile":r.mobile,"Name":r.name||"","Service":r.service||"",
+      "Date":dmy(r.date),"Customer ID":r.id,"Mobile":r.mobile,"Name":r.name||"","Service":r.service||"",
       "Total":Number(r.total)||0,"Paid":Number(r.paid)||0,"Due":(Number(r.total)||0)-(Number(r.paid)||0),
-      "Next Appointment":r.next||"" }; });
+      "Next Appointment":dmy(r.next) }; });
   }
   function makeSheetWithTotals(rs){
     var data=rowsForSheet(rs);
@@ -658,7 +678,7 @@ tbody tr:hover{background:#f8fcfb}
         var incoming=[], seq=0;
         rows.forEach(function(row){
           var mobile=String(row["Mobile"]||row["mobile"]||"").trim();
-          var date=String(row["Date"]||row["date"]||"").trim();
+          var date=toIso(String(row["Date"]||row["date"]||"").trim());
           if(!mobile && !date) return; // skip totals/blank rows
           if(String(row["Service"]||"").toUpperCase()==="TOTAL") return;
           incoming.push({
@@ -666,7 +686,7 @@ tbody tr:hover{background:#f8fcfb}
             date: date||todayStr(), mobile:mobile, id: cid(mobile),
             name:String(row["Name"]||"").trim(), service:String(row["Service"]||"").trim(),
             total:Number(row["Total"])||0, paid:Number(row["Paid"])||0,
-            next:String(row["Next Appointment"]||row["Next Appt."]||"").trim()
+            next:toIso(String(row["Next Appointment"]||row["Next Appt."]||"").trim())
           });
         });
 
@@ -728,7 +748,10 @@ tbody tr:hover{background:#f8fcfb}
            appointment - not the day this record was taken. */
         date: todayStr(), mobile: (b.phone||""), id: cid(b.phone||""),
         name: (b.name||""), service: (b.service||""),
-        total: 0, paid: 0, next: (b.date||"")
+        /* b.dateISO is the raw YYYY-MM-DD from the booking form. b.date is the
+           human label ("05-09-2026"), which would break the Upcoming filter and
+           whenHint(), both of which compare ISO strings. */
+        total: 0, paid: 0, next: (b.dateISO||"")
       };
       records.push(rec); save(); render();
       return rec.id;
@@ -877,7 +900,7 @@ tbody tr:hover{background:#f8fcfb}
         });
       }
       current.clear(); const docs=[];
-      snap.forEach(d=>{ const b=d.data(); current.set(d.id, {name:b.name,phone:b.phone,service:b.service,date:b.date,time:b.time}); docs.push(d); });
+      snap.forEach(d=>{ const b=d.data(); current.set(d.id, {name:b.name,phone:b.phone,service:b.service,date:b.date,dateISO:b.dateISO,time:b.time}); docs.push(d); });
       render(docs); seeded = true;
     }, ()=>{ $("wbEmpty").textContent = "Can't read bookings yet — make sure Email/Password sign-in is enabled and the Firestore rules are applied."; $("wbEmpty").style.display="block"; });
   }

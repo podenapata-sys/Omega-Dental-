@@ -160,7 +160,8 @@
         try {
           await addDoc(collection(db, "bookings"), {
             name: data.name || "", phone: data.phone || "", service: data.service || "",
-            date: data.date || "", time: data.time || "", note: data.msg || "",
+            date: data.date || "", dateISO: data.dateISO || "",
+            time: data.time || "", note: data.msg || "",
             emergency: !!data.emerg, status: "new", source: "website",
             createdAt: serverTimestamp()
           });
