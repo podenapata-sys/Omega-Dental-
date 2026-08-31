@@ -112,7 +112,8 @@ const I18N = {
     nav_tech:"Technology", nav_faq:"FAQ",
     nav_contact_link:"Contact",
     cb_title:"Request a Free Callback", cb_ph:"Enter Your Number", cb_wa:"WhatsApp",
-    cb_success:"Thanks! Opening WhatsApp to confirm your callback…",
+    cb_name_ph:"Your Name",
+    cb_success:"Thanks! We have your number and will call you back.",
     nav_about_us:"About Us", nav_ourservices:"Our Services", nav_branch:"Branch",
     nav_doctors:"Doctors", nav_pricelist:"Price List", nav_blog:"Blog", nav_gallery:"Gallery", nav_careers:"Career",
     srch_ph:"Search treatments, prices, FAQs…", srch_hint:"↑↓ navigate · Enter open · Esc close",
@@ -232,7 +233,8 @@ const I18N = {
     nav_tech:"প্রযুক্তি", nav_faq:"প্রশ্নোত্তর",
     nav_contact_link:"যোগাযোগ",
     cb_title:"ফ্রি কলব্যাক অনুরোধ করুন", cb_ph:"আপনার নম্বর লিখুন", cb_wa:"হোয়াটসঅ্যাপ",
-    cb_success:"ধন্যবাদ! কলব্যাক নিশ্চিত করতে হোয়াটসঅ্যাপ খোলা হচ্ছে…",
+    cb_name_ph:"আপনার নাম",
+    cb_success:"ধন্যবাদ! আপনার নম্বর পেয়েছি, আমরা কল করব।",
     nav_about_us:"আমাদের সম্পর্কে", nav_ourservices:"আমাদের সেবা", nav_branch:"শাখা",
     nav_doctors:"ডাক্তার", nav_pricelist:"মূল্য তালিকা", nav_blog:"ব্লগ", nav_gallery:"গ্যালারি", nav_careers:"ক্যারিয়ার",
     srch_ph:"চিকিৎসা, মূল্য, প্রশ্নোত্তর খুঁজুন…", srch_hint:"↑↓ নেভিগেট · Enter খুলুন · Esc বন্ধ করুন",
@@ -1002,11 +1004,34 @@ document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("bookForm")?.addEventListener("submit", submitBooking);
   document.getElementById("callbackForm")?.addEventListener("submit", (e)=>{
     e.preventDefault();
-    const num = document.getElementById("cbNumber").value.trim();
-    const msg = `📞 Omega Dental — Callback request\nPlease call me back at: ${num}`;
+    const num  = document.getElementById("cbNumber").value.trim();
+    const name = (document.getElementById("cbName")||{}).value?.trim() || "";
+    /* Same shape as a booking so it lands in the dashboard's Website Bookings
+       panel with no dashboard changes. `service` is what that panel shows as the
+       second line, so it doubles as the label that marks this as a callback. */
+    const data = {
+      name, phone: num, service: "📞 Call back request",
+      date: "", dateISO: "", time: "", msg: "", emerg: false, kind: "callback"
+    };
+    const msg = [
+      "📞 *Omega Dental — Callback request*",
+      name ? `Name: ${name}` : "",
+      `Please call me back at: ${num}`
+    ].filter(Boolean).join("\n");
+    const url = `https://wa.me/${OMEGA.whatsapp}?text=${encodeURIComponent(msg)}`;
+
     const note = document.getElementById("cbSuccess");
-    if(note){ note.textContent = t("cb_success"); note.style.display = "block"; }
-    window.open(`https://wa.me/${OMEGA.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+    if(note){
+      // the popup below is blocked often enough on phones that a tappable link matters
+      note.innerHTML = `<div>${escapeHtml(t("cb_success"))}</div>`
+        + `<a class="btn btn-wa" href="${url}" target="_blank" rel="noopener"`
+        + ` style="display:inline-flex;align-items:center;gap:8px;margin-top:10px;width:auto;text-decoration:none">`
+        + `${escapeHtml(t("f_send_wa"))}</a>`;
+      note.style.display = "block";
+    }
+    try{ if(window.omegaSaveBooking) window.omegaSaveBooking(data); }catch(err){}
+    sendBookingAlert(data);
+    window.open(url, "_blank");
   });
 
   document.querySelectorAll(".ba-filter").forEach(b=>{

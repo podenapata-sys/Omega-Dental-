@@ -132,44 +132,7 @@
 
 <script>document.getElementById("year").textContent="2025";</script>
 <script src="assets/firebase-config.js?v=3"></script>
-<script type="module">
-  /* Send website bookings to Firestore too (so they appear live in the admin
-     dashboard). Fails silently if Firebase is unreachable/unconfigured — the
-     WhatsApp message still goes through as before. */
-  (async () => {
-    try {
-      const cfg = window.OMEGA_FB;
-      if (!cfg || !cfg.apiKey) return;
-      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js");
-      const { getFirestore, collection, addDoc, serverTimestamp } =
-        await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js");
-      const fbApp = initializeApp(cfg);
-      // App Check (only if a reCAPTCHA v3 site key is configured) — must come before Firestore
-      const acKey = (window.OMEGA_APPCHECK_KEY || "").trim();
-      if (acKey) {
-        try {
-          const acMod = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app-check.js");
-          acMod.initializeAppCheck(fbApp, {
-            provider: new acMod.ReCaptchaV3Provider(acKey),
-            isTokenAutoRefreshEnabled: true
-          });
-        } catch (e) { /* App Check unavailable — enforcement must be off */ }
-      }
-      const db = getFirestore(fbApp);
-      window.omegaSaveBooking = async (data) => {
-        try {
-          await addDoc(collection(db, "bookings"), {
-            name: data.name || "", phone: data.phone || "", service: data.service || "",
-            date: data.date || "", dateISO: data.dateISO || "",
-            time: data.time || "", note: data.msg || "",
-            emergency: !!data.emerg, status: "new", source: "website",
-            createdAt: serverTimestamp()
-          });
-        } catch (e) { /* offline / rules — booking already sent via WhatsApp */ }
-      };
-    } catch (e) { /* SDK blocked — booking still works via WhatsApp */ }
-  })();
-</script>
+<script type="module" src="assets/booking-cloud.js?v=1"></script>
 <script src="assets/content.js?v=1" defer></script>
 <script src="assets/app.js?v=20260717d" defer></script>
 <div class="srch-overlay" id="srch-overlay" role="dialog" aria-modal="true" aria-label="Site search"><div class="srch-modal"><div class="srch-row"><svg class="srch-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg><input class="srch-input" id="srch-input" type="search" autocomplete="off" placeholder="Search..."><kbd class="srch-esc">Esc</kbd><button class="srch-close" id="srch-close">✕</button></div><div class="srch-results" id="srch-results"></div><div class="srch-hint" id="srch-hint-txt">↑↓ navigate · Enter open · Esc close</div></div></div>

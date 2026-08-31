@@ -197,8 +197,12 @@ the internet and the only one that outlives the 30-day window. **Once a month is
 
 ## Website bookings (live)
 
-When someone books through the website, the booking appears in the **Website Bookings**
-panel within a second or two, with a sound and a browser notification.
+When someone books through the website — or asks for a call back from the homepage —
+it appears in the **Website Bookings** panel within a second or two, with a sound and a
+browser notification.
+
+Call-back requests show **📞 Call back request** where an appointment shows the treatment,
+and carry only a name and a phone number. There is nothing else to know: ring them.
 
 Press **Connect** and sign in with the clinic's Firebase email and password. Each booking
 has:
