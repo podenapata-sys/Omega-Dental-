@@ -21,7 +21,7 @@
     if (!cfg || !cfg.apiKey) return;
 
     const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js");
-    const { getFirestore, collection, addDoc, serverTimestamp } =
+    const { getFirestore, collection, addDoc, serverTimestamp, doc, onSnapshot } =
       await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js");
 
     const fbApp = initializeApp(cfg);
@@ -52,5 +52,20 @@
         });
       } catch (e) { /* offline / rules — the enquiry already went via WhatsApp */ }
     };
+
+    /* The homepage's four figures (Happy Patients, Years, Services, Satisfaction) are
+       edited by the clinic in the dashboard and stored in site/stats. onSnapshot means a
+       save there reaches every open homepage in about a second, with no rebuild.
+
+       If this never resolves — Firebase blocked, offline, rules not published yet — the
+       page keeps the data-target values written into index.html, so the numbers are
+       always right-ish rather than zero. */
+    try {
+      /* checked inside the callback, not around it: this file is ordered before
+         assets/app.js, so omegaSetStats may not exist yet when we subscribe. */
+      onSnapshot(doc(db, "site", "stats"), (snap) => {
+        if (snap.exists() && window.omegaSetStats) window.omegaSetStats(snap.data());
+      }, () => { /* rules not published yet — keep the built-in numbers */ });
+    } catch (e) { /* ignore */ }
   } catch (e) { /* SDK blocked — everything still works via WhatsApp */ }
 })();

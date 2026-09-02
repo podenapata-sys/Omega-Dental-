@@ -168,6 +168,35 @@ editor cannot change the website at all, so it is safe to explore.
 
 ---
 
+## The numbers on the homepage
+
+The homepage shows four figures — **Happy Patients**, **Years Experience**, **Services
+Available** and **Satisfaction %**. You set them yourself in the dashboard, under
+**🌐 Website numbers** (it appears once you press **Connect**).
+
+Type the numbers, press **Save to website**, and the homepage updates within a second —
+on every phone that has it open, with nothing to refresh or wait for.
+
+Leave a box empty to leave that figure unchanged.
+
+### Where the suggested number comes from
+The panel tells you how many patient records the dashboard holds, and offers it as the
+Happy Patients figure. Website bookings are *not* added to it: **➕ Add to records** already
+turns each booking into a record, so counting both would count the same person twice.
+
+### Why it does not count up on its own
+A booking is a *request*, not a treated patient. It includes people who never turn up,
+someone who submits the form twice, staff testing it, and anything an automated bot posts.
+A number that climbs on its own would be a claim the clinic cannot stand behind, and it
+would jump for reasons nobody can explain. You decide the figure; the dashboard just tells
+you what the records say.
+
+### One-time setup
+This needs one rule published in Firebase, the same way the others were:
+Firestore Database → **Rules** → add the `match /site/{docId}` block from
+[`firestore.rules`](firestore.rules) → **Publish**. Until then the panel will say it cannot
+load, and the website keeps showing its built-in numbers.
+
 ## Income report
 
 Press **📊 Report** in the top bar for:

@@ -45,7 +45,7 @@ const I18N = {
     fb2_t:"Experienced Doctors", fb2_s:"Skilled & friendly dental specialists",
     fb3_t:"Safe & Hygienic", fb3_s:"Highest standards of sterilization",
     fb4_t:"Patient Comfort", fb4_s:"Painless & comfortable dental care",
-    hero_badge_t:"Trusted by 3,415+ patients", hero_badge_s:"Gentle, expert care", hero_badge2_s:"Sterilization & Safety",
+    hero_badge_t:"Trusted by {n}+ patients", hero_badge_s:"Gentle, expert care", hero_badge2_s:"Sterilization & Safety",
     stat1:"Happy Patients", stat2:"Years Experience", stat3:"Services Available", stat4:"Satisfaction",
     services_eyebrow:"Our Services",
     services_title:"All dental care in one place",
@@ -166,7 +166,7 @@ const I18N = {
     fb2_t:"অভিজ্ঞ ডাক্তার", fb2_s:"অভিজ্ঞ ও বন্ধুত্বপূর্ণ দাঁতের ডাক্তার",
     fb3_t:"নিরাপদ ও পরিষ্কার", fb3_s:"সবকিছু ভালোভাবে জীবাণুমুক্ত",
     fb4_t:"রোগীর আরাম", fb4_s:"ব্যথাহীন ও আরামদায়ক দাঁতের সেবা",
-    hero_badge_t:"৩,৪১৫+ রোগীর আস্থা", hero_badge_s:"কোমল, দক্ষ সেবা", hero_badge2_s:"জীবাণুমুক্ত ও নিরাপদ",
+    hero_badge_t:"{n}+ রোগীর আস্থা", hero_badge_s:"কোমল, দক্ষ সেবা", hero_badge2_s:"জীবাণুমুক্ত ও নিরাপদ",
     stat1:"সন্তুষ্ট রোগী", stat2:"বছরের অভিজ্ঞতা", stat3:"সেবা আছে", stat4:"সন্তুষ্টি",
     services_eyebrow:"আমাদের সেবা",
     services_title:"এক জায়গাতেই দাঁতের সব সেবা",
@@ -364,8 +364,9 @@ function applyI18n(){
   document.body.classList.toggle("bn", LANG === "bn");
   document.querySelectorAll("[data-i18n]").forEach(el=>{
     const k = el.getAttribute("data-i18n");
-    if (el.hasAttribute("data-i18n-html")) el.innerHTML = t(k);
-    else el.textContent = t(k);
+    const v = withCounts(t(k));
+    if (el.hasAttribute("data-i18n-html")) el.innerHTML = v;
+    else el.textContent = v;
   });
   document.querySelectorAll("[data-i18n-ph]").forEach(el=>{
     el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph")));
@@ -376,6 +377,41 @@ function applyI18n(){
   const tgl = document.getElementById("langText");
   if (tgl) tgl.textContent = t("lang_label");
   applyGoogleReviews(); // re-overlay live Google data (if loaded) in the current language
+  applyPatientCount();
+}
+
+/* The patient figure appears in THREE places on the homepage — the hero pill, the
+   "Trusted by …" badge, and the Happy Patients counter. They must never disagree, so all
+   three read the same number: whatever the clinic last saved, falling back to the
+   data-target written into index.html. */
+let STAT_PATIENTS = null;
+const BN_DIGITS = "০১২৩৪৫৬৭৮৯";
+function patientCount(){
+  if (STAT_PATIENTS !== null) return STAT_PATIENTS;
+  const el = document.querySelector('.stat-num[data-stat="patients"]');
+  return el ? (+el.dataset.target || 0) : 0;
+}
+function patientCountText(){
+  const s = fmt(patientCount());
+  // the Bangla badge has always shown Bengali numerals; keep it that way
+  return LANG === "bn" ? s.replace(/[0-9]/g, d => BN_DIGITS.charAt(+d)) : s;
+}
+function withCounts(str){
+  return (typeof str === "string" && str.indexOf("{n}") > -1)
+    ? str.split("{n}").join(patientCountText()) : str;
+}
+/* re-render only the bits that carry the number, so a new figure does not force a
+   full applyI18n() (which re-renders every list on the page). */
+function applyPatientCount(){
+  const pill = document.querySelector(".hp-count");
+  if (pill) pill.textContent = fmt(patientCount()) + "+";   // pill is Latin in both languages
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const raw = t(el.getAttribute("data-i18n"));
+    if (typeof raw === "string" && raw.indexOf("{n}") > -1){
+      const v = withCounts(raw);
+      if (el.hasAttribute("data-i18n-html")) el.innerHTML = v; else el.textContent = v;
+    }
+  });
 }
 
 function setLang(l){ LANG = l; localStorage.setItem("omega_lang", l); applyI18n(); }
@@ -947,13 +983,47 @@ function renderMarquee(){
 /* ----- Counters ----- */
 function animateCounters(){
   document.querySelectorAll(".stat-num").forEach(el=>{
-    const target = +el.dataset.target; const suffix = el.dataset.suffix||"";
-    let n = 0; const step = Math.max(1, Math.ceil(target/60));
-    const tick = ()=>{ n=Math.min(target,n+step); el.textContent = fmt(n)+suffix;
-      if(n<target) requestAnimationFrame(tick); };
+    el.dataset.done = "1"; el.dataset.running = "1";
+    const suffix = el.dataset.suffix||"";
+    let n = 0;
+    /* target is re-read every frame rather than captured once. The clinic's figures
+       arrive from Firestore a second or so after load — usually while this count-up is
+       still running — and a captured target would keep counting to the old number,
+       overwriting them and settling on the stale value. */
+    const tick = ()=>{
+      const target = +el.dataset.target || 0;
+      const step = Math.max(1, Math.ceil(target/60));
+      n = Math.min(target, n+step);
+      el.textContent = fmt(n)+suffix;
+      if(n<target) requestAnimationFrame(tick);
+      else delete el.dataset.running;
+    };
     tick();
   });
 }
+
+/* The clinic edits these four figures in the dashboard; assets/booking-cloud.js calls
+   this whenever the stored values change. The count-up is fired once by an
+   IntersectionObserver, so values can arrive either side of it:
+     - not animated yet -> move the target, and the count-up lands on the new number;
+     - already animated -> set the text, since nothing will run again.
+   Anything missing or not a number is ignored, so one bad field cannot blank a box. */
+function omegaSetStats(vals){
+  if(!vals) return;
+  document.querySelectorAll(".stat-num[data-stat]").forEach(el=>{
+    const v = vals[el.dataset.stat];
+    if(v === undefined || v === null || v === "") return;
+    const n = Number(v);
+    if(!isFinite(n) || n < 0) return;
+    el.dataset.target = String(n);
+    if(el.dataset.stat === "patients") STAT_PATIENTS = n;
+    /* mid-animation the tick above will pick the new target up on its next frame;
+       touching the text here would just fight with it. */
+    if(el.dataset.done && !el.dataset.running) el.textContent = fmt(n) + (el.dataset.suffix||"");
+  });
+  applyPatientCount();
+}
+window.omegaSetStats = omegaSetStats;
 
 /* ----- Calendar + clock pickers on the booking date/time fields ----- */
 function fmtPickedDate(v){            // v = "2026-06-28" -> "28-06-2026"

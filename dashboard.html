@@ -281,6 +281,26 @@ tbody tr:hover{background:#f8fcfb}
     <div id="wbEmpty" style="color:var(--muted);font-size:.9rem;padding:6px 2px">No new website bookings right now.</div>
   </div>
 
+  <!-- WEBSITE NUMBERS — the four figures on the homepage. Signed-in only, because
+       writing site/stats needs auth; shown/hidden by onAuthStateChanged. -->
+  <div class="panel" id="snPanel" style="display:none">
+    <h3>🌐 Website numbers</h3>
+    <p style="color:var(--muted);font-size:.86rem;margin:0 0 12px">
+      The four figures shown on the homepage. Saving updates the website straight away —
+      no need to wait or refresh.</p>
+    <div class="form-grid">
+      <div class="fld"><label>Happy Patients</label><input id="sn_patients" type="number" min="0" step="1" placeholder="3415"></div>
+      <div class="fld"><label>Years Experience</label><input id="sn_years" type="number" min="0" step="1" placeholder="8"></div>
+      <div class="fld"><label>Services Available</label><input id="sn_services" type="number" min="0" step="1" placeholder="37"></div>
+      <div class="fld"><label>Satisfaction (%)</label><input id="sn_satisfaction" type="number" min="0" max="100" step="1" placeholder="99"></div>
+    </div>
+    <div style="color:var(--muted);font-size:.86rem;margin-top:10px" id="snHint"></div>
+    <div class="form-actions">
+      <button class="btn btn-p" id="snSave" style="width:auto">Save to website</button>
+      <span id="snMsg" style="color:var(--teal-dd);font-weight:600;font-size:.86rem"></span>
+    </div>
+  </div>
+
   <!-- TOOLBAR -->
   <div class="tools">
     <div class="tabs">
@@ -361,6 +381,9 @@ tbody tr:hover{background:#f8fcfb}
   };
   /* Used by the module to find records added before sign-in, so they can be migrated up. */
   window.__odLocalRecords = function(){ return records.slice(); };
+  /* real patient records, tombstones excluded — the Website numbers panel offers
+     this as a suggested "Happy Patients" figure. */
+  window.__odLiveCount = function(){ return live().length; };
 
   window.__odSyncStatus = function(state, detail){
     var ic=$("syncIcon"), tx=$("syncText"); if(!ic||!tx) return;
@@ -1010,9 +1033,67 @@ tbody tr:hover{background:#f8fcfb}
   }
 
   authMod.onAuthStateChanged(auth, (user)=>{
-    if(user){ $("wbConnect").style.display="none"; $("fbLogout").style.display="inline-block"; subscribe(); subscribeRecords(); }
-    else { $("wbConnect").style.display="block"; $("fbLogout").style.display="none"; $("wbList").innerHTML=""; $("wbEmpty").style.display="none"; unsubscribeRecords(); }
+    if(user){ $("wbConnect").style.display="none"; $("fbLogout").style.display="inline-block"; subscribe(); subscribeRecords(); loadSiteStats(); }
+    else { $("wbConnect").style.display="block"; $("fbLogout").style.display="none"; $("wbList").innerHTML=""; $("wbEmpty").style.display="none"; unsubscribeRecords(); $("snPanel").style.display="none"; }
   });
+
+  /* ---------- the homepage's four figures (site/stats) ----------
+     Deliberately NOT incremented per booking. A booking is a request, not a treated
+     patient: no-shows, duplicates, staff testing the form and anything a bot posts all
+     land in the same place. The clinic types the number and presses Save; the panel just
+     shows how many real records exist so the figure stays anchored to something true. */
+  const SN_FIELDS = ["patients","years","services","satisfaction"];
+
+  function snSuggest(){
+    var recs = (window.__odLiveCount ? window.__odLiveCount() : 0);
+    var hint = "Your dashboard holds <b>" + recs.toLocaleString("en-IN") + "</b> patient record"
+             + (recs===1?"":"s") + ".";
+    if(recs > 0) hint += " <button class='btn btn-g btn-sm' id='snUse' style='width:auto;margin-left:8px'>Use this number</button>";
+    hint += "<br><span style='font-size:.8rem'>Website bookings are not added in: "
+          + "\u201c\u2795 Add to records\u201d already turns each one into a record, so counting "
+          + "both would count them twice.</span>";
+    $("snHint").innerHTML = hint;
+    var use = $("snUse");
+    if(use) use.onclick = function(){ $("sn_patients").value = recs; $("snMsg").textContent=""; };
+  }
+
+  async function loadSiteStats(){
+    $("snPanel").style.display = "block";
+    snSuggest();
+    try{
+      const snap = await fsMod.getDoc(fsMod.doc(db,"site","stats"));
+      if(snap.exists()){
+        const v = snap.data();
+        SN_FIELDS.forEach(function(k){ if(v[k]!==undefined && v[k]!==null) $("sn_"+k).value = v[k]; });
+      }
+    }catch(e){
+      $("snMsg").style.color = "#d94848";
+      $("snMsg").textContent = "Couldn't load — publish the site/stats rule (see DASHBOARD.md).";
+    }
+  }
+
+  $("snSave").onclick = async function(){
+    var out = {}, bad = null;
+    SN_FIELDS.forEach(function(k){
+      var raw = $("sn_"+k).value.trim();
+      if(raw === "") return;                       // left blank = leave it as it is
+      var n = Number(raw);
+      if(!isFinite(n) || n < 0) { bad = bad || k; return; }
+      if(k === "satisfaction" && n > 100) { bad = bad || k; return; }
+      out[k] = Math.round(n);
+    });
+    if(bad){ $("snMsg").style.color="#d94848"; $("snMsg").textContent="Check the "+bad+" field — numbers only."; return; }
+    if(!Object.keys(out).length){ $("snMsg").style.color="#d94848"; $("snMsg").textContent="Nothing to save."; return; }
+    out.updatedAt = fsMod.serverTimestamp();
+    try{
+      await fsMod.setDoc(fsMod.doc(db,"site","stats"), out, {merge:true});
+      $("snMsg").style.color="#2c8a78"; $("snMsg").textContent="Saved \u2713 the website is updated.";
+      setTimeout(function(){ $("snMsg").textContent=""; }, 4000);
+    }catch(e){
+      $("snMsg").style.color="#d94848";
+      $("snMsg").textContent="Couldn't save — check you are signed in and the rule is published.";
+    }
+  };
   /* "Lock" is only a privacy screen (it reloads the page); the Firebase session
      survives it. This ends the session properly, so the cloud copy of the records
      is no longer reachable from this device until someone signs in again. */
