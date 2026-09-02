@@ -236,6 +236,12 @@ Script project as the booking alerts — the file's own notes have the detail. I
 3. Project Settings → **Time zone** → **(GMT+06:00) Dhaka**, or it works out the wrong day.
 4. Run **`sendRemindersNow`** once and check your inbox — that is the same email the
    trigger sends.
+   *If it fails with "You do not have permission to call UrlFetchApp.fetch":* the project
+   was authorised back when it only sent email, and this file also talks to Firebase.
+   Project Settings → tick **Show "appsscript.json" manifest file in editor**, open that
+   file, and make sure it lists both scopes:
+   `script.send_mail` and `script.external_request`. Save, Run again, and allow the new
+   permission.
 5. Triggers (clock icon) → Add trigger → function `sendReminders`, Time-driven → Day timer
    → **7pm to 8pm**.
 

@@ -29,9 +29,19 @@
  *    a bigger key than this job needs.)
  * 3. Project Settings → Time zone → **(GMT+06:00) Dhaka**. "Tomorrow" is worked out in
  *    this zone, so the wrong setting reminds the wrong day.
- * 4. Press Run on `sendRemindersNow` once. Authorise it, then check the inbox — this is
- *    the same email the trigger will send, so it proves the whole path works.
- * 5. Clock icon (Triggers) → Add trigger:
+ * 4. RE-AUTHORISE. The project was authorised when it only sent email; this file also
+ *    calls out to Firebase, and Apps Script does not always ask again by itself. If Run
+ *    fails with "You do not have permission to call UrlFetchApp.fetch":
+ *      Project Settings → tick "Show appsscript.json manifest file in editor",
+ *      then open appsscript.json and make sure it contains
+ *        "oauthScopes": [
+ *          "https://www.googleapis.com/auth/script.send_mail",
+ *          "https://www.googleapis.com/auth/script.external_request"
+ *        ]
+ *      Save, Run again, and allow the new permission when Google asks.
+ * 5. Press Run on `sendRemindersNow`. Check the inbox — this is the same email the
+ *    trigger will send, so it proves the whole path works.
+ * 6. Clock icon (Triggers) → Add trigger:
  *      Function: sendReminders
  *      Event source: Time-driven → Day timer → 7pm to 8pm
  *
