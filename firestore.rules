@@ -14,7 +14,10 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     match /bookings/{bookingId} {
-      // A visitor submitting the booking form on book.html.
+      // A visitor submitting the booking form on book.html, or the "Request a
+      // Free Callback" form on the homepage. Both write here on purpose: this is
+      // the only collection a visitor may create in, and the dashboard already
+      // renders it. Callbacks are marked with kind:"callback".
       allow create: if true;
 
       // Only a signed-in user (the owner's Email/Password account) may see or

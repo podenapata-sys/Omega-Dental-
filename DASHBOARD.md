@@ -66,6 +66,15 @@ only you can read.
 
 ## Day-to-day use
 
+**Dates read day-month-year everywhere** — `05-08-2026` is 5 August 2026. That covers the
+records table, the Next Appointment column, the date boxes you tap, the income report
+(`08-2026`) and the dates inside an exported Excel file.
+
+Excel *filenames* stay year-first (`omega-dental-2026-09-02.xlsx`) on purpose, so a folder
+of backups sorts oldest-to-newest by itself. Importing an older backup still works: files
+saved before this change hold year-first dates and are converted as they come in.
+
+
 ### Adding a walk-in
 Fill in the form and press **Add record**. Only the mobile number is required — the
 **Customer ID is generated from its last 4 digits** (`01711234567` → `OD-4567`).
