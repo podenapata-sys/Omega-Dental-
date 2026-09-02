@@ -64,6 +64,20 @@ h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
   font-family:var(--f);font-size:.92rem;color:var(--ink);background:#fff;width:100%}
 .fld input:focus,.fld select:focus{outline:none;border-color:var(--teal)}
 .fld .ro{background:#f2f7f6;font-weight:700;color:var(--teal-dd);font-family:var(--fh)}
+/* The browser draws <input type="date"> itself, in ITS OWN locale order — often
+   MM/DD/YYYY — and a page cannot restyle or reorder that. So we show our own
+   DD-MM-YYYY text and keep the real input on top at zero opacity: taps still open the
+   native calendar, and every existing read of .value still gets ISO. */
+.datebox{position:relative;display:block}
+.datebox-txt{display:block;padding:10px 11px;border:1.5px solid var(--line);border-radius:10px;
+  font-family:var(--f);font-size:.92rem;color:var(--ink);background:#fff;width:100%;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.datebox-txt.dt-ph{color:var(--muted)}   /* NOT .empty — that is the "no records" panel, padding:40px */
+.datebox input{position:absolute;inset:0;width:100%;height:100%;opacity:0;
+  border:0;padding:0;margin:0;background:transparent;cursor:pointer}
+.datebox:focus-within .datebox-txt{border-color:var(--teal)}
+.datebox-inline{display:inline-block;width:auto;min-width:132px;vertical-align:middle}
+.datebox-inline .datebox-txt{padding:8px 12px;font-size:.88rem;border-radius:10px}
 .form-actions{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
 /* ---- stats ---- */
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
@@ -227,8 +241,10 @@ tbody tr:hover{background:#f8fcfb}
       <div class="fld"><label>Total Amount (৳)</label><input id="f_total" type="number" min="0" step="1" placeholder="0"></div>
       <div class="fld"><label>Paid Amount (৳)</label><input id="f_paid" type="number" min="0" step="1" placeholder="0"></div>
       <div class="fld"><label>Due (auto)</label><input id="f_due" class="ro" readonly placeholder="৳0"></div>
-      <div class="fld"><label>Visit Date</label><input id="f_date" type="date"></div>
-      <div class="fld"><label>Next Appointment</label><input id="f_next" type="date"></div>
+      <div class="fld"><label>Visit Date</label>
+        <span class="datebox"><span class="datebox-txt" data-for="f_date">DD-MM-YYYY</span><input id="f_date" type="date"></span></div>
+      <div class="fld"><label>Next Appointment</label>
+        <span class="datebox"><span class="datebox-txt" data-for="f_next">DD-MM-YYYY</span><input id="f_next" type="date"></span></div>
     </div>
     <div class="form-actions">
       <button class="btn btn-p" id="saveBtn" style="width:auto">Add record</button>
@@ -276,8 +292,8 @@ tbody tr:hover{background:#f8fcfb}
       <button class="tab" data-view="dues">💰 Dues</button>
       <button class="tab tab-bin" data-view="bin" id="binTab" style="display:none">🗑 Bin</button>
     </div>
-    <input type="date" id="dayPick">
-    <input type="month" id="monthPick" style="display:none">
+    <span class="datebox datebox-inline" id="dayBox"><span class="datebox-txt" data-for="dayPick">DD-MM-YYYY</span><input type="date" id="dayPick"></span>
+    <span class="datebox datebox-inline" id="monthBox" style="display:none"><span class="datebox-txt" data-for="monthPick">MM-YYYY</span><input type="month" id="monthPick"></span>
     <input type="search" id="searchBox" placeholder="🔍 Search name, mobile or ID…" style="flex:1;min-width:150px;max-width:280px;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:var(--f);font-size:.88rem">
     <span class="spacer"></span>
     <button class="btn btn-o btn-sm" id="exportBtn">⬇ Download this view (Excel)</button>
@@ -377,6 +393,19 @@ tbody tr:hover{background:#f8fcfb}
     m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
     return m ? v : v;
   }
+  /* Repaint the visible half of each .datebox from its hidden native input. Called
+     wherever a value is set in code (render, edit, clear, boot) as well as on the
+     input's own events, because setting .value fires no event. */
+  function syncDateBoxes(){
+    var boxes = document.querySelectorAll(".datebox-txt");
+    for(var i=0;i<boxes.length;i++){
+      var el = boxes[i], inp = document.getElementById(el.getAttribute("data-for"));
+      if(!inp) continue;
+      var v = inp.value || "", month = inp.type === "month";
+      el.textContent = v ? (month ? my(v) : dmy(v)) : (month ? "MM-YYYY" : "DD-MM-YYYY");
+      el.className = v ? "datebox-txt" : "datebox-txt dt-ph";
+    }
+  }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
 
   /* ---------- PIN gate ---------- */
@@ -421,7 +450,7 @@ tbody tr:hover{background:#f8fcfb}
     $("f_service").value=""; $("f_service_other").value=""; $("f_service_other").style.display="none";
     $("f_date").value=todayStr(); recalc();
     editId=null; $("saveBtn").textContent="Add record"; $("formTitle").textContent="➕ Add a patient record";
-    $("cancelBtn").style.display="none";
+    $("cancelBtn").style.display="none"; syncDateBoxes();
   }
   function saveRecord(){
     var mobile=$("f_mobile").value.trim();
@@ -450,7 +479,8 @@ tbody tr:hover{background:#f8fcfb}
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
     editId=id; $("f_mobile").value=r.mobile; $("f_name").value=r.name||""; setService(r.service||"");
     $("f_total").value=r.total; $("f_paid").value=r.paid; $("f_date").value=r.date; $("f_next").value=r.next||"";
-    recalc(); $("saveBtn").textContent="Update record"; $("formTitle").textContent="✏️ Edit record"; $("cancelBtn").style.display="inline-block";
+    recalc(); syncDateBoxes();
+    $("saveBtn").textContent="Update record"; $("formTitle").textContent="✏️ Edit record"; $("cancelBtn").style.display="inline-block";
     window.scrollTo({top:0,behavior:"smooth"});
   }
   function delRow(id){
@@ -513,9 +543,9 @@ tbody tr:hover{background:#f8fcfb}
     var q=(searchTerm||"").trim();
     if(q) return 'search "'+q+'" (all dates)';
     if(view==="all") return "all records";
-    if(view==="today") return ($("dayPick").value||todayStr());
+    if(view==="today") return dmy($("dayPick").value||todayStr());
     if(view==="week") return "this week (last 7 days)";
-    if(view==="month") return ($("monthPick").value||todayStr().slice(0,7));
+    if(view==="month") return my($("monthPick").value||todayStr().slice(0,7));
     if(view==="upcoming") return "upcoming appointments";
     if(view==="dues") return "unpaid balances";
     if(view==="bin") return "deleted records (kept "+TRASH_DAYS+" days)";
@@ -601,6 +631,7 @@ tbody tr:hover{background:#f8fcfb}
     $("s_paid").textContent=money(paid);
     $("s_due").textContent=money(tot-paid);
     $("viewLabel").textContent=viewText(); $("rowCount").textContent=rows.length;
+    syncDateBoxes();
     var nt=trashed().length, bt=$("binTab");
     if(bt){ bt.textContent = nt ? ("🗑 Bin ("+nt+")") : "🗑 Bin"; bt.style.display = nt||view==="bin" ? "" : "none"; }
     renderReport();
@@ -765,13 +796,19 @@ tbody tr:hover{background:#f8fcfb}
     $("importFile").addEventListener("change",function(){ if(this.files[0])importFile(this.files[0]); this.value=""; });
     $("dayPick").addEventListener("change",render);
     $("monthPick").addEventListener("change",render);
+    /* setting .value in code fires nothing, so sync on the user's edits too */
+    document.querySelectorAll(".datebox input").forEach(function(inp){
+      inp.addEventListener("change",syncDateBoxes);
+      inp.addEventListener("input",syncDateBoxes);
+    });
+    syncDateBoxes();
     $("searchBox").addEventListener("input",function(){ searchTerm=this.value; render(); });
     document.querySelectorAll(".tab").forEach(function(t){
       t.addEventListener("click",function(){
         document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("active");});
         t.classList.add("active"); view=t.dataset.view;
-        $("dayPick").style.display=view==="today"?"inline-block":"none";
-        $("monthPick").style.display=view==="month"?"inline-block":"none";
+        $("dayBox").style.display=view==="today"?"inline-block":"none";
+        $("monthBox").style.display=view==="month"?"inline-block":"none";
         render();
       });
     });
