@@ -444,6 +444,20 @@ a{color:inherit;text-decoration:none}
 .calc-field select:focus,.calc-field input:focus,.f-field input:focus,.f-field select:focus,.f-field textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 4px rgba(87,195,173,.16)}
 /* native calendar / clock pickers on the booking date & time fields */
 .f-field input[type=date],.f-field input[type=time]{cursor:pointer;min-height:52px}
+/* Our own DD-MM-YYYY face for the date field; the real input sits on top, invisible,
+   so taps still open the OS calendar and .value stays ISO. Built by dressDateField()
+   in assets/app.js. Mirrors the .f-field input metrics above so the date field and the
+   time field beside it stay the same size. */
+.f-field .datebox{position:relative;display:block}
+/* The native input keeps its own box, so the date field stays exactly the size and
+   shape of the time field beside it and gets the same focus ring for free. We only
+   cover the text it draws — stopping short of the right edge so its calendar icon
+   still shows — and pointer-events:none lets every tap reach the input underneath. */
+.f-field .datebox-txt{position:absolute;left:2px;right:40px;top:2px;bottom:2px;
+  display:flex;align-items:center;padding:0 14px;border-radius:11px;background:#fff;
+  font:inherit;font-size:max(16px,1rem);color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.f-field .datebox-txt.dt-ph{color:var(--muted)}
 .f-field input[type=date]::-webkit-calendar-picker-indicator,
 .f-field input[type=time]::-webkit-calendar-picker-indicator{cursor:pointer;width:20px;height:20px;opacity:.6;transition:opacity .15s}
 .f-field input[type=date]:hover::-webkit-calendar-picker-indicator,

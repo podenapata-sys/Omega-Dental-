@@ -972,7 +972,43 @@ function initBookPickers(){
     try{ const t=new Date();
       d.min = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}-${String(t.getDate()).padStart(2,"0")}`;
     }catch(e){}
+    dressDateField(d);
   }
+}
+
+/* The browser draws <input type="date"> itself and takes the order from ITS OWN
+   locale — a phone set to US English shows mm/dd/yyyy, and no CSS or lang attribute
+   can reorder it. A patient reading mm/dd/yyyy and entering 05/09/2026 for 5
+   September books 9 May, and nobody finds out until they fail to arrive.
+
+   So: show our own DD-MM-YYYY text and lay the real input over it at zero opacity.
+   Taps land on the native field, so the OS calendar still opens with no showPicker()
+   to depend on, and f_date.value stays ISO for submitBooking(), dateISO and min.
+
+   Built here rather than in book.html's markup on purpose. This is a patient-facing
+   form: if this script never runs, the visitor is left with the plain native input
+   that works today, instead of an empty span where the date field should be. */
+function dressDateField(input){
+  try{
+    if(!input || input.parentElement?.classList.contains("datebox")) return;
+    const box = document.createElement("span");
+    box.className = "datebox";
+    const txt = document.createElement("span");
+    txt.className = "datebox-txt dt-ph";
+    txt.textContent = "DD-MM-YYYY";
+    input.parentNode.insertBefore(box, input);
+    box.appendChild(txt);
+    box.appendChild(input);
+
+    const paint = ()=>{
+      const v = input.value || "";
+      txt.textContent = v ? fmtPickedDate(v) : "DD-MM-YYYY";
+      txt.className = v ? "datebox-txt" : "datebox-txt dt-ph";
+    };
+    input.addEventListener("change", paint);
+    input.addEventListener("input", paint);
+    paint();                       // setting .value in code fires no event
+  }catch(e){ /* leave the native field alone rather than break the form */ }
 }
 
 /* ----- Wire up ----- */
