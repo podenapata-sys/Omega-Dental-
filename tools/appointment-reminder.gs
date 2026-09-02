@@ -57,8 +57,8 @@ function _runReminders(force) {
   // A retry after an error, or a stray manual run, must not send the same list twice.
   if (!force && props.getProperty('reminded:' + day)) return;
 
-  var token = _signIn(props);
-  if (!token) { _warn('Could not sign in to Firebase — check FB_EMAIL / FB_PASSWORD / FB_API_KEY.'); return; }
+  var token = _signIn(props);   // _signIn says exactly what went wrong
+  if (!token) return;
 
   var list = _appointmentsOn(day, token);
   if (!list.length && !SEND_ON_EMPTY_DAYS) { props.setProperty('reminded:' + day, '1'); return; }
@@ -96,20 +96,65 @@ function _weekday(iso) {
 
 /* ---------- Firebase ---------- */
 
-/** Signs in as the clinic account and returns an ID token, or '' on failure. */
+/** Signs in as the clinic account and returns an ID token, or '' on failure.
+    Google tells us precisely why a sign-in failed, so pass that on rather than
+    listing three properties and leaving someone to guess which is wrong. */
 function _signIn(props) {
   var key = props.getProperty('FB_API_KEY'),
       em  = props.getProperty('FB_EMAIL'),
       pw  = props.getProperty('FB_PASSWORD');
-  if (!key || !em || !pw) return '';
+
+  var missing = [];
+  if (!key) missing.push('FB_API_KEY');
+  if (!em)  missing.push('FB_EMAIL');
+  if (!pw)  missing.push('FB_PASSWORD');
+  if (missing.length) {
+    _warn('Script propert' + (missing.length > 1 ? 'ies are' : 'y is') + ' missing: ' +
+          missing.join(', ') + '. Project Settings → Script Properties.');
+    return '';
+  }
+
   try {
     var res = UrlFetchApp.fetch(
       'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + encodeURIComponent(key),
       { method: 'post', contentType: 'application/json', muteHttpExceptions: true,
         payload: JSON.stringify({ email: em, password: pw, returnSecureToken: true }) });
-    if (res.getResponseCode() !== 200) return '';
-    return JSON.parse(res.getContentText()).idToken || '';
-  } catch (e) { return ''; }
+    var txt = res.getContentText();
+    if (res.getResponseCode() !== 200) {
+      var code = '';
+      try { code = ((JSON.parse(txt) || {}).error || {}).message || ''; } catch (e) {}
+      _warn(_signInReason(code, em));
+      return '';
+    }
+    return JSON.parse(txt).idToken || '';
+  } catch (e) {
+    _warn('Could not reach Google to sign in: ' + e);
+    return '';
+  }
+}
+
+/** Turns Firebase's error code into something worth reading at 7am. */
+function _signInReason(code, em) {
+  code = String(code || '');
+  if (code.indexOf('EMAIL_NOT_FOUND') === 0)
+    return 'Firebase has no account "' + em + '". Open Firebase Console → Authentication → ' +
+           'Users and copy the address listed there into FB_EMAIL. (The address alerts are ' +
+           'SENT to is a different thing.)';
+  if (code.indexOf('INVALID_PASSWORD') === 0 || code.indexOf('INVALID_LOGIN_CREDENTIALS') === 0)
+    return 'Firebase rejected the email/password for "' + em + '". Either FB_PASSWORD is wrong, ' +
+           'or that address is not the dashboard login. Check Authentication → Users.';
+  if (code.indexOf('API_KEY') > -1 || code.indexOf('API key') > -1)
+    return 'FB_API_KEY is not this project\'s Web API key. Firebase Console → Project settings ' +
+           '→ General → Web API Key.';
+  if (code.indexOf('USER_DISABLED') === 0)
+    return 'The account "' + em + '" is disabled in Firebase → Authentication → Users.';
+  if (code.indexOf('TOO_MANY_ATTEMPTS') > -1)
+    return 'Firebase has temporarily blocked sign-in after repeated failures. Wait a few minutes, ' +
+           'then fix the password before trying again.';
+  if (code.indexOf('PASSWORD_LOGIN_DISABLED') > -1 || code.indexOf('OPERATION_NOT_ALLOWED') === 0)
+    return 'Email/Password sign-in is turned off. Firebase Console → Authentication → Sign-in ' +
+           'method → enable Email/Password.';
+  return 'Firebase refused the sign-in: ' + (code || 'no reason given') + '.';
 }
 
 /** Records whose Next Appointment is `day`, minus anything sitting in the Bin. */
