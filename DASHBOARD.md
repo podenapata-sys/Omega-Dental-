@@ -197,6 +197,51 @@ Firestore Database → **Rules** → add the `match /site/{docId}` block from
 [`firestore.rules`](firestore.rules) → **Publish**. Until then the panel will say it cannot
 load, and the website keeps showing its built-in numbers.
 
+---
+
+## Reminders the evening before
+
+Every evening around 7pm you get one email: **"3 appointments tomorrow"**, listing each
+patient with their treatment, a tappable phone number, and a green **Send reminder**
+button.
+
+Tap the button and WhatsApp opens with the reminder already written in Bangla — just
+press send. Three appointments takes about twenty seconds.
+
+### Why you tap instead of it sending itself
+A booking gives us a name and a phone number, nothing more. Sending to a phone with nobody
+involved needs either a paid SMS service or Meta's paid WhatsApp Business API — there is no
+free way to reach a patient's phone automatically. This gets the reminder to them on the app
+they actually read, for nothing.
+
+If the clinic later wants it fully hands-off, SMS can be added: roughly ৳0.30–0.50 per
+message through a Bangladeshi gateway, so about ৳100–150 a month for ten appointments a day.
+
+### What it reminds about
+The **Next Appointment** dates on your records — the same list as the 📅 Upcoming tab.
+Records in the 🗑 Bin are skipped, so a cancelled visit never gets a reminder.
+
+**It only sees records that reached the cloud.** If you use the dashboard without pressing
+**Connect** in Website Bookings, records stay on that one device and the reminder has
+nothing to read.
+
+### Setup (once)
+Add [`tools/appointment-reminder.gs`](tools/appointment-reminder.gs) to the **same** Apps
+Script project as the booking alerts — the file's own notes have the detail. In short:
+
+1. Files → **+** → Script → name it `Reminder` → paste the file in.
+2. Project Settings → **Script Properties** → add `FB_API_KEY`, `FB_EMAIL`, `FB_PASSWORD`
+   (your Firebase Web API key, and the dashboard login). They go here rather than in the
+   code so they are not sitting in a file.
+3. Project Settings → **Time zone** → **(GMT+06:00) Dhaka**, or it works out the wrong day.
+4. Run **`sendRemindersNow`** once and check your inbox — that is the same email the
+   trigger sends.
+5. Triggers (clock icon) → Add trigger → function `sendReminders`, Time-driven → Day timer
+   → **7pm to 8pm**.
+
+If an email does not arrive, Apps Script → **Executions** says why — a wrong password and an
+unreachable database both leave a note there.
+
 ## Income report
 
 Press **📊 Report** in the top bar for:

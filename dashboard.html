@@ -976,11 +976,19 @@ tbody tr:hover{background:#f8fcfb}
   function toDoc(r){
     return { date:r.date||"", mobile:r.mobile||"", id:r.id||"", name:r.name||"",
              service:r.service||"", total:Number(r.total)||0, paid:Number(r.paid)||0,
-             next:r.next||"", updatedAt: fsMod.serverTimestamp() };
+             next:r.next||"",
+             /* Deleting a record sets deletedAt and calls cloudSave(). Without this
+                field the cloud copy looked ALIVE: a second device pulled it straight
+                back out of the Bin, and anything reading records/ (the appointment
+                reminder, for one) treated a cancelled visit as still booked. */
+             deletedAt: r.deletedAt || "",
+             updatedAt: fsMod.serverTimestamp() };
   }
-  function fromDoc(d){ const v=d.data()||{}; return {
+  function fromDoc(d){ const v=d.data()||{}; const r = {
     _id:d.id, date:v.date||"", mobile:v.mobile||"", id:v.id||"", name:v.name||"",
-    service:v.service||"", total:Number(v.total)||0, paid:Number(v.paid)||0, next:v.next||"" }; }
+    service:v.service||"", total:Number(v.total)||0, paid:Number(v.paid)||0, next:v.next||"" };
+    if(v.deletedAt) r.deletedAt = v.deletedAt;   // stay deleted on every device
+    return r; }
 
   /* Handed to the records script; every method is fire-and-forget so a slow or
      failed write never blocks the UI - the local save already happened. */
