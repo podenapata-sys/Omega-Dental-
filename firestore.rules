@@ -20,13 +20,15 @@ service cloud.firestore {
       // renders it. Callbacks are marked with kind:"callback".
       allow create: if true;
 
-      // Only a signed-in user (the owner's Email/Password account) may see or
-      // action bookings from the dashboard.
-      allow read, update: if request.auth != null;
+      // Only a signed-in user (the owner's Email/Password account) may read them.
+      // Bookings hold patient names and phone numbers, so they must never be
+      // publicly readable.
+      allow read: if request.auth != null;
 
-      // Bookings are never deleted from the client; mark them handled instead
-      // (the dashboard sets status:"done").
-      allow delete: if false;
+      // Nothing edits or removes a booking any more. The dashboard panel is
+      // read-only — every booking is captured by the alert email and the bookings
+      // spreadsheet — so a submitted request is now immutable from the web.
+      allow update, delete: if false;
     }
 
     // Patient visit records created in the dashboard (walk-ins and website

@@ -400,8 +400,10 @@ reaching the dashboard; only the emails stop.
 2. **Authentication** → Sign-in method → enable **Email/Password**, then add one user
    (the clinic's account).
 3. **Firestore → Rules** → paste the contents of [`firestore.rules`](firestore.rules)
-   and Publish. This covers both `bookings` (public create, owner read) and `records`
-   (owner only, in both directions) — **records will not sync without it**.
+   and Publish. It covers `bookings` (anyone may submit, only the owner may read),
+   `records` (owner only, both directions) and `site` (the homepage figures — public
+   read, owner write). **Records will not sync, and the Website numbers panel will not
+   load, without it.**
 4. Web config lives in `assets/firebase-config.js` (`window.OMEGA_FB`). These keys are
    safe to be public — the rules above are what protect the data.
 
