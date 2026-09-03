@@ -470,7 +470,12 @@ tbody tr:hover{background:#f8fcfb}
       + "These are the photos on your Gallery page. Each one needs a <b>category</b>, so it shows "
       + "under the right tab, and a caption in both languages.</div>"
       + "<div class='ed-item' style='display:flex;align-items:center;gap:12px;flex-wrap:wrap'>"
-      + "<b style='color:var(--navy);font-family:var(--fh)'>Add a photo to the gallery</b>"
+      + "<div><b style='color:var(--navy);font-family:var(--fh)'>Add a photo to the gallery</b>"
+      /* The picker's upload button sits in its header and is easy to miss, so say here
+         that a brand-new picture is possible without first visiting the Photos tab. */
+      + "<div style='color:var(--muted);font-size:.85rem;margin-top:2px'>"
+      + "Pick one you already have, or press <b>&#11014; Upload a photo</b> to add a new one "
+      + "from your phone or computer.</div></div>"
       + "<span class='spacer'></span>"
       + "<button class='btn btn-p btn-sm' style='width:auto' data-pick='gnew' data-i='0'>&#10133; Add photo</button>"
       + "</div>";
