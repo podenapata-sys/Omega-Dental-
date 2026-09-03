@@ -483,6 +483,25 @@ as you like. Newest at the top.
 The sheet is created by itself when the first booking arrives. To find it: Apps Script
 editor → run **`bookingsSheetUrl`** and the link appears in the log.
 
+### Sending the alerts to more than one address
+`TO_EMAIL` at the top of the script takes a list — separate the addresses with commas:
+
+```js
+var TO_EMAIL = 'omegadental@gmail.com, manager@omegadental.com';
+```
+
+Everyone on the list gets the same email, for bookings **and** for the daily appointment
+reminder. Save the file and run **`checkAlertSetup`** to see the list read back; a
+redeploy is only needed for the website's own posts, not for this.
+
+One caveat worth knowing: Google's ~100-a-day allowance counts **recipients, not
+messages**. Two addresses means two of those per booking — about 50 bookings a day rather
+than 100, which is still far more than a clinic takes. `checkAlertSetup` prints how many
+sends are left.
+
+Spaces, semicolons, a trailing comma or a line break in the list are all fine, and an
+entry that is not an address is skipped rather than stopping the whole email.
+
 ### When an alert email does not arrive
 An alert crosses three separate things, and a failure in any of them looks the same from
 the outside — an empty inbox. Test them one at a time instead of guessing. None of these

@@ -73,8 +73,13 @@ function _runReminders(force) {
   var list = _appointmentsOn(day, token);
   if (!list.length && !SEND_ON_EMPTY_DAYS) { props.setProperty('reminded:' + day, '1'); return; }
 
+  /* _recipients() lives in booking-alert.gs, in this same project. Going through it
+     means TO_EMAIL can hold several addresses and the reminder reaches all of them,
+     exactly like a booking alert. */
+  var to = (typeof _recipients === 'function') ? _recipients() : TO_EMAIL;
+  if (!to) { _warn('TO_EMAIL has no valid address — nobody to remind.'); return; }
   MailApp.sendEmail({
-    to: TO_EMAIL,
+    to: to,
     subject: _subject(list.length, day),
     htmlBody: _body(list, day),
     name: CLINIC_NAME + ' reminders'

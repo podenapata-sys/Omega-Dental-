@@ -36,9 +36,24 @@
  * that one fixed address, and it can never read or change anything else.
  */
 
-var TO_EMAIL     = 'omegadental@gmail.com';   // ← who receives the alerts
+/* Who receives the alerts. Separate several with commas — every one of them gets the
+   same email. Note that Google's ~100-a-day mail allowance counts RECIPIENTS, not
+   messages, so two addresses means two units per booking (about 50 bookings a day
+   instead of 100 — still far more than a clinic takes). */
+var TO_EMAIL     = 'omegadental@gmail.com';
 var SHARED_TOKEN = 'Omega.JS';                // ← must match firebase-config.js
 var CLINIC_NAME  = 'Omega Dental';
+
+/** TO_EMAIL as MailApp wants it. Typing a list by hand invites a trailing comma, a
+    stray semicolon or a line break, and MailApp rejects the whole send for one bad
+    entry — so anything without an "@" is dropped rather than taking the alert down
+    with it. */
+function _recipients() {
+  return String(TO_EMAIL || '')
+    .split(/[,;\s]+/)
+    .filter(function (a) { return a.indexOf('@') > 0; })
+    .join(',');
+}
 
 /* A project may only have one doPost, so this is the single front door: the booking
    form and the content editor both arrive here and are told apart by `action`. */
@@ -90,7 +105,9 @@ function doPost(e) {
       + (_sheetUrl() ? ' and in your <a href="' + _sheetUrl() + '">bookings sheet</a>' : '')
       + '.</p></div>';
 
-    MailApp.sendEmail({ to: TO_EMAIL, subject: subj, htmlBody: body, name: CLINIC_NAME + ' website' });
+    var to = _recipients();
+    if (!to) return _ok('no recipient');   // logged to the sheet regardless, above
+    MailApp.sendEmail({ to: to, subject: subj, htmlBody: body, name: CLINIC_NAME + ' website' });
     return _ok('sent');
   } catch (err) {
     // never throw: a failed alert must not affect the patient's booking
@@ -230,21 +247,24 @@ function _sheetUrl() {
     quota that is left. If this arrives but real bookings do not, the email is fine
     and the problem is the website reaching the script — check Executions. */
 function sendTestAlert() {
+  var to = _recipients();
+  if (!to) { console.log('NO VALID ADDRESS in TO_EMAIL — nothing to send to.'); return; }
+  var n = to.split(',').length;
   var left = MailApp.getRemainingDailyQuota();
-  console.log('Emails left to send today: ' + left);
-  if (left < 1) {
+  console.log('Recipients (' + n + '): ' + to);
+  console.log('Sends left today: ' + left + '  (each booking uses ' + n + ')');
+  if (left < n) {
     console.log('QUOTA SPENT. Google allows about 100 a day; it resets after 24 hours. '
               + 'No alert can be sent until then.');
     return;
   }
-  console.log('Sending to: ' + TO_EMAIL);
   MailApp.sendEmail({
-    to: TO_EMAIL,
+    to: to,
     subject: '[TEST] ' + CLINIC_NAME + ' booking alert',
     htmlBody: '<div style="font-family:Arial,sans-serif;font-size:15px;color:#1f2d3d">'
             + '<h2 style="color:#173a63;margin:0 0 12px">This is a test</h2>'
             + '<p>If you can read this, alert emails are working and reaching '
-            + TO_EMAIL + '. Nobody booked anything — you can delete this.</p>'
+            + to + '. Nobody booked anything — you can delete this.</p>'
             + '<p style="color:#6b7a8c;font-size:12px">Sent from the Apps Script editor at '
             + Utilities.formatDate(new Date(), 'Asia/Dhaka', 'dd-MM-yyyy HH:mm') + '.</p></div>',
     name: CLINIC_NAME + ' website'
@@ -255,7 +275,10 @@ function sendTestAlert() {
 /** Prints everything the alert needs, in one run: who it emails, the token the
     website must match, how much mail quota is left, and where the sheet is. */
 function checkAlertSetup() {
-  console.log('Alerts are emailed to : ' + TO_EMAIL);
+  var to = _recipients();
+  console.log('Alerts are emailed to : ' + (to || 'NOBODY — TO_EMAIL has no valid address'));
+  console.log('Number of recipients  : ' + (to ? to.split(',').length : 0)
+            + '   (each booking uses that many of the daily sends)');
   console.log('Token the site must send: ' + SHARED_TOKEN
             + '   (must equal OMEGA_ALERT_TOKEN in assets/firebase-config.js)');
   console.log('Emails left to send today: ' + MailApp.getRemainingDailyQuota());
