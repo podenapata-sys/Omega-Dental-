@@ -481,7 +481,33 @@ as you like. Newest at the top.
 > moved rather than left behind.
 
 The sheet is created by itself when the first booking arrives. To find it: Apps Script
-editor → run **`bookingsSheetUrl`** and the link appears in the log. Every alert email
+editor → run **`bookingsSheetUrl`** and the link appears in the log.
+
+### When an alert email does not arrive
+An alert crosses three separate things, and a failure in any of them looks the same from
+the outside — an empty inbox. Test them one at a time instead of guessing. None of these
+needs a redeploy; a deployment only changes what the `/exec` URL serves, so a saved file
+can be tested immediately.
+
+1. **Is the email itself working?** Apps Script editor → pick **`sendTestAlert`** in the
+   function dropdown → **▷ Run**. A test email should arrive within seconds. The log also
+   prints how much of the ~100/day mail quota is left.
+2. **Is the web app reachable?** Open the `/exec` URL in a browser. It should say
+   *"Omega Dental booking alerts are running."* Anything else — a sign-in page, an error —
+   means the deployment's **Who has access** is no longer **Anyone**, and the website's
+   posts are being turned away before they reach the script.
+3. **Did the website's booking actually arrive?** Apps Script → **Executions** (the ⏱ icon
+   in the left sidebar). A booking should show a `doPost` run. **No run at all** means the
+   post never reached the script — check 2, and check `OMEGA_ALERT_URL` in
+   `assets/firebase-config.js` matches the current deployment.
+
+**`checkAlertSetup`** prints all of it at once: who is emailed, the token the website must
+send, the mail quota left, the sheet link, and which account the mail is sent from.
+
+If step 1 works but real bookings do not, the email is fine and the problem is the website
+reaching the script. If step 1 does not arrive either, check **Spam** and **Promotions** —
+automated mail from a new script often lands there the first few times, and marking one
+*Not spam* trains it. Every alert email
 links to it too. Open it in Excel, or File → Download → Microsoft Excel (.xlsx).
 
 Nothing needs adding by hand, and it does not touch your patient records — a booking is a

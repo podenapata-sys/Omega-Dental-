@@ -212,6 +212,57 @@ function _sheetUrl() {
   return id ? 'https://docs.google.com/spreadsheets/d/' + id : '';
 }
 
+/* ---------- checking it, when an alert does not arrive ----------
+
+   An alert crosses three separate things, and a failure in any one of them looks
+   identical from the outside — nothing in the inbox. So test them one at a time
+   rather than guessing:
+
+     1. does the mail itself work?     -> run sendTestAlert() below
+     2. is the web app reachable?      -> open the /exec URL in a browser
+     3. did the website's post arrive?  -> Executions in the left sidebar
+
+   Both functions below run straight from the editor with the ▷ Run button. They do
+   NOT need a deployment: a deployment only affects what the /exec URL serves, so a
+   test can be run the moment the file is saved. */
+
+/** Sends one alert to TO_EMAIL, exactly as a real booking would, and logs the mail
+    quota that is left. If this arrives but real bookings do not, the email is fine
+    and the problem is the website reaching the script — check Executions. */
+function sendTestAlert() {
+  var left = MailApp.getRemainingDailyQuota();
+  console.log('Emails left to send today: ' + left);
+  if (left < 1) {
+    console.log('QUOTA SPENT. Google allows about 100 a day; it resets after 24 hours. '
+              + 'No alert can be sent until then.');
+    return;
+  }
+  console.log('Sending to: ' + TO_EMAIL);
+  MailApp.sendEmail({
+    to: TO_EMAIL,
+    subject: '[TEST] ' + CLINIC_NAME + ' booking alert',
+    htmlBody: '<div style="font-family:Arial,sans-serif;font-size:15px;color:#1f2d3d">'
+            + '<h2 style="color:#173a63;margin:0 0 12px">This is a test</h2>'
+            + '<p>If you can read this, alert emails are working and reaching '
+            + TO_EMAIL + '. Nobody booked anything — you can delete this.</p>'
+            + '<p style="color:#6b7a8c;font-size:12px">Sent from the Apps Script editor at '
+            + Utilities.formatDate(new Date(), 'Asia/Dhaka', 'dd-MM-yyyy HH:mm') + '.</p></div>',
+    name: CLINIC_NAME + ' website'
+  });
+  console.log('Sent. Check the inbox, and the Spam and Promotions tabs.');
+}
+
+/** Prints everything the alert needs, in one run: who it emails, the token the
+    website must match, how much mail quota is left, and where the sheet is. */
+function checkAlertSetup() {
+  console.log('Alerts are emailed to : ' + TO_EMAIL);
+  console.log('Token the site must send: ' + SHARED_TOKEN
+            + '   (must equal OMEGA_ALERT_TOKEN in assets/firebase-config.js)');
+  console.log('Emails left to send today: ' + MailApp.getRemainingDailyQuota());
+  console.log('Bookings sheet: ' + (_sheetUrl() || 'not created yet'));
+  console.log('Script owner (mail is sent from here): ' + Session.getEffectiveUser().getEmail());
+}
+
 /** Run this from the editor to find the sheet. */
 function bookingsSheetUrl() {
   var url = _sheetUrl();
