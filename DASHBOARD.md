@@ -248,6 +248,42 @@ Script project as the booking alerts — the file's own notes have the detail. I
 If an email does not arrive, Apps Script → **Executions** says why — a wrong password and an
 unreachable database both leave a note there.
 
+---
+
+## Publishing content changes
+
+The **🌐 Website** editor changes prices, descriptions, categories, gallery captions and
+photos. Those edits are a **draft on that device** until you publish them.
+
+Press **Connect** at the top with your clinic login, then **🚀 Publish to website**. The
+change is committed to the site and appears live a minute or two later, once GitHub
+rebuilds. Photos you added are uploaded at the same time, in one go.
+
+### Why it asks you to sign in
+Publishing writes to the website itself. The sign-in proves it is you: the publisher
+checks the account against the clinic's own login and refuses anything else. The PIN
+alone is not enough, deliberately — it protects a device, not the live site.
+
+### If publishing fails
+- *"That account may not publish"* — signed in with a different Firebase user.
+- *"Your sign-in has expired"* — press Connect again.
+- *"GITHUB_TOKEN is not set"* — the one-time setup below has not been done.
+- *"The content could not be written safely"* — nothing was sent. The editor checks it can
+  read its own output back before publishing, so a broken file can never reach the site.
+
+### One-time setup
+1. GitHub → Settings → Developer settings → **Personal access tokens → Fine-grained
+   tokens → Generate new token**. Repository access: **only this repository**.
+   Permissions: **Contents → Read and write**. Nothing else.
+2. Apps Script → Project Settings → **Script Properties** → add
+   `GITHUB_TOKEN` = that token.
+3. Add [`tools/publish.gs`](tools/publish.gs) to the same Apps Script project, replace
+   `Code.gs` with the current version, then **Deploy → New version**.
+
+The token lives in Apps Script, never in the browser — so it is not sitting in
+localStorage on a clinic phone. The editor can only ask for "commit these files", and the
+publisher refuses any path outside `assets/content.js` and the photo folders.
+
 ## Income report
 
 Press **📊 Report** in the top bar for:

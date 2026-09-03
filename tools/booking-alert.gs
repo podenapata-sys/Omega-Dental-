@@ -40,9 +40,17 @@ var TO_EMAIL     = 'omegadental@gmail.com';   // ← who receives the alerts
 var SHARED_TOKEN = 'Omega.JS';                // ← must match firebase-config.js
 var CLINIC_NAME  = 'Omega Dental';
 
+/* A project may only have one doPost, so this is the single front door: the booking
+   form and the content editor both arrive here and are told apart by `action`. */
 function doPost(e) {
   try {
     var d = JSON.parse(e.postData.contents);
+
+    /* The content editor. Guarded by a Firebase sign-in inside publishContent(), not by
+       SHARED_TOKEN — that token is in the website's page source and must never be
+       enough to write to the repository. Defined in publish.gs. */
+    if (d && d.action === 'publish') return _ok(JSON.stringify(publishContent(d)));
+
     if (String(d.token || '') !== SHARED_TOKEN) return _ok('ignored');
 
     var name  = _clean(d.name)    || '(no name given)';
