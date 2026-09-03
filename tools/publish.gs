@@ -36,6 +36,12 @@ var GITHUB_API    = 'https://api.github.com';
 
 /** Called from doPost in Code.gs when the payload carries action:"publish". */
 function publishContent(d) {
+  /* Pressing Run on this in the editor calls it with nothing, which used to throw a
+     TypeError that looked like a real fault. It is driven by the website editor. */
+  if (!d || typeof d !== 'object')
+    return { ok: false, error: 'publishContent is called by the website editor, not run from ' +
+             'this toolbar. Open the dashboard, press Connect, then Publish to website.' };
+
   var who = _verifyClinic(d.idToken);
   if (!who.ok) return { ok: false, error: who.error };
 
