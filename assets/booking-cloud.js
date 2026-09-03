@@ -45,7 +45,10 @@
         await addDoc(collection(db, "bookings"), {
           name: data.name || "", phone: data.phone || "", service: data.service || "",
           date: data.date || "", dateISO: data.dateISO || "",
-          time: data.time || "", note: data.msg || "",
+          time: data.time || "",
+          /* `note` is kept for the callback form and for anything written before the
+             booking form started asking for an address. */
+          address: data.address || "", note: data.msg || "",
           emergency: !!data.emerg, status: "new", source: "website",
           kind: data.kind || "appointment",
           createdAt: serverTimestamp()

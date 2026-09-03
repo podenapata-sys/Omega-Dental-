@@ -385,8 +385,12 @@ the latest fifteen so you can glance at what has come in.
 
 The one optional action is **➕ Add**, in the top-right of each booking. Press it when that
 patient actually turns up: they go straight into your records with their name, phone,
-treatment and requested date as **Next Appointment**, and the form opens so you can type
-**Total** and **Paid** and press **Update record**.
+**address**, treatment and requested date as **Next Appointment**, and the form opens so
+you can type **Total** and **Paid** and press **Update record**.
+
+The booking form asks for an address, so the address a patient types on the website reaches
+your bookings sheet, the alert email and the records table on its own. It is optional for
+them — a booking with no address simply shows none.
 
 The booking then shows **✓ Added** so it cannot be added twice. That marker is kept on the
 device you pressed it from — a booking cannot be changed once submitted, which is what
@@ -461,15 +465,20 @@ exactly as before.
 
 6. Save and publish the site, then make one test booking on the website and check the inbox.
 
-The email carries the patient's name, a tappable phone number, the treatment, the date and
-time they asked for, their note, and a **Reply on WhatsApp** button. Emergency requests are
+The email carries the patient's name, a tappable phone number, their address, the
+treatment, the date and time they asked for, and a **Reply on WhatsApp** button. Emergency requests are
 flagged at the top.
 
 ### Every booking also lands in a spreadsheet
 Alongside the email, each booking is added to a Google Sheet in the clinic's own Drive —
-**Omega Dental — Website Bookings** — with the date received, name, phone, treatment,
-requested date and time, their note, an emergency flag, and a **Status** column to mark
-up as you like. Newest at the top.
+**Omega Dental — Website Bookings** — with the date received, name, phone, **address**,
+treatment, requested date and time, an emergency flag, and a **Status** column to mark up
+as you like. Newest at the top.
+
+> The **Address** column appears by itself on the next booking after you redeploy the
+> script. A sheet that already has a **Note** column keeps everything in it — that column
+> asked "where are you coming from?", which is the same question, so it is renamed and
+> moved rather than left behind.
 
 The sheet is created by itself when the first booking arrives. To find it: Apps Script
 editor → run **`bookingsSheetUrl`** and the link appears in the log. Every alert email

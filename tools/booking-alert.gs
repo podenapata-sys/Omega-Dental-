@@ -68,7 +68,7 @@ function doPost(e) {
       ['Phone',     phone ? '<a href="tel:' + phone + '">' + phone + '</a>' : '(not given)'],
       ['Treatment', _clean(d.service) || 'not specified'],
       ['Wants',     when],
-      ['Note',      _clean(d.msg) || '—']
+      ['Address',   _address(d) || '—']
     ];
     var body = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#1f2d3d">'
       + (d.emerg ? '<p style="background:#fde8e8;color:#c0392b;padding:10px;border-radius:8px">'
@@ -106,26 +106,47 @@ function doGet() {
 /* ---------- the bookings sheet ---------- */
 
 var SHEET_NAME    = 'Omega Dental — Website Bookings';
-var SHEET_HEADERS = ['Received', 'Patient', 'Phone', 'Treatment', 'Requested date',
-                     'Requested time', 'Note', 'Emergency', 'Status'];
+var SHEET_HEADERS = ['Received', 'Patient', 'Phone', 'Address', 'Treatment',
+                     'Requested date', 'Requested time', 'Emergency', 'Status'];
+var ADDRESS_COL   = 4;   // where Address sits in SHEET_HEADERS
+
+/** The booking form used to ask "where are you coming from?" and send it as `msg`.
+    It asks for the address outright now. Read both so a visitor still on a cached
+    copy of the old page lands in the Address column rather than nowhere. */
+function _address(d) {
+  return _clean(d && d.address) || _clean(d && d.msg);
+}
 
 /** Adds one booking to the top of the sheet. Newest first, so the clinic opens it
-    and sees today without scrolling. */
+    and sees today without scrolling.
+
+    Each value is placed under its OWN heading rather than at a fixed position. The sheet
+    is the clinic's own file: they can reorder the columns, and the Address column arrives
+    by migration on a sheet that predates it. Writing by position meant one unexpected
+    column put every phone number under Treatment. */
 function _logBooking(d) {
   var sh = _bookingsSheet();
   if (!sh) return;
+  var width = Math.max(sh.getLastColumn(), SHEET_HEADERS.length);
+  var head  = sh.getRange(1, 1, 1, width).getValues()[0];
+  var byName = {
+    'received':       Utilities.formatDate(new Date(), 'Asia/Dhaka', 'dd-MM-yyyy HH:mm'),
+    'patient':        _clean(d.name),
+    'phone':          _clean(d.phone),
+    'address':        _address(d),
+    'note':           _address(d),   // an un-migrated sheet still says Note
+    'treatment':      _clean(d.service),
+    'requested date': _clean(d.date),
+    'requested time': _clean(d.time),
+    'emergency':      d.emerg ? 'YES' : '',
+    'status':         'New'
+  };
+  var row = head.map(function (h) {
+    var k = String(h).trim().toLowerCase();
+    return byName.hasOwnProperty(k) ? byName[k] : '';
+  });
   sh.insertRowBefore(2);
-  sh.getRange(2, 1, 1, SHEET_HEADERS.length).setValues([[
-    Utilities.formatDate(new Date(), 'Asia/Dhaka', 'dd-MM-yyyy HH:mm'),
-    _clean(d.name),
-    _clean(d.phone),
-    _clean(d.service),
-    _clean(d.date),
-    _clean(d.time),
-    _clean(d.msg),
-    d.emerg ? 'YES' : '',
-    'New'
-  ]]);
+  sh.getRange(2, 1, 1, row.length).setValues([row]);
 }
 
 /** The sheet, made on first use and remembered afterwards. */
@@ -133,7 +154,11 @@ function _bookingsSheet() {
   var props = PropertiesService.getScriptProperties();
   var id = props.getProperty('BOOKINGS_SHEET_ID');
   if (id) {
-    try { return SpreadsheetApp.openById(id).getSheets()[0]; }
+    try {
+      var existing = SpreadsheetApp.openById(id).getSheets()[0];
+      _addAddressColumn(existing);
+      return existing;
+    }
     catch (e) { /* deleted or in someone's bin — fall through and make a new one */ }
   }
   var ss = SpreadsheetApp.create(SHEET_NAME);
@@ -145,9 +170,41 @@ function _bookingsSheet() {
      zero, which makes every Bangladeshi mobile in the file wrong. */
   sh.getRange('C:C').setNumberFormat('@');
   sh.setColumnWidth(1, 130);
-  sh.setColumnWidth(7, 220);
+  sh.setColumnWidth(ADDRESS_COL, 220);
   props.setProperty('BOOKINGS_SHEET_ID', ss.getId());
   return sh;
+}
+
+/** Sheets made before the booking form asked for an address have no Address heading,
+    and _logBooking would write straight past them into the wrong columns.
+
+    Their **Note** column already holds the answer to "where are you coming from?" — the
+    same question, asked less directly — so it is renamed and slid into place rather than
+    left behind: no history is lost and nothing ends up in a column it does not belong in.
+    A sheet with no Note column at all just gains an empty one.
+
+    Runs once. Every booking after that finds the heading and returns immediately. */
+function _addAddressColumn(sh) {
+  try {
+    var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+    var noteAt = -1;
+    for (var i = 0; i < head.length; i++) {
+      var h = String(head[i]).trim().toLowerCase();
+      if (h === 'address') return;            // already migrated
+      if (h === 'note') noteAt = i + 1;       // getRange is 1-based
+    }
+    if (noteAt > 0) {
+      sh.getRange(1, noteAt).setValue('Address');
+      if (noteAt !== ADDRESS_COL) {
+        sh.moveColumns(sh.getRange(1, noteAt, sh.getMaxRows(), 1), ADDRESS_COL);
+      }
+    } else {
+      sh.insertColumnAfter(ADDRESS_COL - 1);
+      sh.getRange(1, ADDRESS_COL)
+        .setValue('Address').setFontWeight('bold').setBackground('#eef4f7');
+    }
+    sh.setColumnWidth(ADDRESS_COL, 220);
+  } catch (e) { console.warn('Address column: ' + e); }
 }
 
 function _sheetUrl() {

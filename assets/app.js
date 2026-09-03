@@ -97,7 +97,7 @@ const I18N = {
     book_side_title:"Message or call us directly",
     book_side_text:"Send us a quick WhatsApp message, call the clinic, or get directions — whatever is easiest for you.",
     f_name:"Full name", f_phone:"Phone number", f_service:"Treatment needed",
-    f_date:"Preferred date", f_time:"Preferred time", f_date_ph:"Type or pick a date", f_time_ph:"Type or pick a time", f_today:"Today", f_tomorrow:"Tomorrow", f_msg:"Where are you coming from? (optional)", f_msg_ph:"e.g. Mirpur, Kazipara, Uttara…",
+    f_date:"Preferred date", f_time:"Preferred time", f_date_ph:"Type or pick a date", f_time_ph:"Type or pick a time", f_today:"Today", f_tomorrow:"Tomorrow", f_address:"Address (optional)", f_address_ph:"House / road / area",
     f_emerg:"This is an emergency / I need same-day care",
     f_consent:'I agree that my details will be sent to Omega Dental via WhatsApp, as described in the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.',
     cb_consent:'I agree to be contacted about my request, as described in the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.',
@@ -218,7 +218,7 @@ const I18N = {
     book_side_title:"মেসেজ বা কল করুন",
     book_side_text:"দ্রুত হোয়াটসঅ্যাপ মেসেজ দিন, ক্লিনিকে কল করুন, অথবা দিকনির্দেশ নিন — যেটি আপনার জন্য সহজ।",
     f_name:"পুরো নাম", f_phone:"ফোন নম্বর", f_service:"প্রয়োজনীয় চিকিৎসা",
-    f_date:"পছন্দের তারিখ", f_time:"পছন্দের সময়", f_date_ph:"তারিখ লিখুন বা বেছে নিন", f_time_ph:"সময় লিখুন বা বেছে নিন", f_today:"আজ", f_tomorrow:"আগামীকাল", f_msg:"আপনি কোথা থেকে আসছেন? (ঐচ্ছিক)", f_msg_ph:"যেমন: মিরপুর, কাজীপাড়া, উত্তরা…",
+    f_date:"পছন্দের তারিখ", f_time:"পছন্দের সময়", f_date_ph:"তারিখ লিখুন বা বেছে নিন", f_time_ph:"সময় লিখুন বা বেছে নিন", f_today:"আজ", f_tomorrow:"আগামীকাল", f_address:"ঠিকানা (ঐচ্ছিক)", f_address_ph:"বাসা / রোড / এলাকা",
     f_emerg:"এটি জরুরি / আমার একই দিনে সেবা দরকার",
     f_consent:'আমি সম্মত যে আমার তথ্য <a href="privacy-policy.html" target="_blank" rel="noopener">প্রাইভেসি পলিসি</a> অনুযায়ী হোয়াটসঅ্যাপে ওমেগা ডেন্টালে পাঠানো হবে।',
     cb_consent:'আমি <a href="privacy-policy.html" target="_blank" rel="noopener">প্রাইভেসি পলিসি</a> অনুযায়ী আমার অনুরোধ নিয়ে যোগাযোগে সম্মত।',
@@ -916,7 +916,10 @@ function submitBooking(e){
        booking as an upcoming appointment, and cannot parse the display form. */
     dateISO: f.f_date.value || "",
     time: f.f_time.value ? fmtPickedTime(f.f_time.value) : "",
-    msg: f.f_msg.value.trim(),
+    /* The old field asked "where are you coming from?" and its answer was parked in a
+       note. It is the address now, and it travels as one all the way to the clinic's
+       bookings sheet and the Address column of their records. */
+    address: f.f_address ? f.f_address.value.trim() : "",
     emerg: f.f_emerg.checked,
   };
   let lines = [
@@ -927,7 +930,7 @@ function submitBooking(e){
     data.date ? `Preferred date: ${data.date}` : "",
     data.time ? `Preferred time: ${data.time}` : "",
     data.emerg ? "⚠️ EMERGENCY / same-day requested" : "",
-    data.msg ? `Coming from: ${data.msg}` : "",
+    data.address ? `Address: ${data.address}` : "",
   ].filter(Boolean);
   const url = `https://wa.me/${OMEGA.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`;
   const note = document.getElementById("bookSuccess");
@@ -961,7 +964,7 @@ function sendBookingAlert(data){
     const payload = JSON.stringify({
       token: window.OMEGA_ALERT_TOKEN || "",
       name: data.name, phone: data.phone, service: data.service,
-      date: data.date, time: data.time, msg: data.msg, emerg: !!data.emerg
+      date: data.date, time: data.time, address: data.address, emerg: !!data.emerg
     });
     if(navigator.sendBeacon){
       navigator.sendBeacon(url, new Blob([payload], {type:"text/plain;charset=UTF-8"}));

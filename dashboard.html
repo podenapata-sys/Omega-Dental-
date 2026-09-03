@@ -430,7 +430,9 @@ tbody tr:hover td.actions{background:#f8fcfb}
       mobile: b.phone || "",
       id: cid(b.phone || ""),
       name: b.name || "",
-      address: "",                 /* the website booking form does not ask for one */
+      /* b.note is what the field was called before the booking form asked for an
+         address outright, so an older booking still fills the column. */
+      address: b.address || b.note || "",
       service: b.service || "",
       total: 0, paid: 0,
       /* dateISO, never b.date — b.date is the display string ("05-09-2026") and storing
@@ -1124,7 +1126,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
         + "</div>"
         + "<div style='color:var(--muted);font-size:.85rem;margin-top:6px'>"
           + esc(b.service||"—") + (b.date?(" · "+esc(b.date)):"") + (b.time?(" "+esc(b.time)):"")
-          + (b.note?(" · “"+esc(b.note)+"”"):"")
+          + ((b.address||b.note)?(" · 📍 "+esc(b.address||b.note)):"")
         + "</div></div>";
     });
     list.innerHTML = html;
@@ -1155,7 +1157,8 @@ tbody tr:hover td.actions{background:#f8fcfb}
       snap.forEach(d=>{
         const b=d.data();
         current.set(d.id, {name:b.name, phone:b.phone, service:b.service,
-                           date:b.date, dateISO:b.dateISO, time:b.time});
+                           date:b.date, dateISO:b.dateISO, time:b.time,
+                           address:b.address, note:b.note});
         docs.push(d);
       });
       lastDocs = docs;
