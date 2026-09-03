@@ -508,6 +508,12 @@ the outside — an empty inbox. Test them one at a time instead of guessing. Non
 needs a redeploy; a deployment only changes what the `/exec` URL serves, so a saved file
 can be tested immediately.
 
+> **Pick the function first.** The dropdown beside ▷ Run defaults to whatever is at the
+> top of the file, usually `doPost`. `doPost` is the *website's* entry point and does
+> nothing useful from the editor — there is no booking attached to it — so it reports
+> "Execution completed" having sent nothing, which looks exactly like a broken email. It
+> now says so in the log instead. Always choose the function you actually want first.
+
 1. **Is the email itself working?** Apps Script editor → pick **`sendTestAlert`** in the
    function dropdown → **▷ Run**. A test email should arrive within seconds. The log also
    prints how much of the ~100/day mail quota is left.

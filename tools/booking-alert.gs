@@ -59,6 +59,17 @@ function _recipients() {
    form and the content editor both arrive here and are told apart by `action`. */
 function doPost(e) {
   try {
+    /* Pressing Run on doPost from the editor gets here with no request attached. The
+       catch below would swallow the TypeError and report "Execution completed" having
+       sent nothing — which reads exactly like a broken email. Say so instead. */
+    if (!e || !e.postData) {
+      console.log('doPost is the website\'s entry point — it cannot be run from the editor, '
+                + 'because there is no booking attached to it.');
+      console.log('To test the email: pick sendTestAlert in the function dropdown above, '
+                + 'then press Run. To see the setup: pick checkAlertSetup.');
+      return _ok('no request');
+    }
+
     var d = JSON.parse(e.postData.contents);
 
     /* The content editor. Guarded by a Firebase sign-in inside publishContent(), not by
