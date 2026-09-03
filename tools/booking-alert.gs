@@ -40,7 +40,7 @@
    same email. Note that Google's ~100-a-day mail allowance counts RECIPIENTS, not
    messages, so two addresses means two units per booking (about 50 bookings a day
    instead of 100 — still far more than a clinic takes). */
-var TO_EMAIL     = 'omegadental@gmail.com';
+var TO_EMAIL     = 'omegadental@gmail.com, noorayn408@gmail.com';
 var SHARED_TOKEN = 'Omega.JS';                // ← must match firebase-config.js
 var CLINIC_NAME  = 'Omega Dental';
 
