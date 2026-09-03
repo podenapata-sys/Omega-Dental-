@@ -483,6 +483,32 @@ as you like. Newest at the top.
 The sheet is created by itself when the first booking arrives. To find it: Apps Script
 editor → run **`bookingsSheetUrl`** and the link appears in the log.
 
+### The alert does not depend on the patient's browser
+The website fires the alert from **the patient's phone**, as they are handed off to
+WhatsApp, and it is fire-and-forget — the page cannot see the reply. An ad-blocker, a
+dropped signal, or the web app's access setting slipping off *Anyone* all kill it in
+exactly the same way: silently. The clinic simply stops getting emails, with nothing
+anywhere to say why.
+
+The booking itself is never lost — it is written to Firestore by a separate path, which is
+what the Website Bookings panel reads. So a **sweep** runs on Google's servers every five
+minutes, reads the bookings from there, and emails anything the browser did not manage to
+report. An alert can be five minutes late; it cannot go missing.
+
+**Turn it on once:** Apps Script editor → pick **`installBookingSweep`** → **▷ Run**. It
+is safe to run again — it clears its own old trigger first, so it can never end up
+installed twice and emailing twice.
+
+Nothing is sent twice. The website records a fingerprint (the phone number and the minute
+it arrived) for every alert it manages to send, and the sweep skips anything already
+marked. If sending fails part-way — a spent quota, say — the sweep stops there and picks
+up from the same booking next time rather than stepping over it.
+
+The first run sends nothing: it notes the time and sweeps from then on. Otherwise turning
+it on would email every booking the clinic has ever taken, at once.
+
+**`checkAlertSetup`** says whether the sweep is on and how far it has got.
+
 ### Sending the alerts to more than one address
 `TO_EMAIL` at the top of the script takes a list — separate the addresses with commas:
 

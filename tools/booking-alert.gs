@@ -55,6 +55,45 @@ function _recipients() {
     .join(',');
 }
 
+/** The alert email, built in one place. Two things send it now — the beacon the website
+    fires, and the sweep that runs on a timer — and a clinic reading both must not be able
+    to tell which one it came from. Building it twice is how they drift apart. */
+function _bookingEmail(d) {
+  var name  = _clean(d.name) || '(no name given)';
+  var phone = _clean(d.phone);
+  var when  = [_clean(d.date), _clean(d.time)].filter(String).join(' at ') || 'not specified';
+  var rows  = [
+    ['Patient',   name],
+    ['Phone',     phone ? '<a href="tel:' + phone + '">' + phone + '</a>' : '(not given)'],
+    ['Treatment', _clean(d.service) || 'not specified'],
+    ['Wants',     when],
+    ['Address',   _address(d) || '—']
+  ];
+  var body = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#1f2d3d">'
+    + (d.emerg ? '<p style="background:#fde8e8;color:#c0392b;padding:10px;border-radius:8px">'
+               + '<b>Marked as an emergency / same-day request.</b></p>' : '')
+    + '<h2 style="color:#173a63;margin:0 0 12px">New booking from the website</h2>'
+    + '<table cellpadding="7" style="border-collapse:collapse">';
+  for (var i = 0; i < rows.length; i++) {
+    body += '<tr>'
+         +  '<td style="color:#6b7a8c">' + rows[i][0] + '</td>'
+         +  '<td><b>' + rows[i][1] + '</b></td></tr>';
+  }
+  body += '</table>'
+    + (phone ? '<p style="margin-top:16px">'
+             + '<a href="https://wa.me/88' + phone.replace(/\D/g, '') + '"'
+             + ' style="background:#25D366;color:#fff;padding:10px 16px;border-radius:8px;'
+             + 'text-decoration:none;font-weight:bold">Reply on WhatsApp</a></p>' : '')
+    + '<p style="color:#6b7a8c;font-size:12px;margin-top:20px">'
+    + 'Sent automatically by the ' + CLINIC_NAME + ' website. It is also saved in your dashboard'
+    + (_sheetUrl() ? ' and in your <a href="' + _sheetUrl() + '">bookings sheet</a>' : '')
+    + '.</p></div>';
+  return {
+    subject: (d.emerg ? '[EMERGENCY] ' : '') + 'New booking — ' + name,
+    body: body
+  };
+}
+
 /* A project may only have one doPost, so this is the single front door: the booking
    form and the content editor both arrive here and are told apart by `action`. */
 function doPost(e) {
@@ -79,46 +118,20 @@ function doPost(e) {
 
     if (String(d.token || '') !== SHARED_TOKEN) return _ok('ignored');
 
-    var name  = _clean(d.name)    || '(no name given)';
-    var phone = _clean(d.phone);
-    var when  = [_clean(d.date), _clean(d.time)].filter(String).join(' at ') || 'not specified';
-    var subj  = (d.emerg ? '[EMERGENCY] ' : '') + 'New booking — ' + name;
-
     /* Written down before anything else. If the mail quota is spent or Gmail is having
-       a bad day the booking is still recorded, and building the email afterwards means
-       even the very first one can link to the sheet that was just created. */
+       a bad day the booking is still recorded. */
     try { _logBooking(d); } catch (logErr) { console.warn('Sheet log failed: ' + logErr); }
-
-    var rows = [
-      ['Patient',   name],
-      ['Phone',     phone ? '<a href="tel:' + phone + '">' + phone + '</a>' : '(not given)'],
-      ['Treatment', _clean(d.service) || 'not specified'],
-      ['Wants',     when],
-      ['Address',   _address(d) || '—']
-    ];
-    var body = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#1f2d3d">'
-      + (d.emerg ? '<p style="background:#fde8e8;color:#c0392b;padding:10px;border-radius:8px">'
-                 + '<b>Marked as an emergency / same-day request.</b></p>' : '')
-      + '<h2 style="color:#173a63;margin:0 0 12px">New booking from the website</h2>'
-      + '<table cellpadding="7" style="border-collapse:collapse">';
-    for (var i = 0; i < rows.length; i++) {
-      body += '<tr>'
-           +  '<td style="color:#6b7a8c">' + rows[i][0] + '</td>'
-           +  '<td><b>' + rows[i][1] + '</b></td></tr>';
-    }
-    body += '</table>'
-      + (phone ? '<p style="margin-top:16px">'
-               + '<a href="https://wa.me/88' + phone.replace(/\D/g, '') + '"'
-               + ' style="background:#25D366;color:#fff;padding:10px 16px;border-radius:8px;'
-               + 'text-decoration:none;font-weight:bold">Reply on WhatsApp</a></p>' : '')
-      + '<p style="color:#6b7a8c;font-size:12px;margin-top:20px">'
-      + 'Sent automatically by the ' + CLINIC_NAME + ' website. It is also saved in your dashboard'
-      + (_sheetUrl() ? ' and in your <a href="' + _sheetUrl() + '">bookings sheet</a>' : '')
-      + '.</p></div>';
 
     var to = _recipients();
     if (!to) return _ok('no recipient');   // logged to the sheet regardless, above
-    MailApp.sendEmail({ to: to, subject: subj, htmlBody: body, name: CLINIC_NAME + ' website' });
+
+    var mail = _bookingEmail(d);
+    MailApp.sendEmail({ to: to, subject: mail.subject, htmlBody: mail.body,
+                        name: CLINIC_NAME + ' website' });
+
+    /* Tell the sweep this one is done. It reads the same booking out of Firestore a few
+       minutes later and would otherwise send it a second time. */
+    _markHandled(_fingerprint(d.phone, new Date()));
     return _ok('sent');
   } catch (err) {
     // never throw: a failed alert must not affect the patient's booking
@@ -240,6 +253,173 @@ function _sheetUrl() {
   return id ? 'https://docs.google.com/spreadsheets/d/' + id : '';
 }
 
+/* ---------- the safety net ----------
+
+   The beacon the website fires is sent from the PATIENT'S browser, and it is
+   fire-and-forget: the page cannot see the reply, so when it is blocked by an ad-blocker,
+   dropped as the phone hands off to WhatsApp, or refused because the web app's access
+   setting slipped off "Anyone", nothing anywhere says so. The clinic simply stops getting
+   emails and has no way to find out why.
+
+   The booking itself is never lost — the browser writes it to Firestore by a separate
+   path, which is what the dashboard's Website Bookings panel reads. So this reads the
+   bookings from THERE, on a timer, on Google's servers, and emails anything the beacon
+   did not already cover. The alert no longer depends on the patient's browser.
+
+   Set it up once: run installBookingSweep() from the editor. */
+
+var SWEEP_MINUTES = 5;    // how often to look; the worst an alert can be late
+
+/** Emails every booking written to Firestore since the last sweep. */
+function sweepBookings() {
+  var props = PropertiesService.getScriptProperties();
+  var since = props.getProperty('sweepFrom');
+
+  /* Nothing recorded yet: start the clock now and send nothing. Otherwise switching this
+     on would email every booking the clinic has ever taken, all at once. */
+  if (!since) {
+    props.setProperty('sweepFrom', new Date().toISOString());
+    console.log('First run — from now on, bookings arriving after this moment are swept.');
+    return;
+  }
+
+  var token = _signIn(props);            // lives in Reminder.gs, same project
+  if (!token) return;                    // _signIn already said exactly what is wrong
+
+  var list = _newBookings(token, since);
+  if (!list.length) { console.log('Nothing new since ' + since + '.'); return; }
+
+  var to = _recipients();
+  if (!to) { console.warn('TO_EMAIL has no valid address — nobody to alert.'); return; }
+
+  /* The list is oldest first, and `newest` only moves past a booking once that booking is
+     genuinely dealt with — sent, or already sent by the beacon. Moving it up front looks
+     equivalent and is not: a send that then fails would have been stepped over and never
+     tried again. A quota that runs out mid-sweep must delay alerts, never lose them. */
+  var newest = since, sent = 0, skipped = 0;
+  for (var i = 0; i < list.length; i++) {
+    var b = list[i];
+    var fp = _fingerprint(b.phone, new Date(b.createdAt));
+
+    if (_alreadyHandled(fp)) {                          // the beacon got there first
+      skipped++;
+      if (b.createdAt > newest) newest = b.createdAt;
+      continue;
+    }
+
+    try {
+      var mail = _bookingEmail(b);
+      MailApp.sendEmail({ to: to, subject: mail.subject, htmlBody: mail.body,
+                          name: CLINIC_NAME + ' website' });
+      try { _logBooking(b); } catch (logErr) { console.warn('Sheet log failed: ' + logErr); }
+      _markHandled(fp);
+      sent++;
+      if (b.createdAt > newest) newest = b.createdAt;
+    } catch (mailErr) {
+      console.warn('Could not send, will try again next sweep: ' + mailErr);
+      break;
+    }
+  }
+  props.setProperty('sweepFrom', newest);
+  console.log('Swept: ' + sent + ' emailed, ' + skipped + ' already sent by the website.');
+}
+
+/** Bookings created after `sinceIso`, oldest first. Shaped like the object the website
+    beacon sends, so _bookingEmail() and _logBooking() take it unchanged. */
+function _newBookings(token, sinceIso) {
+  var url = 'https://firestore.googleapis.com/v1/projects/' + PROJECT_ID +
+            '/databases/(default)/documents:runQuery';
+  var query = {
+    structuredQuery: {
+      from: [{ collectionId: 'bookings' }],
+      where: { fieldFilter: { field: { fieldPath: 'createdAt' }, op: 'GREATER_THAN',
+                              value: { timestampValue: sinceIso } } },
+      orderBy: [{ field: { fieldPath: 'createdAt' }, direction: 'ASCENDING' }],
+      limit: 50
+    }
+  };
+  var out = [];
+  try {
+    var res = UrlFetchApp.fetch(url, {
+      method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+      headers: { Authorization: 'Bearer ' + token },
+      payload: JSON.stringify(query)
+    });
+    if (res.getResponseCode() !== 200) {
+      console.warn('Firestore said ' + res.getResponseCode() + ': ' + res.getContentText());
+      return [];
+    }
+    var rows = JSON.parse(res.getContentText()) || [];
+    for (var i = 0; i < rows.length; i++) {
+      var doc = rows[i] && rows[i].document;
+      if (!doc || !doc.fields) continue;
+      var f = doc.fields;
+      out.push({
+        name:      _str(f.name),
+        phone:     _str(f.phone),
+        service:   _str(f.service),
+        date:      _str(f.date),
+        time:      _str(f.time),
+        /* `note` is what the field was called before the form asked for an address */
+        address:   _str(f.address) || _str(f.note),
+        emerg:     !!(f.emergency && f.emergency.booleanValue),
+        createdAt: (f.createdAt && f.createdAt.timestampValue) || ''
+      });
+    }
+  } catch (e) { console.warn('Could not reach Firestore: ' + e); return []; }
+  return out;
+}
+
+function _str(field) { return (field && field.stringValue) || ''; }
+
+/* ---------- not sending the same booking twice ----------
+
+   doPost never learns the Firestore document id — the browser writes the document and
+   beacons the script as two separate things — so a booking is identified by the phone
+   number and the minute it arrived. Two bookings from one number inside the same minute
+   is the only way to collide, and that does not happen. */
+
+function _fingerprint(phone, when) {
+  return String(phone || '').replace(/\D/g, '') + '@' +
+         Utilities.formatDate(when, 'Asia/Dhaka', 'yyyyMMddHHmm');
+}
+
+/** The last 100 fingerprints, capped so the property store cannot grow without limit.
+    A hundred covers hours of bookings — far longer than the few minutes a beacon and a
+    sweep can be apart. */
+function _handledList() {
+  try { return JSON.parse(
+    PropertiesService.getScriptProperties().getProperty('handled') || '[]') || []; }
+  catch (e) { return []; }
+}
+function _alreadyHandled(fp) { return _handledList().indexOf(fp) > -1; }
+function _markHandled(fp) {
+  try {
+    var list = _handledList();
+    if (list.indexOf(fp) > -1) return;
+    list.push(fp);
+    while (list.length > 100) list.shift();
+    PropertiesService.getScriptProperties().setProperty('handled', JSON.stringify(list));
+  } catch (e) { console.warn('Could not record the fingerprint: ' + e); }
+}
+
+/** Run once from the editor to start the sweep. Safe to run again — it clears its own
+    old trigger first, so it never ends up installed twice and emailing twice. */
+function installBookingSweep() {
+  var all = ScriptApp.getProjectTriggers();
+  var removed = 0;
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].getHandlerFunction() === 'sweepBookings') {
+      ScriptApp.deleteTrigger(all[i]); removed++;
+    }
+  }
+  ScriptApp.newTrigger('sweepBookings').timeBased().everyMinutes(SWEEP_MINUTES).create();
+  console.log((removed ? 'Replaced the old sweep. ' : '') +
+              'Bookings are now checked every ' + SWEEP_MINUTES + ' minutes.');
+  console.log('An alert can be at most ' + SWEEP_MINUTES +
+              ' minutes late, even if the website never reaches this script.');
+}
+
 /* ---------- checking it, when an alert does not arrive ----------
 
    An alert crosses three separate things, and a failure in any one of them looks
@@ -294,6 +474,19 @@ function checkAlertSetup() {
             + '   (must equal OMEGA_ALERT_TOKEN in assets/firebase-config.js)');
   console.log('Emails left to send today: ' + MailApp.getRemainingDailyQuota());
   console.log('Bookings sheet: ' + (_sheetUrl() || 'not created yet'));
+
+  /* The safety net matters more than anything above it: without it, an alert depends on
+     the patient's browser reaching this script, which nobody can see fail. */
+  var props = PropertiesService.getScriptProperties();
+  var on = false, all = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].getHandlerFunction() === 'sweepBookings') on = true;
+  }
+  console.log('Safety-net sweep : ' + (on
+    ? 'ON — every ' + SWEEP_MINUTES + ' minutes'
+    : 'OFF. Run installBookingSweep() once, or an alert is lost whenever the '
+      + 'website cannot reach this script.'));
+  console.log('Last swept up to : ' + (props.getProperty('sweepFrom') || 'never run yet'));
   console.log('Script owner (mail is sent from here): ' + Session.getEffectiveUser().getEmail());
 }
 
