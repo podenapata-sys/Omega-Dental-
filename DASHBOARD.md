@@ -66,6 +66,18 @@ only you can read.
 
 ## Day-to-day use
 
+### The treatment list comes from your website
+**Service taken** lists every treatment on your price list — all 45, grouped the same way
+the website groups them: Consultation, Scaling/Polishing/Filling, Veneer & Cosmetic, Root
+Canal, Bridge & Crown, Denture, Implant, Extraction & Surgery, Orthodontic & Aligner, Kids.
+
+It is not a separate list that someone has to remember to update. Change a treatment in
+the **🌐 Website** editor, publish, and the dropdown follows.
+
+Treatments you recorded before, that are no longer on the price list, appear under
+**Previously used** so old records keep their proper name. Anything else still goes in
+**Other (type below)…**.
+
 ### Taking a payment
 When a patient comes back and pays something off, press **💵** on their row. Type the
 amount they are handing over — not the new total — and it is added to what they had

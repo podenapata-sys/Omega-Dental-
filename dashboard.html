@@ -339,6 +339,8 @@ tbody tr:hover{background:#f8fcfb}
 </div>
 
 <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display:none">
+<!-- the website's services and prices; the Service taken list is built from it -->
+<script src="assets/content.js?v=1"></script>
 <script src="assets/firebase-config.js?v=3"></script>
 <script src="assets/vendor/xlsx.full.min.js" defer></script>
 <script>
@@ -510,6 +512,57 @@ tbody tr:hover{background:#f8fcfb}
     else if(name){ sel.value="__other__"; o.value=name; o.style.display="block"; }
     else { sel.value=""; o.style.display="none"; o.value=""; }
   }
+  /* The dropdown used to be thirteen hard-coded options — a second copy of a list that
+     already drives the website's price table, and one that had drifted from it. Building
+     it from assets/content.js means it covers every treatment the clinic actually prices,
+     and follows along whenever the content editor publishes a change.
+
+     The hard-coded options stay in the HTML as the fallback: if content.js is missing or
+     malformed this leaves them alone rather than emptying the dropdown. */
+  function buildServiceOptions(){
+    var C = window.OMEGA_CONTENT;
+    if(!C || !C.prices || !C.prices.length) return;
+
+    var sel = $("f_service"), cats = C.cats || {};
+    var known = {};                       // name -> true, for the "previously used" pass
+    var html = "<option value=''>Select a service…</option>";
+
+    /* the website's own category order, then anything with an unlisted category so a
+       price row can never silently vanish from the list */
+    var order = Object.keys(cats), seen = {};
+    order.forEach(function(k){ seen[k]=true; });
+    C.prices.forEach(function(p){ if(!seen[p.c]){ order.push(p.c); seen[p.c]=true; } });
+
+    order.forEach(function(k){
+      var rows = C.prices.filter(function(p){ return p.c === k; });
+      if(!rows.length) return;
+      html += "<optgroup label=\"" + esc((cats[k] && cats[k].en) || k) + "\">";
+      rows.forEach(function(p){
+        known[p.n] = true;
+        html += "<option value=\"" + esc(p.n) + "\">" + esc(p.n) + "</option>";
+      });
+      html += "</optgroup>";
+    });
+
+    /* Services already recorded that the price list no longer carries — a clinic with
+       fifty "Tooth Filling" records should not meet its commonest treatment as "Other". */
+    var past = [];
+    live().forEach(function(r){
+      var n = (r.service||"").trim();
+      if(n && !known[n] && past.indexOf(n) === -1) past.push(n);
+    });
+    if(past.length){
+      html += "<optgroup label=\"Previously used\">";
+      past.sort().forEach(function(n){
+        html += "<option value=\"" + esc(n) + "\">" + esc(n) + "</option>";
+      });
+      html += "</optgroup>";
+    }
+
+    html += "<option value='__other__'>Other (type below)…</option>";
+    sel.innerHTML = html;
+  }
+
   function clearForm(){
     ["f_mobile","f_name","f_total","f_paid","f_next"].forEach(function(k){$(k).value="";});
     $("f_service").value=""; $("f_service_other").value=""; $("f_service_other").style.display="none";
@@ -865,6 +918,7 @@ tbody tr:hover{background:#f8fcfb}
   /* ---------- wire up ---------- */
   document.addEventListener("DOMContentLoaded",function(){
     load();
+    buildServiceOptions();          // after load(): it reads existing records
     $("f_date").value=todayStr();
     $("dayPick").value=todayStr();
     $("monthPick").value=todayStr().slice(0,7);
