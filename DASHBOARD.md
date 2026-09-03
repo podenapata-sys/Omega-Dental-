@@ -352,6 +352,15 @@ has:
 
 Notifications only arrive while the dashboard is open in a browser tab.
 
+### The PIN is asked once per session
+Unlock the dashboard and the **🌐 Website** editor opens without asking again — and the
+other way round. Moving between records and content should not mean typing the PIN each
+time.
+
+Close the browser and it asks again. **🔒 Lock** also ends it immediately, on both pages.
+That is the difference between a convenience and a hole: the PIN still protects a device
+someone picks up later, it just stops nagging while you are working.
+
 ### Lock vs Sign out — they are different
 - **🔒 Lock** returns you to the PIN screen. It is a quick privacy screen for stepping away;
   your cloud session stays active underneath.

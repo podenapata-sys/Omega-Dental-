@@ -322,9 +322,19 @@ tbody tr:hover{background:#f8fcfb}
   /* ---------- PIN lock (same rules as the records dashboard) ---------- */
   function digits(s){ return (s||"").replace(/\D/g,""); }
   function checkPin(p){ return p===DEFAULT_PIN || localStorage.getItem(LS_PIN)===btoa("od:"+p); }
+  /* Shared with dashboard.html: unlock once and both pages are open for this browser
+     session, so the 🌐 Website / 📋 Records links do not each demand the PIN again. */
+  var SESSION_OPEN = "od_open";
+  function unlock(){
+    try{ sessionStorage.setItem(SESSION_OPEN, "1"); }catch(e){}
+    $("lock").style.display="none"; $("dash").style.display="block"; render();
+  }
+  function alreadyOpen(){
+    try{ return sessionStorage.getItem(SESSION_OPEN) === "1"; }catch(e){ return false; }
+  }
   function tryUnlock(){
     var p=digits($("pinInput").value);
-    if(checkPin(p)){ $("lock").style.display="none"; $("dash").style.display="block"; render(); }
+    if(checkPin(p)){ unlock(); }
     else { $("lockMsg").textContent="Wrong PIN."; $("pinInput").value=""; $("pinInput").focus(); }
   }
 
@@ -911,8 +921,11 @@ tbody tr:hover{background:#f8fcfb}
     wirePublish();
     $("pinBtn").addEventListener("click", tryUnlock);
     $("pinInput").addEventListener("keydown", function(e){ if(e.key==="Enter") tryUnlock(); });
-    $("pinInput").focus();
-    $("lockBtn").addEventListener("click", function(){ location.reload(); });
+    if(alreadyOpen()) unlock(); else $("pinInput").focus();
+    $("lockBtn").addEventListener("click", function(){
+      try{ sessionStorage.removeItem(SESSION_OPEN); }catch(e){}   // Lock must mean locked
+      location.reload();
+    });
 
     document.querySelectorAll(".tab").forEach(function(t){
       t.addEventListener("click", function(){

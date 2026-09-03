@@ -449,8 +449,22 @@ tbody tr:hover{background:#f8fcfb}
     if(checkPin(p)){ unlock(); }
     else{ $("lockMsg").textContent="Wrong PIN."; $("pinInput").value=""; $("pinInput").focus(); }
   }
-  function unlock(){ $("lock").style.display="none"; $("dash").style.display="block"; render(); }
-  function lock(){ location.reload(); }
+  /* Unlocking is remembered for the browser session, so stepping between the records
+     dashboard and the website editor does not ask for the PIN each time. sessionStorage,
+     not localStorage: close the browser and the PIN is required again, which is the
+     point of having one on a device the clinic might share. */
+  var SESSION_OPEN = "od_open";
+  function unlock(){
+    try{ sessionStorage.setItem(SESSION_OPEN, "1"); }catch(e){}
+    $("lock").style.display="none"; $("dash").style.display="block"; render();
+  }
+  function lock(){
+    try{ sessionStorage.removeItem(SESSION_OPEN); }catch(e){}   // Lock must mean locked
+    location.reload();
+  }
+  function alreadyOpen(){
+    try{ return sessionStorage.getItem(SESSION_OPEN) === "1"; }catch(e){ return false; }
+  }
 
   /* ---------- form ---------- */
   function recalc(){
@@ -793,6 +807,7 @@ tbody tr:hover{background:#f8fcfb}
     $("dayPick").value=todayStr();
     $("monthPick").value=todayStr().slice(0,7);
     initLock();
+    if(alreadyOpen()) unlock();
     $("pinBtn").addEventListener("click",tryUnlock);
     $("pinInput").addEventListener("keydown",function(e){ if(e.key==="Enter")tryUnlock(); });
     ["f_mobile","f_total","f_paid"].forEach(function(k){ $(k).addEventListener("input",recalc); });
