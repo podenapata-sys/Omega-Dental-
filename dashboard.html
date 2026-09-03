@@ -278,7 +278,10 @@ tbody tr:hover{background:#f8fcfb}
       <div id="fbMsg" style="color:var(--danger);font-size:.82rem;margin-top:6px"></div>
     </div>
     <div id="wbList"></div>
-    <div id="wbEmpty" style="color:var(--muted);font-size:.9rem;padding:6px 2px">No new website bookings right now.</div>
+    <div id="wbEmpty" style="color:var(--muted);font-size:.9rem;padding:6px 2px">No website bookings yet.</div>
+    <p style="color:var(--muted);font-size:.8rem;margin:10px 2px 0">
+      Nothing to press — every booking is saved automatically to your bookings spreadsheet
+      and emailed to you. This is just the latest few.</p>
   </div>
 
   <!-- WEBSITE NUMBERS — the four figures on the homepage. Signed-in only, because
@@ -794,22 +797,6 @@ tbody tr:hover{background:#f8fcfb}
     $("pinInput").addEventListener("keydown",function(e){ if(e.key==="Enter")tryUnlock(); });
     ["f_mobile","f_total","f_paid"].forEach(function(k){ $(k).addEventListener("input",recalc); });
     $("f_service").addEventListener("change",onServiceChange);
-    // let the Firebase module add a website booking straight into local records
-    window.__odImportBooking = function(b){
-      var rec = {
-        _id: Date.now()+"-"+Math.floor(Math.random()*1e6),
-        /* b.date is the date the patient REQUESTED, so it is the upcoming
-           appointment - not the day this record was taken. */
-        date: todayStr(), mobile: (b.phone||""), id: cid(b.phone||""),
-        name: (b.name||""), service: (b.service||""),
-        /* b.dateISO is the raw YYYY-MM-DD from the booking form. b.date is the
-           human label ("05-09-2026"), which would break the Upcoming filter and
-           whenHint(), both of which compare ISO strings. */
-        total: 0, paid: 0, next: (b.dateISO||"")
-      };
-      records.push(rec); save(); render();
-      return rec.id;
-    };
     $("saveBtn").addEventListener("click",saveRecord);
     $("cancelBtn").addEventListener("click",clearForm);
     $("lockBtn").addEventListener("click",lock);
@@ -915,25 +902,35 @@ tbody tr:hover{background:#f8fcfb}
     notifyBtn.onclick = () => Notification.requestPermission().then(p=>{ if(p==="granted") notifyBtn.style.display="none"; });
   }
 
-  const current = new Map();
   let seeded = false;
 
-  async function markDone(id){
-    try{ await fsMod.updateDoc(fsMod.doc(db,"bookings",id), {status:"done"}); }
-    catch(e){ alert("Couldn't update — check your connection."); }
+  /* When the booking arrived, day first. createdAt is a server timestamp, so it is
+     briefly null on a document this browser just wrote. */
+  function arrivedAt(ts){
+    try{
+      const d = ts && ts.toDate ? ts.toDate() : null; if(!d) return "";
+      const p = n => String(n).padStart(2,"0");
+      return p(d.getDate())+"-"+p(d.getMonth()+1)+"-"+d.getFullYear()+" "+p(d.getHours())+":"+p(d.getMinutes());
+    }catch(e){ return ""; }
   }
+
+  /* Read-only on purpose. Every booking is already captured three ways without anyone
+     touching it — the alert email, the bookings spreadsheet, and this list — so there is
+     nothing here to action. Records stay a separate, deliberate act: a booking is a
+     request, a record is someone who came and paid. */
   function render(docs){
-    const list = $("wbList"); let html="", open=0;
+    const list = $("wbList"); let html="", shown=0;
     docs.forEach(d => {
-      const b = d.data(); if(b.status==="done") return; open++;
+      if(shown >= 15) return;                      // a readable feed, not an inbox
+      const b = d.data(); shown++;
+      const when = arrivedAt(b.createdAt);
       html += "<div style='border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:#fff'>"
         + "<div style='display:flex;gap:8px;flex-wrap:wrap;align-items:center'>"
           + "<b style='color:var(--navy)'>"+esc(b.name||"—")+"</b>"
           + "<span class='badge'>"+esc(b.phone||"")+"</span>"
           + (b.emergency?"<span class='badge' style='background:#fde8e8;color:#c0392b'>EMERGENCY</span>":"")
           + "<span class='spacer'></span>"
-          + "<button class='btn btn-p btn-sm' data-add='"+d.id+"' style='width:auto'>➕ Add to records</button>"
-          + "<button class='btn btn-g btn-sm' data-done='"+d.id+"' style='width:auto'>✓ Handled</button>"
+          + (when?"<span style='color:var(--muted);font-size:.78rem'>"+esc(when)+"</span>":"")
         + "</div>"
         + "<div style='color:var(--muted);font-size:.85rem;margin-top:6px'>"
           + esc(b.service||"—") + (b.date?(" · "+esc(b.date)):"") + (b.time?(" "+esc(b.time)):"")
@@ -941,14 +938,8 @@ tbody tr:hover{background:#f8fcfb}
         + "</div></div>";
     });
     list.innerHTML = html;
-    $("wbEmpty").style.display = open?"none":"block";
-    $("wbBadge").textContent = open; $("wbBadge").style.display = open?"inline-block":"none";
-    list.querySelectorAll("[data-add]").forEach(btn=>btn.onclick=async()=>{
-      const snap = current.get(btn.dataset.add); if(!snap) return;
-      if(window.__odImportBooking) window.__odImportBooking(snap);
-      await markDone(btn.dataset.add);
-    });
-    list.querySelectorAll("[data-done]").forEach(btn=>btn.onclick=()=>markDone(btn.dataset.done));
+    $("wbEmpty").style.display = shown?"none":"block";
+    $("wbBadge").textContent = shown; $("wbBadge").style.display = shown?"inline-block":"none";
   }
 
   function subscribe(){
@@ -956,11 +947,11 @@ tbody tr:hover{background:#f8fcfb}
     fsMod.onSnapshot(q, (snap)=>{
       if(seeded){
         snap.docChanges().forEach(ch=>{
-          if(ch.type==="added"){ const b=ch.doc.data(); if(b.status!=="done"){ beep(); notify("New appointment booked", (b.name||"")+" · "+(b.service||"")); } }
+          if(ch.type==="added"){ const b=ch.doc.data(); beep(); notify("New appointment booked", (b.name||"")+" · "+(b.service||"")); }
         });
       }
-      current.clear(); const docs=[];
-      snap.forEach(d=>{ const b=d.data(); current.set(d.id, {name:b.name,phone:b.phone,service:b.service,date:b.date,dateISO:b.dateISO,time:b.time}); docs.push(d); });
+      const docs=[];
+      snap.forEach(d=>docs.push(d));
       render(docs); seeded = true;
     }, ()=>{ $("wbEmpty").textContent = "Can't read bookings yet — make sure Email/Password sign-in is enabled and the Firestore rules are applied."; $("wbEmpty").style.display="block"; });
   }

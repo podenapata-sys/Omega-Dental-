@@ -286,12 +286,25 @@ the internet and the only one that outlives the 30-day window. **Once a month is
 
 ## Website bookings (live)
 
-When someone books through the website — or asks for a call back from the homepage —
-it appears in the **Website Bookings** panel within a second or two, with a sound and a
-browser notification.
+When someone books through the website — or asks for a call back from the homepage — it is
+captured three ways with nobody touching anything:
+
+1. **Emailed to you** within seconds.
+2. **Added to your bookings spreadsheet** in Drive, permanently.
+3. **Shown in the Website Bookings panel**, with a sound and a browser notification if the
+   dashboard happens to be open.
 
 Call-back requests show **📞 Call back request** where an appointment shows the treatment,
 and carry only a name and a phone number. There is nothing else to know: ring them.
+
+**The panel is read-only — there is nothing to press.** It shows the latest fifteen so you
+can glance at what has come in; the spreadsheet is the permanent copy.
+
+### Bookings and records are separate on purpose
+A booking is a *request*. A record is someone who came, was treated, and owes or has paid.
+When a patient actually turns up, add them with **➕ Add a patient record** as usual. Keeping
+the two apart is what stops no-shows, duplicate submissions and test bookings from landing
+in your income report as ৳0 patients.
 
 Press **Connect** and sign in with the clinic's Firebase email and password. Each booking
 has:
