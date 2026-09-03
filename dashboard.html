@@ -21,6 +21,9 @@ body{margin:0;font-family:var(--f);color:var(--ink);background:
   min-height:100vh;-webkit-font-smoothing:antialiased}
 h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
 .wrap{max-width:1120px;margin:0 auto;padding:18px}
+/* the records table is 11 columns wide; on a desktop screen give it the room rather
+   than making the clinic scroll a table sideways */
+@media(min-width:1240px){.wrap{max-width:1280px}}
 /* ---- lock screen ---- */
 #lock{position:fixed;inset:0;z-index:50;display:grid;place-items:center;
   background:linear-gradient(160deg,#0f2444,#183a67);padding:20px}
@@ -98,17 +101,33 @@ h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
 /* ---- table ---- */
 .tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r);
   box-shadow:0 12px 30px -18px rgba(19,41,78,.28)}
-table{border-collapse:collapse;width:100%;min-width:820px}
-th,td{padding:11px 12px;text-align:left;font-size:.86rem;border-bottom:1px solid var(--line);white-space:nowrap}
-/* Name + Service are the long columns; letting just those wrap keeps the 10-column
-   table inside its container instead of forcing a horizontal scrollbar that clipped
-   the Delete button at ~1280px. */
-th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5){white-space:normal;min-width:9ch}
+table{border-collapse:collapse;width:100%;min-width:940px}
+th,td{padding:11px 9px;text-align:left;font-size:.86rem;border-bottom:1px solid var(--line);white-space:nowrap}
+/* Name, Address and Service are the long columns; letting just those wrap keeps the
+   11-column table inside its container instead of forcing a horizontal scrollbar that
+   clipped the Delete button at ~1280px. */
+th:nth-child(4),td:nth-child(4),th:nth-child(6),td:nth-child(6){white-space:normal;min-width:9ch}
+/* An address is the longest thing in the row: left alone it pushed the table to 1300px
+   and the Delete button out past the right edge. A max-width on the <td> is only a
+   suggestion in auto table layout, so the clamp lives on a block child — that DOES cap
+   the column's width — and the full text goes to the tooltip. */
+td.addr .ad{display:block;max-width:20ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 th{background:#f6faf9;font-family:var(--fh);font-weight:700;color:var(--navy);font-size:.74rem;
-  text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+  text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0;
+  /* two-word headings wrap onto two lines rather than setting the column width:
+     "CUSTOMER ID" and "NEXT APPT." are wider than anything underneath them */
+  white-space:normal}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 tr:last-child td{border-bottom:none}
 tbody tr:hover{background:#f8fcfb}
+/* Between the phone card layout and a wide desktop the table still has to scroll
+   sideways. Pinning the buttons to the right edge means Edit and Delete are always
+   under the cursor instead of hidden past the end of the scroll. */
+th:last-child,td.actions{position:sticky;right:0;background:var(--card)}
+th:last-child{background:#f6faf9}
+th:last-child::before,td.actions::before{content:"";position:absolute;top:0;bottom:0;left:-10px;
+  width:10px;pointer-events:none;box-shadow:inset -10px 0 8px -8px rgba(19,41,78,.28)}
+tbody tr:hover td.actions{background:#f8fcfb}
 .cid{font-family:var(--fh);font-weight:700;color:var(--blue)}
 .due-pos{color:var(--due);font-weight:700} .due-zero{color:var(--ok);font-weight:700}
 .rowbtn{border:none;background:none;cursor:pointer;font-size:1rem;padding:4px 6px;border-radius:6px}
@@ -129,11 +148,14 @@ tbody tr:hover{background:#f8fcfb}
 .empty{padding:40px;text-align:center;color:var(--muted)}
 .badge{display:inline-block;background:#eaf6f2;color:var(--teal-dd);font-weight:700;font-size:.78rem;
   padding:3px 9px;border-radius:999px}
-@media(max-width:820px){.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:520px){.form-grid{grid-template-columns:1fr}.top h1{display:none}}
+@media(max-width:820px){.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  /* the long values get the whole row once the grid is only two wide */
+  .fld.wide{grid-column:1 / -1}}
+@media(max-width:520px){.form-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .top h1{display:none}.top .btn{padding:9px 12px;font-size:.8rem}}
 
-/* ---- phones: the 10-column table becomes one card per patient, so the Edit/Delete
-   buttons are reachable without scrolling 9 columns sideways ---- */
+/* ---- phones: the 11-column table becomes one card per patient, so the Edit/Delete
+   buttons are reachable without scrolling 10 columns sideways ---- */
 @media(max-width:620px){
   .tablewrap{overflow-x:visible;background:none;border:none;box-shadow:none;border-radius:0}
   table{min-width:0}
@@ -146,6 +168,10 @@ tbody tr:hover{background:#f8fcfb}
     padding:8px 0;white-space:normal;font-size:.95rem;text-align:right;
     border-bottom:1px dashed var(--line)}
   tbody td:last-child{border-bottom:none}
+  /* on a card there is no column to line up with, so an address that was recorded shows
+     in full and one that was not shows nothing at all */
+  tbody td.addr .ad{max-width:none;white-space:normal;overflow:visible}
+  tbody td.is-empty{display:none}
   tbody td::before{content:attr(data-label);flex:0 0 auto;text-align:left;
     font-family:var(--fh);font-weight:700;font-size:.71rem;text-transform:uppercase;
     letter-spacing:.04em;color:var(--muted)}
@@ -217,8 +243,9 @@ tbody tr:hover{background:#f8fcfb}
     <div class="form-grid">
       <div class="fld"><label>Mobile Number</label><input id="f_mobile" type="tel" inputmode="numeric" placeholder="01XXXXXXXXX"></div>
       <div class="fld"><label>Customer ID (auto)</label><input id="f_id" class="ro" readonly placeholder="OD-####"></div>
-      <div class="fld"><label>Patient Name (optional)</label><input id="f_name" type="text" placeholder="Name"></div>
-      <div class="fld"><label>Service Taken</label>
+      <div class="fld wide"><label>Patient Name (optional)</label><input id="f_name" type="text" placeholder="Name"></div>
+      <div class="fld wide"><label>Address (optional)</label><input id="f_address" type="text" placeholder="House / road / area"></div>
+      <div class="fld wide"><label>Service Taken</label>
         <select id="f_service">
           <option value="">Select a service…</option>
           <option>Scaling &amp; Polishing</option>
@@ -325,7 +352,7 @@ tbody tr:hover{background:#f8fcfb}
   <div class="tablewrap">
     <table>
       <thead><tr>
-        <th>Date</th><th>Customer ID</th><th>Mobile</th><th>Name</th><th>Service</th>
+        <th>Date</th><th>Customer ID</th><th>Mobile</th><th>Name</th><th>Address</th><th>Service</th>
         <th class="num">Total</th><th class="num">Paid</th><th class="num">Due</th>
         <th>Next Appt.</th><th></th>
       </tr></thead>
@@ -403,6 +430,7 @@ tbody tr:hover{background:#f8fcfb}
       mobile: b.phone || "",
       id: cid(b.phone || ""),
       name: b.name || "",
+      address: "",                 /* the website booking form does not ask for one */
       service: b.service || "",
       total: 0, paid: 0,
       /* dateISO, never b.date — b.date is the display string ("05-09-2026") and storing
@@ -564,7 +592,7 @@ tbody tr:hover{background:#f8fcfb}
   }
 
   function clearForm(){
-    ["f_mobile","f_name","f_total","f_paid","f_next"].forEach(function(k){$(k).value="";});
+    ["f_mobile","f_name","f_address","f_total","f_paid","f_next"].forEach(function(k){$(k).value="";});
     $("f_service").value=""; $("f_service_other").value=""; $("f_service_other").style.display="none";
     $("f_date").value=todayStr(); recalc();
     editId=null; $("saveBtn").textContent="Add record"; $("formTitle").textContent="➕ Add a patient record";
@@ -583,6 +611,7 @@ tbody tr:hover{background:#f8fcfb}
       date: $("f_date").value || todayStr(),
       mobile: mobile, id: cid(mobile),
       name: $("f_name").value.trim(),
+      address: $("f_address").value.trim(),
       service: getService(),
       total: Number($("f_total").value)||0,
       paid: Number($("f_paid").value)||0,
@@ -595,7 +624,7 @@ tbody tr:hover{background:#f8fcfb}
   function flash(msg,err){ var el=$("formMsg"); el.textContent=msg; el.style.color=err?"#d94848":"#2c8a78"; setTimeout(function(){el.textContent="";},2600); }
   function editRow(id){
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
-    editId=id; $("f_mobile").value=r.mobile; $("f_name").value=r.name||""; setService(r.service||"");
+    editId=id; $("f_mobile").value=r.mobile; $("f_name").value=r.name||""; $("f_address").value=r.address||""; setService(r.service||"");
     $("f_total").value=r.total; $("f_paid").value=r.paid; $("f_date").value=r.date; $("f_next").value=r.next||"";
     recalc(); syncDateBoxes();
     $("saveBtn").textContent="Update record"; $("formTitle").textContent="✏️ Edit record"; $("cancelBtn").style.display="inline-block";
@@ -629,6 +658,7 @@ tbody tr:hover{background:#f8fcfb}
     clearForm();                                  // clears editId, so Save ADDS a record
     $("f_mobile").value=r.mobile||"";
     $("f_name").value=r.name||"";
+    $("f_address").value=r.address||"";   /* same patient, same house */
     recalc();
     $("formTitle").textContent="➕ New treatment — "+(r.name||r.mobile)+" ("+r.id+")";
     $("f_service").focus();
@@ -684,7 +714,7 @@ tbody tr:hover{background:#f8fcfb}
       return trashed().sort(function(a,b){ return String(b.deletedAt).localeCompare(String(a.deletedAt)); });
     var base = q ? live() : live().filter(inView);  // searching spans all dates
     if(q) base = base.filter(function(r){
-      return [r.name, r.mobile, r.id, r.service].join(" ").toLowerCase().indexOf(q) > -1;
+      return [r.name, r.mobile, r.id, r.service, r.address].join(" ").toLowerCase().indexOf(q) > -1;
     });
     if(!q && view==="upcoming")   // soonest appointment first
       return base.sort(function(a,b){ return (a.next+a._id).localeCompare(b.next+b._id); });
@@ -762,6 +792,8 @@ tbody tr:hover{background:#f8fcfb}
         "<td data-label='Customer ID' class='cid'>"+esc(r.id)+"</td>"+
         "<td data-label='Mobile'>"+esc(r.mobile)+"</td>"+
         "<td data-label='Name'>"+esc(r.name||"—")+"</td>"+
+        "<td data-label='Address' class='addr"+(r.address?"":" is-empty")+"'>"+
+          "<span class='ad' title='"+esc(r.address||"")+"'>"+esc(r.address||"—")+"</span></td>"+
         "<td data-label='Service'>"+esc(r.service||"—")+"</td>"+
         "<td data-label='Total' class='num'>"+money(r.total)+"</td>"+
         "<td data-label='Paid' class='num'>"+money(r.paid)+"</td>"+
@@ -795,7 +827,7 @@ tbody tr:hover{background:#f8fcfb}
   /* ---------- export / import (SheetJS) ---------- */
   function rowsForSheet(rs){
     return rs.map(function(r){ return {
-      "Date":dmy(r.date),"Customer ID":r.id,"Mobile":r.mobile,"Name":r.name||"","Service":r.service||"",
+      "Date":dmy(r.date),"Customer ID":r.id,"Mobile":r.mobile,"Name":r.name||"","Address":r.address||"","Service":r.service||"",
       "Total":Number(r.total)||0,"Paid":Number(r.paid)||0,"Due":(Number(r.total)||0)-(Number(r.paid)||0),
       "Next Appointment":dmy(r.next) }; });
   }
@@ -804,7 +836,7 @@ tbody tr:hover{background:#f8fcfb}
     var t=rs.reduce(function(a,r){return a+(Number(r.total)||0);},0);
     var p=rs.reduce(function(a,r){return a+(Number(r.paid)||0);},0);
     data.push({}); data.push({"Service":"TOTAL","Total":t,"Paid":p,"Due":t-p});
-    return XLSX.utils.json_to_sheet(data,{header:["Date","Customer ID","Mobile","Name","Service","Total","Paid","Due","Next Appointment"]});
+    return XLSX.utils.json_to_sheet(data,{header:["Date","Customer ID","Mobile","Name","Address","Service","Total","Paid","Due","Next Appointment"]});
   }
   /* The SheetJS vendor script is deferred; if it fails to load the identifier is
      undeclared, so a bare `!XLSX` throws ReferenceError instead of warning. */
@@ -870,7 +902,8 @@ tbody tr:hover{background:#f8fcfb}
           incoming.push({
             _id: Date.now()+"-"+(seq++)+"-"+Math.floor(Math.random()*1e6),
             date: date||todayStr(), mobile:mobile, id: cid(mobile),
-            name:String(row["Name"]||"").trim(), service:String(row["Service"]||"").trim(),
+            name:String(row["Name"]||"").trim(), address:String(row["Address"]||"").trim(),
+            service:String(row["Service"]||"").trim(),
             total:Number(row["Total"])||0, paid:Number(row["Paid"])||0,
             next:toIso(String(row["Next Appointment"]||row["Next Appt."]||"").trim())
           });
@@ -1140,6 +1173,7 @@ tbody tr:hover{background:#f8fcfb}
   function recDoc(id){ return fsMod.doc(db, "records", String(id)); }
   function toDoc(r){
     return { date:r.date||"", mobile:r.mobile||"", id:r.id||"", name:r.name||"",
+             address:r.address||"",
              service:r.service||"", total:Number(r.total)||0, paid:Number(r.paid)||0,
              next:r.next||"",
              /* Deleting a record sets deletedAt and calls cloudSave(). Without this
@@ -1150,7 +1184,7 @@ tbody tr:hover{background:#f8fcfb}
              updatedAt: fsMod.serverTimestamp() };
   }
   function fromDoc(d){ const v=d.data()||{}; const r = {
-    _id:d.id, date:v.date||"", mobile:v.mobile||"", id:v.id||"", name:v.name||"",
+    _id:d.id, date:v.date||"", mobile:v.mobile||"", id:v.id||"", name:v.name||"", address:v.address||"",
     service:v.service||"", total:Number(v.total)||0, paid:Number(v.paid)||0, next:v.next||"" };
     if(v.deletedAt) r.deletedAt = v.deletedAt;   // stay deleted on every device
     return r; }

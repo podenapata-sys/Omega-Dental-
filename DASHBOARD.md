@@ -110,6 +110,16 @@ saved before this change hold year-first dates and are converted as they come in
 Fill in the form and press **Add record**. Only the mobile number is required — the
 **Customer ID is generated from its last 4 digits** (`01711234567` → `OD-4567`).
 
+**Address is optional.** Fill it in when you have it and it travels with the patient: it
+shows in the table, goes into every Excel backup, syncs to your other devices, is carried
+over when you press **➕** for another treatment, and is searchable — typing *Dhanmondi*
+in the search box finds everyone from Dhanmondi. Records saved before this simply show a
+dash, and nothing needs correcting.
+
+On a computer a long address is shortened to one line — hover to read all of it. On a
+phone it is shown in full, and patients with no address recorded show no address line at
+all.
+
 Note that two patients whose numbers end in the same 4 digits will share a Customer ID.
 Use the Name column to tell them apart.
 
