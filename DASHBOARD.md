@@ -358,8 +358,18 @@ captured three ways with nobody touching anything:
 Call-back requests show **📞 Call back request** where an appointment shows the treatment,
 and carry only a name and a phone number. There is nothing else to know: ring them.
 
-**The panel is read-only — there is nothing to press.** It shows the latest fifteen so you
-can glance at what has come in; the spreadsheet is the permanent copy.
+**Nothing here is required.** Every booking is already captured three ways; the panel shows
+the latest fifteen so you can glance at what has come in.
+
+The one optional action is **➕ Add**, in the top-right of each booking. Press it when that
+patient actually turns up: they go straight into your records with their name, phone,
+treatment and requested date as **Next Appointment**, and the form opens so you can type
+**Total** and **Paid** and press **Update record**.
+
+The booking then shows **✓ Added** so it cannot be added twice. That marker is kept on the
+device you pressed it from — a booking cannot be changed once submitted, which is what
+makes it a trustworthy record of what the patient asked for — so on a second device the
+button will appear again.
 
 ### Bookings and records are separate on purpose
 A booking is a *request*. A record is someone who came, was treated, and owes or has paid.

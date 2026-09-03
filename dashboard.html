@@ -388,6 +388,31 @@ tbody tr:hover{background:#f8fcfb}
      this as a suggested "Happy Patients" figure. */
   window.__odLiveCount = function(){ return live().length; };
 
+  /* "➕ Add" on a website booking. The bookings panel lives in a separate script and
+     cannot reach records, save() or editRow(), so it comes through here.
+     Creates the record, then opens it in the form: the patient is in the table straight
+     away, with the amounts one field from being filled in. */
+  window.__odAddBooking = function(b){
+    b = b || {};
+    var rec = {
+      _id: Date.now()+"-"+Math.floor(Math.random()*1e6),
+      /* today is when they were seen; the date they ASKED for is the upcoming visit */
+      date: todayStr(),
+      mobile: b.phone || "",
+      id: cid(b.phone || ""),
+      name: b.name || "",
+      service: b.service || "",
+      total: 0, paid: 0,
+      /* dateISO, never b.date — b.date is the display string ("05-09-2026") and storing
+         it here breaks the Upcoming filter and whenHint(), which both compare ISO. */
+      next: b.dateISO || ""
+    };
+    records.push(rec); save(); cloudSave(rec); render();
+    editRow(rec._id);
+    flash("Added to your records. Enter Total and Paid, then press Update record.", false);
+    return rec._id;
+  };
+
   window.__odSyncStatus = function(state, detail){
     var ic=$("syncIcon"), tx=$("syncText"); if(!ic||!tx) return;
     if(state==="synced"){ ic.textContent="☁"; tx.innerHTML="Records are <b>synced to your account</b> — they are safe on this and your other devices."; }
@@ -960,6 +985,11 @@ tbody tr:hover{background:#f8fcfb}
 
   /* When the booking arrived, day first. createdAt is a server timestamp, so it is
      briefly null on a document this browser just wrote. */
+  /* the booking data behind each card, and the last snapshot, so a card can be redrawn
+     as "✓ Added" without waiting for Firestore to send anything new */
+  const current = new Map();
+  let lastDocs = [];
+
   function arrivedAt(ts){
     try{
       const d = ts && ts.toDate ? ts.toDate() : null; if(!d) return "";
@@ -972,6 +1002,22 @@ tbody tr:hover{background:#f8fcfb}
      touching it — the alert email, the bookings spreadsheet, and this list — so there is
      nothing here to action. Records stay a separate, deliberate act: a booking is a
      request, a record is someone who came and paid. */
+  /* Firestore rules make a booking immutable (allow update, delete: if false), so there
+     is nowhere in the database to mark one as handled. This lives on the device instead:
+     losing it would only mean a booking could be added twice, which is a nuisance rather
+     than damage. */
+  const ADDED_KEY = "od_added_bookings";
+  function addedIds(){
+    try{ return JSON.parse(localStorage.getItem(ADDED_KEY) || "[]"); }catch(e){ return []; }
+  }
+  function alreadyAdded(id){ return addedIds().indexOf(id) > -1; }
+  function markAdded(id){
+    try{
+      const a = addedIds();
+      if(a.indexOf(id) === -1){ a.push(id); localStorage.setItem(ADDED_KEY, JSON.stringify(a.slice(-500))); }
+    }catch(e){}
+  }
+
   function render(docs){
     const list = $("wbList"); let html="", shown=0;
     docs.forEach(d => {
@@ -985,6 +1031,9 @@ tbody tr:hover{background:#f8fcfb}
           + (b.emergency?"<span class='badge' style='background:#fde8e8;color:#c0392b'>EMERGENCY</span>":"")
           + "<span class='spacer'></span>"
           + (when?"<span style='color:var(--muted);font-size:.78rem'>"+esc(when)+"</span>":"")
+          + (alreadyAdded(d.id)
+              ? "<span class='badge' style='background:#e8f6f1;color:#2c8a78'>&#10003; Added</span>"
+              : "<button class='btn btn-p btn-sm' data-add='"+d.id+"' style='width:auto'>&#10133; Add</button>")
         + "</div>"
         + "<div style='color:var(--muted);font-size:.85rem;margin-top:6px'>"
           + esc(b.service||"—") + (b.date?(" · "+esc(b.date)):"") + (b.time?(" "+esc(b.time)):"")
@@ -994,6 +1043,16 @@ tbody tr:hover{background:#f8fcfb}
     list.innerHTML = html;
     $("wbEmpty").style.display = shown?"none":"block";
     $("wbBadge").textContent = shown; $("wbBadge").style.display = shown?"inline-block":"none";
+
+    list.querySelectorAll("[data-add]").forEach(btn => btn.onclick = () => {
+      const id = btn.dataset.add, snap = current.get(id);
+      if(!snap || !window.__odAddBooking) return;
+      if(alreadyAdded(id)) return;
+      window.__odAddBooking(snap);
+      markAdded(id);
+      render(lastDocs);
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
   }
 
   function subscribe(){
@@ -1005,7 +1064,14 @@ tbody tr:hover{background:#f8fcfb}
         });
       }
       const docs=[];
-      snap.forEach(d=>docs.push(d));
+      current.clear();
+      snap.forEach(d=>{
+        const b=d.data();
+        current.set(d.id, {name:b.name, phone:b.phone, service:b.service,
+                           date:b.date, dateISO:b.dateISO, time:b.time});
+        docs.push(d);
+      });
+      lastDocs = docs;
       render(docs); seeded = true;
     }, ()=>{ $("wbEmpty").textContent = "Can't read bookings yet — make sure Email/Password sign-in is enabled and the Firestore rules are applied."; $("wbEmpty").style.display="block"; });
   }
