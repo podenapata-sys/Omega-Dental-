@@ -66,6 +66,25 @@ only you can read.
 
 ## Day-to-day use
 
+### Taking a payment
+When a patient comes back and pays something off, press **💵** on their row. Type the
+amount they are handing over — not the new total — and it is added to what they had
+already paid, so the due drops by itself. No arithmetic, and the original figures are
+never retyped.
+
+It refuses more than the outstanding amount. A record that showed as overpaid would read
+as paid-up and quietly cancel other patients out of your **Outstanding due** total.
+
+The **💵** button only appears while something is still owed.
+
+### The same patient, another treatment
+Press **➕** on any of their rows. The form opens with their mobile and name already in,
+the same Customer ID, today's date, and the treatment and amounts blank. Fill those in and
+press **Add record**.
+
+It creates a *second* record — the first one is left exactly as it was. Both show under
+the one Customer ID, and dues and the income report add them up together.
+
 **Dates read day-month-year everywhere** — `05-08-2026` is 5 August 2026. That covers the
 records table, the Next Appointment column, the date boxes you tap, the income report
 (`08-2026`) and the dates inside an exported Excel file.

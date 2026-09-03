@@ -523,6 +523,41 @@ tbody tr:hover{background:#f8fcfb}
     $("saveBtn").textContent="Update record"; $("formTitle").textContent="✏️ Edit record"; $("cancelBtn").style.display="inline-block";
     window.scrollTo({top:0,behavior:"smooth"});
   }
+  /* Money coming in, rather than a correction. Editing the record means overwriting Paid,
+     which asks the clinic to do the arithmetic and retype over figures that were right. */
+  function takePayment(id){
+    var r=records.find(function(x){return x._id===id;}); if(!r)return;
+    var due=dueOf(r);
+    if(due<=0){ flash("That visit is already paid in full.",true); return; }
+    var raw=prompt("Payment from "+(r.name||r.mobile)+" ("+r.id+")\n"
+                 + "Outstanding: "+money(due)+"\n\nHow much are they paying now?", "");
+    if(raw===null) return;                       // cancelled
+    var amt=Math.round(Number(String(raw).trim()));
+    if(!isFinite(amt) || amt<=0){ flash("Enter the amount as a number, e.g. 5000.",true); return; }
+    /* saveRecord() blocks paid > total because a negative due reads as paid-up and cancels
+       other patients out of the Outstanding due total. A payment must not sneak past it. */
+    if(amt>due){ flash("That is more than the "+money(due)+" outstanding.",true); return; }
+    r.paid=(Number(r.paid)||0)+amt;
+    save(); cloudSave(r); render();
+    var left=dueOf(r);
+    flash(left>0 ? ("Payment of "+money(amt)+" recorded — "+money(left)+" still due.")
+                 : ("Payment of "+money(amt)+" recorded — paid in full ✓"), false);
+  }
+
+  /* The same patient back for something else. cid() derives the Customer ID from the
+     mobile, so filling in the mobile is what keeps them on one ID. */
+  function newTreatment(id){
+    var r=records.find(function(x){return x._id===id;}); if(!r)return;
+    clearForm();                                  // clears editId, so Save ADDS a record
+    $("f_mobile").value=r.mobile||"";
+    $("f_name").value=r.name||"";
+    recalc();
+    $("formTitle").textContent="➕ New treatment — "+(r.name||r.mobile)+" ("+r.id+")";
+    $("f_service").focus();
+    window.scrollTo({top:0,behavior:"smooth"});
+    flash("Same patient, same Customer ID. Choose the treatment and enter the amounts.",false);
+  }
+
   function delRow(id){
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
     if(!confirm("Delete record "+r.id+" ("+(r.name||r.mobile)+") on "+dmy(r.date)+"?\n\nIt moves to the Bin and can be restored for "+TRASH_DAYS+" days."))return;
@@ -659,6 +694,8 @@ tbody tr:hover{background:#f8fcfb}
             ? "<button class='rowbtn' data-restore='"+r._id+"' title='Restore' aria-label='Restore record'>↩️</button>"+
               "<button class='rowbtn' data-purge='"+r._id+"' title='Delete forever' aria-label='Delete forever'>❌</button>"
             : (due>0 ? waBtn(r,due) : "")+
+              (due>0 ? "<button class='rowbtn' data-pay='"+r._id+"' title='Take a payment' aria-label='Take a payment'>💵</button>" : "")+
+              "<button class='rowbtn' data-new='"+r._id+"' title='New treatment for this patient' aria-label='New treatment for this patient'>➕</button>"+
               "<button class='rowbtn' data-edit='"+r._id+"' title='Edit' aria-label='Edit record'>✏️</button>"+
               "<button class='rowbtn' data-del='"+r._id+"' title='Delete' aria-label='Delete record'>🗑️</button>")+
         "</td>"+
@@ -844,8 +881,10 @@ tbody tr:hover{background:#f8fcfb}
       if(!open){ renderReport(); pn.scrollIntoView({behavior:"smooth",block:"nearest"}); }
     });
     $("tbody").addEventListener("click",function(e){
-      var b=e.target.closest("[data-edit],[data-del],[data-restore],[data-purge]"); if(!b)return;
-      if(b.dataset.edit) editRow(b.dataset.edit);
+      var b=e.target.closest("[data-edit],[data-del],[data-restore],[data-purge],[data-pay],[data-new]"); if(!b)return;
+      if(b.dataset.pay) takePayment(b.dataset.pay);
+      else if(b.dataset.new) newTreatment(b.dataset.new);
+      else if(b.dataset.edit) editRow(b.dataset.edit);
       else if(b.dataset.restore) restoreRow(b.dataset.restore);
       else if(b.dataset.purge) purgeRow(b.dataset.purge);
       else delRow(b.dataset.del);
