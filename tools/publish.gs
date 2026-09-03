@@ -30,8 +30,9 @@
  */
 
 var GITHUB_REPO   = 'podenapata-sys/Omega-Dental-';
-/* The branch GitHub Pages builds from. Change this if the site ever moves to main. */
-var GITHUB_BRANCH = 'claude/tender-albattani-m04a9m';
+/* The branch GitHub Pages builds from. Must match .github/workflows/pages.yml — commit
+   to anything else and the publish succeeds while the website never changes. */
+var GITHUB_BRANCH = 'main';
 var GITHUB_API    = 'https://api.github.com';
 
 /** Called from doPost in Code.gs when the payload carries action:"publish". */

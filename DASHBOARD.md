@@ -284,6 +284,12 @@ The token lives in Apps Script, never in the browser — so it is not sitting in
 localStorage on a clinic phone. The editor can only ask for "commit these files", and the
 publisher refuses any path outside `assets/content.js` and the photo folders.
 
+Publishing commits to the **`main`** branch, which is what GitHub Pages builds. If
+`GITHUB_BRANCH` in the Apps Script `Publish.gs` is ever changed to something else, the
+publish will still say it worked — it will commit to a branch nothing deploys, and the
+website will never change. That value must match the branch in
+`.github/workflows/pages.yml`.
+
 ## Income report
 
 Press **📊 Report** in the top bar for:

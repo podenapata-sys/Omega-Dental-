@@ -2,7 +2,9 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, claude/tender-albattani-m04a9m]
+    # main only. Two branches deploying to one Pages site is last-push-wins, and
+    # whichever pushed most recently silently decides what the clinic sees.
+    branches: [main]
   workflow_dispatch:
 
 permissions:
