@@ -350,6 +350,23 @@ The email carries the patient's name, a tappable phone number, the treatment, th
 time they asked for, their note, and a **Reply on WhatsApp** button. Emergency requests are
 flagged at the top.
 
+### Every booking also lands in a spreadsheet
+Alongside the email, each booking is added to a Google Sheet in the clinic's own Drive —
+**Omega Dental — Website Bookings** — with the date received, name, phone, treatment,
+requested date and time, their note, an emergency flag, and a **Status** column to mark
+up as you like. Newest at the top.
+
+The sheet is created by itself when the first booking arrives. To find it: Apps Script
+editor → run **`bookingsSheetUrl`** and the link appears in the log. Every alert email
+links to it too. Open it in Excel, or File → Download → Microsoft Excel (.xlsx).
+
+Nothing needs adding by hand, and it does not touch your patient records — a booking is a
+*request*, and records are people who actually came. Keeping them apart is what stops
+no-shows and duplicate submissions from turning up in your income report.
+
+**Phone numbers are stored as text**, so `01711223344` keeps its leading zero instead of
+being read as a number.
+
 ### A caveat worth knowing
 The token sits in the website's page source, so a determined person could read it and send
 fake alerts. The script only ever emails your one fixed address, so the worst case is junk
