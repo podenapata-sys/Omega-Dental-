@@ -528,6 +528,35 @@ sends are left.
 Spaces, semicolons, a trailing comma or a line break in the list are all fine, and an
 entry that is not an address is skipped rather than stopping the whole email.
 
+### If a script says "permissions are not sufficient"
+The Apps Script project pins an explicit list of permissions in **appsscript.json** rather
+than letting Google work them out. That is the safer setting, but it means the first time
+the code uses a new Google service it is refused outright, with an error naming the scope
+it wanted.
+
+Fix it in the editor: click **appsscript.json** in the file list on the left, add the
+missing line inside `"oauthScopes"`, **Save**, run the function again, and press **Allow**.
+
+The complete set this project needs:
+
+```json
+"oauthScopes": [
+  "https://www.googleapis.com/auth/script.send_mail",
+  "https://www.googleapis.com/auth/script.external_request",
+  "https://www.googleapis.com/auth/script.scriptapp",
+  "https://www.googleapis.com/auth/spreadsheets",
+  "https://www.googleapis.com/auth/drive.file",
+  "https://www.googleapis.com/auth/userinfo.email"
+]
+```
+
+`script.scriptapp` is the one the safety-net sweep needs — without it
+`installBookingSweep` cannot create its trigger.
+
+> **Add the missing lines; do not paste the whole file over yours.** appsscript.json also
+> holds the `webapp` block with the deployment settings, and replacing it can break the
+> `/exec` URL the website posts to.
+
 ### When an alert email does not arrive
 An alert crosses three separate things, and a failure in any of them looks the same from
 the outside — an empty inbox. Test them one at a time instead of guessing. None of these

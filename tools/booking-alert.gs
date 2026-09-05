@@ -40,6 +40,23 @@
    same email. Note that Google's ~100-a-day mail allowance counts RECIPIENTS, not
    messages, so two addresses means two units per booking (about 50 bookings a day
    instead of 100 — still far more than a clinic takes). */
+/* ── OAuth scopes this project needs ───────────────────────────────────────────────
+   appsscript.json pins an explicit list, which is safer than letting Google infer it —
+   but it means a service used for the first time is refused until its scope is added.
+   The complete set for this file, Reminder.gs and Publish.gs:
+
+     "https://www.googleapis.com/auth/script.send_mail"          MailApp
+     "https://www.googleapis.com/auth/script.external_request"   UrlFetchApp
+     "https://www.googleapis.com/auth/script.scriptapp"          triggers (the sweep)
+     "https://www.googleapis.com/auth/spreadsheets"              the bookings sheet
+     "https://www.googleapis.com/auth/drive.file"                creating that sheet
+     "https://www.googleapis.com/auth/userinfo.email"            who the mail sends as
+
+   Add a missing one in the editor: appsscript.json in the file list, then Save, then
+   run the function again and press Allow. Do NOT replace the whole file — the webapp
+   block in it holds the deployment settings.
+   ──────────────────────────────────────────────────────────────────────────────── */
+
 var TO_EMAIL     = 'omegadental@gmail.com, noorayn408@gmail.com';
 var SHARED_TOKEN = 'Omega.JS';                // ← must match firebase-config.js
 var CLINIC_NAME  = 'Omega Dental';
@@ -404,10 +421,26 @@ function _markHandled(fp) {
 }
 
 /** Run once from the editor to start the sweep. Safe to run again — it clears its own
-    old trigger first, so it never ends up installed twice and emailing twice. */
+    old trigger first, so it never ends up installed twice and emailing twice.
+
+    Needs the script.scriptapp OAuth scope. This project pins an explicit oauthScopes list
+    in appsscript.json, so any Google service the code starts using is refused until its
+    scope is added there — see SCOPES below. */
 function installBookingSweep() {
-  var all = ScriptApp.getProjectTriggers();
-  var removed = 0;
+  var all, removed = 0;
+  try {
+    all = ScriptApp.getProjectTriggers();
+  } catch (e) {
+    console.log('CANNOT CREATE THE TRIGGER — a permission is missing.');
+    console.log('Fix: open appsscript.json in the file list on the left, and add this line');
+    console.log('     inside "oauthScopes":');
+    console.log('       "https://www.googleapis.com/auth/script.scriptapp"');
+    console.log('Then Save, run this again, and press Allow when Google asks.');
+    console.log('(Or skip it: left sidebar clock icon > Add Trigger > sweepBookings,');
+    console.log(' Time-driven, Minutes timer, Every ' + SWEEP_MINUTES + ' minutes.)');
+    console.log('Google said: ' + e);
+    return;
+  }
   for (var i = 0; i < all.length; i++) {
     if (all[i].getHandlerFunction() === 'sweepBookings') {
       ScriptApp.deleteTrigger(all[i]); removed++;
@@ -478,16 +511,25 @@ function checkAlertSetup() {
   /* The safety net matters more than anything above it: without it, an alert depends on
      the patient's browser reaching this script, which nobody can see fail. */
   var props = PropertiesService.getScriptProperties();
-  var on = false, all = ScriptApp.getProjectTriggers();
-  for (var i = 0; i < all.length; i++) {
-    if (all[i].getHandlerFunction() === 'sweepBookings') on = true;
+  try {
+    var on = false, all = ScriptApp.getProjectTriggers();
+    for (var i = 0; i < all.length; i++) {
+      if (all[i].getHandlerFunction() === 'sweepBookings') on = true;
+    }
+    console.log('Safety-net sweep : ' + (on
+      ? 'ON — every ' + SWEEP_MINUTES + ' minutes'
+      : 'OFF. Run installBookingSweep() once, or an alert is lost whenever the '
+        + 'website cannot reach this script.'));
+  } catch (e) {
+    console.log('Safety-net sweep : CANNOT CHECK — add the script.scriptapp scope to '
+              + 'appsscript.json (see installBookingSweep).');
   }
-  console.log('Safety-net sweep : ' + (on
-    ? 'ON — every ' + SWEEP_MINUTES + ' minutes'
-    : 'OFF. Run installBookingSweep() once, or an alert is lost whenever the '
-      + 'website cannot reach this script.'));
   console.log('Last swept up to : ' + (props.getProperty('sweepFrom') || 'never run yet'));
-  console.log('Script owner (mail is sent from here): ' + Session.getEffectiveUser().getEmail());
+  /* one more scope that the pinned list may not carry; never let it break the report */
+  try {
+    console.log('Script owner (mail is sent from here): '
+              + Session.getEffectiveUser().getEmail());
+  } catch (e) { console.log('Script owner : not readable (userinfo.email scope not granted)'); }
 }
 
 /** Run this from the editor to find the sheet. */
