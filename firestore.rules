@@ -2,32 +2,67 @@ rules_version = '2';
 
 // Omega Dental — Firestore security rules.
 //
-// Paste these into: Firebase Console → Build → Firestore Database → Rules → Publish.
-// This file is a reference copy kept in the repo; it is NOT deployed automatically
-// (the site is static and has no Firebase CLI deploy step).
+// This file is a RECORD of what is published in the console, not the source of
+// truth: the site is static and has no Firebase CLI deploy step, so the live
+// rules are whatever was last pasted into Firebase Console → Build → Firestore
+// Database → Rules. Change the console first, then bring this file into line —
+// never the other way round, or the next person to paste this reverts the
+// hardening below without noticing.
 //
-// The intent: anyone on the website can SUBMIT a booking, but only the signed-in
-// clinic owner can READ or UPDATE them — booking documents contain patient names
+// The intent: anyone on the website can SUBMIT a well-formed booking, but only
+// the signed-in clinic owner can READ one. Booking documents hold patient names
 // and phone numbers, so they must never be publicly readable.
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Guards the one collection the public can write to. Without this, a script
+    // that reads assets/firebase-config.js (which every visitor's browser does)
+    // could write unlimited 1 MiB documents, exhaust the free tier's daily write
+    // quota so real bookings start failing, and flood both alert inboxes.
+    //
+    // NOTE 1 — 'service' and 'time' are reserved words in this language, so those
+    // two fields must be read as d['service'] and d['time']. Writing d.service is
+    // a parse error, not a warning.
+    //
+    // NOTE 2 — a rejected write fails SILENTLY on the site: omegaSaveBooking in
+    // assets/booking-cloud.js wraps addDoc in `catch (e) {}`, so a rule that is
+    // too strict loses bookings with nothing shown on screen and nothing in the
+    // console. After touching this function, submit a real booking AND a homepage
+    // callback (they take different paths) before trusting it.
+    function validBooking(d) {
+      return d.keys().hasOnly([
+               'name','phone','service','date','dateISO','time',
+               'address','note','emergency','status','source','kind','createdAt'
+             ])
+        && d.name is string       && d.name.size() > 0    && d.name.size() <= 100
+        && d.phone is string      && d.phone.size() >= 6  && d.phone.size() <= 25
+        && d['service'] is string && d['service'].size() <= 120
+        && d.date is string       && d.date.size() <= 40
+        && d.dateISO is string    && d.dateISO.size() <= 20
+        && d['time'] is string    && d['time'].size() <= 40
+        && d.address is string    && d.address.size() <= 300
+        && d.note is string       && d.note.size() <= 500
+        && d.emergency is bool
+        && d.status == 'new'
+        && d.source == 'website'
+        && d.kind in ['appointment','callback']
+        && d.createdAt == request.time;
+    }
 
     match /bookings/{bookingId} {
       // A visitor submitting the booking form on book.html, or the "Request a
       // Free Callback" form on the homepage. Both write here on purpose: this is
       // the only collection a visitor may create in, and the dashboard already
       // renders it. Callbacks are marked with kind:"callback".
-      allow create: if true;
+      allow create: if validBooking(request.resource.data);
 
       // Only a signed-in user (the owner's Email/Password account) may read them.
-      // Bookings hold patient names and phone numbers, so they must never be
-      // publicly readable.
       allow read: if request.auth != null;
 
       // Nothing edits or removes a booking any more. The dashboard panel is
       // read-only — every booking is captured by the alert email and the bookings
-      // spreadsheet — so a submitted request is now immutable from the web.
+      // spreadsheet — so a submitted request is immutable from the web.
       allow update, delete: if false;
     }
 
