@@ -29,7 +29,7 @@ window.OMEGA_FB = {
    Leave empty to skip App Check entirely (then App Check must be "Unenforce" in the
    console). Turn enforcement on only after this key is live and Firebase Console ->
    App Check -> Request metrics shows verified requests arriving. */
-window.OMEGA_APPCHECK_KEY = "6LckIK0tAAAAAMcb1q4NeL63HOwEfyw1PsYRHULX";
+window.OMEGA_APPCHECK_KEY = "6LcRMq0tAAAAAPp1RY09uP9HIURnXRYj5YQPuWYI";
 
 /* Google OAuth Web client ID for the "Backup to Drive" button (drive.file scope only —
    the app can only touch files it creates). Leave empty to hide the Drive button. */
