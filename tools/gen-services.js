@@ -1,6 +1,29 @@
 /* Generates static per-service SEO pages into /services and a sitemap.xml.
    Product-detail layout: image gallery + price + feature boxes + CTAs.
    Run: node tools/gen-services.js   */
+
+/* ⚠ DO NOT RUN THIS WITHOUT --force.
+   Twelve of the fourteen pages in /services have been edited by hand since this
+   generator last produced them — corrected copy, a removed price row, embedded
+   videos. Regenerating overwrites every one of those edits, and it also rewrites
+   sitemap.xml from its own list, which drops careers, privacy-policy, terms,
+   medical-disclaimer, book.html, aligners.html and all five blog posts.
+   Check `git diff` before you commit anything this produces. */
+if (!process.argv.includes("--force")) {
+  console.error([
+    "",
+    "  Refusing to run: this would overwrite hand-edited pages.",
+    "",
+    "  12 of 14 files in /services/ no longer match what this generator makes,",
+    "  and sitemap.xml would lose 11 URLs.",
+    "",
+    "  If you really mean it:  node tools/gen-services.js --force",
+    "  Then check:             git diff --stat",
+    ""
+  ].join("\n"));
+  process.exit(1);
+}
+
 const fs = require("fs");
 const path = require("path");
 
