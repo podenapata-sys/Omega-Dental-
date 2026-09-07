@@ -330,12 +330,20 @@ const POSTS = [
     tb:"দাঁত সাদা করা: কী আশা করবেন", eb:"পেশাদার হোয়াইটেনিং কীভাবে কাজ করে, কতদিন থাকে এবং ফল উজ্জ্বল রাখার উপায়।" },
 ];
 
-/* ---------- Before/After cases (SVG placeholders) ---------- */
+/* ---------- Before/After cases ----------
+   A case only belongs here once BOTH its photos exist in assets/ba/. Listing one
+   without them cost six 404s on every page load and showed the visitor a flat
+   colour block where a result photo should be — initBA()'s placeholder keeps the
+   page from looking broken, but it is a fallback, not a feature.
+
+   To add a case back: drop <type>-before.jpg and <type>-after.jpg into assets/ba/,
+   uncomment its line, and the filter buttons below reappear on their own. */
 const BA_CASES = [
   { type:"whitening", before:"#cdbfa3", after:"#f5f3ec", bImg:"assets/ba/whitening-before.jpg?v=3", aImg:"assets/ba/whitening-after.jpg?v=3" },
-  { type:"veneers",   before:"#cdb196", after:"#f3f1ea", bImg:"assets/ba/veneers-before.jpg",   aImg:"assets/ba/veneers-after.jpg" },
-  { type:"braces",    before:"#d8c7ad", after:"#f4f2ec", bImg:"assets/ba/braces-before.jpg",    aImg:"assets/ba/braces-after.jpg" },
-  { type:"implants",  before:"#c9b79b", after:"#f1efe8", bImg:"assets/ba/implants-before.jpg",  aImg:"assets/ba/implants-after.jpg" },
+  // photos not supplied yet — see note above before re-enabling:
+  // { type:"veneers",   before:"#cdb196", after:"#f3f1ea", bImg:"assets/ba/veneers-before.jpg",   aImg:"assets/ba/veneers-after.jpg" },
+  // { type:"braces",    before:"#d8c7ad", after:"#f4f2ec", bImg:"assets/ba/braces-before.jpg",    aImg:"assets/ba/braces-after.jpg" },
+  // { type:"implants",  before:"#c9b79b", after:"#f1efe8", bImg:"assets/ba/implants-before.jpg",  aImg:"assets/ba/implants-after.jpg" },
 ];
 
 /* ---------- WhatsApp chat pre-filled messages ---------- */
@@ -827,9 +835,25 @@ function baSvg(color, label){
       <text x='300' y='370' font-family='sans-serif' font-size='26' fill='#fff' text-anchor='middle' opacity='0.9'>${label}</text>
     </svg>`);
 }
+/* A filter button with no case behind it renders an empty grid, which reads as a
+   broken page. Drive the buttons off BA_CASES instead of the markup, so they follow
+   whatever is actually listed above — and drop the whole row when there is only one
+   case, since filtering one item is not a choice. */
+function syncBAFilters(){
+  const row = document.querySelector(".ba-filters");
+  if(!row) return;
+  const types = new Set(BA_CASES.map(c=>c.type));
+  row.querySelectorAll(".ba-filter").forEach(b=>{
+    const f = b.dataset.filter;
+    b.hidden = !(f === "all" || types.has(f));
+  });
+  row.hidden = types.size < 2;
+}
+
 function renderBA(filter="all"){
   const wrap = document.getElementById("baGrid");
   if(!wrap) return;
+  syncBAFilters();
   const list = BA_CASES.filter(c=>filter==="all"||c.type===filter);
   wrap.innerHTML = list.map((c,i)=>`
     <div class="ba" data-i="${i}">
