@@ -650,8 +650,8 @@ function renderCalcBA(){
   if(!el) return;
   const c = BA_CASES[0];
   el.innerHTML = `<div class="ba">
-      <img class="ba-after" src="${c.aImg}" data-fbcolor="${c.after}" data-fblabel="ba_after" alt="after">
-      <img class="ba-before" src="${c.bImg}" data-fbcolor="${c.before}" data-fblabel="ba_before" alt="before">
+      <img class="ba-after" loading="lazy" decoding="async" src="${c.aImg}" data-fbcolor="${c.after}" data-fblabel="ba_after" alt="after">
+      <img class="ba-before" loading="lazy" decoding="async" src="${c.bImg}" data-fbcolor="${c.before}" data-fblabel="ba_before" alt="before">
       <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="before after slider">
       <span class="ba-tag ba-tag-l">${t('ba_before')}</span>
       <span class="ba-tag ba-tag-r">${t('ba_after')}</span>
@@ -858,8 +858,8 @@ function renderBA(filter="all"){
   const list = BA_CASES.filter(c=>filter==="all"||c.type===filter);
   wrap.innerHTML = list.map((c,i)=>`
     <div class="ba" data-i="${i}">
-      <img class="ba-after" src="${c.aImg}" data-fbcolor="${c.after}" data-fblabel="ba_after" alt="after">
-      <img class="ba-before" src="${c.bImg}" data-fbcolor="${c.before}" data-fblabel="ba_before" alt="before">
+      <img class="ba-after" loading="lazy" decoding="async" src="${c.aImg}" data-fbcolor="${c.after}" data-fblabel="ba_after" alt="after">
+      <img class="ba-before" loading="lazy" decoding="async" src="${c.bImg}" data-fbcolor="${c.before}" data-fblabel="ba_before" alt="before">
       <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="before after slider">
       <span class="ba-tag ba-tag-l">${t('ba_before')}</span>
       <span class="ba-tag ba-tag-r">${t('ba_after')}</span>
