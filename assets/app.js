@@ -344,10 +344,7 @@ const BA_CASES = [
   { type:"whitening", before:"#cdbfa3", after:"#f5f3ec", bImg:"assets/ba/whitening-before.jpg?v=3", aImg:"assets/ba/whitening-after.jpg?v=3" },
   { type:"braces",    before:"#d8c7ad", after:"#f4f2ec", bImg:"assets/ba/braces-before.jpg?v=2",   aImg:"assets/ba/braces-after.jpg?v=2" },
   { type:"implants",  before:"#c9b79b", after:"#f1efe8", bImg:"assets/ba/implants-before.jpg?v=2", aImg:"assets/ba/implants-after.jpg?v=2" },
-  // veneers has no matching pair yet — the photos supplied were a different
-  // person, and a slider only reads as a result when both halves are the same
-  // face in the same frame:
-  // { type:"veneers",   before:"#cdb196", after:"#f3f1ea", bImg:"assets/ba/veneers-before.jpg",   aImg:"assets/ba/veneers-after.jpg" },
+  { type:"veneers",   before:"#cdb196", after:"#f3f1ea", bImg:"assets/ba/veneers-before.jpg?v=2",  aImg:"assets/ba/veneers-after.jpg?v=2" },
 ];
 
 /* ---------- WhatsApp chat pre-filled messages ---------- */
