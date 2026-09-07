@@ -71,6 +71,7 @@ const I18N = {
     ba_title:"Before & after smiles",
     ba_text:"Drag the slider to see the transformation our patients enjoy.",
     ba_before:"Before", ba_after:"After",
+    ba_note:"Illustrative examples. Results differ from patient to patient.",
     ba_f_all:"All", ba_f_whitening:"Whitening", ba_f_braces:"Braces", ba_f_veneers:"Veneers", ba_f_implants:"Implants",
     doc_eyebrow:"Meet the Doctor",
     doc_name:"Dr. Afsana Haque",
@@ -192,6 +193,7 @@ const I18N = {
     ba_title:"আগে ও পরের হাসি",
     ba_text:"পরিবর্তন দেখতে স্লাইডারটি টেনে দেখুন।",
     ba_before:"আগে", ba_after:"পরে",
+    ba_note:"প্রতীকী উদাহরণ। ফলাফল রোগীভেদে ভিন্ন হয়।",
     ba_f_all:"সব", ba_f_whitening:"হোয়াইটেনিং", ba_f_braces:"ব্রেসেস", ba_f_veneers:"ভিনেয়ার", ba_f_implants:"ইমপ্লান্ট",
     doc_eyebrow:"আমাদের চিকিৎসক",
     doc_name:"ডা. আফসানা হক",
@@ -340,10 +342,12 @@ const POSTS = [
    uncomment its line, and the filter buttons below reappear on their own. */
 const BA_CASES = [
   { type:"whitening", before:"#cdbfa3", after:"#f5f3ec", bImg:"assets/ba/whitening-before.jpg?v=3", aImg:"assets/ba/whitening-after.jpg?v=3" },
-  // photos not supplied yet — see note above before re-enabling:
+  { type:"braces",    before:"#d8c7ad", after:"#f4f2ec", bImg:"assets/ba/braces-before.jpg?v=2",   aImg:"assets/ba/braces-after.jpg?v=2" },
+  { type:"implants",  before:"#c9b79b", after:"#f1efe8", bImg:"assets/ba/implants-before.jpg?v=2", aImg:"assets/ba/implants-after.jpg?v=2" },
+  // veneers has no matching pair yet — the photos supplied were a different
+  // person, and a slider only reads as a result when both halves are the same
+  // face in the same frame:
   // { type:"veneers",   before:"#cdb196", after:"#f3f1ea", bImg:"assets/ba/veneers-before.jpg",   aImg:"assets/ba/veneers-after.jpg" },
-  // { type:"braces",    before:"#d8c7ad", after:"#f4f2ec", bImg:"assets/ba/braces-before.jpg",    aImg:"assets/ba/braces-after.jpg" },
-  // { type:"implants",  before:"#c9b79b", after:"#f1efe8", bImg:"assets/ba/implants-before.jpg",  aImg:"assets/ba/implants-after.jpg" },
 ];
 
 /* ---------- WhatsApp chat pre-filled messages ---------- */
