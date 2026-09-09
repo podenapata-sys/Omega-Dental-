@@ -292,7 +292,10 @@ window.OMEGA_CONTENT = (function () {
       deg:"BDS (DU) · PGT Oral & Maxillofacial Surgery · PGT Paediatric Dentistry",
       degbn:"বিডিএস (ঢাবি) · পিজিটি ওরাল অ্যান্ড ম্যাক্সিলোফেসিয়াল সার্জারি · পিজিটি পেডিয়াট্রিক ডেন্টিস্ট্রি",
       bmdc:"11071",
-      exp:"5.5 years' experience",     expbn:"৫.৫ বছরের অভিজ্ঞতা",
+      /* Left blank on purpose. The homepage stats band already states the clinic's
+         years, and a second, smaller number on the same page reads as a contradiction
+         rather than as a different measure. The field stays for a future dentist. */
+      exp:"",                          expbn:"",
       bio:"Special training in aesthetic dentistry, with a focus on cosmetic and children's dental care.",
       biobn:"অ্যাসথেটিক ডেন্টিস্ট্রিতে বিশেষ প্রশিক্ষণপ্রাপ্ত; কসমেটিক ও শিশুদের দাঁতের চিকিৎসায় বিশেষজ্ঞ।",
       tags:["Aesthetic Dentistry","Paediatric Dentistry","Root Canal (RCT)","Hollywood Smile Design","Wisdom Tooth Surgery","Gum Treatment"],
