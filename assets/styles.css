@@ -1053,3 +1053,33 @@ body.bn .legal-doc p,body.bn .legal-doc li{font-size:1.05rem;line-height:1.9}
 /* Booking WhatsApp transparency note */
 .book-wa-note{margin-top:12px;font-size:.82rem;color:var(--muted);text-align:center;line-height:1.5}
 .book-wa-note a{color:var(--teal-dd);font-weight:600}
+
+/* ---- our doctors ------------------------------------------------------------
+   Auto-fit rather than a fixed column count: the clinic has one dentist today and
+   may have four next year, and a 4-column grid holding a single card looks like a
+   page that failed to load. Cards centre themselves at any count. */
+.doc-grid{display:grid;gap:24px;justify-content:center;
+  grid-template-columns:repeat(auto-fit,minmax(280px,340px))}
+.doc-card{background:var(--card,#fff);border:1px solid var(--line,#e6ecf2);border-radius:18px;
+  overflow:hidden;box-shadow:0 18px 40px -26px rgba(19,41,78,.35);display:flex;flex-direction:column}
+.doc-photo{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;display:block;
+  background:#eef4f7}
+/* Shown when no photograph has been supplied. Initials, never a stock face: a made-up
+   portrait next to a real name and BMDC number would be a claim the clinic never made. */
+.doc-initials{display:flex;align-items:center;justify-content:center;
+  font-family:var(--fh,inherit);font-weight:800;font-size:3.2rem;color:#7ba7c9;
+  background:linear-gradient(160deg,#eef4f7,#dce9f2)}
+.doc-body{padding:18px 20px 20px}
+.doc-name{font-size:1.06rem;margin:0 0 3px}
+.doc-role{color:var(--teal-dd,#2c8a78);font-weight:700;font-size:.86rem;margin:0 0 8px}
+.doc-deg{color:var(--muted,#6b7a8d);font-size:.8rem;line-height:1.55;margin:0 0 6px}
+.doc-exp{color:var(--muted,#6b7a8d);font-size:.8rem;margin:0 0 4px}
+.doc-bmdc{color:var(--muted,#6b7a8d);font-size:.78rem;margin:0 0 10px;font-variant-numeric:tabular-nums}
+.doc-bio{font-size:.85rem;line-height:1.6;margin:0 0 12px}
+.doc-tags{display:flex;flex-wrap:wrap;gap:6px}
+.doc-tag{background:#eaf6f2;color:var(--teal-dd,#2c8a78);font-weight:600;font-size:.72rem;
+  padding:4px 10px;border-radius:999px}
+@media(max-width:520px){
+  .doc-grid{grid-template-columns:minmax(0,1fr)}
+  .doc-photo{aspect-ratio:1/1}
+}

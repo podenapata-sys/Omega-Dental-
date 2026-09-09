@@ -261,6 +261,7 @@ tbody tr:hover{background:#f8fcfb}
       <button class="tab" data-view="prices">Prices</button>
       <button class="tab" data-view="images">Photos</button>
       <button class="tab" data-view="gallery">Gallery</button>
+      <button class="tab" data-view="doctors">Doctors</button>
     </div>
     <span class="spacer"></span>
     <button class="btn btn-g btn-sm" id="previewBtn">&#128065; Preview</button>
@@ -431,7 +432,8 @@ tbody tr:hover{background:#f8fcfb}
     var C=window.OMEGA_CONTENT;
     if(!C||!C.services){ return {cats:{},prices:[],services:[]}; }
     return clone({cats:C.cats, prices:C.prices, services:C.services,
-                  gallery:C.gallery||[], galleryCats:C.galleryCats||{}});
+                  gallery:C.gallery||[], galleryCats:C.galleryCats||{},
+                  doctors:C.doctors||[]});
   }
   function loadDraft(){
     try{ var raw=localStorage.getItem(LS_DRAFT); if(raw) return JSON.parse(raw); }catch(e){}
@@ -754,14 +756,82 @@ tbody tr:hover{background:#f8fcfb}
     $("editor").innerHTML = view==="services" ? renderServices()
                        : view==="prices"   ? renderPrices()
                        : view==="gallery"  ? renderGallery()
+                       : view==="doctors"  ? renderDoctorsEd()
                        : renderImages();
     $("edFoot").innerHTML = view==="services" ? ("Showing <b>"+draft.services.length+"</b> service cards")
       : view==="prices" ? ("Showing <b>"+draft.prices.length+"</b> price rows")
       : view==="gallery" ? ("Showing <b>"+(draft.gallery||[]).length+"</b> gallery photos")
+      : view==="doctors" ? ("Showing <b>"+(draft.doctors||[]).length+"</b> doctor(s)")
       : ("<b>"+photoList().length+"</b> photos available"
          + (draft.newPhotos && Object.keys(draft.newPhotos).length
             ? (" &middot; <b>"+Object.keys(draft.newPhotos).length+"</b> added, not published yet") : ""));
     updateDraftNote();
+  }
+
+  /* The clinic's dentists. Names, degrees and BMDC numbers are claims about real
+     people, so every field is free text the clinic types itself — nothing is
+     pre-filled with a plausible guess, and a blank field simply does not appear on
+     the website rather than showing a placeholder. */
+  function renderDoctorsEd(){
+    var docs = draft.doctors || (draft.doctors = []);
+    var html = "<div class='ed-note' style='margin-bottom:12px'>"
+      + "These appear in the <b>Our Doctors</b> section on the homepage. Leave a box "
+      + "empty and that line is left off the card &mdash; it is never filled in for you. "
+      + "The BMDC number is optional; add it only if you want it shown publicly.</div>";
+
+    if(!docs.length){
+      html += "<div class='ed-note' style='margin-bottom:12px'>No doctors yet. "
+            + "Press <b>Add a doctor</b> below.</div>";
+    }
+
+    docs.forEach(function(d,i){
+      html += "<div class='ed-item' data-doc='"+i+"'>"
+        + "<h3 style='margin:0 0 10px;color:var(--navy)'>"
+          + esc(d.en || d.bn || ("Doctor "+(i+1)))
+          + "<button class='btn btn-g btn-sm' data-docdel='"+i+"' "
+          + "style='width:auto;float:right;margin-top:-4px'>Remove</button></h3>"
+        + docField("Name", "en", "bn", i, d)
+        + docField("Title / position", "role", "rolebn", i, d)
+        + docField("Degrees &amp; training", "deg", "degbn", i, d)
+        + docField("Years of experience", "exp", "expbn", i, d)
+        + docField("Short description", "bio", "biobn", i, d, "area")
+        + docField("Treatments (comma separated)", "tags", "tagsbn", i, d, "tags")
+        + "<div class='ed-row'><label>BMDC registration</label>"
+          + "<div><input data-didx='"+i+"' data-key='bmdc' value=\""+esc(d.bmdc||"")+"\"></div>"
+          + "<div class='ed-note' style='padding-top:9px'>Optional. Shown as "
+            + "&ldquo;BMDC Reg. No. &hellip;&rdquo; on the card.</div></div>"
+        + "<div class='ed-row'><label>Photo</label>"
+          + "<div>" + (d.photo
+              ? ("<img src='"+docPhotoSrc(d.photo)+"' alt='' style='width:84px;height:105px;"
+                 + "object-fit:cover;border-radius:10px;border:1px solid var(--line)'>")
+              : "<span class='ed-note'>No photo yet &mdash; the card shows initials.</span>")
+            + "</div>"
+          + "<div><label class='btn btn-g btn-sm' style='width:auto;cursor:pointer'>&#11014; Upload photo"
+            + "<input type='file' accept='image/*' data-docphoto='"+i+"' style='display:none'></label></div>"
+          + "</div>"
+        + "</div>";
+    });
+    html += "<button class='btn btn-p' id='docAdd' style='width:auto;margin-top:8px'>&#10133; Add a doctor</button>";
+    return html;
+  }
+  /* Bilingual pair, mirroring field() but keyed on data-didx so onFieldEdit can tell
+     a doctor apart from a service or price row. */
+  function docField(label, enKey, bnKey, i, d, kind){
+    function box(lang, key){
+      var v = d[key];
+      if(kind==="tags") v = (v||[]).join(", ");
+      var head = "<div><span class='ed-lang'>"+(lang==="en"?"English":"&#2476;&#2494;&#2434;&#2482;&#2494;")+"</span>";
+      if(kind==="area")
+        return head+"<textarea data-didx='"+i+"' data-key='"+key+"' rows='2'>"+esc(v||"")+"</textarea></div>";
+      return head+"<input data-didx='"+i+"' data-key='"+key+"'"
+           + (kind==="tags" ? " data-list='1'" : "")
+           + " value=\""+esc(v||"")+"\"></div>";
+    }
+    return "<div class='ed-row'><label>"+label+"</label>"+box("en",enKey)+box("bn",bnKey)+"</div>";
+  }
+  function docPhotoSrc(name){
+    var n = draft.newDoctorPhotos && draft.newDoctorPhotos[name];
+    return n ? n.card : ("assets/doctors/cards/"+name+".jpg");
   }
 
   /* ---------- edits ---------- */
@@ -775,6 +845,16 @@ tbody tr:hover{background:#f8fcfb}
       if(g){ g[el.dataset.key] = el.value; el.closest(".ed-item").classList.add("dirty"); saveDraft(); }
       return;
     }
+    if(el.dataset.didx !== undefined){
+      var di = +el.dataset.didx, d = (draft.doctors||[])[di];
+      if(d){
+        d[el.dataset.key] = el.dataset.list
+          ? el.value.split(",").map(function(x){return x.trim();}).filter(Boolean)
+          : el.value;
+        el.closest(".ed-item").classList.add("dirty"); saveDraft();
+      }
+      return;
+    }
     if(el.dataset.idx===undefined) return;
     var i=+el.dataset.idx, k=el.dataset.key;
     if(view==="images" || view==="gallery") return;
@@ -784,6 +864,61 @@ tbody tr:hover{background:#f8fcfb}
     el.closest(".ed-item").classList.add("dirty");
     saveDraft();
   }
+  /* Add / remove / photograph. Delegated, because the list is re-rendered on
+     every edit and directly-bound handlers would be thrown away with it. */
+  document.addEventListener("click", function(e){
+    var add = e.target.closest("#docAdd");
+    if(add){
+      draft.doctors = draft.doctors || [];
+      draft.doctors.push({ id:"", en:"", bn:"", role:"", rolebn:"", deg:"", degbn:"",
+                           exp:"", expbn:"", bmdc:"", bio:"", biobn:"",
+                           tags:[], tagsbn:[], photo:"" });
+      saveDraft(); render();
+      return;
+    }
+    var del = e.target.closest("[data-docdel]");
+    if(del){
+      var i = +del.dataset.docdel, d = (draft.doctors||[])[i];
+      if(!d) return;
+      if(!confirm("Remove " + (d.en || d.bn || "this doctor") + " from the website?")) return;
+      draft.doctors.splice(i,1); saveDraft(); render();
+    }
+  });
+
+  document.addEventListener("change", function(e){
+    var inp = e.target.closest("[data-docphoto]");
+    if(!inp || !inp.files || !inp.files[0]) return;
+    var i = +inp.dataset.docphoto, d = (draft.doctors||[])[i];
+    var file = inp.files[0]; inp.value = "";
+    if(!d) return;
+    if(!/^image\//.test(file.type)){ alert("That is not an image file."); return; }
+    var fr = new FileReader();
+    fr.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        /* Named after the doctor so the file is recognisable in the repo, falling
+           back to a slot number for an entry with no name typed yet. */
+        var base = (d.en || d.bn || ("doctor-"+(i+1)))
+                     .toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)
+                   || ("doctor-"+(i+1));
+        draft.newDoctorPhotos = draft.newDoctorPhotos || {};
+        /* Portraits get two sizes, not three: there is no thumbnail strip for doctors. */
+        draft.newDoctorPhotos[base] = { full: resize(img,1000), card: resize(img,520) };
+        d.photo = base;
+        try{ saveDraft(); }
+        catch(err){
+          delete draft.newDoctorPhotos[base]; d.photo = "";
+          alert("Could not store that photo — the browser ran out of room for drafts.\n\nPublish what you have, then add more.");
+          return;
+        }
+        render();
+      };
+      img.onerror = function(){ alert("Could not read that image."); };
+      img.src = ev.target.result;
+    };
+    fr.readAsDataURL(file);
+  });
+
   document.addEventListener("input", onFieldEdit);
   document.addEventListener("change", onFieldEdit);
 
@@ -882,7 +1017,8 @@ tbody tr:hover{background:#f8fcfb}
      waiting to happen in a file every page depends on. */
   function contentFileText(d){
     var data = { cats:d.cats, prices:d.prices, services:d.services,
-                 photos:d.photos, gallery:d.gallery, galleryCats:d.galleryCats };
+                 photos:d.photos, gallery:d.gallery, galleryCats:d.galleryCats,
+                 doctors:d.doctors||[] };
     return "/* Omega Dental — website content.\n"
          + "   GENERATED by the admin content editor (admin-content.html). Do not hand-edit:\n"
          + "   the next publish overwrites this file.\n\n"
@@ -901,7 +1037,8 @@ tbody tr:hover{background:#f8fcfb}
       new Function("window", text)(sandbox);
       var back = sandbox.OMEGA_CONTENT;
       var want = { cats:d.cats, prices:d.prices, services:d.services,
-                   photos:d.photos, gallery:d.gallery, galleryCats:d.galleryCats };
+                   photos:d.photos, gallery:d.gallery, galleryCats:d.galleryCats,
+                   doctors:d.doctors||[] };
       return JSON.stringify(back) === JSON.stringify(want);
     }catch(e){ return false; }
   }
@@ -924,6 +1061,12 @@ tbody tr:hover{background:#f8fcfb}
       files.push({ path:"assets/services/"+name+".jpg",        content:p.full.split(",")[1] });
       files.push({ path:"assets/services/cards/"+name+".jpg",  content:p.card.split(",")[1] });
       files.push({ path:"assets/services/thumbs/"+name+".jpg", content:p.thumb.split(",")[1] });
+    });
+    var docPics = draft.newDoctorPhotos || {};
+    Object.keys(docPics).forEach(function(name){
+      var q = docPics[name];
+      files.push({ path:"assets/doctors/"+name+".jpg",       content:q.full.split(",")[1] });
+      files.push({ path:"assets/doctors/cards/"+name+".jpg", content:q.card.split(",")[1] });
     });
     return { files: files };
   }
@@ -967,6 +1110,9 @@ tbody tr:hover{background:#f8fcfb}
         if(draft.photos.indexOf(n) === -1) draft.photos.push(n);
       });
       delete draft.newPhotos;
+      /* Portraits are now committed under assets/doctors/, so the base64 copies can go
+         — leaving them would refill the draft's storage and eventually block saving. */
+      delete draft.newDoctorPhotos;
       shipped = clone(draft);
       saveDraft();
       updateDraftNote(); render();

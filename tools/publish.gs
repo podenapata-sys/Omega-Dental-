@@ -98,6 +98,10 @@ function _pathAllowed(p) {
   if (p.indexOf('..') > -1 || p.charAt(0) === '/') return 'Bad path: ' + p;
   if (p === 'assets/content.js') return '';
   if (/^assets\/services\/(cards\/|thumbs\/)?[a-z0-9-]{1,40}\.jpg$/.test(p)) return '';
+  /* Doctor portraits. A separate folder from services/ so the treatment photo picker
+     does not offer someone's face as a card image. Two sizes only — full and card —
+     because there is no thumbnail strip for doctors. */
+  if (/^assets\/doctors\/(cards\/)?[a-z0-9-]{1,40}\.jpg$/.test(p)) return '';
   return 'This publish tried to write somewhere it should not: ' + p;
 }
 

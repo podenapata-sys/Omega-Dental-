@@ -26,6 +26,7 @@ const PRICES = (window.OMEGA_CONTENT || {}).prices || [];
 /* Content lives in assets/content.js so the admin editor can publish it.
    Loaded before this file; the fallbacks keep app.js harmless if it is absent. */
 const SERVICES = (window.OMEGA_CONTENT || {}).services || [];
+const DOCTORS = (window.OMEGA_CONTENT || {}).doctors || [];
 
 /* ---------- i18n strings ---------- */
 const I18N = {
@@ -74,14 +75,8 @@ const I18N = {
     ba_note:"Illustrative examples. Results differ from patient to patient.",
     ba_f_all:"All", ba_f_whitening:"Whitening", ba_f_braces:"Braces", ba_f_veneers:"Veneers", ba_f_implants:"Implants",
     doc_eyebrow:"Meet the Doctor",
-    doc_name:"Dr. Afsana Haque",
-    doc_role:"Chief Dental Surgeon, Omega Dental",
-    doc_text:"Dr. Afsana Haque leads Omega Dental with a focus on painless and cosmetic dentistry, helping patients of all ages achieve healthy, confident smiles.",
-    doc_c1:"BDS (DU), BMDC Reg. No. 11071",
-    doc_c2:"PGT in Oral & Maxillofacial Surgery — Dhaka Dental College",
-    doc_c3:"PGT in Paediatrics — Dhaka Dental College",
-    doc_c4:"Specially trained in Painless & Cosmetic Treatment",
-    doc_book:"Book with Dr. Afsana",
+    doc_title:"The dentists treating you",
+    doc_text:"Every treatment at Omega Dental is carried out by a registered dental surgeon.",
     test_eyebrow:"Patient Stories",
     test_title:"Loved by our patients",
     contact_eyebrow:"Visit Us",
@@ -196,14 +191,8 @@ const I18N = {
     ba_note:"প্রতীকী উদাহরণ। ফলাফল রোগীভেদে ভিন্ন হয়।",
     ba_f_all:"সব", ba_f_whitening:"হোয়াইটেনিং", ba_f_braces:"ব্রেসেস", ba_f_veneers:"ভিনেয়ার", ba_f_implants:"ইমপ্লান্ট",
     doc_eyebrow:"আমাদের চিকিৎসক",
-    doc_name:"ডা. আফসানা হক",
-    doc_role:"চিফ ডেন্টাল সার্জন, ওমেগা ডেন্টাল",
-    doc_text:"ডা. আফসানা হক ব্যথাহীন ও সৌন্দর্যের দাঁতের চিকিৎসায় বিশেষ যত্ন নিয়ে ওমেগা ডেন্টাল চালান। সব বয়সের রোগীকে সুস্থ ও আত্মবিশ্বাসী হাসি দিতে তিনি সাহায্য করেন।",
-    doc_c1:"বিডিএস (ঢাবি), বিএমডিসি রেজি. নং ১১০৭১",
-    doc_c2:"পিজিটি ইন ওরাল ও ম্যাক্সিলোফেসিয়াল সার্জারি — ঢাকা ডেন্টাল কলেজ",
-    doc_c3:"পিজিটি ইন পেডিয়াট্রিক্স — ঢাকা ডেন্টাল কলেজ",
-    doc_c4:"ব্যথাহীন ও সৌন্দর্যের চিকিৎসায় বিশেষভাবে দক্ষ",
-    doc_book:"ডা. আফসানার অ্যাপয়েন্টমেন্ট",
+    doc_title:"যাঁরা আপনার চিকিৎসা করবেন",
+    doc_text:"ওমেগা ডেন্টালে প্রতিটি চিকিৎসা করেন নিবন্ধিত ডেন্টাল সার্জন।",
     test_eyebrow:"রোগীদের কথা",
     test_title:"রোগীদের ভালোবাসায়",
     contact_eyebrow:"আমাদের কাছে আসুন",
@@ -381,7 +370,7 @@ function applyI18n(){
     el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph")));
   });
   // dynamic blocks
-  renderServices(); renderPricing(); renderCalcOptions(); renderTestimonials(); renderBookOptions(); renderBookSlots();
+  renderServices(); renderDoctors(); renderPricing(); renderCalcOptions(); renderTestimonials(); renderBookOptions(); renderBookSlots();
   renderSteps(); renderTech(); renderFaqs(); renderCalcBA(); renderMarquee();
   const tgl = document.getElementById("langText");
   if (tgl) tgl.textContent = t("lang_label");
@@ -462,6 +451,83 @@ const SVC_SLUG = {
   "Cosmetic Dentistry":"cosmetic-dentistry",
 };
 const SVC_TONE = ["#dff3ee","#cfe0f7","#ffe7cf","#e3f7f1","#e7ecfb","#fde7d6"];
+/* The clinic's dentists. Runs from applyI18n() like every other list, so switching
+   language redraws it in the right one.
+
+   Nothing here invents anything: a doctor whose Bangla name, degree or BMDC number is
+   blank simply does not show that line, and one with no photo gets their initials
+   instead of a stock face. A missing field should read as "not supplied", never as a
+   claim the clinic did not make. */
+function docField(d, bnKey, enKey){
+  const bn = (d[bnKey]||"").trim(), en = (d[enKey]||"").trim();
+  return LANG === "bn" ? (bn || en) : (en || bn);
+}
+function docInitials(name){
+  const parts = String(name||"").replace(/^Dr\.?\s*/i,"").trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return "\u2695";
+  return (parts[0][0] + (parts.length>1 ? parts[parts.length-1][0] : "")).toUpperCase();
+}
+function renderDoctors(){
+  const wrap = document.getElementById("doctorsGrid");
+  const sec  = document.getElementById("doctors");
+  if(!wrap || !sec) return;
+  const list = DOCTORS.filter(d => (d.en||"").trim() || (d.bn||"").trim());
+  /* An empty list would otherwise leave a heading with nothing under it. */
+  sec.style.display = list.length ? "" : "none";
+  if(!list.length){ wrap.innerHTML = ""; return; }
+
+  wrap.innerHTML = list.map(d => {
+    const name = docField(d,"bn","en");
+    const role = docField(d,"rolebn","role");
+    const deg  = docField(d,"degbn","deg");
+    const exp  = docField(d,"expbn","exp");
+    const bmdc = (d.bmdc||"").trim();
+    const bio  = docField(d,"biobn","bio");
+    const tags = (LANG==="bn" ? (d.tagsbn||d.tags) : (d.tags||d.tagsbn)) || [];
+    const photo = (d.photo||"").trim();
+    /* Card copy first, full size as the fallback, mirroring the services grid. */
+    const art = photo
+      ? `<img class="doc-photo" src="assets/doctors/cards/${photo}.jpg" alt="${escapeHtml(name)}"
+             loading="lazy" decoding="async"
+             onerror="this.onerror=null;this.src='assets/doctors/${photo}.jpg'">`
+      : `<div class="doc-photo doc-initials" aria-hidden="true">${escapeHtml(docInitials(d.en||d.bn))}</div>`;
+    return `<article class="doc-card">
+      ${art}
+      <div class="doc-body">
+        <h3 class="doc-name">${escapeHtml(name)}</h3>
+        ${role ? `<p class="doc-role">${escapeHtml(role)}</p>` : ""}
+        ${deg  ? `<p class="doc-deg">${escapeHtml(deg)}</p>` : ""}
+        ${exp  ? `<p class="doc-exp">${escapeHtml(exp)}</p>` : ""}
+        ${bmdc ? `<p class="doc-bmdc">BMDC Reg. No. ${escapeHtml(bmdc)}</p>` : ""}
+        ${bio  ? `<p class="doc-bio">${escapeHtml(bio)}</p>` : ""}
+        ${tags.length ? `<div class="doc-tags">${tags.map(t=>`<span class="doc-tag">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
+      </div>
+    </article>`;
+  }).join("");
+
+  syncDoctorSchema(list);
+}
+
+/* Keep the JSON-LD agreeing with what the page actually shows. The content editor
+   publishes assets/content.js but never index.html, so without this a doctor added by
+   the clinic would appear on the page while the schema still named only the original
+   one — the page contradicting its own structured data. */
+function syncDoctorSchema(list){
+  try{
+    const tag = document.querySelector('script[type="application/ld+json"]');
+    if(!tag) return;
+    const data = JSON.parse(tag.textContent);
+    data.employee = list.map(d => {
+      const p = { "@type":"Physician",
+                  name:(d.en||d.bn||"").trim(),
+                  medicalSpecialty:"Dentistry" };
+      if((d.role||"").trim()) p.jobTitle = d.role.trim();
+      return p;
+    });
+    tag.textContent = JSON.stringify(data);
+  }catch(e){ /* schema is a bonus; never let it break the page */ }
+}
+
 function renderServices(){
   const wrap = document.getElementById("servicesGrid");
   if(!wrap) return;

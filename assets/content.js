@@ -277,6 +277,29 @@ window.OMEGA_CONTENT = (function () {
     { icon:"🩺", img:"consultation", img2:"consultation-2", pr:"৳500", dur:"15–20 min", durbn:"১৫–২০ মিনিট", en:"Consultation", bn:"কনসালটেশন", cne:"Doctor visit", cn:"ডাক্তার দেখানো", de:"Full check-up with the dentist and a clear treatment plan — ৳500 per consultation.", db:"ডাক্তারের সম্পূর্ণ চেকআপ ও পরিষ্কার চিকিৎসা পরিকল্পনা — প্রতি কনসালটেশন ৫০০ টাকা।" },
   ];
 
+  /* The clinic's dentists. Real people with real registrations, so nothing here is
+     ever filled in with a plausible-looking guess: a blank field renders as absent
+     rather than as something invented.
+
+     `id` doubles as the photo basename in assets/doctors/, the same way a service's
+     `img` names a file in assets/services/. `bmdc` is printed only when set — some
+     clinics prefer not to publish it. Bangla fields fall back to English when empty,
+     which is what keeps a half-filled entry looking deliberate instead of broken. */
+  const DOCTORS = [
+    { id:"afsana-haque-joty",
+      en:"Dr. Afsana Haque Joty",      bn:"ডা. আফসানা হক জ্যোতি",
+      role:"Senior Dental Surgeon",    rolebn:"সিনিয়র ডেন্টাল সার্জন",
+      deg:"BDS (DU) · PGT Oral & Maxillofacial Surgery · PGT Paediatric Dentistry",
+      degbn:"বিডিএস (ঢাবি) · পিজিটি ওরাল অ্যান্ড ম্যাক্সিলোফেসিয়াল সার্জারি · পিজিটি পেডিয়াট্রিক ডেন্টিস্ট্রি",
+      bmdc:"11071",
+      exp:"5.5 years' experience",     expbn:"৫.৫ বছরের অভিজ্ঞতা",
+      bio:"Special training in aesthetic dentistry, with a focus on cosmetic and children's dental care.",
+      biobn:"অ্যাসথেটিক ডেন্টিস্ট্রিতে বিশেষ প্রশিক্ষণপ্রাপ্ত; কসমেটিক ও শিশুদের দাঁতের চিকিৎসায় বিশেষজ্ঞ।",
+      tags:["Aesthetic Dentistry","Paediatric Dentistry","Root Canal (RCT)","Hollywood Smile Design","Wisdom Tooth Surgery","Gum Treatment"],
+      tagsbn:["অ্যাসথেটিক ডেন্টিস্ট্রি","শিশুদের দাঁতের চিকিৎসা","রুট ক্যানেল (আরসিটি)","হলিউড স্মাইল ডিজাইন","আক্কেল দাঁতের সার্জারি","মাড়ির চিকিৎসা"],
+      photo:"" },
+  ];
+
   return { cats: CATS, prices: PRICES, services: SERVICES, photos: PHOTOS,
-           gallery: GALLERY, galleryCats: GALLERY_CATS };
+           gallery: GALLERY, galleryCats: GALLERY_CATS, doctors: DOCTORS };
 })();
