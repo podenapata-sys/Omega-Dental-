@@ -298,15 +298,12 @@
 <!-- why us -->
 <section class="section soft" id="why">
   <div class="container why-grid">
-    <div class="why-art">
-      <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="20" y="30" width="160" height="110" rx="14" fill="#ffffff"/>
-        <circle cx="70" cy="74" r="26" fill="#cfe6f7"/><circle cx="70" cy="66" r="10" fill="#2B6CB0"/>
-        <rect x="50" y="86" width="40" height="22" rx="11" fill="#2B6CB0"/>
-        <rect x="110" y="56" width="58" height="9" rx="4" fill="#57C3AD"/>
-        <rect x="110" y="74" width="44" height="9" rx="4" fill="#bfeee4"/>
-        <rect x="110" y="92" width="52" height="9" rx="4" fill="#bfeee4"/>
-      </svg>
+    <!-- Was a generic avatar illustration. It is the clinic's actual dentist now,
+         filled by renderDoctors() in assets/app.js from OMEGA_CONTENT.doctors. Keeps
+         id="doctors" so the "Doctors" nav link still scrolls here, and hides itself
+         if the list is ever emptied, leaving the section a single column. -->
+    <div class="why-doc" id="doctors" style="display:none">
+      <div class="doc-grid" id="doctorsGrid"></div>
     </div>
     <div class="left">
       <span class="eyebrow" data-i18n="why_eyebrow"></span>
@@ -321,20 +318,6 @@
         <li><span class="ck">✓</span><span data-i18n="why6"></span></li>
       </ul>
     </div>
-  </div>
-</section>
-
-<!-- our doctors. The grid is filled by renderDoctors() in assets/app.js from
-     OMEGA_CONTENT.doctors, so the clinic's content editor is the only place this is
-     maintained. The section hides itself when the list is empty. -->
-<section class="section" id="doctors" style="display:none">
-  <div class="container">
-    <div class="sec-head">
-      <span class="eyebrow" data-i18n="doc_eyebrow"></span>
-      <h2 data-i18n="doc_title"></h2>
-      <p data-i18n="doc_text"></p>
-    </div>
-    <div class="doc-grid" id="doctorsGrid"></div>
   </div>
 </section>
 
