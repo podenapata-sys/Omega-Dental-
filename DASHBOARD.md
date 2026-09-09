@@ -613,9 +613,24 @@ automated mail from a new script often lands there the first few times, and mark
 *Not spam* trains it. Every alert email
 links to it too. Open it in Excel, or File → Download → Microsoft Excel (.xlsx).
 
-Nothing needs adding by hand, and it does not touch your patient records — a booking is a
-*request*, and records are people who actually came. Keeping them apart is what stops
-no-shows and duplicate submissions from turning up in your income report.
+Nothing needs adding by hand.
+
+**Website bookings now become records automatically, marked Pending.** A booking still is not
+the same thing as a visit — it is a *request*, and a record is someone who actually came — so
+the automation keeps the two apart rather than merging them. A new booking appears in your
+records straight away with a **Pending** tag, and until you press **✅** to say the patient
+arrived it counts as nobody: not a patient in the stats, not a line in the income report.
+Pressing ✅ dates the visit today and opens the form for Total and Paid, which is exactly what
+the old ➕ button did — just at the moment it is actually true.
+
+That is what keeps no-shows and duplicate submissions out of your income report. A no-show is
+simply deleted like any other record; it goes to the Bin and does not come back.
+
+Two things worth knowing. The **Expected (not arrived)** tile counts every booking still
+waiting on a ✅, whatever date range you are looking at — click it to jump to 📅 Upcoming,
+where those rows live until their day comes round. And the adding happens in the dashboard
+page, so it catches up when you next open it; nothing is lost in the meantime, because the
+Google Sheet below is written server-side within five minutes either way.
 
 **Phone numbers are stored as text**, so `01711223344` keeps its leading zero instead of
 being read as a number.

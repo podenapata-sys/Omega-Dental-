@@ -97,6 +97,12 @@ h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
 .stat .l{font-size:.78rem;color:var(--muted);margin-top:4px;font-weight:600}
 .stat.blue .n{color:var(--blue)} .stat.teal .n{color:var(--teal-dd)}
 .stat.ok .n{color:var(--ok)} .stat.due .n{color:var(--due)}
+.stat.wait .n{color:#b07a12}
+/* A booking that has become a record but whose patient has not arrived. Tinted rather
+   than greyed out: it is a real upcoming appointment, not disabled content. */
+tr.is-pending td{background:#fffaf0}
+.pill-wait{display:inline-block;background:#fdeccc;color:#8a5a12;font-weight:700;
+  font-size:.68rem;padding:1px 7px;border-radius:999px;vertical-align:middle;margin-left:4px}
 /* ---- toolbar ---- */
 .tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .tabs{display:inline-flex;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px;gap:2px;max-width:100%}
@@ -367,6 +373,11 @@ tbody tr:hover td.actions{background:#f8fcfb}
   <!-- STATS -->
   <div class="stats">
     <div class="stat blue"><div class="n" id="s_count">0</div><div class="l">Patients (in view)</div></div>
+    <!-- Website bookings nobody has arrived for yet. Hidden when there are none, so the
+         strip looks exactly as it did before on a day with no bookings. -->
+    <div class="stat wait" id="s_waitBox" style="display:none;cursor:pointer"
+         title="Show the upcoming appointments" role="button" tabindex="0">
+      <div class="n" id="s_wait">0</div><div class="l">Expected (not arrived) &rsaquo;</div></div>
     <div class="stat teal"><div class="n" id="s_total">৳0</div><div class="l">Total billed</div></div>
     <div class="stat ok"><div class="n" id="s_paid">৳0</div><div class="l">Total collected</div></div>
     <div class="stat due"><div class="n" id="s_due">৳0</div><div class="l">Outstanding due</div></div>
@@ -495,12 +506,15 @@ tbody tr:hover td.actions{background:#f8fcfb}
      cannot reach records, save() or editRow(), so it comes through here.
      Creates the record, then opens it in the form: the patient is in the table straight
      away, with the amounts one field from being filled in. */
-  window.__odAddBooking = function(b){
-    b = b || {};
+  window.__odAddBooking = function(b, opts){
+    b = b || {}; opts = opts || {};
+    var pending = !!opts.pending;
     var rec = {
       _id: Date.now()+"-"+Math.floor(Math.random()*1e6),
-      /* today is when they were seen; the date they ASKED for is the upcoming visit */
-      date: todayStr(),
+      /* Pressed by hand, today is when they were seen. Added automatically, nobody is
+         standing there yet — so it carries the date they ASKED for, or the visit lands
+         in the wrong month and the report counts it before it happened. */
+      date: pending ? (b.dateISO || todayStr()) : todayStr(),
       mobile: b.phone || "",
       id: cid(b.phone || ""),
       name: b.name || "",
@@ -513,11 +527,43 @@ tbody tr:hover td.actions{background:#f8fcfb}
          it here breaks the Upcoming filter and whenHint(), which both compare ISO. */
       next: b.dateISO || ""
     };
+    /* Which booking this came from. Written on the RECORD, not into localStorage, so
+       every signed-in device agrees it is already added — see bookingAlreadyAdded(). */
+    if(opts.bookingId) rec.bookingId = String(opts.bookingId);
+    if(pending) rec.pending = true;
     records.push(rec); save(); cloudSave(rec); render();
-    editRow(rec._id);
-    flash("Added to your records. Enter Total and Paid, then press Update record.", false);
+    /* An automatic add must not yank the form open under whoever is typing. */
+    if(!pending){
+      editRow(rec._id);
+      flash("Added to your records. Enter Total and Paid, then press Update record.", false);
+    }
     return rec._id;
   };
+
+  /* Has this booking already become a record? Answered from the records themselves,
+     which sync through Firestore, so the clinic's phone and laptop cannot both add the
+     same booking. Deleted records count: a no-show sent to the Bin must stay there
+     instead of reappearing on the next snapshot. The old per-device list is still
+     consulted for bookings added before records carried a bookingId. */
+  window.__odBookingAdded = function(bookingId){
+    if(!bookingId) return false;
+    var want = String(bookingId);
+    for(var i=0;i<records.length;i++){ if(String(records[i].bookingId||"")===want) return true; }
+    return false;
+  };
+
+  /* The patient turned up. Everything the ➕ button used to do, at the moment it is
+     actually true: the visit is dated today and the amounts are one field away. */
+  function markCame(id){
+    if(needSignIn()) return;
+    var r=records.find(function(x){return x._id===id;}); if(!r || !r.pending) return;
+    delete r.pending;
+    r.date = todayStr();
+    r.next = "";              // they arrived; nothing is booked ahead any more
+    save(); cloudSave(r); render();
+    editRow(r._id);
+    flash("Marked as arrived. Enter Total and Paid, then press Update record.", false);
+  }
 
   window.__odSyncStatus = function(state, detail){
     var ic=$("syncIcon"), tx=$("syncText"); if(!ic||!tx) return;
@@ -1088,7 +1134,10 @@ tbody tr:hover td.actions{background:#f8fcfb}
   }
   function renderReport(){
     var panel=$("repPanel"); if(!panel || panel.style.display!=="block") return;
-    var rs=live(), byMonth={}, byService={}, tot=0, paid=0;
+    /* Pending rows are expected arrivals, not income — they carry no amounts and no
+       visit has taken place, so they are dropped before anything is counted. */
+    var rs=live().filter(function(r){ return !r.pending; }),
+        byMonth={}, byService={}, tot=0, paid=0;
     rs.forEach(function(r){
       var m=(r.date||"").slice(0,7); if(m) byMonth[m]=(byMonth[m]||0)+(Number(r.paid)||0);
       var sv=(r.service||"Other").trim()||"Other";
@@ -1108,12 +1157,17 @@ tbody tr:hover td.actions{background:#f8fcfb}
   function render(){
     purgeExpired();
     var rows=filtered(), tb=$("tbody"), html="";
-    var tot=0,paid=0;
+    var tot=0,paid=0,waiting=0;
     rows.forEach(function(r){
-      tot+=Number(r.total)||0; paid+=Number(r.paid)||0;
+      /* A pending row is a booking nobody has arrived for yet. It shows in the table so
+         the clinic can see who is expected, but it is not a patient and not income until
+         ✓ Came is pressed — so it stays out of every figure below. */
+      if(r.pending){ waiting++; }        // counted for the row, not for the money
+      else { tot+=Number(r.total)||0; paid+=Number(r.paid)||0; }
       var due=(Number(r.total)||0)-(Number(r.paid)||0);
-      html+="<tr>"+
-        "<td data-label='Date'>"+esc(dmy(r.date))+"</td>"+
+      html+="<tr"+(r.pending?" class='is-pending'":"")+">"+
+        "<td data-label='Date'>"+esc(dmy(r.date))+
+          (r.pending?" <span class='pill-wait'>Pending</span>":"")+"</td>"+
         "<td data-label='Customer ID' class='cid'>"+esc(r.id)+"</td>"+
         "<td data-label='Mobile'>"+esc(r.mobile)+"</td>"+
         "<td data-label='Name'>"+esc(r.name||"—")+"</td>"+
@@ -1130,7 +1184,10 @@ tbody tr:hover td.actions{background:#f8fcfb}
             : view==="bin"
             ? "<button class='rowbtn' data-restore='"+r._id+"' title='Restore' aria-label='Restore record'>↩️</button>"+
               "<button class='rowbtn' data-purge='"+r._id+"' title='Delete forever' aria-label='Delete forever'>❌</button>"
-            : (due>0 ? waBtn(r,due) : "")+
+            : (r.pending
+                ? "<button class='rowbtn' data-came='"+r._id+"' title='The patient arrived' aria-label='Mark as arrived'>✅</button>"
+                : "")+
+              (due>0 ? waBtn(r,due) : "")+
               (due>0 ? "<button class='rowbtn' data-pay='"+r._id+"' title='Take a payment' aria-label='Take a payment'>💵</button>" : "")+
               "<button class='rowbtn' data-new='"+r._id+"' title='New treatment for this patient' aria-label='New treatment for this patient'>➕</button>"+
               "<button class='rowbtn' data-edit='"+r._id+"' title='Edit' aria-label='Edit record'>✏️</button>"+
@@ -1140,7 +1197,13 @@ tbody tr:hover td.actions{background:#f8fcfb}
     });
     tb.innerHTML=html;
     $("emptyMsg").style.display=rows.length?"none":"block";
-    $("s_count").textContent=rows.length;
+    /* Patients means people who came. Those still expected are counted beside it. */
+    $("s_count").textContent=rows.length-waiting;
+    /* Every booking still waiting on a ✓, whatever date range is being looked at —
+       one due next week must not vanish because the view says today. */
+    var allWaiting=live().filter(function(r){ return r.pending; }).length;
+    $("s_wait").textContent=allWaiting;
+    $("s_waitBox").style.display = allWaiting ? "" : "none";
     $("s_total").textContent=money(tot);
     $("s_paid").textContent=money(paid);
     $("s_due").textContent=money(tot-paid);
@@ -1156,14 +1219,15 @@ tbody tr:hover td.actions{background:#f8fcfb}
     return rs.map(function(r){ return {
       "Date":dmy(r.date),"Customer ID":r.id,"Mobile":r.mobile,"Name":r.name||"","Address":r.address||"","Service":r.service||"",
       "Total":Number(r.total)||0,"Paid":Number(r.paid)||0,"Due":(Number(r.total)||0)-(Number(r.paid)||0),
-      "Next Appointment":dmy(r.next) }; });
+      "Next Appointment":dmy(r.next),
+      "Status":(r.pending ? "Pending" : "") }; });
   }
   function makeSheetWithTotals(rs){
     var data=rowsForSheet(rs);
     var t=rs.reduce(function(a,r){return a+(Number(r.total)||0);},0);
     var p=rs.reduce(function(a,r){return a+(Number(r.paid)||0);},0);
     data.push({}); data.push({"Service":"TOTAL","Total":t,"Paid":p,"Due":t-p});
-    return XLSX.utils.json_to_sheet(data,{header:["Date","Customer ID","Mobile","Name","Address","Service","Total","Paid","Due","Next Appointment"]});
+    return XLSX.utils.json_to_sheet(data,{header:["Date","Customer ID","Mobile","Name","Address","Service","Total","Paid","Due","Next Appointment","Status"]});
   }
   /* The SheetJS vendor script is deferred; if it fails to load the identifier is
      undeclared, so a bare `!XLSX` throws ReferenceError instead of warning. */
@@ -1233,7 +1297,10 @@ tbody tr:hover td.actions{background:#f8fcfb}
             name:String(row["Name"]||"").trim(), address:String(row["Address"]||"").trim(),
             service:String(row["Service"]||"").trim(),
             total:Number(row["Total"])||0, paid:Number(row["Paid"])||0,
-            next:toIso(String(row["Next Appointment"]||row["Next Appt."]||"").trim())
+            next:toIso(String(row["Next Appointment"]||row["Next Appt."]||"").trim()),
+            /* Absent in backups taken before Status existed, which is correct: those
+               rows are all people who actually came. */
+            pending:String(row["Status"]||"").trim().toLowerCase()==="pending" || undefined
           });
         });
 
@@ -1341,6 +1408,13 @@ tbody tr:hover td.actions{background:#f8fcfb}
     setTimeout(function(){
       if(!authAnswered) window.__odAuthFailed("Firebase did not answer, so nobody could be signed in.<br>Check the internet connection and reload — the records below are the copy saved in this browser.");
     }, 12000);
+    function showUpcoming(){
+      var t=document.querySelector('.tab[data-view="upcoming"]'); if(t) t.click();
+    }
+    $("s_waitBox").addEventListener("click",showUpcoming);
+    $("s_waitBox").addEventListener("keydown",function(e){
+      if(e.key==="Enter"||e.key===" "){ e.preventDefault(); showUpcoming(); }
+    });
     $("reportBtn").addEventListener("click",function(){
       var pn=$("repPanel"), open=pn.style.display==="block";
       pn.style.display = open ? "none" : "block";
@@ -1348,8 +1422,9 @@ tbody tr:hover td.actions{background:#f8fcfb}
       if(!open){ renderReport(); pn.scrollIntoView({behavior:"smooth",block:"nearest"}); }
     });
     $("tbody").addEventListener("click",function(e){
-      var b=e.target.closest("[data-edit],[data-del],[data-restore],[data-purge],[data-pay],[data-new]"); if(!b)return;
-      if(b.dataset.pay) takePayment(b.dataset.pay);
+      var b=e.target.closest("[data-edit],[data-del],[data-restore],[data-purge],[data-pay],[data-new],[data-came]"); if(!b)return;
+      if(b.dataset.came) markCame(b.dataset.came);
+      else if(b.dataset.pay) takePayment(b.dataset.pay);
       else if(b.dataset.new) newTreatment(b.dataset.new);
       else if(b.dataset.edit) editRow(b.dataset.edit);
       else if(b.dataset.restore) restoreRow(b.dataset.restore);
@@ -1532,8 +1607,32 @@ tbody tr:hover td.actions{background:#f8fcfb}
         docs.push(d);
       });
       lastDocs = docs;
+      autoAddBookings(docs);
       render(docs); seeded = true;
     }, ()=>{ $("wbEmpty").textContent = "Can't read bookings yet — make sure Email/Password sign-in is enabled and the Firestore rules are applied."; $("wbEmpty").style.display="block"; });
+  }
+
+  /* Every booking becomes a record by itself, marked Pending until the clinic confirms
+     the patient arrived. Runs on each snapshot rather than only on docChanges, so
+     bookings that came in while the dashboard was closed are picked up when it opens.
+
+     Two guards decide what is new, and both must agree, because this is now automatic:
+     __odBookingAdded reads the synced records (so a second device does not add the same
+     booking again, and a no-show in the Bin is not resurrected), and the old per-device
+     list covers bookings added before records carried a bookingId. */
+  function autoAddBookings(docs){
+    if(!window.__odAddBooking || !window.__odBookingAdded) return;
+    /* Oldest first, so the records come out in the order the bookings arrived. */
+    for(let i = docs.length - 1; i >= 0; i--){
+      const d = docs[i], id = d.id;
+      if(alreadyAdded(id)) continue;
+      if(window.__odBookingAdded(id)){ markAdded(id); continue; }
+      const b = current.get(id); if(!b) continue;
+      try{
+        window.__odAddBooking(b, { pending:true, bookingId:id });
+        markAdded(id);
+      }catch(e){ console.warn("Auto-add failed for booking " + id + ": " + e); }
+    }
   }
 
   /* ---------- patient records: cloud sync ----------
