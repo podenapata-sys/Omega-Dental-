@@ -62,6 +62,10 @@ h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
   box-shadow:0 12px 30px -18px rgba(19,41,78,.28);padding:18px;margin-bottom:18px}
 .panel h3{font-size:1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+/* two narrow fields, not the four-up record form — a password box the width of the
+   screen invites the whole page to be mistaken for a login page */
+.pw-grid{display:grid;grid-template-columns:repeat(2,minmax(0,240px));gap:12px}
+@media(max-width:640px){.pw-grid{grid-template-columns:1fr}}
 .fld{display:flex;flex-direction:column;gap:5px}
 .fld label{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .fld input,.fld select{padding:10px 11px;border:1.5px solid var(--line);border-radius:10px;
@@ -223,7 +227,31 @@ tbody tr:hover td.actions{background:#f8fcfb}
     <button class="btn btn-g btn-sm" id="importBtn">⬆ Import backup</button>
     <button class="btn btn-o btn-sm" id="backupBtn">⬇ Backup all (Excel)</button>
     <button class="btn btn-g btn-sm" id="driveBtn" style="display:none">☁ Backup to Drive</button>
+    <button class="btn btn-g btn-sm" id="pwBtn" style="display:none">🔑 Change password</button>
     <button class="btn btn-g btn-sm" id="lockBtn">🚪 Sign out</button>
+  </div>
+
+  <!-- Only the new password is asked for. The current one is requested ONLY if Firebase
+       refuses the change on an old session (auth/requires-recent-login), which it does
+       after a few minutes — see #pwCurWrap below. -->
+  <div class="panel" id="pwPanel" style="display:none">
+    <h3>🔑 Change dashboard password</h3>
+    <div class="pw-grid">
+      <div class="fld"><label>New password</label>
+        <input id="pwNew" type="password" autocomplete="new-password" placeholder="At least 6 characters"></div>
+      <div class="fld" id="pwCurWrap" style="display:none"><label>Current password</label>
+        <input id="pwCur" type="password" autocomplete="current-password" placeholder="Your password right now"></div>
+    </div>
+    <div class="form-actions" style="margin-top:12px">
+      <button class="btn btn-p" id="pwSave" style="width:auto">Change password</button>
+      <button class="btn btn-g" id="pwCancel" style="width:auto">Cancel</button>
+      <span id="pwMsg" style="font-weight:600;font-size:.86rem"></span>
+    </div>
+    <div style="color:var(--muted);font-size:.8rem;margin-top:10px">
+      This changes the password for <b id="pwWho">this account</b> everywhere — the dashboard
+      and the website editor both use it. Everyone signed in on other devices stays signed in
+      until they sign out.
+    </div>
   </div>
 
   <!-- Shown whenever nobody is signed in. The records below are the copy in this
@@ -509,6 +537,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
      so the classic script never has to import anything. A PIN used to guard this
      page; it was only a screen over the same localStorage, and it is gone. */
   var signedIn = false;        // drives read-only mode across the page
+  var currentEmail = "";       // shown on the change-password card
   var authBroken = false;      // Firebase could not start at all
   var authMsg = "";            // what the banner says when it could not
   var denyMsg = "";            // carried across the sign-out an unknown account triggers
@@ -557,7 +586,65 @@ tbody tr:hover td.actions{background:#f8fcfb}
     RO_CONTROLS.forEach(function(k){ var el=$(k); if(el) el.disabled = ro; });
     $("formPanel").style.opacity = ro ? ".55" : "";
     if(ro) $("snPanel").style.display="none";
+    /* Changing the password needs an account to change it on. */
+    $("pwBtn").style.display = ro ? "none" : "";
+    if(ro) closePw();
   }
+
+  /* ---------- change password ----------
+     Only the new password is asked for. Firebase refuses updatePassword on a session
+     more than a few minutes old (auth/requires-recent-login) — there is nothing to
+     re-authenticate with in a one-field form, so in that case only, the current
+     password box appears and the change is retried automatically. */
+  function openPw(){
+    if(needSignIn()) return;
+    $("pwPanel").style.display="block";
+    $("pwWho").textContent = currentEmail || "this account";
+    pwNote("", false);
+    $("pwNew").value=""; $("pwCur").value="";
+    $("pwCurWrap").style.display="none";
+    $("pwPanel").scrollIntoView({behavior:"smooth",block:"nearest"});
+    $("pwNew").focus();
+  }
+  function closePw(){
+    $("pwPanel").style.display="none";
+    $("pwNew").value=""; $("pwCur").value="";
+    $("pwCurWrap").style.display="none";
+    pwNote("", false);
+  }
+  function pwNote(msg, err){
+    var el=$("pwMsg"); el.textContent=msg||"";
+    el.style.color = err ? "#d94848" : "#2c8a78";
+  }
+  function pwBusy(on){
+    $("pwSave").disabled = on;
+    $("pwSave").textContent = on ? "Changing…" : "Change password";
+  }
+  function tryChangePw(){
+    if(needSignIn()) return;
+    var np=$("pwNew").value||"";
+    if(np.length < 6){ pwNote("Use at least 6 characters.",true); $("pwNew").focus(); return; }
+    if(!window.__odChangePassword){ pwNote("Still connecting to Firebase — try again in a moment.",true); return; }
+    pwBusy(true); pwNote("Changing…", false);
+    /* The current password is only ever sent when Firebase has already asked for it. */
+    window.__odChangePassword(np, $("pwCurWrap").style.display==="none" ? "" : ($("pwCur").value||""));
+  }
+  /* Called back by the module script. */
+  window.__odPwDone = function(){
+    pwBusy(false);
+    $("pwNew").value=""; $("pwCur").value="";
+    $("pwCurWrap").style.display="none";
+    pwNote("Password changed ✓ Use the new one next time you sign in.", false);
+    setTimeout(function(){ if($("pwMsg").textContent.indexOf("changed")>-1) closePw(); }, 4000);
+  };
+  window.__odPwFailed = function(msg, needCurrent){
+    pwBusy(false);
+    if(needCurrent){
+      $("pwCurWrap").style.display="";
+      $("pwCur").focus();
+    }
+    pwNote(msg, true);
+  };
   /* Second line of defence: the buttons are gone or disabled, but a stale handler
      should not be able to write either. */
   function needSignIn(){
@@ -587,6 +674,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
       return;
     }
     signedIn = !!user;
+    currentEmail = (user && user.email) || "";
     authBroken = false;
     if(user){ denyMsg=""; $("lockMsg").textContent=""; showDash(); }
     else if(denyMsg){ var m=denyMsg; denyMsg=""; applyAuthUI(); showLock(m); }
@@ -1075,6 +1163,14 @@ tbody tr:hover td.actions{background:#f8fcfb}
     $("saveBtn").addEventListener("click",saveRecord);
     $("cancelBtn").addEventListener("click",clearForm);
     $("lockBtn").addEventListener("click",headerAuthBtn);
+    $("pwBtn").addEventListener("click",function(){
+      if($("pwPanel").style.display==="block") closePw(); else openPw();
+    });
+    $("pwSave").addEventListener("click",tryChangePw);
+    $("pwCancel").addEventListener("click",closePw);
+    ["pwNew","pwCur"].forEach(function(k){
+      $(k).addEventListener("keydown",function(e){ if(e.key==="Enter") tryChangePw(); });
+    });
     $("roSignIn").addEventListener("click",function(){ showLock(""); });
     $("lockBack").addEventListener("click",function(){ $("lockMsg").textContent=""; showDash(); });
     $("exportBtn").addEventListener("click",exportView);
@@ -1395,6 +1491,39 @@ tbody tr:hover td.actions{background:#f8fcfb}
   /* Handed to the classic script, which owns the login card. */
   window.__odSignOut = async ()=>{
     try{ await authMod.signOut(auth); }catch(e){}
+  };
+
+  /* Change the account password. `cur` is empty on the first attempt and only filled in
+     after Firebase has asked for it — updatePassword refuses a session older than a few
+     minutes, and re-authenticating is the only way through that. */
+  window.__odChangePassword = async (newPw, cur)=>{
+    const user = auth.currentUser;
+    if(!user){ window.__odPwFailed("You are signed out. Sign in and try again.", false); return; }
+    try{
+      if(cur){
+        const cred = authMod.EmailAuthProvider.credential(user.email, cur);
+        await authMod.reauthenticateWithCredential(user, cred);
+      }
+      await authMod.updatePassword(user, newPw);
+      window.__odPwDone();
+    }catch(e){
+      const code = String(e.code || e.message || "");
+      if(code.indexOf("requires-recent-login") > -1){
+        /* Not an error the clinic can act on as written — ask for the one thing that fixes it. */
+        window.__odPwFailed("For safety, type your current password as well, then press "
+          + "Change password again.", true);
+      } else if(code.indexOf("invalid-credential") > -1 || code.indexOf("wrong-password") > -1){
+        window.__odPwFailed("That current password is wrong.", true);
+      } else if(code.indexOf("weak-password") > -1){
+        window.__odPwFailed("Firebase rejected that as too weak. Use at least 6 characters.", false);
+      } else if(code.indexOf("too-many-requests") > -1){
+        window.__odPwFailed("Too many attempts. Wait a few minutes and try again.", false);
+      } else if(code.indexOf("network") > -1){
+        window.__odPwFailed("No connection. The password was not changed.", false);
+      } else {
+        window.__odPwFailed("Could not change the password: " + code, false);
+      }
+    }
   };
   window.__odSignIn = async (em, pw)=>{
     const msg = document.getElementById("lockMsg");
