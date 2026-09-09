@@ -25,6 +25,8 @@ h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
    than making the clinic scroll a table sideways */
 @media(min-width:1240px){.wrap{max-width:1280px}}
 /* ---- lock screen ---- */
+#pinGate{position:fixed;inset:0;z-index:60;display:grid;place-items:center;
+  background:linear-gradient(160deg,#0f2444,#183a67);padding:20px}
 #lock{position:fixed;inset:0;z-index:50;display:grid;place-items:center;
   background:linear-gradient(160deg,#0f2444,#183a67);padding:20px}
 .lockcard{background:#fff;border-radius:22px;box-shadow:0 30px 70px -20px rgba(0,0,0,.5);
@@ -195,8 +197,25 @@ tbody tr:hover td.actions{background:#f8fcfb}
 </head>
 <body>
 
+<!-- PIN GATE. Shown before anything else, once per browser session. This is a screen
+     lock, not the security boundary: it stops someone who picks up an unlocked clinic
+     phone from reading patient records. The Firestore rules and the Firebase sign-in are
+     what actually protect the data. -->
+<div id="pinGate">
+  <div class="lockcard">
+    <img src="assets/mark.png?v=3" alt="Omega Dental">
+    <h2>Enter access code</h2>
+    <p id="pinSub">Admin access &mdash; Omega Dental</p>
+    <input class="lockin" id="pinInput" type="password" autocomplete="off"
+           autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Access code">
+    <button class="btn btn-p" id="pinGo">Open dashboard</button>
+    <button class="btn btn-g" id="pinForgot" style="margin-top:8px">Forgot the code?</button>
+    <div class="lockmsg" id="pinMsg"></div>
+  </div>
+</div>
+
 <!-- LOCK SCREEN -->
-<div id="lock">
+<div id="lock" style="display:none">
   <div class="lockcard">
     <img src="assets/mark.png?v=3" alt="Omega Dental">
     <h2 id="lockTitle">Checking sign-in&hellip;</h2>
@@ -227,7 +246,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
     <button class="btn btn-g btn-sm" id="importBtn">⬆ Import backup</button>
     <button class="btn btn-o btn-sm" id="backupBtn">⬇ Backup all (Excel)</button>
     <button class="btn btn-g btn-sm" id="driveBtn" style="display:none">☁ Backup to Drive</button>
-    <button class="btn btn-g btn-sm" id="pwBtn" style="display:none">🔑 Change password</button>
+    <button class="btn btn-g btn-sm" id="pwBtn" style="display:none">🔑 Security</button>
     <button class="btn btn-g btn-sm" id="lockBtn">🚪 Sign out</button>
   </div>
 
@@ -235,7 +254,26 @@ tbody tr:hover td.actions{background:#f8fcfb}
        refuses the change on an old session (auth/requires-recent-login), which it does
        after a few minutes — see #pwCurWrap below. -->
   <div class="panel" id="pwPanel" style="display:none">
-    <h3>🔑 Change dashboard password</h3>
+    <h3>🔑 Security</h3>
+
+    <div style="font-weight:700;font-size:.9rem;margin-bottom:10px">Access code</div>
+    <div class="pw-grid">
+      <div class="fld"><label>New access code</label>
+        <input id="pinNew" type="password" autocomplete="off" autocapitalize="off"
+               autocorrect="off" spellcheck="false" placeholder="At least 4 characters"></div>
+    </div>
+    <div class="form-actions" style="margin-top:12px">
+      <button class="btn btn-p" id="pinSave" style="width:auto">Change access code</button>
+      <span id="pinSaveMsg" style="font-weight:600;font-size:.86rem"></span>
+    </div>
+    <div style="color:var(--muted);font-size:.8rem;margin:10px 0 0">
+      Asked once per browser tab, and again after the tab is closed. It is stored on this
+      device only &mdash; changing it here does not change it on the clinic's other phones.
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--line);margin:18px 0">
+
+    <div style="font-weight:700;font-size:.9rem;margin-bottom:10px">Sign-in password</div>
     <div class="pw-grid">
       <div class="fld"><label>New password</label>
         <input id="pwNew" type="password" autocomplete="new-password" placeholder="At least 6 characters"></div>
@@ -538,6 +576,67 @@ tbody tr:hover td.actions{background:#f8fcfb}
      page; it was only a screen over the same localStorage, and it is gone. */
   var signedIn = false;        // drives read-only mode across the page
   var currentEmail = "";       // shown on the change-password card
+
+  /* ---------- access code (PIN) ----------
+     A screen lock in front of the whole page, asked once per browser session. It stops
+     someone who picks up an unlocked clinic phone from reading patient records; it is NOT
+     the security boundary — the Firestore rules and the Firebase sign-in are. The default
+     is stored as a SHA-256 hash so viewing the page source does not simply hand the code
+     over; a short code is still guessable by anyone determined enough to try offline, so
+     do not treat it as a password. */
+  var PIN_DEFAULT_HASH = "dd450aac56157c84f9563617b5359a8870dbe23256ef4706e365cc1b55a6b61c";
+  var LS_PIN_HASH = "od_pin_hash";     // set when the clinic changes the code on this device
+  var SS_PIN_OK  = "od_pin_ok";        // cleared when the browser session ends
+  var pinPassed = false;
+  var pending = null;                  // the screen the auth state wants, held until the code is in
+
+  function pinHash(code){
+    /* crypto.subtle needs a secure context — HTTPS, which is what GitHub Pages serves. */
+    if(!(window.crypto && window.crypto.subtle)) return Promise.reject(new Error("nocrypto"));
+    var data = new TextEncoder().encode("omega-dental:" + code);
+    return window.crypto.subtle.digest("SHA-256", data).then(function(buf){
+      return Array.prototype.map.call(new Uint8Array(buf), function(b){
+        return b.toString(16).padStart(2,"0");
+      }).join("");
+    });
+  }
+  function expectedPinHash(){
+    try{ return localStorage.getItem(LS_PIN_HASH) || PIN_DEFAULT_HASH; }
+    catch(e){ return PIN_DEFAULT_HASH; }
+  }
+  function tryPin(){
+    var v = ($("pinInput").value||"").trim();
+    if(!v){ $("pinMsg").textContent="Enter the access code."; return; }
+    $("pinMsg").textContent="Checking…";
+    pinHash(v).then(function(h){
+      if(h === expectedPinHash()){ passPin(); }
+      else { $("pinMsg").textContent="Wrong code."; $("pinInput").value=""; $("pinInput").focus(); }
+    }).catch(function(){
+      $("pinMsg").innerHTML = "This browser cannot check the code (the page must be opened "
+        + "over https).<br>Use <b>Forgot the code?</b> to sign in instead.";
+    });
+  }
+  /* Correct code, or a successful sign-in via the recovery path. */
+  function passPin(){
+    pinPassed = true;
+    try{ sessionStorage.setItem(SS_PIN_OK,"1"); }catch(e){}
+    $("pinGate").style.display="none";
+    $("pinInput").value=""; $("pinMsg").textContent="";
+    if(pending === "dash") showDash();
+    else if(pending === "lock") showLock(pendingLockMsg);
+    /* Firebase has not answered yet. Show the waiting card rather than a blank page —
+       __odAuthState or the 12-second fallback replaces it the moment there is news. */
+    else $("lock").style.display="grid";
+    pending = null;
+  }
+  var pendingLockMsg = "";
+  /* Forgotten code: the Firebase account is the way back in. Signing in proves as much as
+     the code does, so it clears the gate — and the new code is set from the Security card. */
+  function pinForgot(){
+    pinPassed = true;                 // the sign-in card is the gate from here
+    $("pinGate").style.display="none";
+    showLock("Sign in and you can set a new access code from 🔑 Security.");
+  }
   var authBroken = false;      // Firebase could not start at all
   var authMsg = "";            // what the banner says when it could not
   var denyMsg = "";            // carried across the sign-out an unknown account triggers
@@ -554,12 +653,14 @@ tbody tr:hover td.actions{background:#f8fcfb}
   }
 
   function showDash(){
+    applyAuthUI();
+    if(!pinPassed){ pending="dash"; return; }   // held until the access code is entered
     $("lock").style.display="none";
     $("dash").style.display="block";
-    applyAuthUI();
     render();
   }
   function showLock(msg){
+    if(!pinPassed){ pending="lock"; pendingLockMsg=msg||""; return; }
     $("lock").style.display="grid";
     $("dash").style.display="none";
     $("lockTitle").textContent="Sign in";
@@ -629,6 +730,24 @@ tbody tr:hover td.actions{background:#f8fcfb}
     /* The current password is only ever sent when Firebase has already asked for it. */
     window.__odChangePassword(np, $("pwCurWrap").style.display==="none" ? "" : ($("pwCur").value||""));
   }
+  function trySavePin(){
+    if(needSignIn()) return;
+    var v = ($("pinNew").value||"").trim();
+    var el = $("pinSaveMsg");
+    if(v.length < 4){ el.style.color="#d94848"; el.textContent="Use at least 4 characters."; $("pinNew").focus(); return; }
+    el.style.color="#2c8a78"; el.textContent="Saving…";
+    pinHash(v).then(function(h){
+      localStorage.setItem(LS_PIN_HASH, h);
+      $("pinNew").value="";
+      el.style.color="#2c8a78";
+      el.textContent="Access code changed ✓ The next new tab will ask for it.";
+      setTimeout(function(){ el.textContent=""; }, 6000);
+    }).catch(function(){
+      el.style.color="#d94848";
+      el.textContent="Could not save the code in this browser.";
+    });
+  }
+
   /* Called back by the module script. */
   window.__odPwDone = function(){
     pwBusy(false);
@@ -700,6 +819,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
      page must not sit there still showing a signed-in dashboard. */
   function signOutNow(){
     signedIn = false;
+    closePw();
     showDash();
     if(window.__odSignOut) window.__odSignOut();
   }
@@ -1153,6 +1273,10 @@ tbody tr:hover td.actions{background:#f8fcfb}
     $("dayPick").value=todayStr();
     $("monthPick").value=todayStr().slice(0,7);
     domReady = true;
+    var seen = false;
+    try{ seen = sessionStorage.getItem(SS_PIN_OK)==="1"; }catch(e){}
+    if(seen){ pinPassed = true; $("pinGate").style.display="none"; }
+    else { $("pinInput").focus(); }
     applyAuthUI();   // read-only until Firebase says otherwise
     $("lockSignIn").addEventListener("click",trySignIn);
     ["lockEmail","lockPass"].forEach(function(k){
@@ -1167,6 +1291,11 @@ tbody tr:hover td.actions{background:#f8fcfb}
       if($("pwPanel").style.display==="block") closePw(); else openPw();
     });
     $("pwSave").addEventListener("click",tryChangePw);
+    $("pinSave").addEventListener("click",trySavePin);
+    $("pinNew").addEventListener("keydown",function(e){ if(e.key==="Enter") trySavePin(); });
+    $("pinGo").addEventListener("click",tryPin);
+    $("pinForgot").addEventListener("click",pinForgot);
+    $("pinInput").addEventListener("keydown",function(e){ if(e.key==="Enter") tryPin(); });
     $("pwCancel").addEventListener("click",closePw);
     ["pwNew","pwCur"].forEach(function(k){
       $(k).addEventListener("keydown",function(e){ if(e.key==="Enter") tryChangePw(); });
