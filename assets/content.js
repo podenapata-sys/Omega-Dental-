@@ -288,9 +288,10 @@ window.OMEGA_CONTENT = (function () {
   const DOCTORS = [
     { id:"afsana-haque-joty",
       en:"Dr. Afsana Haque Joty",      bn:"ডা. আফসানা হক জ্যোতি",
-      role:"Senior Dental Surgeon",    rolebn:"সিনিয়র ডেন্টাল সার্জন",
-      deg:"BDS (DU) · PGT Oral & Maxillofacial Surgery · PGT Paediatric Dentistry",
-      degbn:"বিডিএস (ঢাবি) · পিজিটি ওরাল অ্যান্ড ম্যাক্সিলোফেসিয়াল সার্জারি · পিজিটি পেডিয়াট্রিক ডেন্টিস্ট্রি",
+      role:"Chief Dental Surgeon, Omega Dental",
+      rolebn:"চিফ ডেন্টাল সার্জন, ওমেগা ডেন্টাল",
+      deg:"BDS (DU) · PGT in Oral & Maxillofacial Surgery and Paediatric Dentistry, Dhaka Dental College",
+      degbn:"বিডিএস (ঢাবি) · ওরাল অ্যান্ড ম্যাক্সিলোফেসিয়াল সার্জারি ও পেডিয়াট্রিক ডেন্টিস্ট্রিতে পিজিটি, ঢাকা ডেন্টাল কলেজ",
       bmdc:"11071",
       /* Left blank on purpose. The homepage stats band already states the clinic's
          years, and a second, smaller number on the same page reads as a contradiction

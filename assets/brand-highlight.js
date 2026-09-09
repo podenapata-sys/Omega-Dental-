@@ -12,8 +12,11 @@
   function skip(el) {
     if (!el) return true;
     if (SKIP_TAG[el.tagName]) return true;
-    // leave the logo lockup and already-highlighted text alone
-    return !!(el.closest && el.closest(".brand, .foot-logo, .logo-anim, .brand-hl"));
+    // Leave the logo lockup and already-highlighted text alone. .doc-role is here for
+    // the same reason: it is a job title ("Chief Dental Surgeon, Omega Dental"), not
+    // running prose, and enlarging the employer in orange pulls the eye away from the
+    // doctor's own name directly above it — and from the credentials directly below.
+    return !!(el.closest && el.closest(".brand, .foot-logo, .logo-anim, .brand-hl, .doc-role"));
   }
 
   function run() {

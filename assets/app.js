@@ -521,7 +521,11 @@ function syncDoctorSchema(list){
       const p = { "@type":"Physician",
                   name:(d.en||d.bn||"").trim(),
                   medicalSpecialty:"Dentistry" };
-      if((d.role||"").trim()) p.jobTitle = d.role.trim();
+      /* "Chief Dental Surgeon, Omega Dental" reads correctly on the card, but in the
+         schema the clinic is already the parent entity — so jobTitle takes the title
+         alone and does not repeat the employer inside it. */
+      const title = (d.role||"").split(",")[0].trim();
+      if(title) p.jobTitle = title;
       return p;
     });
     tag.textContent = JSON.stringify(data);
