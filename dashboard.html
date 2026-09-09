@@ -286,6 +286,8 @@ tbody tr:hover td.actions{background:#f8fcfb}
       <span id="pwMsg" style="font-weight:600;font-size:.86rem"></span>
     </div>
     <div style="color:var(--muted);font-size:.8rem;margin-top:10px">
+      Account ID (for <code>OMEGA_OWNER_UIDS</code>):
+      <code id="pwUid" style="user-select:all;word-break:break-all">—</code><br>
       This changes the password for <b id="pwWho">this account</b> everywhere — the dashboard
       and the website editor both use it. Everyone signed in on other devices stays signed in
       until they sign out.
@@ -440,7 +442,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
 <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display:none">
 <!-- the website's services and prices; the Service taken list is built from it -->
 <script src="assets/content.js?v=1"></script>
-<script src="assets/firebase-config.js?v=6"></script>
+<script src="assets/firebase-config.js?v=7"></script>
 <script src="assets/vendor/xlsx.full.min.js" defer></script>
 <script>
 (function(){
@@ -576,6 +578,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
      page; it was only a screen over the same localStorage, and it is gone. */
   var signedIn = false;        // drives read-only mode across the page
   var currentEmail = "";       // shown on the change-password card
+  var currentUid = "";         // shown so it can be copied into OMEGA_OWNER_UIDS
 
   /* ---------- access code (PIN) ----------
      A screen lock in front of the whole page, asked once per browser session. It stops
@@ -642,13 +645,15 @@ tbody tr:hover td.actions{background:#f8fcfb}
   var denyMsg = "";            // carried across the sign-out an unknown account triggers
 
   /* Firebase Auth answers "is this a real account in this project", not "is this the
-     clinic". OMEGA_OWNER_EMAILS names the accounts that may open the dashboard; an
-     empty list keeps the old behaviour of accepting any signed-in account. */
+     clinic". OMEGA_OWNER_UIDS names the accounts that may open the dashboard; an empty
+     list keeps the old behaviour of accepting any signed-in account. UIDs rather than
+     emails, so this public file carries no contact details — see firebase-config.js. */
   function isOwner(user){
-    var list = window.OMEGA_OWNER_EMAILS;
+    var list = window.OMEGA_OWNER_UIDS;
     if(!list || !list.length) return true;
-    var em = String((user && user.email) || "").toLowerCase();
-    for(var i=0;i<list.length;i++){ if(String(list[i]).toLowerCase()===em) return true; }
+    var uid = String((user && user.uid) || "");
+    if(!uid) return false;
+    for(var i=0;i<list.length;i++){ if(String(list[i])===uid) return true; }
     return false;
   }
 
@@ -667,6 +672,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
     $("lockForm").style.display="block";
     $("lockBack").style.display="block";
     $("lockMsg").textContent = msg || "";
+    $("lockMsg").style.whiteSpace = "pre-line";   // the refusal carries its UID on a second line
     var e=$("lockEmail"); if(e && !e.value) e.focus();
   }
 
@@ -701,6 +707,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
     if(needSignIn()) return;
     $("pwPanel").style.display="block";
     $("pwWho").textContent = currentEmail || "this account";
+    $("pwUid").textContent = currentUid || "—";
     pwNote("", false);
     $("pwNew").value=""; $("pwCur").value="";
     $("pwCurWrap").style.display="none";
@@ -787,13 +794,17 @@ tbody tr:hover td.actions{background:#f8fcfb}
     authAnswered = true;
     if(!domReady){ pendingAuth={user:user}; return; }
     if(user && !isOwner(user)){
-      denyMsg = "That account is not allowed to open this dashboard.";
+      /* A bare refusal is a dead end — the one thing needed to fix it is this
+         account's UID, so show it rather than making someone hunt the console. */
+      denyMsg = "That account is not allowed to open this dashboard.\n"
+              + "Its account ID is: " + String((user && user.uid) || "unknown");
       if(window.__odSignOut) window.__odSignOut();
       else { signedIn=false; applyAuthUI(); showLock(denyMsg); denyMsg=""; }
       return;
     }
     signedIn = !!user;
     currentEmail = (user && user.email) || "";
+    currentUid = (user && user.uid) || "";
     authBroken = false;
     if(user){ denyMsg=""; $("lockMsg").textContent=""; showDash(); }
     else if(denyMsg){ var m=denyMsg; denyMsg=""; applyAuthUI(); showLock(m); }

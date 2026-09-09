@@ -301,7 +301,7 @@ tbody tr:hover{background:#f8fcfb}
 </div>
 
 <script src="assets/content.js?v=1"></script>
-<script src="assets/firebase-config.js?v=6"></script>
+<script src="assets/firebase-config.js?v=7"></script>
 <script type="module">
   /* Auth only — the editor needs to prove who it is before the Apps Script will commit
      anything. Fails quietly: with no Firebase the editor still works as a draft tool. */
@@ -346,13 +346,15 @@ tbody tr:hover{background:#f8fcfb}
   var signedIn=false, authBroken=false, authMsg="", denyMsg="";
 
   /* Firebase Auth answers "is this a real account in this project", not "is this the
-     clinic". OMEGA_OWNER_EMAILS names the accounts allowed to publish; an empty list
-     keeps the old behaviour of accepting any signed-in account. */
+     clinic". OMEGA_OWNER_UIDS names the accounts allowed to publish; an empty list keeps
+     the old behaviour of accepting any signed-in account. UIDs rather than emails, so
+     this public file carries no contact details — see firebase-config.js. */
   function isOwner(user){
-    var list = window.OMEGA_OWNER_EMAILS;
+    var list = window.OMEGA_OWNER_UIDS;
     if(!list || !list.length) return true;
-    var em = String((user && user.email) || "").toLowerCase();
-    for(var i=0;i<list.length;i++){ if(String(list[i]).toLowerCase()===em) return true; }
+    var uid = String((user && user.uid) || "");
+    if(!uid) return false;
+    for(var i=0;i<list.length;i++){ if(String(list[i])===uid) return true; }
     return false;
   }
   function showLock(msg){
@@ -362,6 +364,7 @@ tbody tr:hover{background:#f8fcfb}
     $("lockForm").style.display="block";
     $("lockBack").style.display="block";
     $("lockMsg").textContent = msg || "";
+    $("lockMsg").style.whiteSpace = "pre-line";   // the refusal carries its UID on a second line
     var e=$("lockEmail"); if(e && !e.value) e.focus();
   }
   function applyAuthUI(){
@@ -997,7 +1000,8 @@ tbody tr:hover{background:#f8fcfb}
     authAnswered = true;
     if(!domReady){ pendingAuth={user:u}; return; }
     if(u && !isOwner(u)){
-      denyMsg = "That account is not allowed to publish to this website.";
+      denyMsg = "That account is not allowed to publish to this website.\n"
+              + "Its account ID is: " + String((u && u.uid) || "unknown");
       if(window.__odAuth && window.__odAuth.signOut) window.__odAuth.signOut();
       else { signedIn=false; applyAuthUI(); showLock(denyMsg); denyMsg=""; }
       return;

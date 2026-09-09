@@ -35,10 +35,17 @@ window.OMEGA_APPCHECK_KEY = "6LcRMq0tAAAAAPp1RY09uP9HIURnXRYj5YQPuWYI";
    account in this project" — not "is this the clinic". Any account the project
    ever gains would otherwise open the dashboard, so name the ones that should.
 
-   Empty array = any signed-in account, which is the old behaviour. Emails are
-   compared lowercase. This is a UI gate only: the Firestore rules are what
-   actually protect the data, and they are unchanged. */
-window.OMEGA_OWNER_EMAILS = ["omegadental@gmail.com"];
+   UIDs, not emails: this file is public and served to every visitor, so putting a
+   personal address here hands it to anyone who views the source. A UID identifies
+   the same account without being contact details, and the Firestore rules take the
+   same values — one list, one meaning.
+
+   Empty array = any signed-in account. Find a UID by signing in and opening
+   🔑 Security on the dashboard, or in Firebase Console → Authentication → Users.
+
+   This is a UI gate only. The Firestore rules are what actually protect the data —
+   a client-side list decides what the page draws, nothing more. */
+window.OMEGA_OWNER_UIDS = [];
 
 /* Google OAuth Web client ID for the "Backup to Drive" button (drive.file scope only —
    the app can only touch files it creates). Leave empty to hide the Drive button. */

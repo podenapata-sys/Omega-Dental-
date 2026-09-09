@@ -31,11 +31,19 @@ The top-right button says **Sign in** when signed out and **Sign out** when sign
 > To change how many taps are needed, edit `TAPS_NEEDED` in `assets/admin-gate.js`.
 > To change the login, use Firebase Console → Build → **Authentication → Users**.
 >
-> **Who may open it.** `OMEGA_OWNER_EMAILS` in `assets/firebase-config.js` lists the accounts
+> **Who may open it.** `OMEGA_OWNER_UIDS` in `assets/firebase-config.js` lists the accounts
 > allowed in. Firebase Auth only answers "is this a real account in this project", so without
-> that list *any* account the project ever gains would open the dashboard. Add an email to
-> the array to let someone in; an empty array means any signed-in account. Remember it is a
-> UI gate — the Firestore rules are what actually protect the data.
+> that list *any* account the project ever gains would open the dashboard. An empty array
+> means any signed-in account.
+>
+> It holds UIDs, not emails, for two reasons: this file is public, so an address in it is an
+> address anyone can harvest; and the Firestore rules take the same values, so one list means
+> one thing in both places. To find a UID, sign in and open **🔑 Security** — it prints the
+> current account's. An account that is refused is also told its own UID, so it can be added
+> without a trip to the console.
+>
+> Remember this is only a UI gate: it decides what the page draws. The Firestore rules are
+> what actually stop an account reading the data.
 >
 > A PIN used to guard this page. A PIN held in the page could only hide the records, never
 > protect them — anyone who opened the browser's storage could read every one. Writing and
