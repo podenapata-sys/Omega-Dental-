@@ -31,6 +31,15 @@ window.OMEGA_FB = {
    App Check -> Request metrics shows verified requests arriving. */
 window.OMEGA_APPCHECK_KEY = "6LcRMq0tAAAAAPp1RY09uP9HIURnXRYj5YQPuWYI";
 
+/* Which accounts may open the admin pages. Firebase Auth answers "is this a real
+   account in this project" — not "is this the clinic". Any account the project
+   ever gains would otherwise open the dashboard, so name the ones that should.
+
+   Empty array = any signed-in account, which is the old behaviour. Emails are
+   compared lowercase. This is a UI gate only: the Firestore rules are what
+   actually protect the data, and they are unchanged. */
+window.OMEGA_OWNER_EMAILS = ["omegadental@gmail.com"];
+
 /* Google OAuth Web client ID for the "Backup to Drive" button (drive.file scope only —
    the app can only touch files it creates). Leave empty to hide the Drive button. */
 window.OMEGA_GOOGLE_CLIENT_ID = "1086374684130-lbbk3nm75ekp9alubf211lvb162m0i3l.apps.googleusercontent.com";

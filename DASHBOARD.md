@@ -15,18 +15,32 @@ It is the logo at the very **bottom** of the page, not the one in the top bar �
 one is a link to the homepage, so tapping it repeatedly just navigates.
 
 Sign in with the clinic's Firebase login — the same email and password used for the
-cloud records. Nothing on the page is drawn until that sign-in succeeds.
+cloud records. The direct address is `/dashboard.html`, but the 3-tap route means you never
+have to type it on a shared screen.
 
-The direct address is `/dashboard.html`, but the 3-tap route means you never have to type
-it on a shared screen. **Sign out** in the top bar ends the session.
+**Signed out, the dashboard still opens — read-only.** You can look up any patient already
+saved in this browser, filter, run the report and download a backup. What you cannot do is
+add, edit, delete, import, or sync anything: those all wait for a sign-in, and an amber
+strip at the top says so. This matters on a day the internet is down — the clinic can still
+find a patient's history instead of staring at a login box.
+
+The top-right button says **Sign in** when signed out and **Sign out** when signed in.
+`admin-content.html` behaves the same way: the editor is always usable as a draft, and only
+**Publish to website** waits for the login.
 
 > To change how many taps are needed, edit `TAPS_NEEDED` in `assets/admin-gate.js`.
 > To change the login, use Firebase Console → Build → **Authentication → Users**.
 >
-> This replaced an older PIN screen. A PIN held in the page could only hide the records,
-> never protect them — anyone who opened the browser's storage could read every one.
-> Signing in means the records are fetched only after Firebase says who you are, and the
-> published Firestore rules refuse the request otherwise.
+> **Who may open it.** `OMEGA_OWNER_EMAILS` in `assets/firebase-config.js` lists the accounts
+> allowed in. Firebase Auth only answers "is this a real account in this project", so without
+> that list *any* account the project ever gains would open the dashboard. Add an email to
+> the array to let someone in; an empty array means any signed-in account. Remember it is a
+> UI gate — the Firestore rules are what actually protect the data.
+>
+> A PIN used to guard this page. A PIN held in the page could only hide the records, never
+> protect them — anyone who opened the browser's storage could read every one. Writing and
+> the cloud copy now go through Firebase, and the published Firestore rules refuse the
+> request to anyone who is not signed in.
 
 ---
 

@@ -218,6 +218,7 @@ tbody tr:hover{background:#f8fcfb}
       <input class="lockin" id="lockEmail" type="email" autocomplete="username" placeholder="Owner email">
       <input class="lockin" id="lockPass" type="password" autocomplete="current-password" placeholder="Password">
       <button class="btn btn-p" id="lockSignIn">Sign in</button>
+      <button class="btn btn-g" id="lockBack" style="margin-top:8px">Back to the editor (draft only)</button>
     </div>
     <div class="lockmsg" id="lockMsg"></div>
   </div>
@@ -242,6 +243,15 @@ tbody tr:hover{background:#f8fcfb}
        when the page moved behind the login gate, and without a home every publish
        result was written into nothing. -->
   <div id="pubMsg" style="font-size:.86rem;margin:0 0 10px"></div>
+
+  <!-- Shown whenever nobody is signed in. The editor still works: what it edits is a
+       draft in this browser, and only publishing needs the clinic's login. -->
+  <div class="hint" id="roBar" style="display:none;border-left:3px solid #e0a030">
+    <span>&#128065;</span>
+    <span id="roText">Draft only &mdash; you are signed out. Changes are kept in this
+      browser. Sign in to publish them to the live website.</span>
+    <button class="btn btn-p btn-sm" id="roSignIn" style="width:auto;margin-left:10px">Sign in</button>
+  </div>
 
   <!-- Publishing writes to the repository, so it needs the clinic's own login — the
        same one the dashboard uses. Nothing here can publish while signed out. -->
@@ -291,7 +301,7 @@ tbody tr:hover{background:#f8fcfb}
 </div>
 
 <script src="assets/content.js?v=1"></script>
-<script src="assets/firebase-config.js?v=5"></script>
+<script src="assets/firebase-config.js?v=6"></script>
 <script type="module">
   /* Auth only — the editor needs to prove who it is before the Apps Script will commit
      anything. Fails quietly: with no Firebase the editor still works as a draft tool. */
@@ -328,31 +338,61 @@ tbody tr:hover{background:#f8fcfb}
   var $=function(id){return document.getElementById(id);};
   var LS_DRAFT="od_content_draft";
   /* ---------- sign-in gate ----------
-     The page is behind Firebase auth: nothing renders until onAuthStateChanged
-     reports a user. The module script above owns the SDK and calls these hooks.
-     A PIN used to guard this page; it only screened content that was editable in
-     localStorage anyway, and it is gone. */
+     The editor is always usable as a draft tool: what it edits lives in this
+     browser, and a PIN over it only screened content anyone could reach through
+     localStorage anyway. Signing in is what unlocks PUBLISHING, which writes to the
+     live website. So: signed out shows the editor with a banner and no Publish
+     button; the login card is a deliberate action, reached from either Sign in. */
+  var signedIn=false, authBroken=false, authMsg="", denyMsg="";
+
+  /* Firebase Auth answers "is this a real account in this project", not "is this the
+     clinic". OMEGA_OWNER_EMAILS names the accounts allowed to publish; an empty list
+     keeps the old behaviour of accepting any signed-in account. */
+  function isOwner(user){
+    var list = window.OMEGA_OWNER_EMAILS;
+    if(!list || !list.length) return true;
+    var em = String((user && user.email) || "").toLowerCase();
+    for(var i=0;i<list.length;i++){ if(String(list[i]).toLowerCase()===em) return true; }
+    return false;
+  }
   function showLock(msg){
     $("lock").style.display="grid";
     $("dash").style.display="none";
     $("lockTitle").textContent="Sign in";
     $("lockForm").style.display="block";
+    $("lockBack").style.display="block";
     $("lockMsg").textContent = msg || "";
     var e=$("lockEmail"); if(e && !e.value) e.focus();
   }
-  function authFailed(msg){
-    $("lock").style.display="grid";
-    $("dash").style.display="none";
-    $("lockTitle").textContent="Cannot sign in";
-    $("lockForm").style.display="none";
-    $("lockMsg").innerHTML = msg;
+  function applyAuthUI(){
+    var ro = !signedIn;
+    $("pubBtn").style.display = ro ? "none" : "inline-flex";
+    $("roBar").style.display = ro ? "flex" : "none";
+    if(ro){
+      $("roText").innerHTML = authBroken ? authMsg
+        : "Draft only — you are signed out. Changes are kept in this browser. "
+        + "Sign in to publish them to the live website.";
+      $("roSignIn").style.display = authBroken ? "none" : "";
+    }
+    $("lockBtn").innerHTML = ro ? "&#128273; Sign in" : "&#128682; Sign out";
   }
   var rendered=false;
-  function unlock(){
+  function showEditor(){
     $("lockMsg").textContent="";   // or a failure notice lingers behind the page
     $("lock").style.display="none";
     $("dash").style.display="block";
+    applyAuthUI();
     if(!rendered){ render(); rendered=true; }
+  }
+  function authFailed(msg){
+    signedIn=false; authBroken=true; authMsg=msg;
+    showEditor();
+  }
+  /* Re-lock here rather than waiting on signOut() to resolve: if it never does, the
+     page must not sit there still offering Publish. */
+  function signOutNow(){
+    signedIn=false; applyAuthUI();
+    if(window.__odAuth && window.__odAuth.signOut) window.__odAuth.signOut();
   }
   async function trySignIn(){
     var em=($("lockEmail").value||"").trim(), pw=$("lockPass").value||"";
@@ -894,6 +934,7 @@ tbody tr:hover{background:#f8fcfb}
   async function publish(){
     var url = (window.OMEGA_ALERT_URL||"").trim();
     if(!url){ pubNote("Publishing is not set up yet — OMEGA_ALERT_URL is empty.", true); return; }
+    if(!signedIn){ pubNote("Sign in first — publishing needs the clinic's login.", true); return; }
     if(!window.__odAuth){ pubNote("Still connecting to Firebase — try again in a moment.", true); return; }
 
     var built = filesToPublish();
@@ -934,17 +975,40 @@ tbody tr:hover{background:#f8fcfb}
     }
   }
 
-  function wirePublish(){
-    /* One subscription drives the whole page: signed in shows the editor and the
-       Publish button, signed out shows the login card. */
-    function onUser(u){
-      $("pubBtn").style.display = u ? "inline-flex" : "none";
-      if(u) unlock(); else showLock("");
+  /* The module script is deferred, so it can call these hooks before
+     DOMContentLoaded — before the draft is even loaded. Define them at top level
+     (so nothing is lost) and hold the result until the page is ready to use it. */
+  var domReady=false, pendingAuth=null, authAnswered=false;
+  window.__odAuthReady = function(){
+    if(window.__odAuth) window.__odAuth.onChange(onUser);
+  };
+  window.__odAuthUnavailable = function(why){
+    authAnswered = true;
+    if(!domReady){ pendingAuth={fail:why}; return; }
+    authFailed(why);
+  };
+  function flushAuth(){
+    var q=pendingAuth; pendingAuth=null;
+    if(!q) return;
+    if("fail" in q) authFailed(q.fail); else onUser(q.user);
+  }
+
+  function onUser(u){
+    authAnswered = true;
+    if(!domReady){ pendingAuth={user:u}; return; }
+    if(u && !isOwner(u)){
+      denyMsg = "That account is not allowed to publish to this website.";
+      if(window.__odAuth && window.__odAuth.signOut) window.__odAuth.signOut();
+      else { signedIn=false; applyAuthUI(); showLock(denyMsg); denyMsg=""; }
+      return;
     }
+    signedIn = !!u; authBroken = false;
+    if(u){ denyMsg=""; showEditor(); }
+    else if(denyMsg){ var m=denyMsg; denyMsg=""; applyAuthUI(); showLock(m); }
+    else showEditor();
+  }
+  function wirePublish(){
     if(window.__odAuth){ window.__odAuth.onChange(onUser); }
-    window.__odAuthReady = function(){ window.__odAuth.onChange(onUser); };
-    /* Firebase could not start — say so and stay locked rather than fall open. */
-    window.__odAuthUnavailable = function(why){ authFailed(why); };
     $("pubBtn").addEventListener("click", publish);
   }
 
@@ -953,14 +1017,23 @@ tbody tr:hover{background:#f8fcfb}
     shipped = loadShipped();
     draft = loadDraft() || clone(shipped);
 
+    domReady = true;
     wirePublish();
+    applyAuthUI();   // draft-only until Firebase says otherwise
+    flushAuth();     // anything Firebase reported while the page was still parsing
+    /* If Firebase never answers at all, do not leave the page sitting on
+       "Checking sign-in…" forever with nothing on it. */
+    setTimeout(function(){
+      if(!authAnswered) authFailed("Firebase did not answer, so nobody could be signed in.<br>Check the internet connection and reload — the draft below is the copy saved in this browser.");
+    }, 12000);
     $("lockSignIn").addEventListener("click", trySignIn);
+    $("roSignIn").addEventListener("click", function(){ showLock(""); });
+    $("lockBack").addEventListener("click", function(){ $("lockMsg").textContent=""; showEditor(); });
     ["lockEmail","lockPass"].forEach(function(k){
       $(k).addEventListener("keydown", function(e){ if(e.key==="Enter") trySignIn(); });
     });
     $("lockBtn").addEventListener("click", function(){
-      if(window.__odAuth && window.__odAuth.signOut) window.__odAuth.signOut();
-      else location.reload();
+      if(signedIn) signOutNow(); else showLock("");
     });
 
     document.querySelectorAll(".tab").forEach(function(t){

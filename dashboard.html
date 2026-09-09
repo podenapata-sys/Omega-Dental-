@@ -35,7 +35,7 @@ h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
 .lockin{width:100%;font-size:1rem;padding:12px;border:1.5px solid var(--line);
   border-radius:12px;font-family:var(--f);margin-bottom:10px;box-sizing:border-box}
 .lockin:focus{outline:none;border-color:var(--teal)}
-.pin:focus{outline:none;border-color:var(--teal)}
+.lockmsg.ok{color:var(--muted)}
 .lockmsg{color:var(--danger);font-size:.85rem;min-height:1.1em;margin-top:8px}
 .btn{border:none;cursor:pointer;font-family:var(--fh);font-weight:700;border-radius:12px;
   padding:12px 18px;font-size:.95rem;transition:transform .12s,box-shadow .12s,background .15s}
@@ -203,6 +203,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
       <input class="lockin" id="lockEmail" type="email" autocomplete="username" placeholder="Owner email">
       <input class="lockin" id="lockPass" type="password" autocomplete="current-password" placeholder="Password">
       <button class="btn btn-p" id="lockSignIn">Sign in</button>
+      <button class="btn btn-g" id="lockBack" style="margin-top:8px">Back to records (read-only)</button>
     </div>
     <div class="lockmsg" id="lockMsg"></div>
   </div>
@@ -225,7 +226,16 @@ tbody tr:hover td.actions{background:#f8fcfb}
     <button class="btn btn-g btn-sm" id="lockBtn">🚪 Sign out</button>
   </div>
 
-  <div class="hint" id="syncNote"><span id="syncIcon">💾</span> <span id="syncText">Records are saved in this browser. Sign in below to sync them across your devices.</span></div>
+  <!-- Shown whenever nobody is signed in. The records below are the copy in this
+       browser; everything that writes is switched off until someone signs in. -->
+  <div class="hint" id="roBar" style="display:none;border-left:3px solid var(--amber,#e0a030)">
+    <span>👁</span>
+    <span id="roText">Read-only — you are signed out. These are the records saved in this
+      browser. Sign in to add, edit or sync them.</span>
+    <button class="btn btn-p btn-sm" id="roSignIn" style="width:auto;margin-left:10px">Sign in</button>
+  </div>
+
+  <div class="hint" id="syncNote"><span id="syncIcon">💾</span> <span id="syncText">Records are saved in this browser.</span></div>
 
   <!-- REPORT -->
   <div class="panel rep" id="repPanel">
@@ -244,7 +254,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
   </div>
 
   <!-- ADD / EDIT -->
-  <div class="panel">
+  <div class="panel" id="formPanel">
     <h3 id="formTitle">➕ Add a patient record</h3>
     <div class="form-grid">
       <div class="fld"><label>Mobile Number</label><input id="f_mobile" type="tel" inputmode="numeric" placeholder="01XXXXXXXXX"></div>
@@ -364,7 +374,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
 <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display:none">
 <!-- the website's services and prices; the Service taken list is built from it -->
 <script src="assets/content.js?v=1"></script>
-<script src="assets/firebase-config.js?v=5"></script>
+<script src="assets/firebase-config.js?v=6"></script>
 <script src="assets/vendor/xlsx.full.min.js" defer></script>
 <script>
 (function(){
@@ -446,7 +456,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
     if(state==="synced"){ ic.textContent="☁"; tx.innerHTML="Records are <b>synced to your account</b> — they are safe on this and your other devices."; }
     else if(state==="syncing"){ ic.textContent="⏳"; tx.textContent=detail||"Syncing records…"; }
     else if(state==="error"){ ic.textContent="⚠"; tx.textContent=detail||"Could not sync — records are still saved in this browser."; }
-    else { ic.textContent="💾"; tx.innerHTML="Records are saved in this browser. <b>Sign in below</b> to sync them across your devices."; }
+    else { ic.textContent="💾"; tx.innerHTML="Records are saved in this browser."; }
   };
   function cid(mobile){ var d=digits(mobile); return d.length>=4 ? "OD-"+d.slice(-4) : (d?"OD-"+d:"OD-????"); }
   function money(n){ n=Number(n)||0; return "৳"+n.toLocaleString("en-IN"); }
@@ -488,38 +498,107 @@ tbody tr:hover td.actions{background:#f8fcfb}
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
 
   /* ---------- sign-in gate ----------
-     The whole page is behind Firebase auth: nothing renders until
-     onAuthStateChanged reports a user. The module script below owns the Firebase
-     SDK and calls the three hooks defined here, so the classic script never has to
-     import anything. A PIN used to guard this page; it was only a screen over data
-     that was readable in localStorage either way, and it is gone. */
+     Three states, not two. Signed in: the full dashboard. Signed out: the same
+     dashboard in READ-ONLY mode, showing the records already saved in this browser
+     — locking those away would only hide data that devtools shows anyway, while
+     stopping a clinic with no connection from looking up their own patient. Every
+     write, and everything that touches the cloud, waits for a sign-in. The lock
+     card is a deliberate action now, not the front door.
+
+     The module script below owns the Firebase SDK and calls the hooks defined here,
+     so the classic script never has to import anything. A PIN used to guard this
+     page; it was only a screen over the same localStorage, and it is gone. */
+  var signedIn = false;        // drives read-only mode across the page
+  var authBroken = false;      // Firebase could not start at all
+  var authMsg = "";            // what the banner says when it could not
+  var denyMsg = "";            // carried across the sign-out an unknown account triggers
+
+  /* Firebase Auth answers "is this a real account in this project", not "is this the
+     clinic". OMEGA_OWNER_EMAILS names the accounts that may open the dashboard; an
+     empty list keeps the old behaviour of accepting any signed-in account. */
+  function isOwner(user){
+    var list = window.OMEGA_OWNER_EMAILS;
+    if(!list || !list.length) return true;
+    var em = String((user && user.email) || "").toLowerCase();
+    for(var i=0;i<list.length;i++){ if(String(list[i]).toLowerCase()===em) return true; }
+    return false;
+  }
+
+  function showDash(){
+    $("lock").style.display="none";
+    $("dash").style.display="block";
+    applyAuthUI();
+    render();
+  }
   function showLock(msg){
     $("lock").style.display="grid";
     $("dash").style.display="none";
     $("lockTitle").textContent="Sign in";
     $("lockForm").style.display="block";
+    $("lockBack").style.display="block";
     $("lockMsg").textContent = msg || "";
     var e=$("lockEmail"); if(e && !e.value) e.focus();
   }
-  function unlock(){
-    $("lockMsg").textContent="";   // or a failure notice lingers behind the page
-    $("lock").style.display="none";
-    $("dash").style.display="block";
-    render();
+
+  /* Everything that writes is switched off while signed out; everything that only
+     reads what is already on this device keeps working. */
+  var RO_CONTROLS = ["f_mobile","f_name","f_address","f_service","f_service_other",
+                     "f_total","f_paid","f_date","f_next","saveBtn","cancelBtn","importBtn"];
+  function applyAuthUI(){
+    var ro = !signedIn;
+    $("roBar").style.display = ro ? "flex" : "none";
+    if(ro){
+      $("roText").innerHTML = authBroken ? authMsg
+        : "Read-only — you are signed out. These are the records saved in this "
+        + "browser. Sign in to add, edit or sync them.";
+      $("roSignIn").style.display = authBroken ? "none" : "";
+    }
+    $("lockBtn").textContent = ro ? "🔑 Sign in" : "🚪 Sign out";
+    RO_CONTROLS.forEach(function(k){ var el=$(k); if(el) el.disabled = ro; });
+    $("formPanel").style.opacity = ro ? ".55" : "";
+    if(ro) $("snPanel").style.display="none";
+  }
+  /* Second line of defence: the buttons are gone or disabled, but a stale handler
+     should not be able to write either. */
+  function needSignIn(){
+    if(signedIn) return false;
+    flash("Sign in first — the dashboard is read-only while signed out.",true);
+    return true;
+  }
+
+  /* The module script can report back before DOMContentLoaded — the "Firebase is
+     not configured" path runs before its first await — so hold the result until the
+     records are loaded and the page is ready to draw them. */
+  var domReady=false, pendingAuth=null, authAnswered=false;
+  function flushAuth(){
+    var q=pendingAuth; pendingAuth=null;
+    if(!q) return;
+    if("fail" in q) window.__odAuthFailed(q.fail); else window.__odAuthState(q.user);
   }
 
   /* Called by the module script on every auth change, including the first. */
   window.__odAuthState = function(user){
-    if(user){ unlock(); } else { showLock(""); }
+    authAnswered = true;
+    if(!domReady){ pendingAuth={user:user}; return; }
+    if(user && !isOwner(user)){
+      denyMsg = "That account is not allowed to open this dashboard.";
+      if(window.__odSignOut) window.__odSignOut();
+      else { signedIn=false; applyAuthUI(); showLock(denyMsg); denyMsg=""; }
+      return;
+    }
+    signedIn = !!user;
+    authBroken = false;
+    if(user){ denyMsg=""; $("lockMsg").textContent=""; showDash(); }
+    else if(denyMsg){ var m=denyMsg; denyMsg=""; applyAuthUI(); showLock(m); }
+    else showDash();
   };
-  /* Called when Firebase cannot start at all — no config, blocked, offline.
-     It stays locked on purpose: falling open would defeat the gate. */
+  /* Called when Firebase cannot start at all — no config, blocked, offline. The
+     records on this device still open, read-only, with the reason in the banner. */
   window.__odAuthFailed = function(msg){
-    $("lock").style.display="grid";
-    $("dash").style.display="none";
-    $("lockTitle").textContent="Cannot sign in";
-    $("lockForm").style.display="none";
-    $("lockMsg").innerHTML = msg;
+    authAnswered = true;
+    if(!domReady){ pendingAuth={fail:msg}; return; }
+    signedIn = false; authBroken = true; authMsg = msg;
+    showDash();
   };
 
   function trySignIn(){
@@ -529,9 +608,16 @@ tbody tr:hover td.actions{background:#f8fcfb}
     $("lockMsg").textContent="Signing in\u2026";
     window.__odSignIn(em, pw);
   }
-  function lock(){
+  /* Re-lock here rather than waiting on signOut() to resolve: if it never does, the
+     page must not sit there still showing a signed-in dashboard. */
+  function signOutNow(){
+    signedIn = false;
+    showDash();
     if(window.__odSignOut) window.__odSignOut();
-    else location.reload();
+  }
+  function headerAuthBtn(){
+    if(signedIn) signOutNow();
+    else showLock("");
   }
 
   /* ---------- form ---------- */
@@ -612,6 +698,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
     $("cancelBtn").style.display="none"; syncDateBoxes();
   }
   function saveRecord(){
+    if(needSignIn()) return;
     var mobile=$("f_mobile").value.trim();
     if(digits(mobile).length<4){ flash("Enter a valid mobile number (for the Customer ID).",true); $("f_mobile").focus(); return; }
     var totalV=Number($("f_total").value)||0, paidV=Number($("f_paid").value)||0;
@@ -636,6 +723,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
   }
   function flash(msg,err){ var el=$("formMsg"); el.textContent=msg; el.style.color=err?"#d94848":"#2c8a78"; setTimeout(function(){el.textContent="";},2600); }
   function editRow(id){
+    if(needSignIn()) return;
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
     editId=id; $("f_mobile").value=r.mobile; $("f_name").value=r.name||""; $("f_address").value=r.address||""; setService(r.service||"");
     $("f_total").value=r.total; $("f_paid").value=r.paid; $("f_date").value=r.date; $("f_next").value=r.next||"";
@@ -646,6 +734,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
   /* Money coming in, rather than a correction. Editing the record means overwriting Paid,
      which asks the clinic to do the arithmetic and retype over figures that were right. */
   function takePayment(id){
+    if(needSignIn()) return;
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
     var due=dueOf(r);
     if(due<=0){ flash("That visit is already paid in full.",true); return; }
@@ -667,6 +756,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
   /* The same patient back for something else. cid() derives the Customer ID from the
      mobile, so filling in the mobile is what keeps them on one ID. */
   function newTreatment(id){
+    if(needSignIn()) return;
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
     clearForm();                                  // clears editId, so Save ADDS a record
     $("f_mobile").value=r.mobile||"";
@@ -680,6 +770,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
   }
 
   function delRow(id){
+    if(needSignIn()) return;
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
     if(!confirm("Delete record "+r.id+" ("+(r.name||r.mobile)+") on "+dmy(r.date)+"?\n\nIt moves to the Bin and can be restored for "+TRASH_DAYS+" days."))return;
     r.deletedAt = new Date().toISOString();
@@ -687,11 +778,13 @@ tbody tr:hover td.actions{background:#f8fcfb}
     flash("Moved to Bin — restore it from 🗑 Bin.",false);
   }
   function restoreRow(id){
+    if(needSignIn()) return;
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
     delete r.deletedAt; save(); cloudSave(r); render();
     flash("Restored ✓",false);
   }
   function purgeRow(id){
+    if(needSignIn()) return;
     var r=records.find(function(x){return x._id===id;}); if(!r)return;
     if(!confirm("Delete "+r.id+" permanently? This cannot be undone."))return;
     records=records.filter(function(x){return x._id!==id;}); save(); cloudRemove(id); render();
@@ -813,7 +906,9 @@ tbody tr:hover td.actions{background:#f8fcfb}
         "<td data-label='Due' class='num "+(due>0?"due-pos":"due-zero")+"'>"+money(due)+"</td>"+
         "<td data-label='Next Appt.'>"+(r.next?(esc(dmy(r.next))+whenHint(r.next)):"—")+"</td>"+
         "<td class='actions' style='text-align:right;white-space:nowrap'>"+
-          (view==="bin"
+          (!signedIn
+            ? (due>0 ? waBtn(r,due) : "")
+            : view==="bin"
             ? "<button class='rowbtn' data-restore='"+r._id+"' title='Restore' aria-label='Restore record'>↩️</button>"+
               "<button class='rowbtn' data-purge='"+r._id+"' title='Delete forever' aria-label='Delete forever'>❌</button>"
             : (due>0 ? waBtn(r,due) : "")+
@@ -898,6 +993,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
   }
 
   function importFile(file){
+    if(needSignIn()) return;
     if(!xlsxReady()){ alert(XLSX_MSG); return; }
     var reader=new FileReader();
     reader.onload=function(e){
@@ -968,6 +1064,8 @@ tbody tr:hover td.actions{background:#f8fcfb}
     $("f_date").value=todayStr();
     $("dayPick").value=todayStr();
     $("monthPick").value=todayStr().slice(0,7);
+    domReady = true;
+    applyAuthUI();   // read-only until Firebase says otherwise
     $("lockSignIn").addEventListener("click",trySignIn);
     ["lockEmail","lockPass"].forEach(function(k){
       $(k).addEventListener("keydown",function(e){ if(e.key==="Enter") trySignIn(); });
@@ -976,7 +1074,9 @@ tbody tr:hover td.actions{background:#f8fcfb}
     $("f_service").addEventListener("change",onServiceChange);
     $("saveBtn").addEventListener("click",saveRecord);
     $("cancelBtn").addEventListener("click",clearForm);
-    $("lockBtn").addEventListener("click",lock);
+    $("lockBtn").addEventListener("click",headerAuthBtn);
+    $("roSignIn").addEventListener("click",function(){ showLock(""); });
+    $("lockBack").addEventListener("click",function(){ $("lockMsg").textContent=""; showDash(); });
     $("exportBtn").addEventListener("click",exportView);
     $("backupBtn").addEventListener("click",backupAll);
     $("importBtn").addEventListener("click",function(){ $("importFile").click(); });
@@ -999,6 +1099,12 @@ tbody tr:hover td.actions{background:#f8fcfb}
         render();
       });
     });
+    flushAuth();     // anything Firebase reported while the page was still parsing
+    /* If Firebase never answers at all, do not leave the page sitting on
+       "Checking sign-in…" forever with nothing on it. */
+    setTimeout(function(){
+      if(!authAnswered) window.__odAuthFailed("Firebase did not answer, so nobody could be signed in.<br>Check the internet connection and reload — the records below are the copy saved in this browser.");
+    }, 12000);
     $("reportBtn").addEventListener("click",function(){
       var pn=$("repPanel"), open=pn.style.display==="block";
       pn.style.display = open ? "none" : "block";
@@ -1047,22 +1153,32 @@ tbody tr:hover td.actions{background:#f8fcfb}
       + "services, the dashboard cannot be opened on it.");
     return;
   }
-  const app = appMod.initializeApp(cfg);
-  /* App Check must be initialised BEFORE Auth/Firestore. Only runs when a
-     reCAPTCHA v3 site key is configured; otherwise App Check must be set to
-     "Unenforce" in the Firebase console. Never blocks the dashboard. */
-  const acKey = (window.OMEGA_APPCHECK_KEY || "").trim();
-  if (acKey) {
-    try {
-      const acMod = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app-check.js");
-      acMod.initializeAppCheck(app, {
-        provider: new acMod.ReCaptchaV3Provider(acKey),
-        isTokenAutoRefreshEnabled: true
-      });
-    } catch (e) { /* App Check unavailable — enforcement must be off */ }
+  let app;
+  try {
+    app = appMod.initializeApp(cfg);
+    /* App Check must be initialised BEFORE Auth/Firestore. Only runs when a
+       reCAPTCHA v3 site key is configured; otherwise App Check must be set to
+       "Unenforce" in the Firebase console. Never blocks the dashboard. */
+    const acKey = (window.OMEGA_APPCHECK_KEY || "").trim();
+    if (acKey) {
+      try {
+        const acMod = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app-check.js");
+        acMod.initializeAppCheck(app, {
+          provider: new acMod.ReCaptchaV3Provider(acKey),
+          isTokenAutoRefreshEnabled: true
+        });
+      } catch (e) { /* App Check unavailable — enforcement must be off */ }
+    }
+    db = fsMod.getFirestore(app);
+    auth = authMod.getAuth(app);
+  } catch (e) {
+    /* Anything thrown here — bad config values, a blocked storage API — would
+       otherwise leave the page waiting forever for an auth state that never comes. */
+    if (window.__odAuthFailed) window.__odAuthFailed(
+      "Firebase could not start on this device, so signing in is not possible.<br>"
+      + "Details: " + String((e && e.message) || e));
+    return;
   }
-  db = fsMod.getFirestore(app);
-  auth = authMod.getAuth(app);
 
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
   function beep(){
@@ -1160,9 +1276,11 @@ tbody tr:hover td.actions{background:#f8fcfb}
     });
   }
 
+  let bookUnsub = null;
   function subscribe(){
+    if(bookUnsub) return;
     const q = fsMod.query(fsMod.collection(db,"bookings"), fsMod.orderBy("createdAt","desc"), fsMod.limit(50));
-    fsMod.onSnapshot(q, (snap)=>{
+    bookUnsub = fsMod.onSnapshot(q, (snap)=>{
       if(seeded){
         snap.docChanges().forEach(ch=>{
           if(ch.type==="added"){ const b=ch.doc.data(); beep(); notify("New appointment booked", (b.name||"")+" · "+(b.service||"")); }
@@ -1265,7 +1383,10 @@ tbody tr:hover td.actions{background:#f8fcfb}
     if(user){
       subscribe(); subscribeRecords(); loadSiteStats();
     } else {
+      if(bookUnsub){ bookUnsub(); bookUnsub=null; }
+      seeded = false; current.clear(); lastDocs = [];
       $("wbList").innerHTML=""; $("wbEmpty").style.display="none";
+      $("wbBadge").style.display="none";
       unsubscribeRecords(); $("snPanel").style.display="none";
     }
     if (window.__odAuthState) window.__odAuthState(user);
