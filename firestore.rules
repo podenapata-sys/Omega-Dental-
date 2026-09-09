@@ -16,6 +16,29 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // The three accounts that may touch clinic data, by UID. Firebase Auth only
+    // answers "is this a real account in this project" — and with a public API key
+    // and Email/Password sign-in on, anyone can create one of those for themselves.
+    // These rules used to accept `request.auth != null`, which handed every patient
+    // name, phone number and visit record to any such account over the REST API.
+    //
+    // UIDs, not emails: an email here would be a live address sitting in a rules
+    // file, and assets/firebase-config.js carries the same list for its UI gate —
+    // one kind of value, one meaning, in both places.
+    //
+    // One of these is the Apps Script account (FB_EMAIL in Script Properties).
+    // tools/appointment-reminder.gs and tools/publish.gs sign in as it and read
+    // over REST, and REMOVING IT STOPS THE 7PM REMINDER EMAIL SILENTLY — no error
+    // is raised anywhere, the mail simply never arrives.
+    function isOwner() {
+      return request.auth != null
+        && request.auth.uid in [
+             'FBVapR8dC0PZoGCJ2nnzpnnNWxn1',
+             'rgFnoyo5b3am9cY0LnynIDQNDQM2',
+             'OEY8Bv5SIqQ6kumM52kYes4uqMh1'
+           ];
+    }
+
     // Guards the one collection the public can write to. Without this, a script
     // that reads assets/firebase-config.js (which every visitor's browser does)
     // could write unlimited 1 MiB documents, exhaust the free tier's daily write
@@ -57,8 +80,9 @@ service cloud.firestore {
       // renders it. Callbacks are marked with kind:"callback".
       allow create: if validBooking(request.resource.data);
 
-      // Only a signed-in user (the owner's Email/Password account) may read them.
-      allow read: if request.auth != null;
+      // Only the named accounts may read them. Bookings hold patient names and
+      // phone numbers, so "any signed-in account" was never a boundary.
+      allow read: if isOwner();
 
       // Nothing edits or removes a booking any more. The dashboard panel is
       // read-only — every booking is captured by the alert email and the bookings
@@ -71,7 +95,7 @@ service cloud.firestore {
     // create here — this is patient history, readable and writable only by the
     // signed-in clinic account.
     match /records/{recordId} {
-      allow read, write: if request.auth != null;
+      allow read, write: if isOwner();
     }
 
     // The four figures on the homepage (Happy Patients, Years Experience, Services
@@ -80,7 +104,7 @@ service cloud.firestore {
     // same four numbers already printed on the page.
     match /site/{docId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isOwner();
     }
 
     // Nothing else in the project is reachable from the web client.

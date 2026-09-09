@@ -45,7 +45,11 @@ window.OMEGA_APPCHECK_KEY = "6LcRMq0tAAAAAPp1RY09uP9HIURnXRYj5YQPuWYI";
 
    This is a UI gate only. The Firestore rules are what actually protect the data —
    a client-side list decides what the page draws, nothing more. */
-window.OMEGA_OWNER_UIDS = [];
+window.OMEGA_OWNER_UIDS = [
+  "FBVapR8dC0PZoGCJ2nnzpnnNWxn1",
+  "rgFnoyo5b3am9cY0LnynIDQNDQM2",
+  "OEY8Bv5SIqQ6kumM52kYes4uqMh1"
+];
 
 /* Google OAuth Web client ID for the "Backup to Drive" button (drive.file scope only —
    the app can only touch files it creates). Leave empty to hide the Drive button. */
