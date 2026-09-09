@@ -27,8 +27,9 @@ h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
 .lockcard img{height:52px;margin-bottom:10px}
 .lockcard h2{font-size:1.25rem;margin-bottom:4px}
 .lockcard p{color:var(--muted);font-size:.9rem;margin:0 0 18px}
-.pin{width:100%;text-align:center;font-size:1.5rem;letter-spacing:.4em;padding:12px;
-  border:2px solid var(--line);border-radius:12px;font-family:var(--fh);font-weight:700}
+.lockin{width:100%;font-size:1rem;padding:12px;border:1.5px solid var(--line);
+  border-radius:12px;font-family:inherit;margin-bottom:10px;box-sizing:border-box}
+.lockin:focus{outline:none;border-color:var(--teal,#0aa)}
 .pin:focus{outline:none;border-color:var(--teal)}
 .lockmsg{color:var(--danger);font-size:.85rem;min-height:1.1em;margin-top:8px}
 .btn{border:none;cursor:pointer;font-family:var(--fh);font-weight:700;border-radius:12px;
@@ -209,11 +210,16 @@ tbody tr:hover{background:#f8fcfb}
 <div id="lock">
   <div class="lockcard">
     <img src="assets/mark.png?v=3" alt="Omega Dental">
-    <h2 id="lockTitle">Enter PIN</h2>
-    <p id="lockSub">Website content — Omega Dental</p>
-    <input class="pin" id="pinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="&bull;&bull;&bull;&bull;">
+    <h2 id="lockTitle">Checking sign-in&hellip;</h2>
+    <p id="lockSub">Website content &mdash; Omega Dental</p>
+    <!-- Hidden until Firebase answers, so an already-signed-in user never sees a
+         login box flash past. -->
+    <div id="lockForm" style="display:none">
+      <input class="lockin" id="lockEmail" type="email" autocomplete="username" placeholder="Owner email">
+      <input class="lockin" id="lockPass" type="password" autocomplete="current-password" placeholder="Password">
+      <button class="btn btn-p" id="lockSignIn">Sign in</button>
+    </div>
     <div class="lockmsg" id="lockMsg"></div>
-    <button class="btn btn-p" id="pinBtn">Unlock</button>
   </div>
 </div>
 
@@ -227,25 +233,18 @@ tbody tr:hover{background:#f8fcfb}
     <span class="spacer"></span>
     <a class="btn btn-p btn-sm" id="recordsBtn" href="dashboard.html" style="width:auto;text-decoration:none;display:inline-flex;align-items:center">&#128203; Records</a>
     <button class="btn btn-p btn-sm" id="pubBtn" style="width:auto;display:none">&#128640; Publish to website</button>
-    <button class="btn btn-g btn-sm" id="lockBtn">&#128274; Lock</button>
+    <button class="btn btn-g btn-sm" id="lockBtn">&#128682; Sign out</button>
   </div>
 
   <div class="hint" id="draftNote"><span id="draftIcon">&#128221;</span> <span id="draftText">Loaded from the live website.</span></div>
 
+  <!-- Publish feedback. This used to live inside the sign-in card; that card went
+       when the page moved behind the login gate, and without a home every publish
+       result was written into nothing. -->
+  <div id="pubMsg" style="font-size:.86rem;margin:0 0 10px"></div>
+
   <!-- Publishing writes to the repository, so it needs the clinic's own login — the
        same one the dashboard uses. Nothing here can publish while signed out. -->
-  <div class="hint" id="pubSignIn" style="display:none">
-    <div style="margin-bottom:8px">Sign in with your clinic login to publish changes.</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-      <input id="pubEmail" type="email" placeholder="Owner email" autocomplete="username"
-             style="flex:1;min-width:160px;padding:9px;border:1.5px solid var(--line);border-radius:9px;font-family:inherit">
-      <input id="pubPass" type="password" placeholder="Password" autocomplete="current-password"
-             style="flex:1;min-width:140px;padding:9px;border:1.5px solid var(--line);border-radius:9px;font-family:inherit">
-      <button class="btn btn-p btn-sm" id="pubLogin" style="width:auto">Connect</button>
-    </div>
-    <div id="pubMsg" style="color:#c0392b;font-size:.82rem;margin-top:6px"></div>
-  </div>
-
   <div class="ed-bar">
     <div class="tabs">
       <button class="tab active" data-view="services">Services</button>
@@ -297,18 +296,30 @@ tbody tr:hover{background:#f8fcfb}
   /* Auth only — the editor needs to prove who it is before the Apps Script will commit
      anything. Fails quietly: with no Firebase the editor still works as a draft tool. */
   (async () => {
+    const fail = (why) => {
+      if (window.__odAuthUnavailable) window.__odAuthUnavailable(why);
+    };
     try {
-      const cfg = window.OMEGA_FB; if (!cfg || !cfg.apiKey) return;
+      const cfg = window.OMEGA_FB;
+      if (!cfg || !cfg.apiKey) {
+        return fail("Firebase is not configured, so sign-in is impossible.<br>"
+                  + "Fix: add your project keys to <b>assets/firebase-config.js</b>.");
+      }
       const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js");
       const A = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js");
       const auth = A.getAuth(initializeApp(cfg));
       window.__odAuth = {
         signIn: (em, pw) => A.signInWithEmailAndPassword(auth, em, pw),
+        signOut: () => A.signOut(auth),
         token:  () => auth.currentUser ? auth.currentUser.getIdToken() : Promise.resolve(""),
         onChange: (fn) => A.onAuthStateChanged(auth, fn)
       };
       if (window.__odAuthReady) window.__odAuthReady();
-    } catch (e) { /* offline or blocked — publishing stays unavailable */ }
+    } catch (e) {
+      /* The page is gated on this now, so a blocked SDK cannot be shrugged off. */
+      fail("Could not reach Firebase, so sign-in is not possible right now.<br>"
+         + "Check the internet connection and reload.");
+    }
   })();
 </script>
 <script>
@@ -316,26 +327,54 @@ tbody tr:hover{background:#f8fcfb}
   "use strict";
   var $=function(id){return document.getElementById(id);};
   var LS_DRAFT="od_content_draft";
-  var DEFAULT_PIN="2518";
-  var LS_PIN="od_pin";
-
-  /* ---------- PIN lock (same rules as the records dashboard) ---------- */
-  function digits(s){ return (s||"").replace(/\D/g,""); }
-  function checkPin(p){ return p===DEFAULT_PIN || localStorage.getItem(LS_PIN)===btoa("od:"+p); }
-  /* Shared with dashboard.html: unlock once and both pages are open for this browser
-     session, so the 🌐 Website / 📋 Records links do not each demand the PIN again. */
-  var SESSION_OPEN = "od_open";
+  /* ---------- sign-in gate ----------
+     The page is behind Firebase auth: nothing renders until onAuthStateChanged
+     reports a user. The module script above owns the SDK and calls these hooks.
+     A PIN used to guard this page; it only screened content that was editable in
+     localStorage anyway, and it is gone. */
+  function showLock(msg){
+    $("lock").style.display="grid";
+    $("dash").style.display="none";
+    $("lockTitle").textContent="Sign in";
+    $("lockForm").style.display="block";
+    $("lockMsg").textContent = msg || "";
+    var e=$("lockEmail"); if(e && !e.value) e.focus();
+  }
+  function authFailed(msg){
+    $("lock").style.display="grid";
+    $("dash").style.display="none";
+    $("lockTitle").textContent="Cannot sign in";
+    $("lockForm").style.display="none";
+    $("lockMsg").innerHTML = msg;
+  }
+  var rendered=false;
   function unlock(){
-    try{ sessionStorage.setItem(SESSION_OPEN, "1"); }catch(e){}
-    $("lock").style.display="none"; $("dash").style.display="block"; render();
+    $("lockMsg").textContent="";   // or a failure notice lingers behind the page
+    $("lock").style.display="none";
+    $("dash").style.display="block";
+    if(!rendered){ render(); rendered=true; }
   }
-  function alreadyOpen(){
-    try{ return sessionStorage.getItem(SESSION_OPEN) === "1"; }catch(e){ return false; }
-  }
-  function tryUnlock(){
-    var p=digits($("pinInput").value);
-    if(checkPin(p)){ unlock(); }
-    else { $("lockMsg").textContent="Wrong PIN."; $("pinInput").value=""; $("pinInput").focus(); }
+  async function trySignIn(){
+    var em=($("lockEmail").value||"").trim(), pw=$("lockPass").value||"";
+    if(!em || !pw){ $("lockMsg").textContent="Enter your email and password."; return; }
+    if(!window.__odAuth){ $("lockMsg").textContent="Still loading — try again in a moment."; return; }
+    $("lockMsg").textContent="Signing in\u2026";
+    try{
+      await window.__odAuth.signIn(em, pw);
+      $("lockPass").value="";
+    }catch(e){
+      var code = String(e.code || e.message || "");
+      if(code.indexOf("invalid-credential") > -1 || code.indexOf("wrong-password") > -1
+      || code.indexOf("user-not-found") > -1 || code.indexOf("invalid-email") > -1){
+        $("lockMsg").textContent = "Wrong email or password.";
+      } else if(code.indexOf("too-many-requests") > -1){
+        $("lockMsg").textContent = "Too many attempts. Wait a few minutes.";
+      } else if(code.indexOf("network") > -1){
+        $("lockMsg").textContent = "No connection. Check the internet and try again.";
+      } else {
+        $("lockMsg").textContent = "Sign-in failed: " + code;
+      }
+    }
   }
 
   /* ---------- draft state ----------
@@ -896,25 +935,16 @@ tbody tr:hover{background:#f8fcfb}
   }
 
   function wirePublish(){
-    var signedIn = false;
-    function paint(){
-      $("pubBtn").style.display   = signedIn ? "inline-flex" : "none";
-      $("pubSignIn").style.display = signedIn ? "none" : "block";
+    /* One subscription drives the whole page: signed in shows the editor and the
+       Publish button, signed out shows the login card. */
+    function onUser(u){
+      $("pubBtn").style.display = u ? "inline-flex" : "none";
+      if(u) unlock(); else showLock("");
     }
-    paint();
-    if(window.__odAuth){
-      window.__odAuth.onChange(function(u){ signedIn = !!u; paint(); });
-    }
-    window.__odAuthReady = function(){
-      window.__odAuth.onChange(function(u){ signedIn = !!u; paint(); });
-    };
-    $("pubLogin").addEventListener("click", async function(){
-      var em = $("pubEmail").value.trim(), pw = $("pubPass").value;
-      if(!em || !pw){ pubNote("Enter the email and password.", true); return; }
-      pubNote("", false);
-      try{ await window.__odAuth.signIn(em, pw); $("pubPass").value=""; }
-      catch(e){ pubNote("Sign-in failed — check the email and password.", true); }
-    });
+    if(window.__odAuth){ window.__odAuth.onChange(onUser); }
+    window.__odAuthReady = function(){ window.__odAuth.onChange(onUser); };
+    /* Firebase could not start — say so and stay locked rather than fall open. */
+    window.__odAuthUnavailable = function(why){ authFailed(why); };
     $("pubBtn").addEventListener("click", publish);
   }
 
@@ -924,12 +954,13 @@ tbody tr:hover{background:#f8fcfb}
     draft = loadDraft() || clone(shipped);
 
     wirePublish();
-    $("pinBtn").addEventListener("click", tryUnlock);
-    $("pinInput").addEventListener("keydown", function(e){ if(e.key==="Enter") tryUnlock(); });
-    if(alreadyOpen()) unlock(); else $("pinInput").focus();
+    $("lockSignIn").addEventListener("click", trySignIn);
+    ["lockEmail","lockPass"].forEach(function(k){
+      $(k).addEventListener("keydown", function(e){ if(e.key==="Enter") trySignIn(); });
+    });
     $("lockBtn").addEventListener("click", function(){
-      try{ sessionStorage.removeItem(SESSION_OPEN); }catch(e){}   // Lock must mean locked
-      location.reload();
+      if(window.__odAuth && window.__odAuth.signOut) window.__odAuth.signOut();
+      else location.reload();
     });
 
     document.querySelectorAll(".tab").forEach(function(t){

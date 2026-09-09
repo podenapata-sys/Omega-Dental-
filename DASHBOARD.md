@@ -9,22 +9,24 @@ from search engines (`noindex, nofollow`).
 ## Opening it
 
 **Tap the Omega Dental logo in the page FOOTER 3 times, quickly** (within about 1.5
-seconds between taps), from any page on the site. Then enter the PIN.
+seconds between taps), from any page on the site. Then sign in.
 
 It is the logo at the very **bottom** of the page, not the one in the top bar — the top
 one is a link to the homepage, so tapping it repeatedly just navigates.
 
-```
-PIN: 2518
-```
+Sign in with the clinic's Firebase login — the same email and password used for the
+cloud records. Nothing on the page is drawn until that sign-in succeeds.
 
-The direct address is `/dashboard.html`, but the 5-tap route means you never have to type
-it on a shared screen. "Lock" returns you to the PIN screen.
+The direct address is `/dashboard.html`, but the 3-tap route means you never have to type
+it on a shared screen. **Sign out** in the top bar ends the session.
 
 > To change how many taps are needed, edit `TAPS_NEEDED` in `assets/admin-gate.js`.
-> To change the PIN, edit `DEFAULT_PIN` near the top of the records script in
-> `dashboard.html`. It is stored in the page itself, so treat it as a *privacy* screen
-> that keeps casual eyes out — not as bank-grade security.
+> To change the login, use Firebase Console → Build → **Authentication → Users**.
+>
+> This replaced an older PIN screen. A PIN held in the page could only hide the records,
+> never protect them — anyone who opened the browser's storage could read every one.
+> Signing in means the records are fetched only after Firebase says who you are, and the
+> published Firestore rules refuse the request otherwise.
 
 ---
 
@@ -163,7 +165,7 @@ counts **visits**, so a patient who came three times counts three times.
 ## Website content editor
 
 Press **🌐 Website** in the top bar (next to Report) to switch to the content editor;
-**📋 Records** brings you back. Same PIN.
+**📋 Records** brings you back. The same sign-in covers both pages.
 
 Four tabs:
 - **Services** — the 15 cards: name, short line, description, price, how long it takes
@@ -213,7 +215,7 @@ editor cannot change the website at all, so it is safe to explore.
 
 The homepage shows four figures — **Happy Patients**, **Years Experience**, **Services
 Available** and **Satisfaction %**. You set them yourself in the dashboard, under
-**🌐 Website numbers** (it appears once you press **Connect**).
+**🌐 Website numbers**.
 
 Type the numbers, press **Save to website**, and the homepage updates within a second —
 on every phone that has it open, with nothing to refresh or wait for.
@@ -262,9 +264,9 @@ message through a Bangladeshi gateway, so about ৳100–150 a month for ten app
 The **Next Appointment** dates on your records — the same list as the 📅 Upcoming tab.
 Records in the 🗑 Bin are skipped, so a cancelled visit never gets a reminder.
 
-**It only sees records that reached the cloud.** If you use the dashboard without pressing
-**Connect** in Website Bookings, records stay on that one device and the reminder has
-nothing to read.
+**It only sees records that reached the cloud.** Records are synced automatically now that
+signing in is required to open the dashboard at all, but anything saved while the connection
+was down waits until it syncs before the reminder can read it.
 
 ### Setup (once)
 Add [`tools/appointment-reminder.gs`](tools/appointment-reminder.gs) to the **same** Apps
@@ -296,18 +298,18 @@ unreachable database both leave a note there.
 The **🌐 Website** editor changes prices, descriptions, categories, gallery captions and
 photos. Those edits are a **draft on that device** until you publish them.
 
-Press **Connect** at the top with your clinic login, then **🚀 Publish to website**. The
+Press **🚀 Publish to website** at the top. The
 change is committed to the site and appears live a minute or two later, once GitHub
 rebuilds. Photos you added are uploaded at the same time, in one go.
 
 ### Why it asks you to sign in
 Publishing writes to the website itself. The sign-in proves it is you: the publisher
-checks the account against the clinic's own login and refuses anything else. The PIN
-alone is not enough, deliberately — it protects a device, not the live site.
+checks the account against the clinic's own login and refuses anything else. You are
+already signed in by the time you can see the editor at all.
 
 ### If publishing fails
 - *"That account may not publish"* — signed in with a different Firebase user.
-- *"Your sign-in has expired"* — press Connect again.
+- *"Your sign-in has expired"* — sign out and sign in again.
 - *"GITHUB_TOKEN is not set"* — the one-time setup below has not been done.
 - *"The content could not be written safely"* — nothing was sent. The editor checks it can
   read its own output back before publishing, so a broken file can never reach the site.
@@ -403,7 +405,7 @@ When a patient actually turns up, add them with **➕ Add a patient record** as 
 the two apart is what stops no-shows, duplicate submissions and test bookings from landing
 in your income report as ৳0 patients.
 
-Press **Connect** and sign in with the clinic's Firebase email and password. Each booking
+You are signed in with the clinic's Firebase email and password already. Each booking
 has:
 
 - **➕ Add to records** — creates a record from it. The **visit date is set to today** and
@@ -413,23 +415,22 @@ has:
 
 Notifications only arrive while the dashboard is open in a browser tab.
 
-### The PIN is asked once per session
-Unlock the dashboard and the **🌐 Website** editor opens without asking again — and the
-other way round. Moving between records and content should not mean typing the PIN each
-time.
+### One sign-in covers both pages
+Sign in on the dashboard and the **🌐 Website** editor opens without asking again — and the
+other way round. Firebase keeps the session, so moving between records and content does not
+mean signing in twice.
 
-Close the browser and it asks again. **🔒 Lock** also ends it immediately, on both pages.
-That is the difference between a convenience and a hole: the PIN still protects a device
-someone picks up later, it just stops nagging while you are working.
+**🚪 Sign out** in the top bar ends it everywhere, on both pages at once.
 
-### Lock vs Sign out — they are different
-- **🔒 Lock** returns you to the PIN screen. It is a quick privacy screen for stepping away;
-  your cloud session stays active underneath.
-- **Sign out** (in the Website Bookings panel) ends the cloud session properly. Records stay
-  in this browser but stop syncing until you sign in again.
+### Sign out on any device you do not control
+Closing the tab is not the same as signing out — the session survives it, and so does the
+next person to open the browser. Press **Sign out** before handing a phone to someone, or on
+any shared or borrowed screen.
 
-Use **Sign out** on any device you do not fully control, or before handing a phone to someone.
-Lock alone does not stop someone who knows the PIN from reaching your cloud records.
+### If you cannot sign in
+The dashboard needs to reach Firebase to let you in, so with no internet it will say
+*"Cannot sign in"* rather than opening. Records already saved in that browser are not lost —
+they are still there once the connection is back and you sign in again.
 
 ---
 
@@ -665,7 +666,7 @@ so it can **only see files it created** — it cannot read the rest of your Driv
 | Symptom | Cause / fix |
 |---|---|
 | "Excel engine is not loaded" | The SheetJS file did not download. Check the connection and reload. |
-| Records vanished | If the strip says ☁ synced, press Connect and sign in — they will come back. If you were never signed in, browsing data was cleared; restore from your last Excel backup via Import. |
+| Records vanished | If the strip says ☁ synced, sign in again — they will come back. If you were never signed in, browsing data was cleared; restore from your last Excel backup via Import. |
 | Strip says ⚠ could not sync | Usually the Firestore rules are missing the `records` block — see setup. Records are still safe in this browser meanwhile. |
 | Records differ between two devices | One of them is not signed in. Check the strip says ☁ on both. |
 | Deleted something by mistake | Open the 🗑 Bin tab and press ↩️ Restore. You have 30 days. |
@@ -674,7 +675,7 @@ so it can **only see files it created** — it cannot read the rest of your Driv
 | Sign-in error mentioning app-check | App Check enforcement is on — see the App Check section above. |
 | "Couldn't load Firebase (offline?)" | No internet, or a network blocking Google. Bookings still arrive by WhatsApp. |
 | Drive backup fails | Usually the Authorized JavaScript origin, the Drive API not being enabled, or the account not being a Test user. |
-| Website bookings not appearing | Confirm you pressed Connect and signed in; check the Firestore rules were published. |
+| Website bookings not appearing | Confirm you are signed in; check the Firestore rules were published. |
 
 ---
 
