@@ -351,7 +351,21 @@ const WA_MSGS_BN = {
 /* ============================================================
    Rendering + interactions
    ============================================================ */
-let LANG = localStorage.getItem("omega_lang") || "bn";  // Bangladeshi audience → Bangla first
+/* Bangla first — this is a Dhaka clinic.
+
+   Guarded because this runs at the top of the file: a browser with site data blocked
+   ("Block all cookies", some in-app browsers, strict privacy modes) throws on the read,
+   and an uncaught throw here kills the whole of app.js — which, since app.js writes every
+   visible string, leaves the visitor a blank page. Every generated page already wraps this
+   exact read in a try/catch; this one was the odd one out.
+
+   Only the two known languages are accepted. A stale or corrupted value used to fall
+   through to English and silently serve the entire site in the wrong language. */
+let LANG = "bn";
+try {
+  const saved = localStorage.getItem("omega_lang");
+  if (saved === "bn" || saved === "en") LANG = saved;
+} catch (e) { /* storage unavailable — the default stands */ }
 
 function t(key){ return (I18N[LANG] && I18N[LANG][key]) ?? (I18N.en[key] ?? key); }
 function fmt(n){ return n.toLocaleString("en-IN"); } // 1,20,000 style grouping
@@ -412,7 +426,14 @@ function applyPatientCount(){
   });
 }
 
-function setLang(l){ LANG = l; localStorage.setItem("omega_lang", l); applyI18n(); }
+function setLang(l){
+  LANG = l;
+  /* Remembering the choice is a convenience; showing it is the point. When storage is
+     blocked setItem throws, and with the call in front of applyI18n() the language
+     toggle did nothing at all — permanently, on every click. */
+  try { localStorage.setItem("omega_lang", l); } catch (e) { /* not remembered, still applied */ }
+  applyI18n();
+}
 
 /* ----- Inline SVG icons (Lucide-style, currentColor) ----- */
 const ICONS = {
@@ -685,6 +706,10 @@ function updateCalc(){
   const out = document.getElementById("calcResult");
   if(!sel||!out) return;
   const p = PRICES[+sel.value] || PRICES[0];
+  /* No content.js means no PRICES, so PRICES[0] is undefined. Reading .per off it threw,
+     and because this runs inside applyI18n() the uncaught error aborted the rest of page
+     init — the mobile menu and the language toggle stopped working with it. */
+  if (!p) return;
   const per = !!p.per;
   if(qtyWrap) qtyWrap.style.visibility = per ? "visible" : "hidden";  // keep space so card height stays fixed
   const qty = per ? Math.max(1, parseInt((qtyEl&&qtyEl.value)||"1",10)) : 1;
@@ -1205,7 +1230,14 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const svc = this.dataset.service ? "?service="+encodeURIComponent(this.dataset.service) : "";
     window.location.href = "book.html"+svc;
   });
-  document.getElementById("bookForm")?.addEventListener("submit", submitBooking);
+  const bookForm = document.getElementById("bookForm");
+  if (bookForm) {
+    bookForm.addEventListener("submit", submitBooking);
+    /* Only now is the form actually able to send anything, so only now does it stop
+       telling the patient to phone instead. */
+    const fb = document.getElementById("bookFallback"); if (fb) fb.remove();
+    const sb = document.getElementById("bookSubmit");   if (sb) sb.disabled = false;
+  }
   document.getElementById("callbackForm")?.addEventListener("submit", (e)=>{
     e.preventDefault();
     const num  = document.getElementById("cbNumber").value.trim();

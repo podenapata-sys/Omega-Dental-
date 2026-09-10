@@ -1093,3 +1093,10 @@ body.bn .legal-doc p,body.bn .legal-doc li{font-size:1.05rem;line-height:1.9}
   .doc-grid{grid-template-columns:minmax(0,1fr)}
   .doc-photo{aspect-ratio:1/1}
 }
+
+/* Shown until app.js confirms the booking form can actually submit — see book.html. */
+.book-fallback{display:flex;flex-direction:column;gap:6px;background:#fff6e9;
+  border:1px solid #f6d9b0;color:#8a5a12;border-radius:12px;padding:12px 14px;
+  margin-bottom:16px;font-size:.88rem}
+.book-fallback a{color:#8a5a12;font-weight:700}
+.book-form button[type=submit][disabled]{opacity:.5;cursor:not-allowed}
