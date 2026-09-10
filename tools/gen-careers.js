@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { bakeDefaultText } = require("./bake-default-text.js");
-const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
+const SITE = "https://omegadentalbd.com";
 const VER = "20260628b";
 const WA = "8801706516868"; // WhatsApp number for applications
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
