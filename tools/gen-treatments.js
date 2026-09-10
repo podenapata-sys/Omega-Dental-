@@ -2,6 +2,7 @@
    Run: node tools/gen-treatments.js */
 const fs = require("fs");
 const path = require("path");
+const { bakeDefaultText } = require("./bake-default-text.js");
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
 const VER = "20260628b";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -109,5 +110,5 @@ var sb=document.getElementById('scrollbar');addEventListener('scroll',function()
 </script>
 </body></html>`;
 
-fs.writeFileSync(path.join(__dirname,"..","treatments.html"), html);
+fs.writeFileSync(path.join(__dirname,"..","treatments.html"), bakeDefaultText(html));
 console.log("Generated treatments.html with",T.length,"treatments");

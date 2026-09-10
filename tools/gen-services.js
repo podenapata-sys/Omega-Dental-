@@ -26,6 +26,7 @@ if (!process.argv.includes("--force")) {
 
 const fs = require("fs");
 const path = require("path");
+const { bakeDefaultText } = require("./bake-default-text.js");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
 const VER = "20260627i";
@@ -465,7 +466,7 @@ document.querySelectorAll('.faq-q').forEach(function(q){q.onclick=function(){var
 
 const outDir = path.join(__dirname,"..","services");
 fs.mkdirSync(outDir,{recursive:true});
-SERVICES.forEach(s=>fs.writeFileSync(path.join(outDir,`${s.slug}.html`), page(s)));
+SERVICES.forEach(s=>fs.writeFileSync(path.join(outDir,`${s.slug}.html`), bakeDefaultText(page(s))));
 
 const urls = [`${SITE}/`, `${SITE}/treatments.html`, `${SITE}/blog/index.html`, ...SERVICES.map(s=>`${SITE}/services/${s.slug}.html`)];
 fs.writeFileSync(path.join(__dirname,"..","sitemap.xml"),

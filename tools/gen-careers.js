@@ -2,6 +2,7 @@
    Run: node tools/gen-careers.js */
 const fs = require("fs");
 const path = require("path");
+const { bakeDefaultText } = require("./bake-default-text.js");
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
 const VER = "20260628b";
 const WA = "8801706516868"; // WhatsApp number for applications
@@ -146,5 +147,5 @@ var sb=document.getElementById('scrollbar');addEventListener('scroll',function()
 </script>
 </body></html>`;
 
-fs.writeFileSync(path.join(__dirname,"..","careers.html"), html);
+fs.writeFileSync(path.join(__dirname,"..","careers.html"), bakeDefaultText(html));
 console.log("Generated careers.html with",JOBS.length,"job openings");

@@ -2,6 +2,7 @@
    sitemap.xml (home + service pages + blog). Run: node tools/gen-blog.js */
 const fs = require("fs");
 const path = require("path");
+const { bakeDefaultText } = require("./bake-default-text.js");
 
 const SITE = "https://podenapata-sys.github.io/Omega-Dental-";
 const VER = "20260627i";
@@ -222,8 +223,8 @@ function indexPage(){
 
 const blogDir=path.join(__dirname,"..","blog");
 fs.mkdirSync(blogDir,{recursive:true});
-ARTICLES.forEach(a=>fs.writeFileSync(path.join(blogDir,`${a.slug}.html`),articlePage(a)));
-fs.writeFileSync(path.join(blogDir,"index.html"),indexPage());
+ARTICLES.forEach(a=>fs.writeFileSync(path.join(blogDir,`${a.slug}.html`),bakeDefaultText(articlePage(a))));
+fs.writeFileSync(path.join(blogDir,"index.html"),bakeDefaultText(indexPage()));
 
 // rebuild sitemap: home + service pages + blog
 const svcDir=path.join(__dirname,"..","services");
