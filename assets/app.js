@@ -1432,16 +1432,37 @@ document.addEventListener("DOMContentLoaded", ()=>{
     });
   })();
 
-  // Google Review QR Code
+  /* Google Review QR code.
+
+     The library is fetched here rather than by a <script> tag in index.html. It used to
+     sit in the deferred chain ahead of content.js and app.js, and deferred scripts run
+     in document order — so a stalled request to the CDN meant this site's own JavaScript
+     never ran at all. Every visible string on the page is injected by that JavaScript,
+     so the page came up completely blank on a slow connection. A decorative QR code must
+     not be able to do that.
+
+     Injected async and drawn on load, so the ordering is explicit: if the CDN is slow,
+     blocked or gone, the QR square is simply absent and nothing else notices. */
   setTimeout(()=>{
     const qrEl = document.getElementById("reviewQRCode");
-    if(qrEl && window.QRCode){
-      new QRCode(qrEl, {
-        text:"https://search.google.com/local/writereview?placeid=ChIJkU6fOETBVTcRtwuNI9vunfY",
-        width:128, height:128,
-        colorDark:"#13294e", colorLight:"#ffffff"
-      });
-    }
+    if(!qrEl) return;
+    const draw = () => {
+      if(!window.QRCode) return;
+      try{
+        new QRCode(qrEl, {
+          text:"https://search.google.com/local/writereview?placeid=ChIJkU6fOETBVTcRtwuNI9vunfY",
+          width:128, height:128,
+          colorDark:"#13294e", colorLight:"#ffffff"
+        });
+      }catch(e){ /* the review link still works without the QR */ }
+    };
+    if(window.QRCode) return draw();
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+    s.async = true;
+    s.onload = draw;
+    s.onerror = () => {};   // deliberately silent: the QR is an ornament, not content
+    document.head.appendChild(s);
   }, 600);
 });
 

@@ -558,7 +558,11 @@
 </div>
 
 <script>document.getElementById("year").textContent="2025";</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+<!-- The QR-code library used to be loaded here with defer, ahead of content.js and
+     app.js. Deferred scripts run in document order, so when that CDN request stalled —
+     a slow mobile connection is enough — the browser never reached this site's own
+     JavaScript, and since every visible string is injected by it, the whole page came
+     up blank. It is now fetched from app.js on demand, so it cannot block anything. -->
 <script src="assets/content.js?v=1" defer></script>
 <script src="assets/firebase-config.js?v=8"></script>
 <script type="module" src="assets/booking-cloud.js?v=3"></script>
