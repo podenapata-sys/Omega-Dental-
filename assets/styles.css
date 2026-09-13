@@ -49,7 +49,11 @@
   --lh-head:1.15;                        /* heading line-height */
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+/* The header is position:sticky at 84px tall, so an anchor jump (#home, #pricing,
+   #doctors, #contact — every link in the nav) would scroll the target to y=0 and leave
+   its top tucked underneath. scroll-padding-top on the scroll container is the fix for
+   all of them at once; no per-section scroll-margin needed. 100px = 84 + breathing room. */
+html{scroll-behavior:smooth;scroll-padding-top:100px}
 body{font-family:var(--f-body);color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 body.bn{font-family:var(--f-bn)}
 body.bn h1,body.bn h2,body.bn h3,body.bn .btn{font-family:var(--f-bn)}
@@ -193,7 +197,12 @@ a{color:inherit;text-decoration:none}
 .brand > span:last-child{text-align:center}
 .brand small{display:block;font-size:.72em;letter-spacing:.14em;color:var(--orange);font-weight:800;margin-top:2px;line-height:1;text-indent:.14em}
 .navlist{display:flex;align-items:center;gap:20px;margin-left:auto}
-.navlist a{font-weight:600;font-size:.93rem;color:var(--ink);transition:color .15s}
+/* A nav label must never break mid-phrase. .navlist is a flex row with no wrap, so when
+   it runs short of room the items shrink below their content width and each link wraps
+   its own text instead — "About / Us", "Our / Services". nowrap makes the crowding
+   visible as overflow rather than hiding it as bad typography, and the breakpoint below
+   is what actually prevents it. */
+.navlist a{font-weight:600;font-size:.93rem;color:var(--ink);transition:color .15s;white-space:nowrap}
 .navlist a:hover{color:var(--teal-dd)}
 .nav-actions{display:flex;align-items:center;gap:10px;margin-left:8px}
 .nav-actions .btn{border-radius:12px;padding:11px 22px;font-size:.9rem}
@@ -866,18 +875,40 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,te
   .fc-1{left:0}
   .fc-2{right:0}
 }
+/* The burger used to appear only below 760px, but the desktop nav does not fit in
+   anything like that little room: brand + seven links + the Book Appointment button
+   measures ~1010px of content with fallback fonts and ~1110px once Google Fonts loads
+   the real face. Everything between 760px and ~1200px therefore rendered a crowded row
+   with labels breaking in half — which is what a small laptop and a zoomed browser both
+   land on. The collapsed menu now takes over below 1100px, where there is genuinely
+   room for it. Only the nav rules moved up here; the rest of the small-screen layout
+   stays at 760px where it belongs.
+
+   1280px, not 1100px: measured, the English row needs 1165px of page width with fallback
+   fonts even after the gap is tightened below, and the real webfont is wider again. The
+   margin is deliberate — a nav that overflows is worse than one that collapses early,
+   and every common laptop is 1366px or above. */
+@media(max-width:1440px){
+  /* buy back ~48px before the breakpoint has to do the work */
+  .navlist{gap:14px}
+  .nav-actions{gap:8px}
+}
+@media(max-width:1280px){
+  .navlist{position:fixed;inset:84px 0 auto 0;flex-direction:column;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:18px 24px;gap:14px;display:none;box-shadow:var(--shadow)}
+  .navlist.open{display:flex}
+  .navlist .nav-actions{margin:6px 0 0;flex-wrap:wrap}
+  .navlist a{white-space:normal}
+  .burger{display:flex}
+  .srch-btn{margin-left:auto;padding:9px}
+  .nav-lang{display:inline-flex;margin-left:8px}
+}
 @media(max-width:760px){
   .container{padding-left:14px;padding-right:14px;max-width:100%;width:100%}
   .hero{width:100%}
   .brand img{height:48px}
   .brand{font-size:1.5rem;gap:0}
   .logo-anim--mark{margin-right:-4px}
-  .navlist{position:fixed;inset:84px 0 auto 0;flex-direction:column;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:18px 24px;gap:14px;display:none;box-shadow:var(--shadow)}
-  .navlist.open{display:flex}
-  .navlist .nav-actions{margin:6px 0 0;flex-wrap:wrap}
-  .burger{display:flex}
-  .srch-btn{margin-left:auto;padding:9px}
-  .nav-lang{display:inline-flex;margin-left:8px;padding:9px 13px;font-size:.82rem}
+  .nav-lang{padding:9px 13px;font-size:.82rem}
   .stats-grid{grid-template-columns:1fr 1fr;gap:16px}
   .hero-stats .stats-grid{grid-template-columns:1fr 1fr;gap:12px}
   /* name takes its own line so the phone field and the send button stay paired */

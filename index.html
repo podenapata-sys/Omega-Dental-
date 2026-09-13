@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="assets/styles.css?v=20260902a">
+<link rel="stylesheet" href="assets/styles.css?v=20260913a">
 <!-- Structured data: Dentist / MedicalClinic -->
 <script type="application/ld+json">
 {
@@ -524,7 +524,7 @@
       <a href="https://www.google.com/maps/place/OMEGA+Dental/@23.8018173,90.370624,16z/data=!3m1!4b1!4m7!3m6!1s0x3755c144389f4e91:0xf69deedb238d0bb7!8m2!3d23.8018173!4d90.370624!16s%2Fg%2F11ms4g6xnd" target="_blank" rel="noopener" data-i18n="contact_addr">১২৫২/৩, পূর্ব মনিপুর, মেট্রো পিলার-২৬৭ (ওয়াই), পশ্চিম কাজীপাড়া, বেগম রোকেয়া সরণি, ঢাকা</a>
     </div>
   </div>
-  <div class="container foot-bottom">© <span id="year"></span> OMEGA DENTAL · <span data-i18n="foot_rights">সর্বস্বত্ব সংরক্ষিত।</span></div>
+  <div class="container foot-bottom">© <span id="year">2026</span> OMEGA DENTAL · <span data-i18n="foot_rights">সর্বস্বত্ব সংরক্ষিত।</span></div>
 </footer>
 
 <button id="toTop" class="totop" aria-label="Back to top">↑</button>
@@ -564,7 +564,7 @@
   </a>
 </div>
 
-<script>document.getElementById("year").textContent="2025";</script>
+<script>document.getElementById("year").textContent=new Date().getFullYear();</script>
 <!-- The QR-code library used to be loaded here with defer, ahead of content.js and
      app.js. Deferred scripts run in document order, so when that CDN request stalled —
      a slow mobile connection is enough — the browser never reached this site's own
