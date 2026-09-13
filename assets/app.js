@@ -547,6 +547,10 @@ function syncDoctorSchema(list){
          alone and does not repeat the employer inside it. */
       const title = (d.role||"").split(",")[0].trim();
       if(title) p.jobTitle = title;
+      /* Only when a photo actually exists — an image property pointing at a 404 is
+         worse than none, and the initials monogram is not a picture of anybody. */
+      const photo = (d.photo||"").trim();
+      if(photo) p.image = new URL("assets/doctors/" + photo + ".jpg", location.href).href;
       return p;
     });
     tag.textContent = JSON.stringify(data);

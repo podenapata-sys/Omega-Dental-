@@ -307,8 +307,10 @@
          filled by renderDoctors() in assets/app.js from OMEGA_CONTENT.doctors. Keeps
          id="doctors" so the "Doctors" nav link still scrolls here, and hides itself
          if the list is ever emptied, leaving the section a single column. -->
-    <div class="why-doc" id="doctors" style="display:none">
-      <div class="doc-grid" id="doctorsGrid"></div>
+    <div class="why-doc" id="doctors">
+      <div class="doc-grid" id="doctorsGrid"><!--baked-->
+<article class="doc-card"><img class="doc-photo" src="assets/doctors/cards/afsana-haque-joty.jpg" alt="ডা. আফসানা হক জ্যোতি" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/doctors/afsana-haque-joty.jpg'"><div class="doc-body"><h3 class="doc-name">ডা. আফসানা হক জ্যোতি</h3><p class="doc-role">চিফ ডেন্টাল সার্জন, ওমেগা ডেন্টাল</p><p class="doc-deg">বিডিএস (ঢাবি) · ওরাল অ্যান্ড ম্যাক্সিলোফেসিয়াল সার্জারি ও পেডিয়াট্রিক ডেন্টিস্ট্রিতে পিজিটি, ঢাকা ডেন্টাল কলেজ</p><p class="doc-bmdc">BMDC Reg. No. 11071</p><p class="doc-bio">অ্যাসথেটিক ডেন্টিস্ট্রিতে বিশেষ প্রশিক্ষণপ্রাপ্ত; কসমেটিক ও শিশুদের দাঁতের চিকিৎসায় বিশেষজ্ঞ।</p><div class="doc-tags"><span class="doc-tag">অ্যাসথেটিক ডেন্টিস্ট্রি</span><span class="doc-tag">শিশুদের দাঁতের চিকিৎসা</span><span class="doc-tag">রুট ক্যানেল (আরসিটি)</span><span class="doc-tag">হলিউড স্মাইল ডিজাইন</span><span class="doc-tag">আক্কেল দাঁতের সার্জারি</span><span class="doc-tag">মাড়ির চিকিৎসা</span></div></div></article>
+<!--/baked--></div>
     </div>
     <div class="left">
       <span class="eyebrow" data-i18n="why_eyebrow">কেন ওমেগা ডেন্টাল</span>
@@ -568,10 +570,10 @@
      a slow mobile connection is enough — the browser never reached this site's own
      JavaScript, and since every visible string is injected by it, the whole page came
      up blank. It is now fetched from app.js on demand, so it cannot block anything. -->
-<script src="assets/content.js?v=1" defer></script>
+<script src="assets/content.js?v=2" defer></script>
 <script src="assets/firebase-config.js?v=8"></script>
 <script type="module" src="assets/booking-cloud.js?v=3"></script>
-<script src="assets/app.js?v=20260907d" defer></script>
+<script src="assets/app.js?v=20260913a" defer></script>
 <div class="srch-overlay" id="srch-overlay" role="dialog" aria-modal="true" aria-label="Site search">
   <div class="srch-modal">
     <div class="srch-row">

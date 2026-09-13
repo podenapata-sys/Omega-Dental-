@@ -301,7 +301,7 @@ window.OMEGA_CONTENT = (function () {
       biobn:"অ্যাসথেটিক ডেন্টিস্ট্রিতে বিশেষ প্রশিক্ষণপ্রাপ্ত; কসমেটিক ও শিশুদের দাঁতের চিকিৎসায় বিশেষজ্ঞ।",
       tags:["Aesthetic Dentistry","Paediatric Dentistry","Root Canal (RCT)","Hollywood Smile Design","Wisdom Tooth Surgery","Gum Treatment"],
       tagsbn:["অ্যাসথেটিক ডেন্টিস্ট্রি","শিশুদের দাঁতের চিকিৎসা","রুট ক্যানেল (আরসিটি)","হলিউড স্মাইল ডিজাইন","আক্কেল দাঁতের সার্জারি","মাড়ির চিকিৎসা"],
-      photo:"" },
+      photo:"afsana-haque-joty" },
   ];
 
   return { cats: CATS, prices: PRICES, services: SERVICES, photos: PHOTOS,
