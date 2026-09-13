@@ -361,7 +361,7 @@ const WA_MSGS_BN = {
 
    Only the two known languages are accepted. A stale or corrupted value used to fall
    through to English and silently serve the entire site in the wrong language. */
-let LANG = "bn";
+let LANG = "en";
 try {
   const saved = localStorage.getItem("omega_lang");
   if (saved === "bn" || saved === "en") LANG = saved;

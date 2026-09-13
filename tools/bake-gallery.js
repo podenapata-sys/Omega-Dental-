@@ -28,6 +28,13 @@ const GAL = C.gallery || [];
 
 // Attribute-safe escape. Captions carry "&" ("Scaling & Polishing"), which must not be
 // left bare in a baked attribute even though innerHTML tolerates it at runtime.
+/* Bake in whatever language the page itself declares, rather than a hard-coded one.
+   The two used to be set independently, so flipping the site default left the gallery
+   captions in the old language for every no-JS visitor. */
+const PAGE_LANG = (/<html[^>]*\sdata-lang="(en|bn)"/.exec(fs.readFileSync(PAGE, "utf8")) || [, "en"])[1];
+const pick = (o, bnKey, enKey) =>
+  PAGE_LANG === "bn" ? (o[bnKey] || o[enKey] || "") : (o[enKey] || o[bnKey] || "");
+
 const esc = (s) =>
   String(s == null ? "" : s)
     .replace(/&/g, "&amp;")
@@ -36,11 +43,12 @@ const esc = (s) =>
     .replace(/"/g, "&quot;");
 
 function filterHtml() {
-  let h = '<button class="gal-tag active" data-cat="all" data-en="All" data-bn="সব">সব</button>';
+  let h = '<button class="gal-tag active" data-cat="all" data-en="All" data-bn="সব">' +
+          (PAGE_LANG === "bn" ? "সব" : "All") + "</button>";
   for (const k of Object.keys(CATS)) {
     const c = CATS[k];
     h += '<button class="gal-tag" data-cat="' + esc(k) + '" data-en="' + esc(c.en) +
-         '" data-bn="' + esc(c.bn) + '">' + esc(c.bn) + "</button>";
+         '" data-bn="' + esc(c.bn) + '">' + esc(pick(c, "bn", "en")) + "</button>";
   }
   return h;
 }
@@ -49,7 +57,7 @@ function gridHtml() {
   return GAL.map((g) => {
     const src = "../assets/services/" + g.photo + ".jpg";
     const thumb = src.replace("/assets/services/", "/assets/services/cards/");
-    const cap = esc(g.bn || g.en);
+    const cap = esc(pick(g, "bn", "en"));
     let h = '<div class="gal-item" data-cat="' + esc(g.cat) + '">';
     h += '<div class="gal-head">';
     h += '<span class="gal-avatar"><img src="../assets/mark-square.png?v=1" alt="Omega Dental"></span>';
@@ -87,6 +95,6 @@ if (html === before) {
   console.log("gallery: already up to date");
 } else {
   fs.writeFileSync(PAGE, html);
-  console.log("gallery: baked " + GAL.length + " photos and " +
+  console.log("gallery [" + PAGE_LANG + "]: baked " + GAL.length + " photos and " +
               (Object.keys(CATS).length + 1) + " filter tabs into gallery/index.html");
 }

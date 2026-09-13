@@ -92,8 +92,23 @@
     buildFooter();
     loadGated();       // no cookie banner — load consent-gated third parties (Disqus) directly
     translate();
-    var tg = document.getElementById("langToggle");
-    if (tg) tg.addEventListener("click", function () { setTimeout(translate, 0); });
+
+    /* Watch data-lang instead of listening for a click on the toggle.
+       The click listener only caught one of the two ways the language changes. The other
+       is a returning visitor whose choice is restored from localStorage: the page loads
+       with the document's default language in the markup, this file translates to that,
+       and THEN app.js applies the stored language to everything carrying data-i18n. The
+       [data-lg] elements here are not data-i18n, so they were left behind — the footer's
+       Privacy Policy, Terms and Medical Disclaimer links, and the disclaimer sentence,
+       stayed in the wrong language on an otherwise correctly translated page.
+       Observing the attribute catches every path: restored preference, a click, or a
+       language set by anything added later. */
+    var obs = new MutationObserver(translate);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-lang"] });
+
+    /* Belt and braces for the load-order race itself: app.js may set data-lang in the
+       same tick this file runs, before the observer is attached. */
+    setTimeout(translate, 0);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

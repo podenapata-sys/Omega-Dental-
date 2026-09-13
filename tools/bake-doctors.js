@@ -39,18 +39,22 @@ function initials(name) {
   return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
 }
 
+/* Same rule as the gallery: follow the page's declared language, never a hard-coded one. */
+const PAGE_LANG = (/<html[^>]*\sdata-lang="(en|bn)"/.exec(fs.readFileSync(PAGE, "utf8")) || [, "en"])[1];
+
 const list = DOCTORS.filter((d) => (d.en || "").trim() || (d.bn || "").trim());
 
 function cardHtml(d) {
-  // Bangla is the site default, so bake the Bangla strings with the English as fallback.
-  const pick = (bn, en) => (d[bn] || "").trim() || (d[en] || "").trim();
+  const pick = (bn, en) => PAGE_LANG === "bn"
+    ? ((d[bn] || "").trim() || (d[en] || "").trim())
+    : ((d[en] || "").trim() || (d[bn] || "").trim());
   const name = pick("bn", "en");
   const role = pick("rolebn", "role");
   const deg  = pick("degbn", "deg");
   const exp  = pick("expbn", "exp");
   const bio  = pick("biobn", "bio");
   const bmdc = (d.bmdc || "").trim();
-  const tags = d.tagsbn || d.tags || [];
+  const tags = (PAGE_LANG === "bn" ? (d.tagsbn || d.tags) : (d.tags || d.tagsbn)) || [];
   const photo = (d.photo || "").trim();
 
   const art = photo
@@ -91,5 +95,5 @@ if (html === before) {
   console.log("doctors: already up to date");
 } else {
   fs.writeFileSync(PAGE, html);
-  console.log("doctors: baked " + list.length + " doctor card(s) into index.html");
+  console.log("doctors [" + PAGE_LANG + "]: baked " + list.length + " doctor card(s) into index.html");
 }
