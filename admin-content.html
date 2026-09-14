@@ -1,6 +1,19 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>
+/* Clickjacking guard. GitHub Pages cannot send an X-Frame-Options or
+   frame-ancestors header, and a CSP meta tag cannot express frame-ancestors either —
+   so this is the only lever available on this host. If the page finds itself inside a
+   frame it breaks out, which stops an attacker overlaying an invisible copy of the
+   dashboard on their own page and harvesting clicks from a signed-in clinic session.
+   Runs before anything renders, so nothing is visible to click in the meantime. */
+(function () {
+  try { if (window.self !== window.top) window.top.location = window.self.location; }
+  catch (e) { document.documentElement.style.display = "none"; }  /* cross-origin: hide instead */
+})();
+</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
