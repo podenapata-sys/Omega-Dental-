@@ -40,7 +40,11 @@ const I18N = {
     hero_text:"Modern, painless and affordable dental care at Omega Dental. From routine check-up to implant and smile makeover — your comfort comes first.",
     hero_b1:"Painless Treatment", hero_b2:"Modern Technology", hero_b3:"Affordable Pricing", hero_b4:"Expert Surgeon",
     g_reviews:"Google Reviews",
-    tb_addr:"West Kazipara, Dhaka", tb_hours:"Sat–Thu: 10:00 AM – 9:00 PM",
+    tb_addr:"West Kazipara, Dhaka", tb_hours:"Sat–Thu: 10:00 AM – 9:30 PM",
+    /* Open-now badge. {t} is filled in by renderOpenBadge(). */
+    open_now:"Open now · until {t}", open_shut:"Closed · opens {t}",
+    open_shut_day:"Closed · opens {d} {t}",
+    p_book:"Book",
     rev_us:"Review Us", hp_label:"Happy Patients",
     fb1_t:"Modern Technology", fb1_s:"Latest equipment for accurate treatment",
     fb2_t:"Experienced Doctors", fb2_s:"Skilled & friendly dental specialists",
@@ -93,14 +97,18 @@ const I18N = {
     book_side_title:"Message or call us directly",
     book_side_text:"Send us a quick WhatsApp message, call the clinic, or get directions — whatever is easiest for you.",
     f_name:"Full name", f_phone:"Phone number", f_service:"Treatment needed",
-    f_date:"Preferred date", f_time:"Preferred time", f_date_ph:"Type or pick a date", f_time_ph:"Type or pick a time", f_today:"Today", f_tomorrow:"Tomorrow", f_address:"Address (optional)", f_address_ph:"House / road / area",
+    f_date:"Preferred date", f_time:"Preferred time", f_date_ph:"Type or pick a date", f_time_ph:"Type or pick a time", f_today:"Today", f_tomorrow:"Tomorrow", f_address:"Address", f_optional:"optional", f_address_ph:"House / road / area",
     f_emerg:"This is an emergency / I need same-day care",
     f_consent:'I agree that my details will be sent to Omega Dental via WhatsApp, as described in the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.',
     cb_consent:'I agree to be contacted about my request, as described in the <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.',
     consent_alert:"Please tick the consent box so we can contact you.",
     book_wa_note:'🔒 Your details are sent to us via WhatsApp. See our <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.',
     f_select:"Select a treatment", f_submit:"Send via WhatsApp", f_wa:"Quick WhatsApp",
-    f_success:"Your request is saved. Send it on WhatsApp so we can confirm quickly.",
+    /* This used to read "Your request is saved. Send it on WhatsApp so we can confirm
+       quickly" — which sounds like the booking has not happened yet, and a patient who
+       does not tap WhatsApp assumes they are not booked. The request IS saved; WhatsApp
+       is the faster route, not a second required step. */
+    f_success:"Booking received — we have your request and will call you to confirm. Want it faster? Send it on WhatsApp too.",
     f_send_wa:"Send on WhatsApp",
     foot_about:"Modern, painless and affordable dental care in Dhaka. Healthy smiles for the whole family.",
     foot_links:"Quick Links", foot_services:"Services", foot_contact:"Contact",
@@ -156,7 +164,10 @@ const I18N = {
     hero_text:"ওমেগা ডেন্টালে আধুনিক, ব্যথাহীন ও সাশ্রয়ী খরচে দাঁতের চিকিৎসা। সাধারণ চেকআপ থেকে নতুন দাঁত বসানো আর হাসি সুন্দর করা — সবার আগে আপনার আরাম।",
     hero_b1:"ব্যথাহীন চিকিৎসা", hero_b2:"আধুনিক যন্ত্রপাতি", hero_b3:"সাশ্রয়ী খরচ", hero_b4:"অভিজ্ঞ ডাক্তার",
     g_reviews:"গুগল রিভিউ",
-    tb_addr:"পশ্চিম কাজীপাড়া, ঢাকা", tb_hours:"শনি–বৃহ: সকাল ১০টা – রাত ৯টা",
+    tb_addr:"পশ্চিম কাজীপাড়া, ঢাকা", tb_hours:"শনি–বৃহ: সকাল ১০টা – রাত ৯:৩০",
+    open_now:"এখন খোলা আছে · {t} পর্যন্ত", open_shut:"এখন বন্ধ · {t}-এ খুলবে",
+    open_shut_day:"এখন বন্ধ · {d} {t}-এ খুলবে",
+    p_book:"বুক করুন",
     rev_us:"রিভিউ দিন", hp_label:"সন্তুষ্ট রোগী",
     fb1_t:"আধুনিক যন্ত্রপাতি", fb1_s:"সঠিক চিকিৎসার জন্য আধুনিক যন্ত্রপাতি",
     fb2_t:"অভিজ্ঞ ডাক্তার", fb2_s:"অভিজ্ঞ ও বন্ধুত্বপূর্ণ দাঁতের ডাক্তার",
@@ -209,14 +220,14 @@ const I18N = {
     book_side_title:"মেসেজ বা কল করুন",
     book_side_text:"দ্রুত হোয়াটসঅ্যাপ মেসেজ দিন, ক্লিনিকে কল করুন, অথবা দিকনির্দেশ নিন — যেটি আপনার জন্য সহজ।",
     f_name:"পুরো নাম", f_phone:"ফোন নম্বর", f_service:"প্রয়োজনীয় চিকিৎসা",
-    f_date:"পছন্দের তারিখ", f_time:"পছন্দের সময়", f_date_ph:"তারিখ লিখুন বা বেছে নিন", f_time_ph:"সময় লিখুন বা বেছে নিন", f_today:"আজ", f_tomorrow:"আগামীকাল", f_address:"ঠিকানা (ঐচ্ছিক)", f_address_ph:"বাসা / রোড / এলাকা",
+    f_date:"পছন্দের তারিখ", f_time:"পছন্দের সময়", f_date_ph:"তারিখ লিখুন বা বেছে নিন", f_time_ph:"সময় লিখুন বা বেছে নিন", f_today:"আজ", f_tomorrow:"আগামীকাল", f_address:"ঠিকানা", f_optional:"ঐচ্ছিক", f_address_ph:"বাসা / রোড / এলাকা",
     f_emerg:"এটি জরুরি / আমার একই দিনে সেবা দরকার",
     f_consent:'আমি সম্মত যে আমার তথ্য <a href="privacy-policy.html" target="_blank" rel="noopener">প্রাইভেসি পলিসি</a> অনুযায়ী হোয়াটসঅ্যাপে ওমেগা ডেন্টালে পাঠানো হবে।',
     cb_consent:'আমি <a href="privacy-policy.html" target="_blank" rel="noopener">প্রাইভেসি পলিসি</a> অনুযায়ী আমার অনুরোধ নিয়ে যোগাযোগে সম্মত।',
     consent_alert:"যোগাযোগ করতে অনুগ্রহ করে সম্মতির ঘরটি টিক দিন।",
     book_wa_note:'🔒 আপনার তথ্য হোয়াটসঅ্যাপে আমাদের কাছে পাঠানো হয়। দেখুন আমাদের <a href="privacy-policy.html" target="_blank" rel="noopener">প্রাইভেসি পলিসি</a>।',
     f_select:"একটি চিকিৎসা নির্বাচন করুন", f_submit:"হোয়াটসঅ্যাপে পাঠান", f_wa:"দ্রুত হোয়াটসঅ্যাপ",
-    f_success:"আপনার অনুরোধ সংরক্ষিত হয়েছে। দ্রুত নিশ্চিত করতে হোয়াটসঅ্যাপে পাঠান।",
+    f_success:"বুকিং পেয়েছি — আপনার অনুরোধ আমাদের কাছে জমা হয়েছে, আমরা ফোন করে নিশ্চিত করব। আরও দ্রুত চাইলে হোয়াটসঅ্যাপেও পাঠিয়ে দিন।",
     f_send_wa:"হোয়াটসঅ্যাপে পাঠান",
     foot_about:"ঢাকায় আধুনিক, ব্যথাহীন ও সাশ্রয়ী খরচে দাঁতের চিকিৎসা। পুরো পরিবারের সুস্থ হাসি।",
     foot_links:"দ্রুত লিংক", foot_services:"সেবা", foot_contact:"যোগাযোগ",
@@ -348,6 +359,97 @@ const WA_MSGS_BN = {
   question:"হ্যালো, ওমেগা ডেন্টালে চিকিৎসা সম্পর্কে আমার একটি প্রশ্ন আছে।"
 };
 
+/* ---------- Opening hours (single source of truth) ----------
+   Day is JS getDay(): 0 Sun … 6 Sat. Times are minutes from midnight, Asia/Dhaka.
+   These MUST match the openingHoursSpecification in index.html — that block is the
+   one Google reads, and the two silently disagreeing is exactly how the old 9:00 PM
+   string survived in here for months. Changing the clinic's hours means changing
+   both, and the prose in contact_hours / topbar / book.html.              */
+const HOURS = {
+  tz: "Asia/Dhaka",
+  // Sat–Thu 10:00–21:30, Fri 11:00–21:30
+  days: { 0:[600,1290], 1:[600,1290], 2:[600,1290], 3:[600,1290], 4:[600,1290], 5:[660,1290], 6:[600,1290] },
+};
+
+/* Now, in the clinic's timezone, as {day, minutes}. A visitor on a phone set to
+   another country still gets the clinic's real state. Intl is everywhere we support,
+   but a broken locale database would throw, so this falls back to device time. */
+function clinicNow(){
+  try{
+    const p = new Intl.DateTimeFormat("en-US", {
+      timeZone: HOURS.tz, weekday:"short", hour:"2-digit", minute:"2-digit", hour12:false
+    }).formatToParts(new Date());
+    const g = k => p.find(x=>x.type===k)?.value;
+    const day = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(g("weekday"));
+    const h = parseInt(g("hour"),10), m = parseInt(g("minute"),10);
+    if(day<0 || isNaN(h) || isNaN(m)) throw new Error("unparsable");
+    return { day, mins: (h===24?0:h)*60 + m };   // some engines render midnight as 24
+  }catch(e){
+    const d = new Date();
+    return { day: d.getDay(), mins: d.getHours()*60 + d.getMinutes() };
+  }
+}
+
+/* Open right now? Plus when it next opens, so the badge can say something useful
+   instead of just "closed". */
+function clinicState(){
+  const { day, mins } = clinicNow();
+  const today = HOURS.days[day];
+  if(today && mins >= today[0] && mins < today[1]) return { open:true, until:today[1] };
+  // not open — find the next opening, today's if it has not started yet
+  if(today && mins < today[0]) return { open:false, opensDay:day, opens:today[0] };
+  for(let i=1;i<=7;i++){
+    const d = (day+i)%7, h = HOURS.days[d];
+    if(h) return { open:false, opensDay:d, opens:h[0] };
+  }
+  return { open:false };
+}
+
+/* 630 -> "10:30 AM" / "সকাল ১০:৩০" */
+function fmtClock(mins){
+  const h24 = Math.floor(mins/60), m = mins%60;
+  const h12 = h24%12 === 0 ? 12 : h24%12;
+  if(LANG!=="bn"){
+    return `${h12}:${String(m).padStart(2,"0")} ${h24<12?"AM":"PM"}`;
+  }
+  const part = h24<6 ? "ভোর" : h24<12 ? "সকাল" : h24<16 ? "দুপুর" : h24<18 ? "বিকাল" : h24<20 ? "সন্ধ্যা" : "রাত";
+  return `${part} ${bnNum(h12)}${m?":"+bnNum(String(m).padStart(2,"0")):""}`;
+}
+function bnNum(s){ return String(s).replace(/[0-9]/g, d=>"০১২৩৪৫৬৭৮৯"[d]); }
+
+/* ---------- ?service= resolution ----------
+   The booking dropdown is built from PRICES, with the English price name as the
+   option value (renderBookOptions). Links used to pass a *service* name instead,
+   which matched nothing for 10 of the 15 services — the patient tapped "Book Now"
+   on Dental Implant and got an empty dropdown. So one resolver, used by every
+   link and by the preselect: an exact price name wins, otherwise treat the value
+   as a service slug and take that slug's first priced row. Old links keep working. */
+/* A slug normally resolves to its first priced row, which is the right default
+   everywhere but here: the extractions page is about adult and surgical extraction,
+   and its first row is the ৳1,000 milk-tooth one — a child's price pre-selected for
+   a grown patient. Keep this list as short as it is; tools/gen-services.js carries
+   the same map for the static service pages. */
+const SERVICE_DEFAULT = { "extractions":"Permanent Tooth Extraction" };
+
+function resolveService(v){
+  if(!v) return "";
+  if(PRICES.some(p=>p.n===v)) return v;          // already an exact option value
+  if(SERVICE_DEFAULT[v] && PRICES.some(p=>p.n===SERVICE_DEFAULT[v])) return SERVICE_DEFAULT[v];
+  const bySlug = PRICES.find(p=>p.slug===v);
+  if(bySlug) return bySlug.n;
+  const byName = SERVICES.find(s=>s.en===v || s.bn===v);   // legacy service-name links
+  if(byName && byName.slug){
+    const p = PRICES.find(p=>p.slug===byName.slug);
+    if(p) return p.n;
+  }
+  return "";                                     // no priced match — open the form clean
+}
+/* href for a Book button. Anything with no priced row just opens the form. */
+function bookHref(v, prefix){
+  const r = resolveService(v);
+  return (prefix||"") + "book.html" + (r ? "?service="+encodeURIComponent(r) : "");
+}
+
 /* ============================================================
    Rendering + interactions
    ============================================================ */
@@ -386,6 +488,7 @@ function applyI18n(){
   // dynamic blocks
   renderServices(); renderDoctors(); renderPricing(); renderCalcOptions(); renderTestimonials(); renderBookOptions(); renderBookSlots();
   renderSteps(); renderTech(); renderFaqs(); renderCalcBA(); renderMarquee();
+  renderOpenBadge();
   const tgl = document.getElementById("langText");
   if (tgl) tgl.textContent = t("lang_label");
   applyGoogleReviews(); // re-overlay live Google data (if loaded) in the current language
@@ -592,7 +695,7 @@ function renderServices(){
         ${common?`<span class="svc-common">${common}</span>`:""}
         <p>${LANG==="bn"?s.db:s.de}</p>
         ${sub?`<div class="svc-sub">${sub}</div>`:""}
-        <a class="btn btn-primary svc-book" href="book.html?service=${encodeURIComponent(s.en)}">${t("book_now")}</a>
+        <a class="btn btn-primary svc-book" href="${bookHref(s.slug||s.en)}">${t("book_now")}</a>
       </div>
     </article>`;}).join("");
   wrap.querySelectorAll(".svc-has-vid").forEach(function(card){
@@ -641,6 +744,36 @@ function renderServices(){
   });
 }
 
+/* ----- "Open now" badge -----
+   Someone with toothache at 8:40 PM should not have to read a line of prose and do
+   the arithmetic. The markup is empty in the HTML and stays empty without JavaScript,
+   so a visitor never sees a stale or wrong claim — just nothing. */
+function renderOpenBadge(){
+  const els = document.querySelectorAll(".open-badge");
+  if(!els.length) return;
+  const st = clinicState();
+  const DAYS = { en:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+                 bn:["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"] };
+  let txt;
+  if(st.open){
+    txt = t("open_now").replace("{t}", fmtClock(st.until));
+  }else if(st.opens != null){
+    const today = clinicNow().day;
+    txt = today === st.opensDay
+      ? t("open_shut").replace("{t}", fmtClock(st.opens))
+      : t("open_shut_day").replace("{d}", (DAYS[LANG]||DAYS.en)[st.opensDay]).replace("{t}", fmtClock(st.opens));
+  }else{
+    els.forEach(el=>{ el.textContent=""; el.hidden = true; });
+    return;
+  }
+  els.forEach(el=>{
+    el.hidden = false;
+    el.textContent = txt;
+    el.classList.toggle("is-open", !!st.open);
+    el.classList.toggle("is-shut", !st.open);
+  });
+}
+
 /* ----- Pricing table (grouped by category) ----- */
 function renderPricing(){
   const wrap = document.getElementById("pricingBody");
@@ -659,9 +792,13 @@ function renderPricing(){
       const nameCell = p.slug
         ? `<a class="pname-link" href="services/${p.slug}.html"><span class="pname">${pname}</span>${noteTag}<span class="plink-arr">→</span></a>`
         : `<span class="pname">${pname}</span>${noteTag}`;
+      /* The price list is the highest-intent moment on the site and had nowhere
+         to tap. The button carries the exact option value, so the form always
+         lands with this treatment already chosen. */
+      const bookBtn = `<a class="pbook" href="${bookHref(p.n)}">${t("p_book")}</a>`;
       html += `<tr${p.slug?' class="price-row-link"':''}>
         <td>${nameCell}</td>
-        <td class="pprice">${price}${perLabel}</td></tr>`;
+        <td class="pprice">${price}${perLabel}${bookBtn}</td></tr>`;
     });
   });
   wrap.innerHTML = html;
@@ -1213,26 +1350,24 @@ document.addEventListener("DOMContentLoaded", ()=>{
   applyI18n();
   loadGoogleReviews(); // fetch real Google reviews (Featurable) → overlays when it resolves
   initBookPickers();
-  // prefill booking-page treatment from ?service=
+  /* prefill booking-page treatment from ?service=. Goes through resolveService so a
+     slug, a service name or an exact price name all land on the same option — links
+     shared before this change still work. */
   try{ const q=new URLSearchParams(location.search).get("service"); const sel=document.getElementById("f_service");
-    if(q&&sel&&[...sel.options].some(o=>o.value===q)) sel.value=q; }catch(e){}
+    const v = resolveService(q);
+    if(v&&sel&&[...sel.options].some(o=>o.value===v)) sel.value=v; }catch(e){}
   renderBA("all");
 
+  /* A page left open past closing time should not keep claiming the clinic is open. */
+  if(document.querySelector(".open-badge")) setInterval(renderOpenBadge, 60000);
+
   document.getElementById("langToggle")?.addEventListener("click", ()=> setLang(LANG==="en"?"bn":"en"));
-  // service catalog "Book Now" → prefill booking
-  document.getElementById("servicesGrid")?.addEventListener("click", (e)=>{
-    const a = e.target.closest(".svc-book");
-    if(!a) return;
-    const sel = document.getElementById("f_service");
-    if(sel && a.dataset.service) sel.value = a.dataset.service;
-  });
 
   document.getElementById("calcCategory")?.addEventListener("change", renderCalcServices);
   document.getElementById("calcService")?.addEventListener("change", updateCalc);
   document.getElementById("calcQty")?.addEventListener("change", updateCalc);
   document.getElementById("calcBook")?.addEventListener("click", function(){
-    const svc = this.dataset.service ? "?service="+encodeURIComponent(this.dataset.service) : "";
-    window.location.href = "book.html"+svc;
+    window.location.href = bookHref(this.dataset.service);
   });
   const bookForm = document.getElementById("bookForm");
   if (bookForm) {
