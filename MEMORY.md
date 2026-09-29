@@ -1,0 +1,88 @@
+# MEMORY — Omega Dental project log
+
+> Running context so work can continue in a new session or a different tool.
+> **Update rules:** newest entries first in each section, one or two lines each, dated
+> (YYYY-MM-DD). Record *what* changed and *why*. Never paste secrets, tokens, passwords or
+> personal data — this file is public on the live domain.
+
+## Current state (2026-09-29)
+
+- **Live (`main`):** e5b20c1 (14 Sep) — last third-party script removed; referrer policy;
+  frame-buster on admin pages.
+- **Branch `claude/tender-albattani-m04a9m`:** one commit ahead of `main` — b61ee90 (23 Sep),
+  Book buttons pre-select treatment, open-now badge, lighter form. Plus these project docs.
+  **Not yet merged.**
+- Domain restored 28 Sep after an outage (see incidents). Site confirmed loading.
+- Content: 15 services, 45 priced treatments in 10 categories, 14 service pages, 5 blog articles,
+  53 gallery photos, 1 doctor. 28 public pages.
+- Open work: `TASKS.md`. Phase 0 is the priority.
+
+## Decisions (with reasons)
+
+- **2026-09-29** — Six project docs added at the repo root. They deploy publicly, so they hold no
+  secret values or personal data by design.
+- **2026-09-23** — Booking links accept an exact price name *or* a service slug
+  (`resolveService()`); `extractions` resolves to Permanent Tooth Extraction, not the milk-tooth
+  price. Old links keep working.
+- **2026-09-23** — Opening hours are one `HOURS` object computed in Asia/Dhaka; the badge is
+  hidden without JS rather than risk a wrong claim.
+- **2026-09-23** — Service pages patched in place, not regenerated: `gen-services.js --force`
+  would destroy hand edits on 12 pages and cut sitemap URLs.
+- **2026-09-14** — **No third-party runtime JS.** The review QR became a static SVG built by
+  `tools/gen-review-qr.py`. Reason: a stalled cdnjs request had blanked the homepage.
+- **2026-09-14** — **No enforcing CSP** yet: meta-tag CSP can't run report-only, and a wrong
+  `connect-src` silently breaks booking and sign-in.
+- **2026-09-14** — Frame-buster on `dashboard.html` / `admin-content.html`; Pages can't send
+  `X-Frame-Options`.
+- **2026-09-13** — **Default language English** (was Bangla-first), at the clinic's request.
+  Reversible with `node tools/bake-lang.js bn`.
+- **2026-09-13** — Doctor photo: crop/resize/compress only; no generative processing on a real
+  face next to a BMDC number.
+- **2026-09-13** — Gallery and doctor card baked into HTML: in-app browsers and no-JS visitors
+  otherwise saw empty pages.
+- **2026-09-10** — Default text baked into HTML; set-domain tool; switched to omegadentalbd.com.
+- **2026-09-09** — Firebase Auth replaced the PIN; dashboard read-only when signed out;
+  owner lists hold **UIDs not emails** (config is public); Firestore limited to the owner UIDs.
+- **2026-09-09** — Website bookings become **pending records**; they turn into patient records
+  only when the patient arrives.
+- **2026-09-09** — Nothing invented about doctors: blank fields render as absent, no experience
+  figure, careers page uses WebPage not JobPosting.
+- **2026-09-07** — Before/after images labelled **illustrative** (not this clinic's patients).
+- **2026-09-06** — App Check (reCAPTCHA v3) added, **enforcement off** until metrics show
+  verified traffic; enforcing early would silently reject real bookings.
+- **2026-09-03** — Content editor publishes via Apps Script with the GitHub token in Script
+  Properties, path allowlist, Firebase login required. `main` is the deploy branch.
+- **2026-09-03** — Booking alerts: Apps Script email + Google Sheet, plus a 5-minute sweep so a
+  lost beacon never loses a booking.
+
+## Incidents
+
+- **2026-09-28 — Site down (domain).** Visitors got a Namecheap page. Cause: Namecheap
+  nameservers set to **"Custom DNS"** (`dns1/dns2.registrar-servers.com`), so the Advanced DNS
+  host records were ignored. Code and GitHub Pages were fine. Fix: switched to **Namecheap
+  BasicDNS**; host records (4 GitHub A records, `www` CNAME, Pages TXT) were already correct.
+  Lesson: never change nameserver mode; record kept in `ARCHITECTURE.md` §10.
+- **2026-09-23 — 10 of 15 homepage Book buttons opened an empty form.** Service names were
+  passed where the dropdown expects price names. Fixed on the branch (not yet live).
+- **2026-09-13 — English pages showed Bangla legal footer** for returning visitors; `legal.js`
+  now observes `data-lang`. Gallery page had no legal links at all; added.
+- **Before 2026-09-14 — Homepage blank** on a slow connection when a CDN script stalled.
+  Led to the no-third-party-JS rule.
+
+## Known issues (not yet fixed)
+
+See `TASKS.md` for the full list. Headline items: alert token exposed in page source (0.3);
+Firestore rules publication unconfirmed (0.4); README and IMAGES_GUIDE stale (1.1, 1.2);
+`--surface` undefined and `.blob` overflow (1.3, 1.4); homepage FAQ/testimonials empty without
+JS (1.6).
+
+## Open questions
+
+- Has the tightened `firestore.rules` been pasted into the Firebase Console?
+- Is the street address identical to the Google Business Profile?
+- Clinic answers for the FAQ (TASKS 2.1).
+
+## History note
+
+The local clone is shallow (~51 commits visible); commit messages reference several hundred
+earlier commits. Treat decisions above as the authoritative summary.
