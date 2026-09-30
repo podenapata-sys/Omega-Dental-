@@ -50,6 +50,9 @@
   resolve, no duplicate ids, JSON-LD parses, I18N key parity, every `?service=` resolves.
   *Done when:* it runs clean on `main` and fails on a deliberately broken link.
 
+- [x] **1.9 Before/after cards collapsed to ~13×10px** — `width:100%` on `.ba`, cache-buster
+  bumped. Done 2026-09-30 (on the branch; goes live with 0.1).
+
 ## Phase 2 — Needs the clinic
 
 - [ ] **2.1 Real FAQ answers** (sterilisation routine, same-day emergencies, payment methods,

@@ -10,7 +10,8 @@
 - **Live (`main`):** e5b20c1 (14 Sep) — last third-party script removed; referrer policy;
   frame-buster on admin pages.
 - **Branch `claude/tender-albattani-m04a9m`:** one commit ahead of `main` — b61ee90 (23 Sep),
-  Book buttons pre-select treatment, open-now badge, lighter form. Plus these project docs.
+  Book buttons pre-select treatment, open-now badge, lighter form. Plus these project docs and
+  the before/after layout fix (30 Sep).
   **Not yet merged.**
 - Domain restored 28 Sep after an outage (see incidents). Site confirmed loading.
 - Content: 15 services, 45 priced treatments in 10 categories, 14 service pages, 5 blog articles,
@@ -57,6 +58,12 @@
 
 ## Incidents
 
+- **2026-09-30 — Homepage before/after gallery empty (live since at least 3 Sep).** `.ba`
+  cards used `margin:0 auto` inside a grid, which shrinks a grid item to its content; the photos
+  are absolutely positioned, so each card collapsed to ~13×10px. Fixed on the branch with
+  `width:100%` (536×402 desktop, 362×272 phone); stylesheet cache-buster bumped to
+  `?v=20260930a` on all 28 pages, which also ships the branch's earlier `.pbook`/badge styles to
+  returning visitors. Found while taking portfolio screenshots.
 - **2026-09-28 — Site down (domain).** Visitors got a Namecheap page. Cause: Namecheap
   nameservers set to **"Custom DNS"** (`dns1/dns2.registrar-servers.com`), so the Advanced DNS
   host records were ignored. Code and GitHub Pages were fine. Fix: switched to **Namecheap
