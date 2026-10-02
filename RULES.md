@@ -6,7 +6,9 @@
 
 ## 0. The three that matter most
 
-1. **`main` is live.** A push to `main` is on omegadentalbd.com in about a minute. Work on a
+1. **`main` is live** (but see `MEMORY.md` → Current state: as of 2026-10-02 Pages serves the
+   working branch instead, so a push there is live too). A push to the live branch is on
+   omegadentalbd.com in about a minute. Work on a
    branch; the owner reviews and merges.
 2. **The repo is public and fully deployed.** Every file, including these `.md` files, is served
    on the domain. Never commit a secret, password, token value or personal data.

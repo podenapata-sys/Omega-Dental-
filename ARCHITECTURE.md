@@ -164,6 +164,8 @@ No CI runs any of these. The deploy workflow only uploads files.
 ## 10. Deploy and domain
 
 - Push to `main` → `pages.yml` uploads the whole repo (`path: .`) → live in about a minute.
+  ⚠ As of 2026-10-02 the Pages source is set to deploy the branch `claude/tender-albattani-m04a9m`
+  directly; see `MEMORY.md`.
   **Everything in the repo is public**, including these `.md` files.
 - Work happens on a branch; `main` is fast-forwarded after review.
 - Cache-busting: asset URLs carry `?v=YYYYMMDDx`. Bump it when a CSS/JS change must reach

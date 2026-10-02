@@ -5,14 +5,15 @@
 > (YYYY-MM-DD). Record *what* changed and *why*. Never paste secrets, tokens, passwords or
 > personal data — this file is public on the live domain.
 
-## Current state (2026-09-29)
+## Current state (2026-10-02)
 
-- **Live (`main`):** e5b20c1 (14 Sep) — last third-party script removed; referrer policy;
-  frame-buster on admin pages.
-- **Branch `claude/tender-albattani-m04a9m`:** one commit ahead of `main` — b61ee90 (23 Sep),
-  Book buttons pre-select treatment, open-now badge, lighter form. Plus these project docs and
-  the before/after layout fix (30 Sep).
-  **Not yet merged.**
+- **⚠ GitHub Pages is publishing the branch `claude/tender-albattani-m04a9m`, not `main`.**
+  Every push to that branch is live in about a minute (confirmed from the Pages build history:
+  23 Sep, 29 Sep, 30 Sep, 2 Oct). `main` (e5b20c1, 14 Sep) is behind and is NOT what visitors see.
+- The content editor (`publish.gs`) commits to `main`, so while this lasts, the clinic's
+  published edits would not reach the site. None have been made since 14 Sep.
+- Fix (TASKS 0.1): fast-forward `main` to the branch, then set Settings → Pages → Source to
+  **GitHub Actions** so `main` is live again.
 - Domain restored 28 Sep after an outage (see incidents). Site confirmed loading.
 - Content: 15 services, 45 priced treatments in 10 categories, 14 service pages, 5 blog articles,
   53 gallery photos, 1 doctor. 28 public pages.
@@ -58,6 +59,11 @@
 
 ## Incidents
 
+- **2026-10-02 — Before/after sliders blocked page scrolling on phones.** The invisible range
+  input covered the whole card with `touch-action:none`, so any touch on a photo dragged the
+  divider and the page would not scroll. Now only the divider (44px strip) starts a drag; the range
+  input stays for keyboard use. Verified with real touch events: swipe on a photo scrolls 345px
+  (was 0). Reported by the owner from his phone.
 - **2026-09-30 — Homepage before/after gallery empty (live since at least 3 Sep).** `.ba`
   cards used `margin:0 auto` inside a grid, which shrinks a grid item to its content; the photos
   are absolutely positioned, so each card collapsed to ~13×10px. Fixed on the branch with

@@ -8,7 +8,10 @@
 
 ## Phase 0 — Now (live-site safety)
 
-- [ ] **0.1 Review and merge the conversion branch.** · Owner: developer
+- [ ] **0.1 Review and merge the conversion branch — and make `main` live again.** · Owner: developer
+  ⚠ Pages currently serves this branch directly, so its commits are already live. Fast-forward
+  `main` to it, then Settings → Pages → Source: GitHub Actions. Until then the content editor
+  (which commits to `main`) does not update the site.
   Branch `claude/tender-albattani-m04a9m`, commit b61ee90: Book buttons pre-select the
   treatment (15 service cards, 45 price rows, 14 service pages), open-now badge, lighter form,
   clearer success message.
@@ -50,6 +53,8 @@
   resolve, no duplicate ids, JSON-LD parses, I18N key parity, every `?service=` resolves.
   *Done when:* it runs clean on `main` and fails on a deliberately broken link.
 
+- [x] **1.10 Before/after slider stole touch scrolling on phones** — drag only from the divider.
+  Done 2026-10-02.
 - [x] **1.9 Before/after cards collapsed to ~13×10px** — `width:100%` on `.ba`, cache-buster
   bumped. Done 2026-09-30 (on the branch; goes live with 0.1).
 

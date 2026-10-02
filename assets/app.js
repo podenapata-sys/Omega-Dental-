@@ -1112,14 +1112,28 @@ function initBA(el){
   const before = el.querySelector(".ba-before");
   const handle = el.querySelector(".ba-handle");
   const set = v=>{ before.style.clipPath="inset(0 "+(100-v)+"% 0 0)"; handle.style.left=v+"%"; };
-  range.addEventListener("input", e=>set(e.target.value));
+  range.addEventListener("input", e=>{ el.dataset.touched = "1"; set(e.target.value); });
+  // drag starts only on the divider, so a touch elsewhere on the photo still scrolls the page
+  const drag = e=>{
+    const r = el.getBoundingClientRect();
+    const v = Math.max(0, Math.min(100, (e.clientX - r.left) / r.width * 100));
+    range.value = v; set(v);
+  };
+  handle.addEventListener("pointerdown", e=>{
+    e.preventDefault();
+    el.dataset.touched = "1";
+    el.classList.remove("ba-anim");
+    handle.setPointerCapture(e.pointerId);
+    drag(e);
+  });
+  handle.addEventListener("pointermove", e=>{ if(handle.hasPointerCapture(e.pointerId)) drag(e); });
   set(50);
   // one-time auto-sweep when first scrolled into view (signals it's draggable)
   if(!window.matchMedia || !matchMedia("(prefers-reduced-motion: reduce)").matches){
     const demo = ()=>{
       el.classList.add("ba-anim");
       const steps = [82,22,50]; let i=0;
-      const next = ()=>{ if(i>=steps.length){ el.classList.remove("ba-anim"); return; }
+      const next = ()=>{ if(i>=steps.length || el.dataset.touched){ el.classList.remove("ba-anim"); return; }
         const v=steps[i++]; range.value=v; set(v); setTimeout(next, 760); };
       setTimeout(next, 400);
     };
