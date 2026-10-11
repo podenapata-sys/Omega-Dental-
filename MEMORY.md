@@ -63,6 +63,14 @@
 
 ## Incidents
 
+- **2026-10-11 — Security audit (owner asked for a full checklist).** Fixed in code:
+  (1) stored XSS — a booking ID chosen by a visitor was put unescaped into a dashboard
+  attribute; all IDs now escaped and `firestore.rules` only accepts 20-char auto IDs;
+  (2) Google Sheet formula injection from booking fields; (3) alert email escaping;
+  (4) alert flood — rate limit on beacon and sweep; (5) publish endpoint now validates file
+  contents (content.js must be the editor's JSON format; photos must be real JPEGs ≤3 MB);
+  (6) hard-coded alert token and recipient emails moved to Script Properties (they remain in
+  git history); (7) gallery `?cat=` could crash the page. Manual steps: TASKS 0.3, 0.5–0.7.
 - **2026-10-02 — Before/after sliders blocked page scrolling on phones.** The invisible range
   input covered the whole card with `touch-action:none`, so any touch on a photo dragged the
   divider and the page would not scroll. Now only the divider (44px strip) starts a drag; the range

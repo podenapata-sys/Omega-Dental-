@@ -330,7 +330,8 @@ document.addEventListener('keydown',function(e){
 
 /* pre-select filter from ?cat= (service → its gallery) */
 var qc=new URLSearchParams(location.search).get('cat');
-if(qc){var tb=document.querySelector('.gal-tag[data-cat="'+qc+'"]');
+var tb=null;
+if(qc){try{tb=document.querySelector('.gal-tag[data-cat="'+(window.CSS&&CSS.escape?CSS.escape(qc):qc.replace(/[^a-z0-9-]/gi,''))+'"]');}catch(e){tb=null;}
   if(tb){document.querySelectorAll('.gal-tag').forEach(function(b){b.classList.remove('active');});
     tb.classList.add('active');activeCat=qc;}}
 

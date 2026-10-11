@@ -16,8 +16,10 @@
  * ── SETUP (about five minutes, once) ────────────────────────────────────────
  * 1. Go to script.google.com and press "New project".
  * 2. Delete whatever is in the editor and paste this whole file in.
- * 3. Change TO_EMAIL below to the address that should receive the alerts, and
- *    change SHARED_TOKEN to any random word of your own.
+ * 3. Project Settings (gear) → Script Properties → add two properties:
+ *      TO_EMAIL      the address(es) that receive the alerts, comma-separated
+ *      SHARED_TOKEN  any random word of your own
+ *    They live there, not in this file, because this file is in a public repository.
  * 4. Press Deploy → New deployment → type "Web app".
  *      Execute as:      Me
  *      Who has access:  Anyone
@@ -57,9 +59,50 @@
    block in it holds the deployment settings.
    ──────────────────────────────────────────────────────────────────────────────── */
 
-var TO_EMAIL     = 'omegadental@gmail.com, noorayn408@gmail.com';
-var SHARED_TOKEN = 'Omega.JS';                // ← must match firebase-config.js
+/* Recipients and token come from Script Properties (see SETUP step 3). This file is in a
+   public repository, so neither the clinic's addresses nor the token is written here. */
+var TO_EMAIL     = _prop('TO_EMAIL');
+var SHARED_TOKEN = _prop('SHARED_TOKEN');      // ← must match OMEGA_ALERT_TOKEN in firebase-config.js
 var CLINIC_NAME  = 'Omega Dental';
+
+function _prop(k) {
+  try { return PropertiesService.getScriptProperties().getProperty(k) || ''; }
+  catch (e) { return ''; }
+}
+
+/* Text from the booking form, made safe to put inside the alert email's HTML. */
+function _h(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+/* A sheet cell that starts with = + - or @ is read as a formula, and a formula can send
+   other rows of the sheet to an outside address. A leading apostrophe keeps it as text. */
+function _cell(v) {
+  v = String(v == null ? '' : v);
+  return /^[=+\-@\t\r]/.test(v) ? "'" + v : v;
+}
+
+/* No more than ALERT_CAP alerts per 10 minutes overall, and PHONE_CAP per phone number.
+   The token is readable in the page source, so this is what keeps a script from flooding
+   the inbox and the sheet. Real bookings are nowhere near either number, and anything
+   held back here is still in Firestore and the dashboard. */
+var ALERT_CAP = 30, PHONE_CAP = 3;
+function _allowAlert(phone) {
+  try {
+    var cache = CacheService.getScriptCache();
+    var lock = LockService.getScriptLock(); lock.waitLock(5000);
+    try {
+      var slot = Math.floor(Date.now() / 600000);
+      var gk = 'alerts:' + slot, pk = 'alerts:' + slot + ':' + String(phone || '').replace(/\D/g, '').slice(-11);
+      var g = +(cache.get(gk) || 0), p = +(cache.get(pk) || 0);
+      if (g >= ALERT_CAP || p >= PHONE_CAP) return false;
+      cache.put(gk, String(g + 1), 900); cache.put(pk, String(p + 1), 900);
+      return true;
+    } finally { lock.releaseLock(); }
+  } catch (e) { return true; }   // never lose a real booking because the cache hiccuped
+}
 
 /** TO_EMAIL as MailApp wants it. Typing a list by hand invites a trailing comma, a
     stray semicolon or a line break, and MailApp rejects the whole send for one bad
@@ -78,13 +121,14 @@ function _recipients() {
 function _bookingEmail(d) {
   var name  = _clean(d.name) || '(no name given)';
   var phone = _clean(d.phone);
+  var tel   = phone.replace(/[^\d+]/g, '');
   var when  = [_clean(d.date), _clean(d.time)].filter(String).join(' at ') || 'not specified';
   var rows  = [
-    ['Patient',   name],
-    ['Phone',     phone ? '<a href="tel:' + phone + '">' + phone + '</a>' : '(not given)'],
-    ['Treatment', _clean(d.service) || 'not specified'],
-    ['Wants',     when],
-    ['Address',   _address(d) || '—']
+    ['Patient',   _h(name)],
+    ['Phone',     phone ? '<a href="tel:' + tel + '">' + _h(phone) + '</a>' : '(not given)'],
+    ['Treatment', _h(_clean(d.service) || 'not specified')],
+    ['Wants',     _h(when)],
+    ['Address',   _h(_address(d) || '—')]
   ];
   var body = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#1f2d3d">'
     + (d.emerg ? '<p style="background:#fde8e8;color:#c0392b;padding:10px;border-radius:8px">'
@@ -133,7 +177,9 @@ function doPost(e) {
        enough to write to the repository. Defined in publish.gs. */
     if (d && d.action === 'publish') return _ok(JSON.stringify(publishContent(d)));
 
+    if (!SHARED_TOKEN) { console.warn('SHARED_TOKEN is not set in Script Properties.'); return _ok('not configured'); }
     if (String(d.token || '') !== SHARED_TOKEN) return _ok('ignored');
+    if (!_allowAlert(d.phone)) return _ok('rate limited');
 
     /* Written down before anything else. If the mail quota is spent or Gmail is having
        a bad day the booking is still recorded. */
@@ -201,7 +247,7 @@ function _logBooking(d) {
   };
   var row = head.map(function (h) {
     var k = String(h).trim().toLowerCase();
-    return byName.hasOwnProperty(k) ? byName[k] : '';
+    return byName.hasOwnProperty(k) ? _cell(byName[k]) : '';
   });
   sh.insertRowBefore(2);
   sh.getRange(2, 1, 1, row.length).setValues([row]);
@@ -319,6 +365,13 @@ function sweepBookings() {
     var fp = _fingerprint(b.phone, new Date(b.createdAt));
 
     if (_alreadyHandled(fp)) {                          // the beacon got there first
+      skipped++;
+      if (b.createdAt > newest) newest = b.createdAt;
+      continue;
+    }
+
+    /* Over the flood limit: still in Firestore and the dashboard, just not emailed. */
+    if (!_allowAlert(b.phone)) {
       skipped++;
       if (b.createdAt > newest) newest = b.createdAt;
       continue;
@@ -500,10 +553,10 @@ function sendTestAlert() {
     website must match, how much mail quota is left, and where the sheet is. */
 function checkAlertSetup() {
   var to = _recipients();
-  console.log('Alerts are emailed to : ' + (to || 'NOBODY — TO_EMAIL has no valid address'));
+  console.log('Alerts are emailed to : ' + (to || 'NOBODY — add TO_EMAIL in Script Properties'));
   console.log('Number of recipients  : ' + (to ? to.split(',').length : 0)
             + '   (each booking uses that many of the daily sends)');
-  console.log('Token the site must send: ' + SHARED_TOKEN
+  console.log('Token the site must send: ' + (SHARED_TOKEN || 'NOT SET — add SHARED_TOKEN in Script Properties')
             + '   (must equal OMEGA_ALERT_TOKEN in assets/firebase-config.js)');
   console.log('Emails left to send today: ' + MailApp.getRemainingDailyQuota());
   console.log('Bookings sheet: ' + (_sheetUrl() || 'not created yet'));

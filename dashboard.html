@@ -1133,8 +1133,8 @@ tbody tr:hover td.actions{background:#f8fcfb}
       + "You have an outstanding balance of Tk "+(due).toLocaleString("en-IN")
       + " for "+(r.service||"your treatment")+" on "+dmy(r.date)+". Please contact us to settle it. Thank you.";
     return "<a class='rowbtn' target='_blank' rel='noopener' title='Send payment reminder' "
-      + "aria-label='Send WhatsApp payment reminder' href='https://wa.me/88"+d
-      + "?text="+encodeURIComponent(msg)+"'>💬</a>";
+      + "aria-label='Send WhatsApp payment reminder' href='"+esc("https://wa.me/88"+d
+      + "?text="+encodeURIComponent(msg))+"'>💬</a>";
   }
 
   function bars(items, el){
@@ -1195,16 +1195,16 @@ tbody tr:hover td.actions{background:#f8fcfb}
           (!signedIn
             ? (due>0 ? waBtn(r,due) : "")
             : view==="bin"
-            ? "<button class='rowbtn' data-restore='"+r._id+"' title='Restore' aria-label='Restore record'>↩️</button>"+
-              "<button class='rowbtn' data-purge='"+r._id+"' title='Delete forever' aria-label='Delete forever'>❌</button>"
+            ? "<button class='rowbtn' data-restore='"+esc(r._id)+"' title='Restore' aria-label='Restore record'>↩️</button>"+
+              "<button class='rowbtn' data-purge='"+esc(r._id)+"' title='Delete forever' aria-label='Delete forever'>❌</button>"
             : (r.pending
-                ? "<button class='rowbtn' data-came='"+r._id+"' title='The patient arrived' aria-label='Mark as arrived'>✅</button>"
+                ? "<button class='rowbtn' data-came='"+esc(r._id)+"' title='The patient arrived' aria-label='Mark as arrived'>✅</button>"
                 : "")+
               (due>0 ? waBtn(r,due) : "")+
-              (due>0 ? "<button class='rowbtn' data-pay='"+r._id+"' title='Take a payment' aria-label='Take a payment'>💵</button>" : "")+
-              "<button class='rowbtn' data-new='"+r._id+"' title='New treatment for this patient' aria-label='New treatment for this patient'>➕</button>"+
-              "<button class='rowbtn' data-edit='"+r._id+"' title='Edit' aria-label='Edit record'>✏️</button>"+
-              "<button class='rowbtn' data-del='"+r._id+"' title='Delete' aria-label='Delete record'>🗑️</button>")+
+              (due>0 ? "<button class='rowbtn' data-pay='"+esc(r._id)+"' title='Take a payment' aria-label='Take a payment'>💵</button>" : "")+
+              "<button class='rowbtn' data-new='"+esc(r._id)+"' title='New treatment for this patient' aria-label='New treatment for this patient'>➕</button>"+
+              "<button class='rowbtn' data-edit='"+esc(r._id)+"' title='Edit' aria-label='Edit record'>✏️</button>"+
+              "<button class='rowbtn' data-del='"+esc(r._id)+"' title='Delete' aria-label='Delete record'>🗑️</button>")+
         "</td>"+
       "</tr>";
     });
@@ -1578,7 +1578,7 @@ tbody tr:hover td.actions{background:#f8fcfb}
           + (when?"<span style='color:var(--muted);font-size:.78rem'>"+esc(when)+"</span>":"")
           + (alreadyAdded(d.id)
               ? "<span class='badge' style='background:#e8f6f1;color:#2c8a78'>&#10003; Added</span>"
-              : "<button class='btn btn-p btn-sm' data-add='"+d.id+"' style='width:auto'>&#10133; Add</button>")
+              : "<button class='btn btn-p btn-sm' data-add='"+esc(d.id)+"' style='width:auto'>&#10133; Add</button>")
         + "</div>"
         + "<div style='color:var(--muted);font-size:.85rem;margin-top:6px'>"
           + esc(b.service||"—") + (b.date?(" · "+esc(b.date)):"") + (b.time?(" "+esc(b.time)):"")

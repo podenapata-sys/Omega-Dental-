@@ -23,12 +23,22 @@
   (registered 13 Sep 2026).
   *Done when:* no verification warning in Namecheap; nameservers show **Namecheap BasicDNS**.
 
-- [ ] **0.3 Rotate the booking-alert token.** · Owner: developer
-  `OMEGA_ALERT_TOKEN` is readable in page source and hard-coded as `SHARED_TOKEN` in
-  `tools/booking-alert.gs`. Move `SHARED_TOKEN` to a Script Property, set a new value, update
-  `assets/firebase-config.js` to match, redeploy the Apps Script.
-  *Done when:* a test booking still produces an email and a sheet row; the old value no longer
-  appears in any tracked file.
+- [ ] **0.3 Deploy the hardened Apps Script (code done 2026-10-11).** · Owner: developer
+  `tools/booking-alert.gs` now reads `TO_EMAIL` and `SHARED_TOKEN` from Script Properties
+  (no longer hard-coded), escapes the alert email, stores sheet values as text (no formula
+  injection) and rate-limits alerts (30 per 10 min, 3 per phone). `tools/publish.gs` checks
+  file contents. In Apps Script: add Script Properties `TO_EMAIL` and `SHARED_TOKEN` (=
+  `OMEGA_ALERT_TOKEN` in `firebase-config.js`), paste both files, Deploy → Manage deployments →
+  edit → New version. *Done when:* `checkAlertSetup` shows both, and a test booking emails.
+- [ ] **0.5 Publish the updated `firestore.rules`** (booking IDs must be auto-generated). ·
+  Owner: developer. Console → Firestore → Rules → paste → Publish.
+- [ ] **0.6 Turn off public sign-up** in Firebase → Authentication → Settings → User actions →
+  untick "Enable create (sign-up)". The owner list already blocks strangers; this stops
+  account creation outright.
+- [ ] **0.7 Replace `assets/vendor/xlsx.full.min.js` (SheetJS 0.18.5) with 0.20.3+** from
+  cdn.sheetjs.com. 0.18.5 has known flaws when *reading* files (prototype pollution,
+  CVE-2023-30533; ReDoS, CVE-2024-22363), which the dashboard's "Import backup" does.
+  Until then, only import backups this dashboard exported.
 
 - [ ] **0.4 Confirm the Firestore rules are published.** · Owner: developer
   `firestore.rules` is only a record. *Done when:* the Console's rules match the file exactly

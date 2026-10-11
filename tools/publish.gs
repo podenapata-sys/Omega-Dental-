@@ -51,7 +51,7 @@ function publishContent(d) {
   if (files.length > 60) return { ok: false, error: 'Too many files in one publish.' };
 
   for (var i = 0; i < files.length; i++) {
-    var bad = _pathAllowed(files[i].path);
+    var bad = _pathAllowed(files[i].path) || _contentAllowed(files[i]);
     if (bad) return { ok: false, error: bad };
   }
 
@@ -103,6 +103,38 @@ function _pathAllowed(p) {
      because there is no thumbnail strip for doctors. */
   if (/^assets\/doctors\/(cards\/)?[a-z0-9-]{1,40}\.jpg$/.test(p)) return '';
   return 'This publish tried to write somewhere it should not: ' + p;
+}
+
+/** What is inside each file, not just where it goes. content.js is loaded as a script on
+    every page, so it must be exactly what the editor writes — a comment and
+    `window.OMEGA_CONTENT = <JSON>;` — and nothing that could run. Photos must really be
+    JPEGs of a sane size. Even a stolen dashboard login cannot publish code this way. */
+var MAX_JPG_BYTES = 3 * 1024 * 1024, MAX_CONTENT_BYTES = 400 * 1024;
+function _contentAllowed(f) {
+  var bytes;
+  try { bytes = Utilities.base64Decode(String(f.content || '')); }
+  catch (e) { return 'A file was not valid base64: ' + f.path; }
+  if (!bytes.length) return 'A file was empty: ' + f.path;
+
+  if (/\.jpg$/.test(f.path)) {
+    if (bytes.length > MAX_JPG_BYTES) return 'Photo too large (max 3 MB): ' + f.path;
+    // JPEG files start FF D8 FF; Apps Script bytes are signed, so that is -1, -40, -1
+    if (bytes[0] !== -1 || bytes[1] !== -40 || bytes[2] !== -1) return 'Not a JPEG photo: ' + f.path;
+    return '';
+  }
+
+  if (f.path === 'assets/content.js') {
+    if (bytes.length > MAX_CONTENT_BYTES) return 'content.js is unexpectedly large.';
+    var text = Utilities.newBlob(bytes).getDataAsString('UTF-8');
+    var m = /^\s*\/\*[\s\S]*?\*\/\s*window\.OMEGA_CONTENT = ([\s\S]*);\s*$/.exec(text);
+    if (!m) return 'content.js is not in the editor\'s format.';
+    var data;
+    try { data = JSON.parse(m[1]); } catch (e) { return 'content.js data is not valid JSON.'; }
+    if (!data || typeof data !== 'object' || !Array.isArray(data.prices) || !Array.isArray(data.services))
+      return 'content.js is missing prices or services.';
+    return '';
+  }
+  return 'Unexpected file: ' + f.path;
 }
 
 /* ---------- one atomic commit ---------- */

@@ -78,7 +78,10 @@ service cloud.firestore {
       // Free Callback" form on the homepage. Both write here on purpose: this is
       // the only collection a visitor may create in, and the dashboard already
       // renders it. Callbacks are marked with kind:"callback".
-      allow create: if validBooking(request.resource.data);
+      // Auto-generated IDs only (addDoc gives 20 letters/digits): an ID the visitor
+      // chooses could carry quotes into the dashboard's markup.
+      allow create: if bookingId.matches('^[A-Za-z0-9]{20}$')
+                    && validBooking(request.resource.data);
 
       // Only the named accounts may read them. Bookings hold patient names and
       // phone numbers, so "any signed-in account" was never a boundary.

@@ -142,10 +142,12 @@ account; removing it silently stops reminders and the sweep.
 `OMEGA_ALERT_TOKEN`.
 
 Apps Script **Script Properties** (never in the repo): `GITHUB_TOKEN`, `FB_API_KEY`, `FB_EMAIL`,
-`FB_PASSWORD`, `BOOKINGS_SHEET_ID`, sweep state.
+`FB_PASSWORD`, `TO_EMAIL`, `SHARED_TOKEN`, `BOOKINGS_SHEET_ID`, sweep state.
 
-Known weakness: `OMEGA_ALERT_TOKEN` is readable in page source and matches `SHARED_TOKEN`
-hard-coded in `tools/booking-alert.gs`. It only filters casual spam; see `TASKS.md`.
+`OMEGA_ALERT_TOKEN` is readable in page source by design and must equal `SHARED_TOKEN`. It
+only filters casual bots; the real protection against floods is the alert rate limit in
+`booking-alert.gs` (30 per 10 minutes, 3 per phone number), and every booking is in Firestore
+regardless.
 
 ## 9. tools/
 

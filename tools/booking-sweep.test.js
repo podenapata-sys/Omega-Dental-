@@ -13,11 +13,13 @@ const fs = require('fs');
 const src = fs.readFileSync(require('path').join(__dirname, 'booking-alert.gs'), 'utf8');
 
 function makeEnv(opts){
-  const props = Object.assign({}, opts.props||{});
+  const props = Object.assign({ TO_EMAIL: 'clinic@example.com', SHARED_TOKEN: 'test-token' }, opts.props||{});
   const sent = [], logged = [], fetches = [];
   const env = {
     PROJECT_ID: 'omega-dendal',
     _signIn: () => opts.token === undefined ? 'TOKEN' : opts.token,
+    CacheService: { getScriptCache: () => ({ get: k => (env._cache[k] ?? null), put: (k,v) => { env._cache[k] = v; } }) },
+    LockService: { getScriptLock: () => ({ waitLock(){}, releaseLock(){} }) },
     PropertiesService: { getScriptProperties: () => ({
       getProperty: k => (k in props ? props[k] : null),
       setProperty: (k,v) => { props[k] = String(v); }
@@ -51,9 +53,10 @@ function makeEnv(opts){
   const fn = new Function(...names, src + `
     _logBooking = function(d){ __logged.push(d); };
     return { sweepBookings, _newBookings, _fingerprint, _markHandled, _alreadyHandled,
-             _handledList, _bookingEmail, doPost, installBookingSweep, _address, _recipients };`
+             _handledList, _bookingEmail, doPost, installBookingSweep, _address, _recipients, _cell };`
     .replace('__logged', 'console.__logged'));
   env.console.__logged = logged;
+  env._cache = {};
   const api = fn(...names.map(n => env[n]));
   return { api, props, sent, logged, fetches, env };
 }
@@ -133,7 +136,7 @@ console.log('--- the beacon got there first');
 console.log('--- doPost records the fingerprint it just sent');
 {
   const {api, props, sent} = makeEnv({});
-  api.doPost({postData:{contents:JSON.stringify({token:'Omega.JS',name:'Rahim',phone:'01711223344'})}});
+  api.doPost({postData:{contents:JSON.stringify({token:'test-token',name:'Rahim',phone:'01711223344'})}});
   ok('email sent',          sent.length, 1);
   ok('fingerprint stored',  JSON.parse(props.handled).length, 1);
 }
@@ -179,7 +182,7 @@ console.log('--- both senders produce the identical email');
   const {api} = makeEnv({});
   const b = {name:'Nusrat',phone:'01712345678',service:'RCT',date:'05-10-2026',
              time:'11:30 AM',address:'Road 5, Banani',emerg:false};
-  const viaBeacon = api._bookingEmail(Object.assign({token:'Omega.JS'}, b));
+  const viaBeacon = api._bookingEmail(Object.assign({token:'test-token'}, b));
   const viaSweep  = api._bookingEmail(Object.assign({createdAt:'2026-09-04T05:00:00Z'}, b));
   ok('byte-identical body',    viaBeacon.body, viaSweep.body);
   ok('byte-identical subject', viaBeacon.subject, viaSweep.subject);
@@ -193,5 +196,34 @@ console.log('--- installing the trigger');
   api.installBookingSweep();
   ok('trigger created', env._created, true);
 }
+
+/* ---- security hardening (2026-10-11) ---- */
+{
+  const {api, sent} = makeEnv({});
+  const m = api._bookingEmail({ name:'<img src=x onerror=alert(1)>"\'', phone:'017"><b>x', service:'a&b', date:'', time:'' });
+  ok('email: no raw quote breaks out of markup', /"\s*onerror|<img|<b>x/.test(m.body), false);
+  ok('email: ampersand escaped', m.body.includes('a&amp;b'), true);
+  ok('email: tel link holds digits only', /href="tel:017"/.test(m.body), true);
+}
+{
+  const {api} = makeEnv({});
+  ok('sheet: formula is stored as text', api._cell('=IMPORTDATA("x")'), "'=IMPORTDATA(\"x\")");
+  ok('sheet: +880 phone kept as text', api._cell('+8801711'), "'+8801711");
+  ok('sheet: ordinary text untouched', api._cell('Rahim'), 'Rahim');
+}
+{
+  const {api, sent} = makeEnv({ props:{ SHARED_TOKEN: '' } });
+  const r = api.doPost({postData:{contents:JSON.stringify({token:'',name:'X',phone:'01711223344'})}});
+  ok('no token configured: nothing sent', sent.length, 0);
+  ok('no token configured: says so', r, 'not configured');
+}
+{
+  const {api, sent} = makeEnv({});
+  const res = [];
+  for (let i = 0; i < 5; i++) res.push(api.doPost({postData:{contents:JSON.stringify({token:'test-token',name:'Spam'+i,phone:'01799999999'})}}));
+  ok('rate limit: 3 per phone emailed', sent.length, 3);
+  ok('rate limit: rest refused', res.slice(3).every(x => x === 'rate limited'), true);
+}
+
 console.log(fail ? `\n${fail} FAILED` : '\nall passed');
 process.exit(fail ? 1 : 0);
