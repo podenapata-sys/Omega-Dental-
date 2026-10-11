@@ -21,6 +21,10 @@
 
 ## Decisions (with reasons)
 
+- **2026-10-11** — Prices changed at the clinic's request: Permanent Tooth Extraction
+  ৳4,000–5,000 (was 2,000–5,000), Surgical Tooth Extraction ৳10,000–12,000 (was 8,000–12,000).
+  Updated in `content.js` (price list, calculator, booking, dashboard), the extraction page
+  comparison table, treatments.html JSON-LD and `gen-services.js`; `content.js?v=4`.
 - **2026-09-29** — Six project docs added at the repo root. They deploy publicly, so they hold no
   secret values or personal data by design.
 - **2026-09-23** — Booking links accept an exact price name *or* a service slug

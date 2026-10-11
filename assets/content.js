@@ -236,8 +236,8 @@ window.OMEGA_CONTENT = (function () {
   
     // 10. Painless Extraction & Surgery  (+ 11. Kids: milk-tooth)
     { c:"surgery", slug:"extractions", n:"Deciduous (Milk) Tooth Extraction", nb:"দুধ দাঁত তোলা", min:1000, max:1000 },
-    { c:"surgery", slug:"extractions", n:"Permanent Tooth Extraction", nb:"স্থায়ী দাঁত তোলা", min:2000, max:5000 },
-    { c:"surgery", slug:"extractions", n:"Surgical Tooth Extraction", nb:"সার্জিক্যাল দাঁত তোলা", min:8000, max:12000 },
+    { c:"surgery", slug:"extractions", n:"Permanent Tooth Extraction", nb:"স্থায়ী দাঁত তোলা", min:4000, max:5000 },
+    { c:"surgery", slug:"extractions", n:"Surgical Tooth Extraction", nb:"সার্জিক্যাল দাঁত তোলা", min:10000, max:12000 },
     { c:"surgery", slug:"extractions", n:"Frenectomy", nb:"ফ্রেনেকটমি", min:3000, max:3000 },
     { c:"surgery", slug:"extractions", n:"Operculectomy", nb:"অপারকুলেকটমি", min:3000, max:3000 },
     { c:"surgery", slug:"extractions", n:"Cyst/Tumor Removal", nb:"সিস্ট/টিউমার অপসারণ", per:true, min:10000, max:18000 },
