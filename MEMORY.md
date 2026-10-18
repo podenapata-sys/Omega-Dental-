@@ -5,22 +5,39 @@
 > (YYYY-MM-DD). Record *what* changed and *why*. Never paste secrets, tokens, passwords or
 > personal data — this file is public on the live domain.
 
-## Current state (2026-10-02)
+## Current state (2026-10-18)
 
-- **⚠ GitHub Pages is publishing the branch `claude/tender-albattani-m04a9m`, not `main`.**
-  Every push to that branch is live in about a minute (confirmed from the Pages build history:
-  23 Sep, 29 Sep, 30 Sep, 2 Oct). `main` (e5b20c1, 14 Sep) is behind and is NOT what visitors see.
-- The content editor (`publish.gs`) commits to `main`, so while this lasts, the clinic's
-  published edits would not reach the site. None have been made since 14 Sep.
-- Fix (TASKS 0.1): fast-forward `main` to the branch, then set Settings → Pages → Source to
-  **GitHub Actions** so `main` is live again.
+- **`main` is live**, deployed by GitHub Actions (Pages source switched to Actions on 11 Oct;
+  no branch deploys since). The working branch `claude/tender-albattani-m04a9m` is
+  fast-forwarded into `main` after each reviewed change.
+- Prices: one list in `content.js`; `tools/sync-prices.js` copies it into the service tables,
+  treatments cards and JSON-LD, and the deploy runs it. Five prices await the clinic (TASKS 2.5).
+- Apps Script: the hardened `booking-alert.gs` / `publish.gs` are in the repo but must be pasted
+  and redeployed by hand (TASKS 0.3). Until then the live publish endpoint is the old one.
 - Domain restored 28 Sep after an outage (see incidents). Site confirmed loading.
-- Content: 15 services, 45 priced treatments in 10 categories, 14 service pages, 5 blog articles,
+- Content: 15 services, 52 priced treatments in 10 categories, 14 service pages, 5 blog articles,
   53 gallery photos, 1 doctor. 28 public pages.
 - Open work: `TASKS.md`. Phase 0 is the priority.
 
 ## Decisions (with reasons)
 
+- **2026-10-18** — **One price list.** Each price row has a fixed `id`; pages link to it
+  (`data-price`, `data-svc`) and `tools/sync-prices.js` fills them, run by the deploy so an editor
+  publish (which commits only `content.js`) updates every page. Chosen over runtime-only JS so
+  Google and no-JS visitors see the same prices. The sync never fails the deploy.
+- **2026-10-18** — Prices at the owner's direction: Front Tooth RCT ৳5,000, Back Tooth RCT
+  ৳6,000 (was ৳5,000 on the page), "Root Canal Treatment (RCT)" ৳5,000–6,000. Cosmetic page
+  prices (Smile Design, Rabbit Tooth, Hollywood Smile, Tooth Jewelry, Blackish Gum) added to the
+  price list at their page values. Teeth Scaling and Flexible Denture cells now show the list's
+  ranges (৳1,500–2,500; ৳5,000–8,000). Treatments cards show the homepage card prices (7
+  changed). Composite Crown and Tooth Shaping left unlinked pending the clinic.
+- **2026-10-18** — Cosmetic Book links open the form unselected (`SERVICE_DEFAULT` `""`): the
+  service now has five priced rows and pre-picking Smile Design would guess.
+- **2026-10-18** — Editor drafts keep their `base`; a mismatch with live pauses publishing
+  (merge or start fresh). `publish.gs` additionally refuses content.js without unique price ids,
+  so an old cached editor cannot undo the change either.
+- **2026-10-18** — No personal data in publish commit messages (the repo is public); the
+  clinic's login email had been written into every editor commit.
 - **2026-10-11** — Prices changed at the clinic's request: Permanent Tooth Extraction
   ৳4,000–5,000 (was 2,000–5,000), Surgical Tooth Extraction ৳10,000–12,000 (was 8,000–12,000).
   Updated in `content.js` (price list, calculator, booking, dashboard), the extraction page
@@ -63,6 +80,15 @@
 
 ## Incidents
 
+- **2026-10-18 — Editor audit (owner asked to check the editor; fixed the same week).**
+  (1) A draft saved on a device loaded over newer live content without warning and could be
+  published back. (2) 100 prices outside `content.js` (42 table cells, 13 cards, 45 JSON-LD
+  offers) never followed the editor, and 4 already disagreed with it. (3) The editor's draft
+  had no `photos` list, so the first publish would have removed it from content.js, and a
+  publish with a new photo would have shown an error after committing. (4) Token expiry was
+  invisible until publishing failed. No editor publish had happened yet, so nothing was lost.
+  Verified: 40 linked cells equal the list on all 14 pages in Chromium; editor scenarios
+  (old draft, merge, start fresh, reload during deploy) and a faked end-to-end publish pass.
 - **2026-10-11 — Security audit (owner asked for a full checklist).** Fixed in code:
   (1) stored XSS — a booking ID chosen by a visitor was put unescaped into a dashboard
   attribute; all IDs now escaped and `firestore.rules` only accepts 20-char auto IDs;
@@ -96,7 +122,8 @@
 
 ## Known issues (not yet fixed)
 
-See `TASKS.md` for the full list. Headline items: alert token exposed in page source (0.3);
+See `TASKS.md` for the full list. Headline items: five prices await the clinic (2.5);
+alert token exposed in page source (0.3);
 Firestore rules publication unconfirmed (0.4); README and IMAGES_GUIDE stale (1.1, 1.2);
 `--surface` undefined and `.blob` overflow (1.3, 1.4); homepage FAQ/testimonials empty without
 JS (1.6).

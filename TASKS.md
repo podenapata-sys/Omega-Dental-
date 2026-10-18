@@ -8,15 +8,9 @@
 
 ## Phase 0 — Now (live-site safety)
 
-- [ ] **0.1 Review and merge the conversion branch — and make `main` live again.** · Owner: developer
-  ⚠ Pages currently serves this branch directly, so its commits are already live. Fast-forward
-  `main` to it, then Settings → Pages → Source: GitHub Actions. Until then the content editor
-  (which commits to `main`) does not update the site.
-  Branch `claude/tender-albattani-m04a9m`, commit b61ee90: Book buttons pre-select the
-  treatment (15 service cards, 45 price rows, 14 service pages), open-now badge, lighter form,
-  clearer success message.
-  *Done when:* reviewed on a phone, fast-forwarded into `main`, live site checked in both
-  languages. Record the weekly booking count **before** merging, for comparison.
+- [x] **0.1 Make `main` live again.** `main` fast-forwarded to the branch (2 Oct) and
+  Settings → Pages → Source set to GitHub Actions (11 Oct); no branch deploys since. Done
+  2026-10-11.
 
 - [ ] **0.2 Domain contact verification.** · Owner: developer (Namecheap account)
   Registrar requires the contact email to be verified within 15 days of registration
@@ -30,6 +24,10 @@
   file contents. In Apps Script: add Script Properties `TO_EMAIL` and `SHARED_TOKEN` (=
   `OMEGA_ALERT_TOKEN` in `firebase-config.js`), paste both files, Deploy → Manage deployments →
   edit → New version. *Done when:* `checkAlertSetup` shows both, and a test booking emails.
+  **Updated 2026-10-18:** `publish.gs` also refuses a content.js without price ids, warns 30
+  days before the GitHub token expires, no longer puts the clinic's login email in commit
+  messages, and has `checkPublishSetup()`. After pasting it, run `checkPublishSetup` once and
+  note the expiry date; if under 30 days, renew the token (setup step 1) now.
 - [ ] **0.5 Publish the updated `firestore.rules`** (booking IDs must be auto-generated). ·
   Owner: developer. Console → Firestore → Rules → paste → Publish.
 - [ ] **0.6 Turn off public sign-up** in Firebase → Authentication → Settings → User actions →
@@ -63,6 +61,14 @@
   resolve, no duplicate ids, JSON-LD parses, I18N key parity, every `?service=` resolves.
   *Done when:* it runs clean on `main` and fails on a deliberately broken link.
 
+- [x] **1.12 Editor: stale drafts and the photo list.** A draft saved on a device used to load
+  over newer live content and could be published back; now drafts carry their base and the
+  editor pauses publishing on a mismatch. The draft also never held `photos`, so a publish would
+  have dropped the list from content.js (and errored after committing a new photo). Done
+  2026-10-18.
+- [x] **1.11 One price list for the whole site.** Price rows have ids; 40 service-table cells,
+  13 treatments cards and the treatments JSON-LD follow `content.js` via `tools/sync-prices.js`,
+  which the deploy runs. Done 2026-10-18.
 - [x] **1.10 Before/after slider stole touch scrolling on phones** — drag only from the divider.
   Done 2026-10-02.
 - [x] **1.9 Before/after cards collapsed to ~13×10px** — `width:100%` on `.ba`, cache-buster
@@ -77,6 +83,15 @@
   character, in `app.js` (`contact_addr`) and the JSON-LD.
 - [ ] **2.3 Real before/after photos** with patient consent, to replace the illustrative set.
 - [ ] **2.4 Ask for Google reviews** using the review QR at the front desk.
+- [ ] **2.5 Confirm five prices with the clinic** (asked 2026-10-18). · Owner: clinic answers,
+  developer edits `content.js` (or the clinic uses the editor) and links the cell.
+  (a) Composite Crown: crowns page ৳5,000, price list ৳6,500 — cell unlinked.
+  (b) Tooth Shaping: cosmetic page ৳3,500, price list (fillings) ৳500 — same treatment? Cell
+  unlinked. (c) Milk tooth extraction: ৳1,000 (surgery list) and ৳1,500 (kids list) — which?
+  (d) "Painless Extraction & Surgery" headline ৳5,000–8,000, while its rows run ৳1,000–18,000.
+  (e) Dentures headline ৳5,000–8,000, while complete denture is ৳22,000.
+  *Done when:* each has one answer in `content.js`, (a)/(b) cells carry `data-price`, and
+  `sync-prices.js --check` is clean.
 
 ## Phase 3 — Hardening
 

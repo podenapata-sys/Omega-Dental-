@@ -37,8 +37,8 @@ const VER = "20260627i";
    patient who read a whole service page and then tapped Book landed on an empty
    form and had to find the treatment again. Resolve the page's slug to its first
    priced row at generation time and put that in the query string.
-   A service with no priced row (cosmetic-dentistry) keeps the plain link rather
-   than guessing at something close. */
+   A service mapped to "" in SERVICE_DEFAULT (cosmetic-dentistry: five unrelated
+   treatments) keeps the plain link rather than guessing at one. */
 const PRICE_LIST = (() => {
   const g = {};
   new Function("window", fs.readFileSync(path.join(__dirname, "../assets/content.js"), "utf8"))(g);
@@ -47,8 +47,9 @@ const PRICE_LIST = (() => {
 /* Same override as SERVICE_DEFAULT in assets/app.js — keep the two in step. The
    extractions page is about adult and surgical extraction; its first priced row is
    the ৳1,000 milk-tooth one, which is a child's price for a grown patient. */
-const SERVICE_DEFAULT = { "extractions":"Permanent Tooth Extraction" };
+const SERVICE_DEFAULT = { "extractions":"Permanent Tooth Extraction", "cosmetic-dentistry":"" };
 function bookHref(slug){
+  if (slug in SERVICE_DEFAULT && !SERVICE_DEFAULT[slug]) return "../book.html";   // no preselect
   const name = SERVICE_DEFAULT[slug];
   const p = (name && PRICE_LIST.find(p => p.n === name)) || PRICE_LIST.find(p => p.slug === slug);
   return "../book.html" + (p ? "?service=" + encodeURIComponent(p.n) : "");
@@ -246,12 +247,12 @@ const SERVICES = [
 const COSTS = {
   "root-canal":[
     ["Front Tooth RCT (Single Canal)","সামনের দাঁত RCT (সিঙ্গেল ক্যানেল)","৳7,000–8,000","৳5,000"],
-    ["Back Tooth RCT (Multi-Canal)","পেছনের দাঁত RCT (মাল্টি-ক্যানেল)","৳8,000–9,000","৳5,000"],
+    ["Back Tooth RCT (Multi-Canal)","পেছনের দাঁত RCT (মাল্টি-ক্যানেল)","৳8,000–9,000","৳6,000"],
     ["Single Visit RCT with Filling","সিঙ্গেল ভিজিট RCT + ফিলিং","৳14,000–16,000","৳12,000"],
     ["Re-RCT (Failed Case)","রি-RCT (ব্যর্থ কেস)","৳8,000–10,000","৳6,500"],
     ["Wisdom Tooth RCT","আক্কেল দাঁত RCT","৳10,000–11,000","৳8,000"]],
   "scaling-polishing":[
-    ["Teeth Scaling","দাঁত স্কেলিং","৳2,000–2,500","৳1,500"],
+    ["Teeth Scaling","দাঁত স্কেলিং","৳2,000–2,500","৳1,500–2,500"],
     ["Teeth Polishing","দাঁত পলিশিং","৳1,500–2,000","৳1,000"],
     ["Gum Treatment","মাড়ির চিকিৎসা","৳10,000–12,000","৳8,500"]],
   "tooth-fillings":[
@@ -272,7 +273,7 @@ const COSTS = {
     ["Composite Veneer (Advance)","কম্পোজিট ভিনেয়ার (অ্যাডভান্স)","৳8,000–10,000","৳5,500–7,500"]],
   "dentures":[
     ["Partial Denture (per tooth)","পার্শিয়াল ডেনচার (প্রতি দাঁত)","৳5,000–6,500","৳4,000–5,000"],
-    ["Flexible Denture","ফ্লেক্সিবল ডেনচার","৳10,000–12,000","৳8,000"],
+    ["Flexible Denture","ফ্লেক্সিবল ডেনচার","৳10,000–12,000","৳5,000–8,000"],
     ["Complete Denture","কমপ্লিট ডেনচার","৳25,000–30,000","৳22,000"]],
   "braces-aligners":[
     ["Orthodontic Braces","অর্থোডন্টিক ব্রেসেস","৳30,000–40,000","৳25,000 + ৳6,000/mo"],

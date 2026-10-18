@@ -1,6 +1,7 @@
 # ARCHITECTURE — Omega Dental website
 
-> How the site is built and how its parts connect. Verified against the code on 29 Sep 2026.
+> How the site is built and how its parts connect. Verified against the code on 29 Sep 2026;
+> price sync and editor draft checks added 18 Oct 2026.
 > If you change the structure, update this file in the same commit.
 >
 > Public file. Configuration values are referred to by **name** only.
@@ -9,8 +10,8 @@
 
 | Layer | Technology | Cost |
 |---|---|---|
-| Pages | Static HTML + one stylesheet + vanilla JS. No framework, no npm, no build step | — |
-| Hosting | GitHub Pages, deployed by `.github/workflows/pages.yml` on push to `main` | ৳0 |
+| Pages | Static HTML + one stylesheet + vanilla JS. No framework, no npm; the only deploy step is a dependency-free price sync | — |
+| Hosting | GitHub Pages, deployed by `.github/workflows/pages.yml` on push to `main` (Pages source: GitHub Actions) | ৳0 |
 | Domain | `omegadentalbd.com` (Namecheap), `CNAME` file in repo root | yearly renewal |
 | Database / auth | Firebase Spark: Firestore, Authentication (email/password), App Check (reCAPTCHA v3) | ৳0 |
 | Server-side jobs | Google Apps Script web app: booking alerts, sweep, reminders, publishing | ৳0 |
@@ -37,7 +38,7 @@ assets/
   app.js                homepage/booking logic, I18N table, contact constants, HOURS
   booking-cloud.js      Firebase init, App Check, omegaSaveBooking(), live site/stats
   firebase-config.js    public config globals (see §8)
-  service-content.js    re-prices service pages from content.js
+  service-content.js    re-prices service pages from content.js (headline + linked table cells)
   admin-gate.js         3 quick taps on the footer logo → dashboard
   brand-highlight.js    styles the clinic name inside running text
   legal.js              footer legal links, disclaimer line, cookie banner (data-lg)
@@ -57,13 +58,29 @@ tools/                  generators, bake scripts, Apps Script sources (run by ha
 | Key | Count | Used by |
 |---|---|---|
 | `cats` | 10 | price table grouping |
-| `prices` | 45 (`c, n, nb, note, noteb, min, max`, optional `slug`) | price table, calculator, booking dropdown, service pages |
+| `prices` | 52 (`id, c, n, nb, note, noteb, min, max`, optional `per`, `slug`) | price table, calculator, booking dropdown, service pages, treatments page |
 | `services` | 15 (+11 sub-items) | homepage grid, service pages |
 | `photos` | 86 | service imagery |
 | `gallery` / `galleryCats` | 53 / 11 | gallery page |
 | `doctors` | 1 | doctor card + Physician JSON-LD |
 
 The content editor rewrites this file. It is data, not code: never add logic to it.
+
+**One price list for the whole site.** Every price row has a fixed `id`. Other pages that show a
+price link to it rather than repeat it:
+
+| Where | Markup | Filled from |
+|---|---|---|
+| `services/*.html` comparison tables (40 cells) | `<td class="cmp-omega" data-price="<id>">` | that price row (`min`–`max`; orthodontics adds its monthly note) |
+| `services/*.html` headline | `.prod-price` | the service's `pr` |
+| `treatments.html` cards (13) | `<span class="svc-price" data-svc="<slug>">` | the service's `pr` (same as the homepage card) |
+| `treatments.html` JSON-LD `ItemList` | one Offer per price row | all rows |
+
+`tools/sync-prices.js` writes these into the HTML (so no-JS visitors and Google see them) and
+runs in the deploy workflow, so an editor publish — which commits only `content.js` — goes live
+with every page in step. `assets/service-content.js` applies the same values at runtime. Two
+comparison cells are deliberately unlinked until the clinic confirms them (Composite Crown on
+crowns-bridges, Tooth Shaping on cosmetic-dentistry).
 
 **Service ↔ price link.** Booking dropdown option values are price names (`p.n`). Links use
 `book.html?service=<value>`; `resolveService()` in `app.js` accepts an exact price name or a
@@ -127,8 +144,19 @@ account; removing it silently stops reminders and the sweep.
   two-way syncs `records` with a localStorage cache; read-only when signed out or offline.
 - **Content editor** — edits `content.js` and images, then POSTs `{action:"publish", idToken,
   files}` to the Apps Script. `tools/publish.gs` verifies the Firebase ID token, checks a path
-  allowlist (`assets/content.js`, service and doctor images; max 60 files) and makes **one commit
-  to `main`** with a GitHub token stored in Script Properties. Pages redeploys in ~1 minute.
+  allowlist (`assets/content.js`, service and doctor images; max 60 files) and file contents
+  (content.js in the editor's JSON format with a unique `id` on every price row; real JPEGs
+  ≤3 MB), and makes **one commit to `main`** with a GitHub token stored in Script Properties.
+  Pages redeploys in ~1 minute. The reply carries a `warning` from 30 days before the token
+  expires; `checkPublishSetup()` (run by hand) reports access and the expiry date.
+- **Editor drafts** — saved in localStorage as `{v:2, base, pubAt, data}`: `base` is the live
+  content the draft began from. On open the editor loads `content.js` fresh (per-visit
+  `?t=` cache-buster) and compares. If the website changed since, a red box lists both sides'
+  changes and publishing is paused until the clinic picks **Keep only my changes** (applies the
+  fields changed on this device onto the live content; prices matched by `id`, services by
+  `slug`) or **Start fresh**. Drafts from before 18 Oct 2026 have no `base` and can only start
+  fresh. For 15 minutes after this browser published, a mismatch means the deploy is still
+  running, and the editor says so instead.
 - **Reminder** — `tools/appointment-reminder.gs`, daily trigger set by hand (7–8 pm), emails
   tomorrow's list with WhatsApp buttons. It reads the Next Appointment date on dashboard
   `records`, so it only sees records synced to the cloud.
@@ -160,14 +188,18 @@ regardless.
 | `set-domain.js` | rewrites the domain across files | |
 | `gen-image-sizes.py`, `gen-review-qr.py` | card/thumb sizes; static review QR SVG | Python (Pillow, segno) |
 | `booking-sweep.test.js` | tests for the sweep | `node tools/booking-sweep.test.js` |
+| `sync-prices.js` | copies prices from content.js into service pages and treatments.html | `--check` reports without writing; the deploy runs it |
+| `publish.test.js` | tests for the publish endpoint | `node tools/publish.test.js` |
 
-No CI runs any of these. The deploy workflow only uploads files.
+The deploy workflow runs `sync-prices.js` (a failure there is logged and the pages deploy as
+committed), then uploads. Nothing else runs in CI.
 
 ## 10. Deploy and domain
 
-- Push to `main` → `pages.yml` uploads the whole repo (`path: .`) → live in about a minute.
-  ⚠ As of 2026-10-02 the Pages source is set to deploy the branch `claude/tender-albattani-m04a9m`
-  directly; see `MEMORY.md`.
+- Push to `main` → `pages.yml` syncs prices and uploads the whole repo (`path: .`) → live in
+  about a minute. Settings → Pages → Source must stay **GitHub Actions**: "Deploy from a branch"
+  bypasses the workflow (and the price sync), and pointed at a working branch it served that
+  branch instead of `main` until 11 Oct 2026.
   **Everything in the repo is public**, including these `.md` files.
 - Work happens on a branch; `main` is fast-forwarded after review.
 - Cache-busting: asset URLs carry `?v=YYYYMMDDx`. Bump it when a CSS/JS change must reach

@@ -427,21 +427,27 @@ function bnNum(s){ return String(s).replace(/[0-9]/g, d=>"০১২৩৪৫৬�
 /* A slug normally resolves to its first priced row, which is the right default
    everywhere but here: the extractions page is about adult and surgical extraction,
    and its first row is the ৳1,000 milk-tooth one — a child's price pre-selected for
-   a grown patient. Keep this list as short as it is; tools/gen-services.js carries
-   the same map for the static service pages. */
-const SERVICE_DEFAULT = { "extractions":"Permanent Tooth Extraction" };
+   a grown patient. An empty value means "open the form unselected": cosmetic
+   dentistry covers five unrelated treatments, and pre-picking the first (Smile
+   Design) would guess for the patient. Keep this list as short as it is;
+   tools/gen-services.js carries the same map for the static service pages. */
+const SERVICE_DEFAULT = { "extractions":"Permanent Tooth Extraction", "cosmetic-dentistry":"" };
 
+function slugToPrice(slug){
+  if(Object.prototype.hasOwnProperty.call(SERVICE_DEFAULT, slug)){
+    const d = SERVICE_DEFAULT[slug];
+    if(!d) return "";
+    if(PRICES.some(p=>p.n===d)) return d;
+  }
+  const p = PRICES.find(p=>p.slug===slug);
+  return p ? p.n : "";
+}
 function resolveService(v){
   if(!v) return "";
   if(PRICES.some(p=>p.n===v)) return v;          // already an exact option value
-  if(SERVICE_DEFAULT[v] && PRICES.some(p=>p.n===SERVICE_DEFAULT[v])) return SERVICE_DEFAULT[v];
-  const bySlug = PRICES.find(p=>p.slug===v);
-  if(bySlug) return bySlug.n;
+  if(PRICES.some(p=>p.slug===v) || Object.prototype.hasOwnProperty.call(SERVICE_DEFAULT, v)) return slugToPrice(v);
   const byName = SERVICES.find(s=>s.en===v || s.bn===v);   // legacy service-name links
-  if(byName && byName.slug){
-    const p = PRICES.find(p=>p.slug===byName.slug);
-    if(p) return p.n;
-  }
+  if(byName && byName.slug) return slugToPrice(byName.slug);
   return "";                                     // no priced match — open the form clean
 }
 /* href for a Book button. Anything with no priced row just opens the form. */

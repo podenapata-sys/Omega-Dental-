@@ -36,7 +36,7 @@ Without a site, all three are answered one WhatsApp message at a time by the fro
 ## 4. What the site does (shipped)
 
 ### Public site — 28 pages
-- **Homepage:** hero, 15 service cards, full price list (45 priced treatments in 10 categories),
+- **Homepage:** hero, 15 service cards, full price list (52 priced treatments in 10 categories),
   cost calculator, doctor card, gallery preview, reviews QR, contact and map.
 - **Service pages:** 14 pages in `services/`, one per treatment, each with price, FAQ and a
   Book button that pre-selects that treatment.
@@ -48,7 +48,7 @@ Without a site, all three are answered one WhatsApp message at a time by the fro
 
 ### Booking
 - Form needs **name, phone, treatment** and consent; date, time and address are optional.
-- Every "Book" button (15 service cards, 45 price rows, 14 service pages) arrives with the
+- Every "Book" button (15 service cards, 52 price rows, 14 service pages) arrives with the
   treatment already selected.
 - On submit: saved to the cloud database, an email alert and a spreadsheet row go to the clinic,
   and the patient is offered WhatsApp as a faster confirmation route.

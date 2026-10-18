@@ -27,6 +27,14 @@
  *    FB_API_KEY and FB_EMAIL are already there for the reminder; this reuses them.
  * 3. Deploy → Manage deployments → New version. The editor talks to the same /exec
  *    URL the booking form uses.
+ * 4. Select checkPublishSetup in the toolbar and press Run. The log says whether the
+ *    token works and when it expires. Run it again after renewing the token.
+ *
+ * TOKEN EXPIRY
+ * Fine-grained tokens expire (at most a year). When one does, publishing stops with a
+ * GitHub 401. Every publish reads the expiry date GitHub sends back, and from 30 days
+ * before it the editor shows a warning under "Published". To renew: make a new token
+ * as in step 1, paste it over GITHUB_TOKEN, run checkPublishSetup.
  */
 
 var GITHUB_REPO   = 'podenapata-sys/Omega-Dental-';
@@ -59,10 +67,68 @@ function publishContent(d) {
   if (!token) return { ok: false, error: 'GITHUB_TOKEN is not set in Script Properties.' };
 
   try {
-    return _commit(token, files, d.message || 'Update website content', who.email);
+    var out = _commit(token, files, d.message || 'Update website content');
+    var warn = _expiryWarning();
+    if (warn) out.warning = warn;
+    return out;
   } catch (e) {
+    if (/GitHub 401/.test(String(e)))
+      return { ok: false, error: 'The publishing key (GITHUB_TOKEN) has expired or was revoked. ' +
+               'Nothing was published. Ask your developer to renew it.' };
     return { ok: false, error: String(e) };
   }
+}
+
+/* ---------- token expiry ---------- */
+
+/* GitHub sends `github-authentication-token-expiration: 2026-11-10 12:00:00 UTC` on
+   every response to a token that expires. _gh keeps the last one it saw. */
+var _tokenExpiry = null;
+function _readExpiry(res) {
+  var h = res.getAllHeaders();
+  for (var k in h) {
+    if (String(k).toLowerCase() !== 'github-authentication-token-expiration') continue;
+    var m = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})/.exec(String(h[k]));
+    if (m) _tokenExpiry = new Date(m[1] + 'T' + m[2] + 'Z');
+  }
+}
+function _daysLeft() {
+  return _tokenExpiry ? Math.floor((_tokenExpiry.getTime() - Date.now()) / 86400000) : null;
+}
+function _expiryWarning() {
+  var days = _daysLeft();
+  if (days === null || days >= 30) return '';
+  return 'The publishing key expires on ' + _tokenExpiry.toISOString().slice(0, 10) +
+         ' (' + Math.max(days, 0) + ' days). Ask your developer to renew it, or publishing will stop.';
+}
+
+/** Run by hand from the Apps Script toolbar after setup or after renewing the token.
+    Reads only; changes nothing. */
+function checkPublishSetup() {
+  var props = PropertiesService.getScriptProperties();
+  var lines = [];
+  ['GITHUB_TOKEN', 'FB_API_KEY', 'FB_EMAIL'].forEach(function (k) {
+    lines.push(k + ': ' + (props.getProperty(k) ? 'set' : 'MISSING'));
+  });
+  var token = props.getProperty('GITHUB_TOKEN');
+  if (token) {
+    try {
+      var repo = _gh(token, 'get', '/repos/' + GITHUB_REPO);
+      var push = repo.permissions && repo.permissions.push;
+      _gh(token, 'get', '/repos/' + GITHUB_REPO + '/git/ref/heads/' + GITHUB_BRANCH);
+      lines.push('GitHub: token works, can ' + (push ? '' : 'NOT ') + 'write to ' + GITHUB_REPO +
+                 ' (branch ' + GITHUB_BRANCH + ')');
+      var days = _daysLeft();
+      lines.push(days === null ? 'Token expiry: none reported (classic token without expiry)'
+                 : 'Token expires: ' + _tokenExpiry.toISOString().slice(0, 10) + ' — ' + days + ' days left' +
+                   (days < 30 ? '  ← RENEW SOON' : ''));
+    } catch (e) {
+      lines.push('GitHub: FAILED — ' + String(e).slice(0, 200));
+    }
+  }
+  var report = lines.join('\n');
+  Logger.log(report);
+  return report;
 }
 
 /* ---------- who is asking ---------- */
@@ -132,6 +198,18 @@ function _contentAllowed(f) {
     try { data = JSON.parse(m[1]); } catch (e) { return 'content.js data is not valid JSON.'; }
     if (!data || typeof data !== 'object' || !Array.isArray(data.prices) || !Array.isArray(data.services))
       return 'content.js is missing prices or services.';
+    /* Every price row carries a fixed id that the service pages and treatments page
+       link to (tools/sync-prices.js). A draft without them was started from the price
+       list as it was before 18 Oct 2026; publishing it would put old prices back. */
+    var seen = {};
+    for (var i = 0; i < data.prices.length; i++) {
+      var id = data.prices[i] && data.prices[i].id;
+      if (typeof id !== 'string' || !/^[a-z0-9-]{1,60}$/.test(id) || seen[id])
+        return 'This draft was made from an older copy of the price list, so publishing it would ' +
+               'undo newer prices. Reload the editor, press "Start fresh from the live website" and ' +
+               'make the change again.';
+      seen[id] = 1;
+    }
     return '';
   }
   return 'Unexpected file: ' + f.path;
@@ -147,6 +225,7 @@ function _gh(token, method, path, payload) {
   };
   if (payload) { opts.contentType = 'application/json'; opts.payload = JSON.stringify(payload); }
   var res = UrlFetchApp.fetch(GITHUB_API + path, opts);
+  _readExpiry(res);
   var code = res.getResponseCode(), text = res.getContentText();
   if (code < 200 || code >= 300) throw new Error('GitHub ' + code + ' on ' + path + ': ' + text.slice(0, 200));
   return JSON.parse(text || '{}');
@@ -154,7 +233,7 @@ function _gh(token, method, path, payload) {
 
 /* Blobs → tree → commit → move the branch. One commit for every file, so the site is
    never rebuilt from a half-written state. */
-function _commit(token, files, message, email) {
+function _commit(token, files, message) {
   var repo = '/repos/' + GITHUB_REPO;
   var ref  = _gh(token, 'get', repo + '/git/ref/heads/' + GITHUB_BRANCH);
   var headSha = ref.object.sha;
@@ -169,7 +248,8 @@ function _commit(token, files, message, email) {
 
   var newTree = _gh(token, 'post', repo + '/git/trees', { base_tree: head.tree.sha, tree: tree });
   var commit  = _gh(token, 'post', repo + '/git/commits', {
-    message: message + '\n\nPublished from the content editor by ' + email + '.',
+    /* No email or name here: the repository is public, and so is every commit message. */
+    message: message + '\n\nPublished from the content editor.',
     tree: newTree.sha, parents: [headSha]
   });
   _gh(token, 'patch', repo + '/git/refs/heads/' + GITHUB_BRANCH, { sha: commit.sha });

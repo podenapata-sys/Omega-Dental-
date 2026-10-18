@@ -6,9 +6,8 @@
 
 ## 0. The three that matter most
 
-1. **`main` is live** (but see `MEMORY.md` → Current state: as of 2026-10-02 Pages serves the
-   working branch instead, so a push there is live too). A push to the live branch is on
-   omegadentalbd.com in about a minute. Work on a
+1. **`main` is live.** GitHub Actions deploys every push to `main` to omegadentalbd.com in
+   about a minute, and the content editor publishes by committing to `main`. Work on a
    branch; the owner reviews and merges.
 2. **The repo is public and fully deployed.** Every file, including these `.md` files, is served
    on the domain. Never commit a secret, password, token value or personal data.
@@ -42,6 +41,18 @@ owner. If a feature needs a library, vendor a pinned copy into `assets/vendor/` 
   by hand.
 - Booking links use `book.html?service=<exact price name or service slug>`. Anything else lands
   on an empty dropdown.
+- **A price is typed once, in `content.js`.** Pages that repeat one point at it instead:
+  service comparison cells carry `data-price="<price row id>"`, treatments cards
+  `data-svc="<service slug>"`. `node tools/sync-prices.js` fills them, the headline prices and
+  the treatments JSON-LD; the deploy runs it before upload. Never hand-type a price into a page.
+  A cell without `data-price` is deliberately unlinked (a price waiting for the clinic).
+- **A price row's `id` never changes and is never reused.** Links survive renames because of it,
+  and `publish.gs` refuses a content.js whose rows lack unique ids. A new row needs a new
+  lowercase-slug id.
+- **The editor's stale-draft check stays.** Drafts are saved with the live content they began
+  from; if the website has changed since, publishing is paused until the clinic chooses
+  "Keep only my changes" or "Start fresh". Without it, an old draft on a phone silently puts old
+  prices back.
 
 ## 3. Works without JavaScript
 
@@ -57,7 +68,8 @@ owner. If a feature needs a library, vendor a pinned copy into `assets/vendor/` 
   against all 14 committed pages. Twelve are hand-edited and it would also shrink `sitemap.xml`.
   Patch service pages in place and mirror the change in the generator.
 - `resolveService()`/`SERVICE_DEFAULT` in `app.js` and the copy in `gen-services.js` must stay
-  identical.
+  identical. An empty value (`"cosmetic-dentistry":""`) means the Book link opens the form
+  unselected.
 
 ## 5. Firebase and security
 
@@ -109,6 +121,8 @@ owner. If a feature needs a library, vendor a pinned copy into `assets/vendor/` 
 - [ ] No console errors.
 - [ ] Every link and `?service=` value resolves.
 - [ ] Cache-buster (`?v=YYYYMMDDx`) bumped on changed CSS/JS.
+- [ ] `node tools/sync-prices.js --check` reports all pages in step.
+- [ ] `node tools/booking-sweep.test.js` and `node tools/publish.test.js` pass.
 - [ ] `git diff --stat` shows only files you meant to change.
 - [ ] No secret values or personal data in the diff.
 - [ ] `MEMORY.md` updated with what changed and why.

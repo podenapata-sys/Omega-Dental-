@@ -27,6 +27,12 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
+      # The content editor commits only assets/content.js. This copies its prices into
+      # the service-page tables, treatments.html and its Google price data, so an editor
+      # publish goes live with every page in step. A failure here must never stop the
+      # deploy: the pages then go out exactly as committed, as they did before.
+      - name: Sync prices from content.js
+        run: node tools/sync-prices.js || echo "::warning::sync-prices failed; pages deployed as committed"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .

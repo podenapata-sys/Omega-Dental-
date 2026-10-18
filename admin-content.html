@@ -65,6 +65,10 @@ h1,h2,h3{font-family:var(--fh);color:var(--navy);margin:0}
 .top .btn{white-space:nowrap}
 .hint{background:#fff6e9;border:1px solid #f6d9b0;color:#8a5a12;border-radius:12px;
   padding:10px 14px;font-size:.82rem;margin-bottom:16px;display:flex;gap:8px;align-items:flex-start}
+.hint.stale{background:#fdecea;border-color:#f3b8b0;color:#7a271a;font-size:.86rem}
+.hint.stale ul{margin:6px 0 4px 18px;padding:0}
+.hint.stale li{margin:2px 0}
+.stale-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 /* ---- panels ---- */
 .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
   box-shadow:0 12px 30px -18px rgba(19,41,78,.28);padding:18px;margin-bottom:18px}
@@ -257,6 +261,20 @@ tbody tr:hover{background:#f8fcfb}
        result was written into nothing. -->
   <div id="pubMsg" style="font-size:.86rem;margin:0 0 10px"></div>
 
+  <!-- Shown when the draft saved in this browser was started from content that is no
+       longer what the website shows. Publishing it as it is would undo the newer
+       changes, so publishing waits until the clinic chooses what to keep. -->
+  <div class="hint stale" id="staleBar" style="display:none" role="alert">
+    <span>&#9888;&#65039;</span>
+    <div>
+      <div id="staleText"></div>
+      <div class="stale-acts">
+        <button class="btn btn-p btn-sm" id="staleMerge" style="width:auto">Keep only my changes</button>
+        <button class="btn btn-g btn-sm" id="staleFresh" style="width:auto">Start fresh from the live website</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Shown whenever nobody is signed in. The editor still works: what it edits is a
        draft in this browser, and only publishing needs the clinic's login. -->
   <div class="hint" id="roBar" style="display:none;border-left:3px solid #e0a030">
@@ -314,7 +332,10 @@ tbody tr:hover{background:#f8fcfb}
 </div>
 </div>
 
-<script src="assets/content.js?v=4"></script>
+<!-- A fresh copy on every visit. Pages lets browsers cache files for about ten minutes;
+     an editor that started from a cached, older content.js would publish that older
+     content back over newer changes. -->
+<script>document.write('<script src="assets/content.js?t=' + Date.now() + '"><\/script>');</script>
 <script src="assets/firebase-config.js?v=8"></script>
 <script type="module">
   /* Auth only — the editor needs to prove who it is before the Apps Script will commit
@@ -439,23 +460,158 @@ tbody tr:hover{background:#f8fcfb}
      localStorage. `shipped` is what assets/content.js currently contains, so
      Revert always has something truthful to go back to. */
   var shipped=null, draft=null, view="services";
+  /* The draft is stored with `base`: the live content it was started from. If the
+     website has changed since (published from another phone, or updated by the
+     developer), publishing the draft as it is would put the old content back, so the
+     editor stops and asks. `pubAt` is when this browser last published: for a few
+     minutes after that the website is still catching up, which is not a conflict.
+     Drafts saved before this existed have no base, so they cannot be merged safely. */
+  var base=null, pubAt=0, stale=null, liveMissing=false;
+  var CONTENT_KEYS=["cats","prices","services","photos","gallery","galleryCats","doctors"];
+  var DEPLOY_WAIT=15*60*1000;
 
   function clone(o){ return JSON.parse(JSON.stringify(o)); }
   function loadShipped(){
     var C=window.OMEGA_CONTENT;
-    if(!C||!C.services){ return {cats:{},prices:[],services:[]}; }
-    return clone({cats:C.cats, prices:C.prices, services:C.services,
+    if(!C||!C.services){ liveMissing=true; return {cats:{},prices:[],services:[],photos:[]}; }
+    /* photos must be here too: content.js is written from the draft, and a draft
+       without the list would publish a content.js without it. */
+    return clone({cats:C.cats, prices:C.prices, services:C.services, photos:C.photos||[],
                   gallery:C.gallery||[], galleryCats:C.galleryCats||{},
                   doctors:C.doctors||[]});
   }
+  function pick(o){
+    var r={}; CONTENT_KEYS.forEach(function(k){ if(o && o[k]!==undefined) r[k]=o[k]; });
+    return r;
+  }
+  function same(a,b){ return JSON.stringify(pick(a))===JSON.stringify(pick(b)); }
   function loadDraft(){
-    try{ var raw=localStorage.getItem(LS_DRAFT); if(raw) return JSON.parse(raw); }catch(e){}
+    try{
+      var raw=localStorage.getItem(LS_DRAFT); if(!raw) return null;
+      var o=JSON.parse(raw);
+      if(o && o.v===2 && o.data && o.data.services) return { data:o.data, base:o.base||null, pubAt:+o.pubAt||0 };
+      if(o && o.services) return { data:o, base:null, pubAt:0 };     // saved before drafts had a base
+    }catch(e){}
     return null;
   }
   function saveDraft(){
-    try{ localStorage.setItem(LS_DRAFT, JSON.stringify(draft)); }
+    try{ localStorage.setItem(LS_DRAFT, JSON.stringify({ v:2, base:base, pubAt:pubAt, data:draft })); }
     catch(e){ msg("Could not save your draft &mdash; browser storage may be full.", true); }
     updateDraftNote();
+  }
+
+  /* ---------- a draft started from older content ---------- */
+  function money(p){
+    if(!p || typeof p.min!=="number") return "&mdash;";
+    return "&#2547;" + fmt(p.min) + (p.max>p.min ? "&ndash;" + fmt(p.max) : "");
+  }
+  function findRow(list, p){
+    var i;
+    if(p.id) for(i=0;i<list.length;i++) if(list[i].id===p.id) return list[i];
+    for(i=0;i<list.length;i++) if(list[i].n===p.n) return list[i];
+    return null;
+  }
+  function noId(p){ var c=clone(p); delete c.id; return JSON.stringify(c); }
+  /* Plain-English lines saying how `to` differs from `from`. */
+  function diffLines(from, to){
+    var out=[], fp=from.prices||[], tp=to.prices||[];
+    tp.forEach(function(p){
+      var q=findRow(fp, p);
+      if(!q) out.push("<b>"+esc(p.n)+"</b>: not in the other copy ("+money(p)+")");
+      else if(q.min!==p.min || q.max!==p.max) out.push("<b>"+esc(p.n)+"</b>: "+money(q)+" &rarr; "+money(p));
+      else if(noId(q)!==noId(p)) out.push("<b>"+esc(p.n)+"</b>: wording or note changed");
+    });
+    fp.forEach(function(q){ if(!findRow(tp, q)) out.push("<b>"+esc(q.n)+"</b>: removed"); });
+    var fs=from.services||[], ts=to.services||[], svc=0;
+    for(var i=0;i<Math.max(fs.length, ts.length);i++) if(JSON.stringify(fs[i])!==JSON.stringify(ts[i])) svc++;
+    if(svc) out.push(svc + " service card" + (svc>1?"s":"") + " changed");
+    if(JSON.stringify(from.gallery)!==JSON.stringify(to.gallery)) out.push("Gallery changed");
+    if(JSON.stringify(from.doctors)!==JSON.stringify(to.doctors)) out.push("Doctor details changed");
+    if(JSON.stringify(from.cats)!==JSON.stringify(to.cats) ||
+       JSON.stringify(from.galleryCats)!==JSON.stringify(to.galleryCats)) out.push("Category names changed");
+    return out;
+  }
+  function list(lines){
+    if(!lines.length) return "<ul><li>Nothing</li></ul>";
+    var more = lines.length>12 ? "<li>&hellip; and "+(lines.length-12)+" more</li>" : "";
+    return "<ul><li>"+lines.slice(0,12).join("</li><li>")+"</li>"+more+"</ul>";
+  }
+  function checkStale(){
+    stale=null;
+    if(liveMissing) return;                               // nothing to compare against
+    if(base && same(base, shipped)) return;               // started from what is live
+    if(same(draft, shipped)){ base=clone(shipped); pubAt=0; saveDraft(); return; }  // nothing of its own
+    if(base && pubAt && Date.now()-pubAt < DEPLOY_WAIT){ stale={deploying:true}; return; }
+    stale={ legacy:!base };
+  }
+  function showStale(){
+    var bar=$("staleBar");
+    if(!stale){ bar.style.display="none"; return; }
+    var t;
+    if(stale.deploying){
+      t = "<b>Your last publish is still reaching the website.</b> It usually takes a minute or two. "
+        + "Reload this page shortly; publishing is paused until the website shows it, so nothing "
+        + "you just published can be undone by accident.";
+      $("staleMerge").style.display="none"; $("staleFresh").style.display="none";
+    }else if(stale.legacy){
+      t = "<b>This browser has an old draft, and the website has changed since.</b> "
+        + "Publishing it would put back the old content, so publishing is paused. "
+        + "The draft differs from the live website here (live &rarr; draft):"
+        + list(diffLines(shipped, draft))
+        + "Start fresh from the live website, then make again any change above that you still want.";
+      $("staleMerge").style.display="none"; $("staleFresh").style.display="";
+    }else{
+      t = "<b>The website changed after you started this draft</b> (published from another device, "
+        + "or updated by your developer). Publishing the draft as it is would undo those changes, "
+        + "so publishing is paused.<br><br>Your changes on this device:" + list(diffLines(base, draft))
+        + "Changed on the live website since:" + list(diffLines(base, shipped))
+        + "<b>Keep only my changes</b> puts your changes on top of the live website. "
+        + "If you and the website changed the same thing, yours wins.";
+      $("staleMerge").style.display=""; $("staleFresh").style.display="";
+    }
+    $("staleText").innerHTML=t;
+    bar.style.display="flex";
+  }
+  /* Apply the fields this device changed (draft vs base) onto the live content. The
+     editor never adds, removes or reorders rows, so base[i] and draft[i] are the same
+     row; it is found on the live side by its id (prices) or slug (services). */
+  function mergeRows(live, baseRows, mine, key){
+    var n=Math.min(baseRows.length, mine.length), lost=0;
+    for(var i=0;i<n;i++){
+      var b=baseRows[i], m=mine[i];
+      if(JSON.stringify(b)===JSON.stringify(m)) continue;
+      var k=key(b), o=null;
+      for(var j=0;j<live.length;j++) if(key(live[j])===k){ o=live[j]; break; }
+      if(!o){ lost++; continue; }                         // that row is gone from the website
+      Object.keys(Object.assign({}, b, m)).forEach(function(f){
+        if(JSON.stringify(m[f])===JSON.stringify(b[f])) return;
+        if(m[f]===undefined) delete o[f]; else o[f]=clone(m[f]);
+      });
+    }
+    return lost;
+  }
+  function keepMine(){
+    var out=clone(shipped), lost=0;
+    lost += mergeRows(out.prices, base.prices||[], draft.prices||[], function(p){ return p.id || ("n:"+p.n); });
+    lost += mergeRows(out.services, base.services||[], draft.services||[], function(s){ return s.slug || ("en:"+s.en); });
+    ["cats","gallery","galleryCats","doctors"].forEach(function(k){
+      if(JSON.stringify(draft[k])!==JSON.stringify(base[k])) out[k]=clone(draft[k]);
+    });
+    (draft.photos||[]).forEach(function(n){
+      if((base.photos||[]).indexOf(n)<0 && out.photos.indexOf(n)<0) out.photos.push(n);
+    });
+    if(draft.newPhotos) out.newPhotos=draft.newPhotos;
+    if(draft.newDoctorPhotos) out.newDoctorPhotos=draft.newDoctorPhotos;
+    draft=out; base=clone(shipped); pubAt=0; stale=null;
+    saveDraft(); showStale(); render();
+    msg("Your changes are now on top of the live website content. Check them, then publish."
+        + (lost ? " <b>"+lost+"</b> change(s) were to rows the website no longer has, so they were left out." : ""));
+  }
+  function startFresh(){
+    draft=clone(shipped); base=clone(shipped); pubAt=0; stale=null;
+    try{ localStorage.removeItem(LS_DRAFT); }catch(e){}
+    showStale(); clearMsg(); render(); updateDraftNote();
+    msg("Started fresh. You are now editing exactly what the live website shows.");
   }
   function isDirty(){ return JSON.stringify(draft)!==JSON.stringify(shipped); }
   function updateDraftNote(){
@@ -1093,6 +1249,13 @@ tbody tr:hover{background:#f8fcfb}
   async function publish(){
     var url = (window.OMEGA_ALERT_URL||"").trim();
     if(!url){ pubNote("Publishing is not set up yet — OMEGA_ALERT_URL is empty.", true); return; }
+    if(liveMissing){ pubNote("The live website content did not load, so there is nothing safe to compare with. Reload the page before publishing.", true); return; }
+    if(stale){
+      pubNote(stale.deploying ? "Wait until your last publish reaches the website, then reload this page."
+                              : "Publishing is paused: choose what to keep in the red box above first.", true);
+      $("staleBar").scrollIntoView({behavior:"smooth",block:"nearest"});
+      return;
+    }
     if(!signedIn){ pubNote("Sign in first — publishing needs the clinic's login.", true); return; }
     if(!window.__odAuth){ pubNote("Still connecting to Firebase — try again in a moment.", true); return; }
 
@@ -1119,6 +1282,7 @@ tbody tr:hover{background:#f8fcfb}
 
       /* Published: this draft IS the live content now. Photos are real files, so they
          belong in the normal list and the draft copies can go. */
+      draft.photos = draft.photos || [];
       Object.keys(draft.newPhotos||{}).forEach(function(n){
         if(draft.photos.indexOf(n) === -1) draft.photos.push(n);
       });
@@ -1126,10 +1290,11 @@ tbody tr:hover{background:#f8fcfb}
       /* Portraits are now committed under assets/doctors/, so the base64 copies can go
          — leaving them would refill the draft's storage and eventually block saving. */
       delete draft.newDoctorPhotos;
-      shipped = clone(draft);
+      shipped = clone(draft); base = clone(draft); pubAt = Date.now();
       saveDraft();
       updateDraftNote(); render();
-      pubNote("Published \u2713 commit <b>"+ (out.commit||"") +"</b>. The website updates in a minute or two.", false);
+      pubNote("Published \u2713 commit <b>"+ esc(out.commit||"") +"</b>. The website updates in a minute or two."
+              + (out.warning ? "<br><span style='color:#b45309'>&#9888;&#65039; " + esc(out.warning) + "</span>" : ""), false);
     }catch(e){
       pubNote("Could not reach the publisher: " + e, true);
     }finally{
@@ -1178,7 +1343,20 @@ tbody tr:hover{background:#f8fcfb}
   /* ---------- wire up ---------- */
   document.addEventListener("DOMContentLoaded", function(){
     shipped = loadShipped();
-    draft = loadDraft() || clone(shipped);
+    var saved = loadDraft();
+    if(saved){
+      draft = saved.data; base = saved.base; pubAt = saved.pubAt;
+      if(!draft.photos) draft.photos = clone(shipped.photos);   // drafts from before photos were kept
+    }else{
+      draft = clone(shipped); base = clone(shipped);
+    }
+    checkStale();
+    showStale();
+    $("staleMerge").addEventListener("click", keepMine);
+    $("staleFresh").addEventListener("click", function(){
+      if(!confirm("Throw away this draft and start from what the live website shows now?")) return;
+      startFresh();
+    });
 
     domReady = true;
     wirePublish();
@@ -1258,7 +1436,7 @@ tbody tr:hover{background:#f8fcfb}
     $("revertBtn").addEventListener("click", function(){
       if(!isDirty()){ msg("There is nothing to revert &mdash; your draft already matches the live website."); return; }
       if(!confirm("Discard your draft and go back to what the live website shows?\n\nThis cannot be undone.")) return;
-      draft = clone(shipped);
+      draft = clone(shipped); base = clone(shipped); stale = null; showStale();
       try{ localStorage.removeItem(LS_DRAFT); }catch(e){}
       clearMsg(); render();
       msg("Draft discarded. You are back to the live website content.");
