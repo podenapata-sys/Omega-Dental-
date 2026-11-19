@@ -88,7 +88,7 @@
   (a) Composite Crown: crowns page ৳5,000, price list ৳6,500 — cell unlinked.
   (b) Tooth Shaping: cosmetic page ৳3,500, price list (fillings) ৳500 — same treatment? Cell
   unlinked. (c) Milk tooth extraction: ৳1,000 (surgery list) and ৳1,500 (kids list) — which?
-  (d) "Painless Extraction & Surgery" headline ৳5,000–8,000, while its rows run ৳1,000–18,000.
+  (d) ~~"Painless Extraction & Surgery" headline ৳5,000–8,000~~ — answered 2026-11-19: ৳5,000–10,000.
   (e) Dentures headline ৳5,000–8,000, while complete denture is ৳22,000.
   *Done when:* each has one answer in `content.js`, (a)/(b) cells carry `data-price`, and
   `sync-prices.js --check` is clean.

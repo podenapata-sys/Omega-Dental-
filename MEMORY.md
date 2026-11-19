@@ -21,6 +21,10 @@
 
 ## Decisions (with reasons)
 
+- **2026-11-19** — "Painless Extraction & Surgery" headline price ৳5,000–10,000 (was ৳5,000–8,000),
+  from the owner's marked-up screenshot of the live page. Changed in `content.js` (service `pr`);
+  `sync-prices.js` carried it to the extraction page and the treatments card; `content.js?v=6`.
+  Answers TASKS 2.5 (d).
 - **2026-10-18** — **One price list.** Each price row has a fixed `id`; pages link to it
   (`data-price`, `data-svc`) and `tools/sync-prices.js` fills them, run by the deploy so an editor
   publish (which commits only `content.js`) updates every page. Chosen over runtime-only JS so
